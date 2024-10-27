@@ -8,8 +8,10 @@
 package com.mclegoman.luminance.client.shaders;
 
 import com.mclegoman.luminance.client.data.ClientData;
+import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
+import com.mclegoman.luminance.client.shaders.uniforms.LuminanceUniform;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.client.util.Accessors;
 import com.mclegoman.luminance.client.util.LuminanceIdentifier;
@@ -22,6 +24,8 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.MathHelper;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -38,53 +42,56 @@ public class Uniforms {
 	}
 	public static void init() {
 		try {
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "viewDistance"), Uniforms::getViewDistance);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "fov"), Uniforms::getFov);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "fps"), Uniforms::getFps);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("viewDistance"), Uniforms::getViewDistance, 2f, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("fov"), Uniforms::getFov, 0f, 360f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("fps"), Uniforms::getFps, 0f, null);
 			// Time Uniform should be updated to be customizable.
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "time"), Uniforms::getTime);
-			//Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "eyePosition"), Uniforms::getEyePosition);
-			//Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "position"), Uniforms::getPosition);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "pitch"), Uniforms::getPitch);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "yaw"), Uniforms::getYaw);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "currentHealth"), Uniforms::getCurrentHealth);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "maxHealth"), Uniforms::getMaxHealth);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "currentAbsorption"), Uniforms::getCurrentAbsorption);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "maxAbsorption"), Uniforms::getMaxAbsorption);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "currentHurtTime"), Uniforms::getCurrentHurtTime);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "maxHurtTime"), Uniforms::getMaxHurtTime);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "currentAir"), Uniforms::getCurrentAir);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "maxAir"), Uniforms::getMaxAir);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "isAlive"), Uniforms::getIsAlive);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "isDead"), Uniforms::getIsDead);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "isSprinting"), Uniforms::getIsSprinting);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "isSwimming"), Uniforms::getIsSwimming);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "isSneaking"), Uniforms::getIsSneaking);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "isCrawling"), Uniforms::getIsCrawling);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "isInvisible"), Uniforms::getIsInvisible);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "isWithered"), (tickDelta) -> Uniforms.getHasEffect(StatusEffects.WITHER));
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "isPoisoned"), (tickDelta) -> Uniforms.getHasEffect(StatusEffects.POISON));
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "isBurning"), Uniforms::getIsBurning);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "isOnGround"), Uniforms::getIsOnGround);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "isOnLadder"), Uniforms::getIsOnLadder);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "isRiding"), Uniforms::getIsRiding);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "hasPassengers"), Uniforms::getHasPassengers);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "biomeTemperature"), Uniforms::getBiomeTemperature);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "alpha"), Uniforms::getAlpha);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "perspective"), Uniforms::getPerspective);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "selectedSlot"), Uniforms::getSelectedSlot);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "score"), Uniforms::getScore);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "velocity"), Uniforms::getVelocity);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "skyAngle"), Uniforms::getSkyAngle);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "sunAngle"), Uniforms::getSunAngle);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "isDay"), Uniforms::getIsDay);
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "starBrightness"), Uniforms::getStarBrightness);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("time"), Uniforms::getTime, 0f, 1f);
+			//registerLuminanceUniform(LuminanceIdentifier.ofLuminance("eyePosition"), Uniforms::getEyePosition, null, null);
+			//registerLuminanceUniform(LuminanceIdentifier.ofLuminance("position"), Uniforms::getPosition, null, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("pitch"), Uniforms::getPitch, -90f, 90f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("yaw"), Uniforms::getYaw, -180f, 180f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("currentHealth"), Uniforms::getCurrentHealth, 0f, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("maxHealth"), Uniforms::getMaxHealth, 0f, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("currentAbsorption"), Uniforms::getCurrentAbsorption, 0f, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("maxAbsorption"), Uniforms::getMaxAbsorption, 0f, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("currentHurtTime"), Uniforms::getCurrentHurtTime, 0f, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("maxHurtTime"), Uniforms::getMaxHurtTime, 0f, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("currentAir"), Uniforms::getCurrentAir, 0f, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("maxAir"), Uniforms::getMaxAir, 0f, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isAlive"), Uniforms::getIsAlive, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isDead"), Uniforms::getIsDead, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isSprinting"), Uniforms::getIsSprinting, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isSwimming"), Uniforms::getIsSwimming, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isSneaking"), Uniforms::getIsSneaking, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isCrawling"), Uniforms::getIsCrawling, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isInvisible"), Uniforms::getIsInvisible, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isWithered"), (tickDelta) -> Uniforms.getHasEffect(StatusEffects.WITHER), 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isPoisoned"), (tickDelta) -> Uniforms.getHasEffect(StatusEffects.POISON), 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isBurning"), Uniforms::getIsBurning, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isOnGround"), Uniforms::getIsOnGround, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isOnLadder"), Uniforms::getIsOnLadder, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isRiding"), Uniforms::getIsRiding, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("hasPassengers"), Uniforms::getHasPassengers, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("biomeTemperature"), Uniforms::getBiomeTemperature, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("alpha"), Uniforms::getAlpha, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("perspective"), Uniforms::getPerspective, 0f, 3f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("selectedSlot"), Uniforms::getSelectedSlot, 0f, 8f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("score"), Uniforms::getScore, 0f, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("velocity"), Uniforms::getVelocity, 0f, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("skyAngle"), Uniforms::getSkyAngle, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("sunAngle"), Uniforms::getSunAngle, 0f ,1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isDay"), Uniforms::getIsDay, 0f, 1f);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("starBrightness"), Uniforms::getStarBrightness, 0f, 1f);
 
 			// This is temporary until uniforms can be configurable.
-			Events.ShaderUniform.register(LuminanceIdentifier.of(Data.version.getID(), "timeSecond"), Uniforms::getTimeSecond);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("timeSecond"), Uniforms::getTimeSecond, 0f, 1f);
 		} catch (Exception error) {
 			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
 		}
+	}
+	public static void registerLuminanceUniform(LuminanceIdentifier luminanceIdentifier, Callables.ShaderRender<Float> callable, @Nullable Float min, @Nullable Float max) {
+		Events.ShaderUniform.register(luminanceIdentifier, new LuminanceUniform(callable, min, max));
 	}
 	public static float getViewDistance(float tickDelta) {
 		return ClientData.minecraft.options != null ? ClientData.minecraft.options.getViewDistance().getValue() : 12.0F;
@@ -126,7 +133,7 @@ public class Uniforms {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getPitch(tickDelta) % 360.0F : 0.0F;
 	}
 	public static float getYaw(float tickDelta) {
-		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getYaw(tickDelta) % 360.0F : 0.0F;
+		return ClientData.minecraft.player != null ? MathHelper.floorMod(ClientData.minecraft.player.getYaw(tickDelta)+180f,360.0F)-180f : 0.0F;
 	}
 	public static float getCurrentHealth(float tickDelta) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getHealth() : 20.0F;

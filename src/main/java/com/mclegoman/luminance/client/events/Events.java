@@ -8,7 +8,6 @@
 package com.mclegoman.luminance.client.events;
 
 import com.mclegoman.luminance.client.shaders.Shader;
-import com.mclegoman.luminance.client.shaders.uniforms.LuminanceUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.client.util.LuminanceIdentifier;
@@ -218,9 +217,6 @@ public class Events {
 		public static final Map<LuminanceIdentifier, Uniform> registry = new HashMap<>();
 		public static void register(LuminanceIdentifier id, Uniform uniform) {
 			if (!registry.containsKey(id)) registry.put(id, uniform);
-		}
-		public static void register(LuminanceIdentifier id, Callables.ShaderRender<Float> callable) {
-			if (!registry.containsKey(id)) registry.put(id, new LuminanceUniform(callable));
 		}
 		public static void modify(LuminanceIdentifier id, Uniform uniform) {
 			if (registry.containsKey(id)) registry.replace(id, uniform);
