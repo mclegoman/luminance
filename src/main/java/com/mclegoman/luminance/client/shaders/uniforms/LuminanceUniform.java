@@ -8,7 +8,6 @@
 package com.mclegoman.luminance.client.shaders.uniforms;
 
 import com.mclegoman.luminance.client.events.Callables;
-import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -44,25 +43,27 @@ public class LuminanceUniform implements Uniform {
 	public float getSmoothDelta() {
 		return this.smooth - this.prevSmooth;
 	}
+
 	public void tick(float delta) {
 		this.prevSmooth = this.smooth;
-		this.smooth = (this.prevSmooth + this.current) * 0.5F;
+		this.smooth = (this.smooth + this.current) * 0.5F;
 	}
 	public void call(float delta) throws Exception {
 		this.prev = this.current;
+		this.current = getValue(delta);
+	}
 
+	protected float getValue(float delta) throws Exception {
 		float value = this.callable.call(delta);
 		Optional<Float> min = getMin();
 		if (min.isPresent() && value < min.get()) {
-			value = min.get();
+			return min.get();
 		}
 		Optional<Float> max = getMax();
 		if (max.isPresent() && value > max.get()) {
-			value = max.get();
+			return max.get();
 		}
-		this.current = value;
-
-		this.smooth = MathHelper.lerp(delta, this.prevSmooth, this.current);
+		return value;
 	}
 
 	@Override
