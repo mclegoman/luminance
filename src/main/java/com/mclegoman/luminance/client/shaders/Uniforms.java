@@ -30,8 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class Uniforms {
-	private static float prevTimeTickDelta;
-	private static float time = 0.0F;
 	private static int prevAlpha = (int)ConfigHelper.getConfig("alpha_level");
 	public static void tick() {
 		if (!updatingAlpha() && updatingAlpha) {
@@ -45,8 +43,6 @@ public class Uniforms {
 			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("viewDistance"), Uniforms::getViewDistance, 2f, null);
 			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("fov"), Uniforms::getFov, 0f, 360f);
 			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("fps"), Uniforms::getFps, 0f, null);
-			// Time Uniform should be updated to be customizable.
-			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("time"), Uniforms::getTime, 0f, 1f);
 			//registerLuminanceUniform(LuminanceIdentifier.ofLuminance("eyePosition"), Uniforms::getEyePosition, null, null);
 			//registerLuminanceUniform(LuminanceIdentifier.ofLuminance("position"), Uniforms::getPosition, null, null);
 			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("pitch"), Uniforms::getPitch, -90f, 90f);
@@ -84,8 +80,8 @@ public class Uniforms {
 			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("isDay"), Uniforms::getIsDay, 0f, 1f);
 			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("starBrightness"), Uniforms::getStarBrightness, 0f, 1f);
 
-			// This is temporary until uniforms can be configurable.
-			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("timeSecond"), Uniforms::getTimeSecond, 0f, 1f);
+			// Time Uniform should be updated to be customizable.
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("gameTime"), Uniforms::getGameTime, 0f, 1f);
 		} catch (Exception error) {
 			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
 		}
@@ -102,27 +98,26 @@ public class Uniforms {
 	public static float getFps(float tickDelta) {
 		return ClientData.minecraft.getCurrentFps();
 	}
-	public static float getTime(float tickDelta) {
-		// Ideally, lu_time/lu_timeSmooth should be customizable from post_effect/x.json, and if omitted, it would default to every 20 ticks (matching vanilla).
-		// This would require Luminance to add a time variable for each pass, how big of a performance hit would this be?
-		// If omitted, we could use the vanilla variable to help with performance.
 
+	// TODO: Make Time Uniform be configurable (or moreso, all uniforms).
+	private static float time = 0f;
+	private static float prevTickDelta = 0.0F;
+	public static float getGameTime(float tickDelta) {
+		// Ideally, this would be customisable using a config, but this works for now.
 		// Could we add something like this to the post/x.json and program/x.json files?
 		// options {
-		//     "luminance_time": {
-		//         "type": "int",
-		//         "value": 20,
-		//     }
+		//     "luminance_time": 20
 		// }
-		if (tickDelta < prevTimeTickDelta) {
-			time += 1.0F - prevTimeTickDelta;
-			time += tickDelta;
-		} else time += tickDelta - prevTimeTickDelta;
-		prevTimeTickDelta = tickDelta;
-		// This time should be customizable per shader, could we have a global float for amount of ticks and calculate each shaders ticks based on their max?
-		while (time > 3456000.0F) time = 0.0F;
-		return time / 3456000.0F;
+		// NOTE: adding data to the json isn't actually that bad, see PostEffectPipelineMixin
+
+		time += ((tickDelta < prevTickDelta ? 1 : 0) + tickDelta-prevTickDelta)/24000f;
+		if (time > 1) time -= 1;
+		prevTickDelta = tickDelta;
+		Data.version.sendToLog(LogType.INFO, String.valueOf(time));
+		return time;
 	}
+
+
 	public static List<Float> getEyePosition(float tickDelta) {
 		return ClientData.minecraft.player != null ? List.of((float) ClientData.minecraft.player.getEyePos().x, (float) ClientData.minecraft.player.getEyePos().y, (float) ClientData.minecraft.player.getEyePos().z) : List.of(0.0F, 66.0F, 0.0F);
 	}
@@ -260,18 +255,5 @@ public class Uniforms {
 	}
 	public static float getStarBrightness(float tickDelta) {
 		return ClientData.minecraft.world != null ? ClientData.minecraft.world.getStarBrightness(tickDelta) : 0.0F;
-	}
-	// TODO: Make Time Uniform be configurable (or moreso, all uniforms).
-	private static float prevTimeSecondTickDelta = 0.0F;
-	private static float timeSecond = 0.0F;
-	public static float getTimeSecond(float tickDelta) {
-		// Ideally, this would be done through luminance_time using a config, but this works for now.
-		if (tickDelta < prevTimeSecondTickDelta) {
-			timeSecond += 1.0F - prevTimeSecondTickDelta;
-			timeSecond += tickDelta;
-		} else timeSecond += tickDelta - prevTimeSecondTickDelta;
-		prevTimeSecondTickDelta = tickDelta;
-		while (timeSecond > 20.0F) timeSecond = 0.0F;
-		return timeSecond / 20.0F;
 	}
 }
