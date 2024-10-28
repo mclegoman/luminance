@@ -113,7 +113,6 @@ public class Uniforms {
 		time += ((tickDelta < prevTickDelta ? 1 : 0) + tickDelta-prevTickDelta)/24000f;
 		if (time > 1) time -= 1;
 		prevTickDelta = tickDelta;
-		Data.version.sendToLog(LogType.INFO, String.valueOf(time));
 		return time;
 	}
 
