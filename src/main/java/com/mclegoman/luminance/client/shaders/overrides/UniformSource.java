@@ -59,7 +59,7 @@ public class UniformSource implements OverrideSource {
         return name;
     }
 
-    public boolean isValid() {
-        return uniform != null;
+    public Uniform getUniform() {
+        return uniform;
     }
 }
