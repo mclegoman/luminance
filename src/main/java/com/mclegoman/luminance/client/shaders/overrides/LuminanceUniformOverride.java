@@ -51,6 +51,7 @@ public class LuminanceUniformOverride implements UniformOverride {
             return null;
         }
         //TODO: account for vanilla dynamic uniforms (time, insize(?), outsize(?) [those two probably arent needed])
+        //(this should be done by just registering them as LuminanceUniforms, that way they interact with all the other systems)
         try {
             float value = Float.parseFloat(string);
             return new FixedValueSource(value);

@@ -25,23 +25,8 @@ public class UniformSource implements OverrideSource {
 
     @Override
     public Float get() {
-        if (uniform == null) {
-            Events.ShaderUniform.registry.forEach((id, uniform) -> {
-                String s = id.toUnderscoreSeparatedString();
-                if (s.startsWith(name)) {
-                    for (int i = 0; i < types.length; i++) {
-                        String type = types[i];
-                        if (s.equals(name+type)) {
-                            this.uniform = uniform;
-                            this.type = i;
-                        }
-                    }
-                }
-            });
-            if (uniform == null) {
-                return null;
-            }
-        }
+        Uniform uniform = getUniform();
+        if (uniform == null) return null;
 
         return switch (type) {
             default -> null;
@@ -60,6 +45,21 @@ public class UniformSource implements OverrideSource {
     }
 
     public Uniform getUniform() {
+        if (uniform == null) {
+            Events.ShaderUniform.registry.forEach((id, uniform) -> {
+                String s = id.toUnderscoreSeparatedString();
+                if (s.startsWith(name)) {
+                    for (int i = 0; i < types.length; i++) {
+                        if (name.equals(s+types[i])) {
+                            this.uniform = uniform;
+                            this.type = i;
+                            return;
+                        }
+                    }
+                }
+            });
+        }
+
         return uniform;
     }
 }
