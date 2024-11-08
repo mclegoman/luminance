@@ -48,7 +48,7 @@ public class UniformSource implements OverrideSource {
         if (uniform == null) {
             Events.ShaderUniform.registry.forEach((id, uniform) -> {
                 String s = id.toUnderscoreSeparatedString();
-                if (s.startsWith(name)) {
+                if (name.startsWith(s)) {
                     for (int i = 0; i < types.length; i++) {
                         if (name.equals(s+types[i])) {
                             this.uniform = uniform;
