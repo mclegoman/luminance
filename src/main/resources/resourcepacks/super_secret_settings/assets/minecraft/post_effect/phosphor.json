@@ -2,7 +2,7 @@
     "targets": {
         "merge": {},
         "swap": {},
-        "previous": {}
+        "previous": {"persistent": true}
     },
     "passes": [
         {
@@ -30,7 +30,7 @@
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "swap"
+                    "target": "merge"
                 }
             ],
             "output": "previous"
@@ -55,6 +55,10 @@
                 {
                     "sampler_name": "In",
                     "target": "swap"
+                },
+                {
+                    "sampler_name": "Aux",
+                    "target": "previous"
                 }
             ],
             "output": "minecraft:main"

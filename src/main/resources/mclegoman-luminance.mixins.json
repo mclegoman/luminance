@@ -1,24 +1,27 @@
 {
-	"required": true,
-	"package": "com.mclegoman.luminance.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"plugin": "com.mclegoman.luminance.mixin.MixinPlugin",
-	"client": [
-		"client.hud.InGameHudMixin",
-		"client.shaders.GameRendererAccessor",
-		"client.shaders.GameRendererMixin",
-		"client.shaders.MouseMixin",
-		"client.shaders.PostEffectPassMixin",
-		"client.shaders.PostEffectPipelineMixin",
-		"client.shaders.PostEffectProcessorAccessor",
-		"client.shaders.ShaderProgramMixin",
-		"client.shaders.WorldRendererMixin",
-		"client.texture.NativeImageAccessor",
-		"client.texture.SpriteContentsAccessor",
-		"compat.modmenu.FabricModMixin",
-		"compat.modmenu.ModsScreenMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	}
+  "required": true,
+  "package": "com.mclegoman.luminance.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "com.mclegoman.luminance.mixin.MixinPlugin",
+  "client": [
+    "client.hud.InGameHudMixin",
+    "client.shaders.GameRendererAccessor",
+    "client.shaders.GameRendererMixin",
+    "client.shaders.MouseMixin",
+    "client.shaders.PostEffectPassMixin",
+    "client.shaders.PostEffectPipelineTargetMixin",
+    "client.shaders.PostEffectPipelineTargetsMixin",
+    "client.shaders.PostEffectPipelineUniformMixin",
+    "client.shaders.PostEffectProcessorAccessor",
+    "client.shaders.PostEffectProcessorMixin",
+    "client.shaders.ShaderProgramMixin",
+    "client.shaders.WorldRendererMixin",
+    "client.texture.NativeImageAccessor",
+    "client.texture.SpriteContentsAccessor",
+    "compat.modmenu.FabricModMixin",
+    "compat.modmenu.ModsScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }
