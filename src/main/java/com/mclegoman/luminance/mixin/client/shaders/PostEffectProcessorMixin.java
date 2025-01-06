@@ -33,6 +33,6 @@ public class PostEffectProcessorMixin {
         }
 
         SimpleFramebufferFactory simpleFramebufferFactory = (SimpleFramebufferFactory)factory;
-        return new PersistentFramebufferFactory(simpleFramebufferFactory.width(), simpleFramebufferFactory.height(), true);
+        return new PersistentFramebufferFactory(simpleFramebufferFactory, (PostEffectProcessor)(Object)this, target.getKey());
     }
 }

@@ -8,29 +8,22 @@
 package com.mclegoman.luminance.client.shaders;
 
 import net.minecraft.client.gl.Framebuffer;
-import net.minecraft.client.gl.SimpleFramebuffer;
+import net.minecraft.client.gl.PostEffectProcessor;
+import net.minecraft.client.gl.SimpleFramebufferFactory;
 import net.minecraft.client.util.ClosableFactory;
+import net.minecraft.util.Identifier;
 
-public record PersistentFramebufferFactory(int width, int height, boolean useDepth) implements ClosableFactory<Framebuffer> {
-    //for some reason when the factory is not a SimpleFramebufferFactory screen sized frame buffers are allowed to exist across frames
+public record PersistentFramebufferFactory(SimpleFramebufferFactory simpleFramebufferFactory, PostEffectProcessor processor, Identifier target) implements ClosableFactory<Framebuffer> {
+    // equal objects in the game renderer pool get reused
+    // this means screen-sized buffers will get messed with before they return to where they should be...
+    // by changing the factory in PostEffectProcessorMixin with a new record that varies per persistent framebuffer
+    // the game will always get the same framebuffer for the target, and nothing else will touch it
     public Framebuffer create() {
-        return new SimpleFramebuffer(this.width, this.height, this.useDepth);
+        return simpleFramebufferFactory.create();
     }
 
     public void close(Framebuffer framebuffer) {
         framebuffer.delete();
-    }
-
-    public int width() {
-        return this.width;
-    }
-
-    public int height() {
-        return this.height;
-    }
-
-    public boolean useDepth() {
-        return this.useDepth;
     }
 }
 
