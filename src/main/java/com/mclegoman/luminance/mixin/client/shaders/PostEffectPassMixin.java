@@ -7,13 +7,17 @@
 
 package com.mclegoman.luminance.mixin.client.shaders;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mclegoman.luminance.client.events.Events;
+import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.PipelineUniformInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.ShaderProgramInterface;
 import com.mclegoman.luminance.client.shaders.overrides.LuminanceUniformOverride;
 import com.mclegoman.luminance.client.shaders.overrides.UniformOverride;
 import net.minecraft.client.gl.*;
+import net.minecraft.client.render.FrameGraphBuilder;
+import net.minecraft.client.render.RenderPass;
 import net.minecraft.client.util.Handle;
 import net.minecraft.util.Identifier;
 import org.joml.Matrix4f;
@@ -38,6 +42,7 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 	@Shadow @Final private List<PostEffectPipeline.Uniform> uniforms;
 
+	@Shadow @Final private Identifier outputTargetId;
 	@Unique private final Map<String, UniformOverride> uniformOverrides = new HashMap<String, UniformOverride>();
 
 	@Inject(method = "method_62257", at = @At("HEAD"))
@@ -126,5 +131,25 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 		List<Float> values = Objects.requireNonNull(program.getUniformDefinition(uniformName)).values();
 		glUniform.set(values, values.size());
+	}
+
+	@Override
+	public Identifier luminance$getOutputTarget() {
+		return outputTargetId;
+	}
+
+	@Unique
+	private boolean forceVisit;
+
+	@Override
+	public void luminance$setForceVisit(boolean to) {
+		forceVisit = to;
+	}
+
+	@Inject(at = @At(value = "TAIL"), method = "render")
+	private void forceVisit(FrameGraphBuilder builder, Map<Identifier, Handle<Framebuffer>> handles, Matrix4f projectionMatrix, CallbackInfo ci, @Local RenderPass renderPass) {
+		if (forceVisit) {
+			((FramePassInterface)renderPass).luminance$setForceVisit(true);
+		}
 	}
 }
