@@ -59,12 +59,12 @@ public class Execute {
 		}));
 	}
 	public static void afterWeatherRender(FrameGraphBuilder frameGraphBuilder, DefaultFramebufferSet framebufferSet) {
-		if (MinecraftClient.isFabulousGraphicsOrBetter()) {
-			//TODO: Render with fabulous graphics.
-			//TODO: Fix clouds not rendering when shaders aren't being rendered.
-			//TODO: Detect if shader is using depth. (Shaders.depth)
-			MessageOverlay.setOverlay(Text.of("Luminance is not currently compatible with Fabulous Graphics."));
-		} else {
+		//if (MinecraftClient.isFabulousGraphicsOrBetter()) {
+		//	//TODO: Render with fabulous graphics.
+		//	//TODO: Fix clouds not rendering when shaders aren't being rendered.
+		//	//TODO: Detect if shader is using depth. (Shaders.depth)
+		//	MessageOverlay.setOverlay(Text.of("Luminance is not currently compatible with Fabulous Graphics."));
+		//} else {
 			// This is fine being rendered here in fast/fancy, but when in fabulous clouds render over everything?
 			// Also if theres no shaders, theres no clouds?
 			Events.AfterWeatherRender.registry.forEach(((id, runnable) -> {
@@ -74,7 +74,7 @@ public class Execute {
 					Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterWeatherRender event with id: {}:{}:", id, error));
 				}
 			}));
-		}
+		//}
 	}
 	public static void afterWorldRender(ObjectAllocator allocator) {
 		Events.AfterWorldRender.registry.forEach(((id, runnable) -> {

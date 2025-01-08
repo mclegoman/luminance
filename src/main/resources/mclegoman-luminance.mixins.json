@@ -5,6 +5,8 @@
   "plugin": "com.mclegoman.luminance.mixin.MixinPlugin",
   "client": [
     "client.hud.InGameHudMixin",
+    "client.shaders.FrameGraphBuilderMixin",
+    "client.shaders.FramePassMixin",
     "client.shaders.GameRendererAccessor",
     "client.shaders.GameRendererMixin",
     "client.shaders.MouseMixin",
