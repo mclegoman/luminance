@@ -1,4 +1,4 @@
-![](./assets/logo/Luminance.png)
+![](./assets/logo/luminance.png)
 ## About
 Luminance is a library mod that helps with shader rendering, and contains helper classes, and event hooks to help other mods with game rendering.  
 
