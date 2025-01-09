@@ -14,6 +14,7 @@ import com.mclegoman.luminance.client.events.Execute;
 import com.mclegoman.luminance.client.shaders.PersistentFramebufferFactory;
 import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
 import com.mclegoman.luminance.common.data.Data;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.PostEffectProcessor;
 import net.minecraft.client.gl.SimpleFramebufferFactory;
@@ -45,10 +46,7 @@ public abstract class WorldRendererMixin {
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/PostEffectProcessor;render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V", ordinal = 1))
 	private void luminance$copyDepth(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("depthBackup") LocalRef<Framebuffer> depthBackup, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
-		RenderPass renderPass = frameGraphBuilder.createPass("copyDepth");
-		((FramePassInterface)renderPass).luminance$setForceVisit(true);
-
-		renderPass.setRenderer(() -> {
+		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.of(Data.version.getID(), "copy_depth"), () -> {
 			Pool pool = ((GameRendererAccessor)gameRenderer).getPool();
 			depthBackup.set(pool.acquire(factory.get()));
 			depthBackup.get().copyDepthFrom(framebufferSet.mainFramebuffer.get());
@@ -57,10 +55,7 @@ public abstract class WorldRendererMixin {
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/PostEffectProcessor;render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V", ordinal = 1, shift = At.Shift.AFTER))
 	private void luminance$restoreDepth(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("depthBackup") LocalRef<Framebuffer> depthBackup, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
-		RenderPass renderPass = frameGraphBuilder.createPass("restoreDepth");
-		((FramePassInterface)renderPass).luminance$setForceVisit(true);
-
-		renderPass.setRenderer(() -> {
+		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.of(Data.version.getID(), "restore_depth"), () -> {
 			Pool pool = ((GameRendererAccessor)gameRenderer).getPool();
 			framebufferSet.mainFramebuffer.get().copyDepthFrom(depthBackup.get());
 			pool.release(factory.get(), depthBackup.get());
@@ -78,7 +73,20 @@ public abstract class WorldRendererMixin {
 			framebufferSet.weatherFramebuffer = frameGraphBuilder.createResourceHandle("weather", persistentFramebufferFactory);
 			framebufferSet.cloudsFramebuffer = frameGraphBuilder.createResourceHandle("clouds", persistentFramebufferFactory);
 		}
+
+		// frameGraphBuilder delays calls, so the depth masking done in Shaders.renderUsingAllocator needs to be done here instead
+		// TODO: potentially move this into Execute? - in any case thisll need to change slightly when we get the hand renderer working
+		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.of(Data.version.getID(), "prepare_shader_render"), () -> {
+			//RenderSystem.enableBlend();
+			//RenderSystem.defaultBlendFunc();
+			RenderSystem.depthMask(false);
+		});
 		Execute.afterWeatherRender(frameGraphBuilder, framebufferSet);
+		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.of(Data.version.getID(), "cleanup_shader_render"), () -> {
+			RenderSystem.depthMask(true);
+			//RenderSystem.disableBlend();
+		});
+
 		if (replace) {
 			framebufferSet.translucentFramebuffer = null;
 			framebufferSet.itemEntityFramebuffer = null;

@@ -146,12 +146,9 @@ public class Shaders {
 		try {
 			if (processor != null) {
 				try {
-					RenderSystem.enableBlend();
-					RenderSystem.defaultBlendFunc();
-					RenderSystem.depthMask(false);
+					// the depth masking done in renderUsingAllocator is instead done for everything already before this method is called
+					// this is because FrameGraphBuilder delays calls, so any rendersystem methods wont work with their intended timing
 					processor.render(builder, textureWidth, textureHeight, framebufferSet);
-					RenderSystem.depthMask(true);
-					RenderSystem.disableBlend();
 				} catch (Exception error) {
 					Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to render processor: {}", error.getLocalizedMessage()));
 				}
