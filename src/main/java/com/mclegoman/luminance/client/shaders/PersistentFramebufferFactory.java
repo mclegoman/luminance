@@ -19,7 +19,10 @@ public record PersistentFramebufferFactory(SimpleFramebufferFactory simpleFrameb
     // by changing the factory in PostEffectProcessorMixin with a new record that varies per persistent framebuffer
     // the game will always get the same framebuffer for the target, and nothing else will touch it
     public Framebuffer create() {
-        return simpleFramebufferFactory.create();
+        Framebuffer framebuffer = simpleFramebufferFactory.create();
+        framebuffer.setClearColor(0,0,0,0);
+        framebuffer.clear();
+        return framebuffer;
     }
 
     public void close(Framebuffer framebuffer) {
