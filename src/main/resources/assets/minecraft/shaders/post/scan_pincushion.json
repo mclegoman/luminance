@@ -5,8 +5,14 @@
         { "name": "InSampler" }
     ],
     "uniforms": [
-        { "name": "ProjMat",    "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
-        { "name": "InSize",     "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
-        { "name": "OutSize",    "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] }
+        { "name": "ProjMat",          "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "InSize",           "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
+        { "name": "OutSize",          "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
+        { "name": "PincushionAmount", "type": "float",     "count": 1,  "values": [ 0.02 ] },
+        { "name": "CurvatureAmount",  "type": "float",     "count": 1,  "values": [ 0.02 ] },
+        { "name": "ScanlineAmount",   "type": "float",     "count": 1,  "values": [ 0.8 ] },
+        { "name": "ScanlineScale",    "type": "float",     "count": 1,  "values": [ 1.0 ] },
+        { "name": "Floor",            "type": "float",     "count": 3,  "values": [ 0.05, 0.05, 0.05 ] },
+        { "name": "Power",            "type": "float",     "count": 3,  "values": [ 0.8, 0.8, 0.8 ] }
     ]
 }
