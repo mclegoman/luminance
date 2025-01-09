@@ -1,7 +1,7 @@
 {
     "targets": {
         "swap": {},
-        "previous": {},
+        "previous": {"persistent": true},
         "merge": {}
     },
     "passes": [

@@ -7,6 +7,8 @@ in vec2 oneTexel;
 
 out vec4 fragColor;
 
+uniform float Strength;
+
 void main(){
     vec4 c = texture(InSampler, texCoord);
     vec4 u = texture(InSampler, texCoord + vec2(        0.0, -oneTexel.y));
@@ -31,6 +33,6 @@ void main(){
     f += (du * i) - (dd * i);
     f += (dr * i) - (dl * i);
 
-    vec4 color = c * clamp(f, 0.5, 2.0);
+    vec4 color = mix(c, c * clamp(f, 0.5, 2.0), Strength);
     fragColor = vec4(color.rgb, 1.0);
 }
