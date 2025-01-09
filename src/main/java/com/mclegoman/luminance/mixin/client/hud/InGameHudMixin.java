@@ -8,8 +8,10 @@
 package com.mclegoman.luminance.mixin.client.hud;
 
 import com.mclegoman.luminance.client.data.ClientData;
+import com.mclegoman.luminance.client.events.Execute;
 import com.mclegoman.luminance.client.util.MessageOverlay;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.RenderTickCounter;
@@ -20,15 +22,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(priority = 0, value = GameRenderer.class)
+@Mixin(priority = 100, value = InGameHud.class)
 public abstract class InGameHudMixin {
-	@Shadow @Final private BufferBuilderStorage buffers;
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"), method = "render")
-	private void luminance$render(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
+	@Inject(at = @At(value = "HEAD"), method = "render")
+	private void luminance$renderBefore(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
 		if (!ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
-			DrawContext context = new DrawContext(ClientData.minecraft, this.buffers.getEntityVertexConsumers());
-			int time = (int) Math.min((MessageOverlay.remaining - ClientData.minecraft.getRenderTickCounter().getTickDelta(true)) * 255.0F / 20.0F, 255.0F);
-			if (time > 10) context.drawCenteredTextWithShadow(ClientData.minecraft.textRenderer, MessageOverlay.message, (int) (ClientData.minecraft.getWindow().getScaledWidth() / 2.0F), 23, 16777215 | (time << 24 & -16777216));
+			Execute.beforeInGameHudRender(context, tickCounter);
+		}
+	}
+	@Inject(at = @At(value = "TAIL"), method = "render")
+	private void luminance$renderAfter(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+		if (!ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+			Execute.afterInGameHudRender(context, tickCounter);
 		}
 	}
 }

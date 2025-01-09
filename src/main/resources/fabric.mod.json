@@ -3,7 +3,7 @@
   "id": "luminance",
   "version": "${version}",
   "name": "Luminance",
-  "description": "Luminance is a library mod that is primarily designed to help other mods with shaders.",
+  "description": "Luminance is a library mod that helps with shader rendering, and contains helper classes, and event hooks to help other mods with game rendering.",
   "authors": [
     "MCLegoMan",
     "Nettakrim"
@@ -11,7 +11,6 @@
   "contributors": [
   ],
   "contact": {
-    "homepage": "https://mclegoman.com/Luminance",
     "sources": "https://github.com/MCLegoMan/Luminance",
     "issues": "https://github.com/MCLegoMan/Luminance/issues"
   },
@@ -29,11 +28,11 @@
     ]
   },
   "mixins": [
-    "mclegoman-luminance.mixins.json"
+    "dt-luminance.mixins.json"
   ],
   "depends": {
     "minecraft": [
-      "~1.21.2-alpha"
+      "1.21.4"
     ],
     "fabric-resource-loader-v0": "*",
     "fabric-key-binding-api-v1": "*",

@@ -18,6 +18,36 @@ import net.minecraft.util.Identifier;
 import java.util.*;
 
 public class Events {
+    public static class BeforeInGameHudRender {
+        public static final Map<Identifier, Runnables.InGameHudRender> registry = new HashMap<>();
+        public static void register(Identifier id, Runnables.InGameHudRender runnable) {
+            if (!registry.containsKey(id)) registry.put(id, runnable);
+        }
+        public static Runnables.InGameHudRender get(Identifier id) {
+            return registry.get(id);
+        }
+        public static void modify(Identifier id, Runnables.InGameHudRender runnable) {
+            registry.replace(id, runnable);
+        }
+        public static void remove(Identifier id) {
+            registry.remove(id);
+        }
+    }
+    public static class AfterInGameHudRender {
+        public static final Map<Identifier, Runnables.InGameHudRender> registry = new HashMap<>();
+        public static void register(Identifier id, Runnables.InGameHudRender runnable) {
+            if (!registry.containsKey(id)) registry.put(id, runnable);
+        }
+        public static Runnables.InGameHudRender get(Identifier id) {
+            return registry.get(id);
+        }
+        public static void modify(Identifier id, Runnables.InGameHudRender runnable) {
+            registry.replace(id, runnable);
+        }
+        public static void remove(Identifier id) {
+            registry.remove(id);
+        }
+    }
 	public static class OnShaderDataReset {
 		public static final Map<Identifier, Runnable> registry = new HashMap<>();
 		public static void register(Identifier id, Runnable runnable) {

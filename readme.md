@@ -1,6 +1,6 @@
-![](https://www.mclegoman.com/images/d/df/Luminance.png)
+![](./assets/logo/Luminance.png)
 ## About
-Luminance is a library mod that is primarily designed to help other mods with shaders.
+Luminance is a library mod that helps with shader rendering, and contains helper classes, and event hooks to help other mods with game rendering.  
 
 # Features  
 - **Adds Dynamic Shader Uniforms**

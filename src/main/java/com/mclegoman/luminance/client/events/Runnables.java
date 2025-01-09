@@ -10,11 +10,16 @@ package com.mclegoman.luminance.client.events;
 import com.mclegoman.luminance.client.shaders.ShaderRegistry;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.PostEffectPass;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.DefaultFramebufferSet;
 import net.minecraft.client.render.FrameGraphBuilder;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.ObjectAllocator;
 
 public class Runnables {
+	public interface InGameHudRender {
+		default void run(DrawContext context, RenderTickCounter renderTickCounter) {}
+	}
 	public interface Shader {
 		default void run(PostEffectPass postEffectPass) {}
 	}

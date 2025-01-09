@@ -9,16 +9,33 @@ package com.mclegoman.luminance.client.events;
 
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.DefaultFramebufferSet;
 import net.minecraft.client.render.FrameGraphBuilder;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.ObjectAllocator;
-import net.minecraft.text.Text;
 
 public class Execute {
+	public static void beforeInGameHudRender(DrawContext context, RenderTickCounter renderTickCounter) {
+		Events.BeforeInGameHudRender.registry.forEach(((id, runnable) -> {
+			try {
+				runnable.run(context, renderTickCounter);
+			} catch (Exception error) {
+				Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterInGameHudRender event with id: {}:{}:", id, error));
+			}
+		}));
+	}
+	public static void afterInGameHudRender(DrawContext context, RenderTickCounter renderTickCounter) {
+		Events.AfterInGameHudRender.registry.forEach(((id, runnable) -> {
+			try {
+				runnable.run(context, renderTickCounter);
+			} catch (Exception error) {
+				Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterInGameHudRender event with id: {}:{}:", id, error));
+			}
+		}));
+	}
 	public static void beforeGameRender() {
 		Events.BeforeGameRender.registry.forEach(((id, runnable) -> {
 			try {
