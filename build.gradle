@@ -22,7 +22,6 @@ runClient.doFirst {
 }
 repositories {
 	maven { url "https://jitpack.io" }
-	maven { url "https://maven.mclegoman.com/releases/" }
 	maven { url "https://maven.terraformersmc.com/releases/" }
 	mavenCentral()
 	exclusiveContent {
