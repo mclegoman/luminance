@@ -11,8 +11,7 @@ import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.Couple;
 import com.mclegoman.luminance.common.util.LogType;
-import com.mclegoman.luminance.common.util.Version;
-import net.darktree.simplelibs.config.SimpleConfig;
+import com.mclegoman.luminance.darktree.simplelibs.config.SimpleConfig;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.PrintWriter;
@@ -50,7 +49,7 @@ public class ConfigProvider implements SimpleConfig.DefaultConfig {
 		}
 		configList = newConfigList;
 	}
-	public void saveConfig(Version data, String id) {
+	public void saveConfig(String id) {
 		try {
 			setContents(id);
 			PrintWriter writer = new PrintWriter(FabricLoader.getInstance().getConfigDir().resolve(id + ".properties").toFile(), StandardCharsets.UTF_8);

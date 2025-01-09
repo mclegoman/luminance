@@ -11,7 +11,7 @@ import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.Couple;
 import com.mclegoman.luminance.common.util.LogType;
-import net.darktree.simplelibs.config.SimpleConfig;
+import com.mclegoman.luminance.darktree.simplelibs.config.SimpleConfig;
 
 public class Config {
 	protected static final String id = Data.version.getID();
@@ -46,7 +46,7 @@ public class Config {
 		configProvider.setConfig("alpha_level", alphaLevel);
 		configProvider.setConfig("show_alpha_level_overlay", showAlphaLevelOverlay);
 		configProvider.setConfig("config_version", ConfigHelper.defaultConfigVersion);
-		configProvider.saveConfig(Data.version, id);
+		configProvider.saveConfig(id);
 	}
 	static {
 		options = new Object[]{

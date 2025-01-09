@@ -1,4 +1,4 @@
-package net.darktree.simplelibs.config;
+package com.mclegoman.luminance.darktree.simplelibs.config;
 
 /*
  * Copyright (c) 2021 magistermaks
