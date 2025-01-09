@@ -1,0 +1,75 @@
+{
+    "targets": {
+        "0": {},
+        "1": {},
+        "2": {}
+    },
+    "passes": [
+        {
+            "program": "luminance:post/gaussian",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main",
+                    "bilinear": true
+                }
+            ],
+            "output": "0",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 1.0, 0.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [ 20.0 ]
+                }
+            ]
+        },
+        {
+            "program": "luminance:post/gaussian",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "0",
+                    "bilinear": true
+                }
+            ],
+            "output": "1",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 0.0, 1.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [ 20.0 ]
+                }
+            ]
+        },
+        {
+            "program": "luminance:post/merge",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "1"
+                },
+                {
+                    "sampler_name": "Merge",
+                    "target": "minecraft:main"
+                }
+            ],
+            "output": "2"
+        },
+        {
+            "program": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "2"
+                }
+            ],
+            "output": "minecraft:main"
+        }
+    ]
+}

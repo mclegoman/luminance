@@ -39,5 +39,7 @@
 	"gui.luminance.variable.onff.true": "ON",
 	"gui.luminance.variable.onff.false": "OFF",
 
-	"mclegoman.donate": "Donate"
+	"mclegoman.donate": "Donate",
+
+	"shader.luminance.gaussian": "gaussian"
 }
