@@ -19,8 +19,7 @@
 		"client.shaders.ShaderProgramMixin",
 		"client.shaders.WorldRendererMixin",
 		"compat.modmenu.FabricModMixin",
-		"compat.modmenu.ModsScreenMixin",
-		"entrypoint.MinecraftClientMixin"
+		"compat.modmenu.ModsScreenMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
