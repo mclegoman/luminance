@@ -5,8 +5,18 @@
 		{ "name": "InSampler" }
 	],
 	"uniforms": [
-		{ "name": "ProjMat",          "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
-		{ "name": "InSize",          "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
-		{ "name": "OutSize",          "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] }
+		{ "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+		{ "name": "InSize",  "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
+		{ "name": "OutSize", "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
+		{ "name": "Colors",  "type": "float",     "count": 1,  "values": [ 7.0 ] },
+		{ "name": "Scale",   "type": "float",     "count": 2,  "values": [ 0.0, 7.0 ] },
+		{ "name": "Color1",  "type": "float",     "count": 3,  "values": [ 0.7, 0.0, 0.7 ] },
+		{ "name": "Color2",  "type": "float",     "count": 3,  "values": [ 0.5, 0.0, 0.5 ] },
+		{ "name": "Color3",  "type": "float",     "count": 3,  "values": [ 0.0, 0.0, 1.0 ] },
+		{ "name": "Color4",  "type": "float",     "count": 3,  "values": [ 0.0, 1.0, 0.0 ] },
+		{ "name": "Color5",  "type": "float",     "count": 3,  "values": [ 1.0, 1.0, 0.0 ] },
+		{ "name": "Color6",  "type": "float",     "count": 3,  "values": [ 1.0, 0.5, 0.0 ] },
+		{ "name": "Color7",  "type": "float",     "count": 3,  "values": [ 1.0, 0.0, 0.0 ] },
+		{ "name": "Color8",  "type": "float",     "count": 3,  "values": [ 1.0, 0.0, 0.0 ] }
 	]
 }
