@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): MCLegoMan
+    Contributor(s): dannytaylor
     Github: https://github.com/MCLegoMan/Luminance
     Licence: GNU LGPLv3
 */
@@ -20,8 +20,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class CompatHelper {
-	public static Map<Couple<String, String>, Couple<Callable<String>, Callable<Boolean>>> overriddenModMenuIcons = new HashMap<>();
-	public static List<String> luminanceModMenuBadge = new ArrayList<>();
+	public static final Map<Couple<String, String>, Couple<Callable<String>, Callable<Boolean>>> overriddenModMenuIcons = new HashMap<>();
+	public static final List<String> luminanceModMenuBadge = new ArrayList<>();
 	public static void init() {
 		addOverrideModMenuIcon(new Couple<>(Data.version.getID(), "pride"), () -> "assets/" + Data.version.getID() + "/icons/pride.png", DateHelper::isPride);
 		addLuminanceModMenuBadge(Data.version.getID());

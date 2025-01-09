@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): MCLegoMan, Nettakrim
+    Contributor(s): dannytaylor, Nettakrim
     Github: https://github.com/MCLegoMan/Luminance
     Licence: GNU LGPLv3
 */
@@ -34,17 +34,17 @@ public abstract class WorldRendererMixin {
 	@Shadow @Final private DefaultFramebufferSet framebufferSet;
 
 	@Inject(method = "render", at = @At("HEAD"))
-	private void luminance$beforeRender(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean bl, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
+	private void luminance$beforeRender(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
 		Execute.beforeWorldRender();
 	}
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/FrameGraphBuilder;createPass(Ljava/lang/String;)Lnet/minecraft/client/render/RenderPass;"))
-	private void luminance$copyFramebuffer(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Local SimpleFramebufferFactory simpleFramebufferFactory, @Local PostEffectProcessor postEffectProcessor, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
+	private void luminance$copyFramebuffer(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Local SimpleFramebufferFactory simpleFramebufferFactory, @Local PostEffectProcessor postEffectProcessor, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
 		factory.set(simpleFramebufferFactory);
 	}
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/PostEffectProcessor;render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V", ordinal = 1))
-	private void luminance$copyDepth(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("depthBackup") LocalRef<Framebuffer> depthBackup, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
+	private void luminance$copyDepth(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("depthBackup") LocalRef<Framebuffer> depthBackup, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
 		RenderPass renderPass = frameGraphBuilder.createPass("copyDepth");
 		((FramePassInterface)renderPass).luminance$setForceVisit(true);
 
@@ -56,7 +56,7 @@ public abstract class WorldRendererMixin {
 	}
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/PostEffectProcessor;render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V", ordinal = 1, shift = At.Shift.AFTER))
-	private void luminance$restoreDepth(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("depthBackup") LocalRef<Framebuffer> depthBackup, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
+	private void luminance$restoreDepth(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("depthBackup") LocalRef<Framebuffer> depthBackup, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
 		RenderPass renderPass = frameGraphBuilder.createPass("restoreDepth");
 		((FramePassInterface)renderPass).luminance$setForceVisit(true);
 
@@ -68,7 +68,7 @@ public abstract class WorldRendererMixin {
 	}
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderLateDebug(Lnet/minecraft/client/render/FrameGraphBuilder;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/client/render/Fog;)V", shift = At.Shift.AFTER))
-	private void luminance$afterRenderWeather(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
+	private void luminance$afterRenderWeather(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
 		boolean replace = framebufferSet.translucentFramebuffer == null;
 		if (replace) {
 			PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(factory.get(), null, Identifier.of(Data.version.getID(), "fabulous"));
@@ -89,7 +89,7 @@ public abstract class WorldRendererMixin {
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))
-	private void luminance$afterRender(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean bl, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
+	private void luminance$afterRender(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
 		Execute.afterWorldRender(allocator);
 	}
 }

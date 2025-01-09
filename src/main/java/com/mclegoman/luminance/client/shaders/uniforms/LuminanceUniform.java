@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): MCLegoMan
+    Contributor(s): dannytaylor
     Github: https://github.com/MCLegoMan/Luminance
     Licence: GNU LGPLv3
 */
@@ -20,6 +20,9 @@ public class LuminanceUniform implements Uniform {
 	private float smooth;
 	@Nullable private final Float min;
 	@Nullable private final Float max;
+	public LuminanceUniform(Callables.ShaderRender<Float> callable) {
+		this(callable, null, null);
+	}
 	public LuminanceUniform(Callables.ShaderRender<Float> callable, @Nullable Float min, @Nullable Float max) {
 		this.callable = callable;
 		this.min = min;

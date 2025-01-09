@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): MCLegoMan
+    Contributor(s): dannytaylor
     Github: https://github.com/MCLegoMan/Luminance
     Licence: GNU LGPLv3
 */
@@ -29,14 +29,14 @@ public class ResourcePacks {
 	public static void init() {
 		/*
             Super Secret Settings
-            Contributor(s): Mojang Studios, Microsoft Corporation, MCLegoMan, Nettakrim
+            Contributor(s): Mojang Studios, Microsoft Corporation, dannytaylor, Nettakrim
             Licence: Minecraft EULA
             Notes: These shaders have been modified to work with the latest version of minecraft, and also contain new code.
         */
 		register(Identifier.of("super_secret_settings"), Data.getModContainer("luminance"), Translation.getTranslation(Data.version.getID(), "resource_pack.super_secret_settings"), ResourcePackActivationType.DEFAULT_ENABLED);
 		/*
             Luminance: Default
-            Contributor(s): MCLegoMan
+            Contributor(s): dannytaylor
             Licence: GNU LGPLv3
         */
 		register(Identifier.of("luminance_default"), Data.getModContainer("luminance"), Translation.getTranslation(Data.version.getID(), "resource_pack.luminance_default"), ResourcePackActivationType.DEFAULT_ENABLED);

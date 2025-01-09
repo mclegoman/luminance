@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): MCLegoMan, Nettakrim
+    Contributor(s): dannytaylor, Nettakrim
     Github: https://github.com/MCLegoMan/Luminance
     Licence: GNU LGPLv3
 */
@@ -186,7 +186,7 @@ public class Shaders {
 					RenderSystem.enableBlend();
 					RenderSystem.defaultBlendFunc();
 					RenderSystem.depthMask(false);
-					processor.render(framebuffer, objectAllocator);
+					renderShaderUsingAllocator(processor, framebuffer, objectAllocator);
 					RenderSystem.depthMask(true);
 					RenderSystem.disableBlend();
 				} catch (Exception error) {
@@ -298,5 +298,12 @@ public class Shaders {
 		} catch (Exception error) {
 			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
 		}
+	}
+	// This is identical to the deprecated `PostEffectProcessor.render(framebuffer, objectAllocator);` function.
+	public static void renderShaderUsingAllocator(PostEffectProcessor processor, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
+		FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
+		PostEffectProcessor.FramebufferSet framebufferSet = PostEffectProcessor.FramebufferSet.singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer));
+		processor.render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet);
+		frameGraphBuilder.run(objectAllocator);
 	}
 }

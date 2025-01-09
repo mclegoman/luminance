@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): MCLegoMan
+    Contributor(s): dannytaylor
     Github: https://github.com/MCLegoMan/Luminance
     Licence: GNU LGPLv3
 */
@@ -17,11 +17,11 @@ import com.mclegoman.luminance.client.util.Tick;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import com.mclegoman.luminance.config.ConfigHelper;
-import net.fabricmc.api.ClientModInitializer;
+import com.mclegoman.luminance.entrypoint.LuminanceInit;
+import net.fabricmc.loader.api.ModContainer;
 
-public class LuminanceClient implements ClientModInitializer {
-	@Override
-	public void onInitializeClient() {
+public class LuminanceClient implements LuminanceInit {
+	public void init(ModContainer mod) {
 		try {
 			Data.version.sendToLog(LogType.INFO, Translation.getString("Initializing {}", Data.version.getName()));
 			ConfigHelper.init();

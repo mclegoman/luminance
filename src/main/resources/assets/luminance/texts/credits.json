@@ -20,7 +20,7 @@
 					"formatting": "white",
 					"sections": [
 						{
-							"text": "  MCLegoMan"
+							"text": "  dannytaylor"
 						}
 					]
 				},
@@ -41,14 +41,17 @@
 									"text": "    Updating Shaders"
 								},
 								{
+									"text": "    Depth Shader Support"
+								},
+								{
+									"text": "    Dynamic Uniforms"
+								},
+								{
 									"text": "    Deprecated",
 									"formatting": "italic",
 									"sections": [
 										{
 											"text": "      Shader Namespace Fixes"
-										},
-										{
-											"text": "      Depth Shader Support"
 										}
 									]
 								}

@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): MCLegoMan, Nettakrim
+    Contributor(s): dannytaylor, Nettakrim
     Github: https://github.com/MCLegoMan/Luminance
     Licence: GNU LGPLv3
 */
@@ -43,7 +43,7 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	@Shadow @Final private List<PostEffectPipeline.Uniform> uniforms;
 
 	@Shadow @Final private Identifier outputTargetId;
-	@Unique private final Map<String, UniformOverride> uniformOverrides = new HashMap<String, UniformOverride>();
+	@Unique private final Map<String, UniformOverride> uniformOverrides = new HashMap<>();
 
 	@Inject(method = "method_62257", at = @At("HEAD"))
 	private void luminance$beforeRender(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {

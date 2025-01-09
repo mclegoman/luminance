@@ -5,7 +5,7 @@
   "name": "Luminance",
   "description": "Luminance is a library mod that helps with shader rendering, and contains helper classes, and event hooks to help other mods with game rendering.",
   "authors": [
-    "MCLegoMan",
+    "dannytaylor",
     "Nettakrim"
   ],
   "contributors": [
@@ -20,7 +20,7 @@
   "icon": "assets/luminance/icons/icon.png",
   "environment": "client",
   "entrypoints": {
-    "client": [
+    "luminance_client": [
       "com.mclegoman.luminance.client.LuminanceClient"
     ],
     "modmenu": [

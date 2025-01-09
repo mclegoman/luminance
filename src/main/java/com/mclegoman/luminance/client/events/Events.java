@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): MCLegoMan
+    Contributor(s): dannytaylor
     Github: https://github.com/MCLegoMan/Luminance
     Licence: GNU LGPLv3
 */
@@ -15,7 +15,10 @@ import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.util.Identifier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Events {
     public static class BeforeInGameHudRender {
@@ -354,7 +357,7 @@ public class Events {
 		}
 		public static boolean remove(Identifier id, Shader.Data shader) {
 			List<Shader.Data> shaders = ShaderRender.get(id);
-			if (shaders != null) shaders.remove(shader);
+			if (shaders != null) return shaders.remove(shader);
 			return false;
 		}
 	}

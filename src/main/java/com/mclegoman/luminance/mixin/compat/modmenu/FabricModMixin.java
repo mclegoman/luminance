@@ -1,6 +1,6 @@
 /*
     Luminance
-    Author: MCLegoMan
+    Author: dannytaylor
     Github: https://github.com/MCLegoMan/Luminance
     Licence: GNU LGPLv3
 */

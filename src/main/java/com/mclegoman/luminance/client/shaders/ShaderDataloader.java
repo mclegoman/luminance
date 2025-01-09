@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): MCLegoMan, Nettakrim
+    Contributor(s): dannytaylor, Nettakrim
     Github: https://github.com/MCLegoMan/Luminance
     Licence: GNU LGPLv3
 */
@@ -76,7 +76,6 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 	public void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {
 		try {
 			isReloading = true;
-			releaseShaders();
 			reset();
 			prepared.forEach((identifier, jsonElement) -> {
 				try {
@@ -139,27 +138,5 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 	@Override
 	public Identifier getFabricId() {
 		return Identifier.of(Data.version.getID(), resourceLocation);
-	}
-	protected static void releaseShaders() {
-		try {
-			// TODO: Does this still need to be done in 1.21.2?
-			//  If so, we need to work out how to do it because EVERYTHING changed.
-//			List<ShaderStage.Type> shaderTypes = new ArrayList<>();
-//			shaderTypes.add(ShaderStage.Type.VERTEX);
-//			shaderTypes.add(ShaderStage.Type.FRAGMENT);
-//			for (ShaderStage.Type type : shaderTypes) {
-//				List<Map.Entry<String, ShaderStage>> loadedShaders = type.getLoadedShaders().entrySet().stream().toList();
-//				for (int index = loadedShaders.size() - 1; index > -1; index--) {
-//					Map.Entry<String, ShaderStage> loadedShader = loadedShaders.get(index);
-//					String name = loadedShader.getKey();
-//					if (name.startsWith("rendertype_")) continue;
-//					if (name.startsWith("position_")) continue;
-//					if (name.equals("position") || name.equals("particle")) continue;
-//					loadedShader.getValue().release();
-//				}
-//			}
-		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to release shaders: {}", error));
-		}
 	}
 }

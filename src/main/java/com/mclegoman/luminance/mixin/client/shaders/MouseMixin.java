@@ -1,14 +1,14 @@
 /*
     Luminance
-    Contributor(s): MCLegoMan
+    Contributor(s): dannytaylor
     Github: https://github.com/MCLegoMan/Luminance
     Licence: GNU LGPLv3
 */
 
 package com.mclegoman.luminance.mixin.client.shaders;
 
-import com.mclegoman.luminance.client.shaders.Uniforms;
 import com.mclegoman.luminance.client.data.ClientData;
+import com.mclegoman.luminance.client.shaders.Uniforms;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.input.Scroller;
 import org.joml.Vector2i;

@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): MCLegoMan
+    Contributor(s): dannytaylor
     Github: https://github.com/MCLegoMan/Luminance
     Licence: GNU LGPLv3
 */
@@ -28,7 +28,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import org.lwjgl.glfw.GLFW;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
@@ -158,6 +157,6 @@ public class CreditsAttributionScreen extends Screen {
 		return super.keyReleased(keyCode, scanCode, modifiers);
 	}
 	protected interface CreditsAttributionReader {
-		void read(Reader reader) throws IOException;
+		void read(Reader reader);
 	}
 }

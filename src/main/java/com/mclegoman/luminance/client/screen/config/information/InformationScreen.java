@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): MCLegoMan
+    Contributor(s): dannytaylor
     Github: https://github.com/MCLegoMan/Luminance
     Licence: GNU LGPLv3
 */
@@ -15,7 +15,10 @@ import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.EmptyWidget;
+import net.minecraft.client.gui.widget.GridWidget;
+import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
@@ -23,7 +26,7 @@ import org.lwjgl.glfw.GLFW;
 public class InformationScreen extends Screen {
 	private final Screen parentScreen;
 	private final GridWidget grid;
-	private boolean refresh;
+	private final boolean refresh;
 	private boolean shouldClose;
 	private boolean shouldRenderSplashText;
 	private Translation.Data splashText;
@@ -69,18 +72,17 @@ public class InformationScreen extends Screen {
 	private GridWidget createConfig() {
 		GridWidget grid = new GridWidget();
 		grid.getMainPositioner().alignHorizontalCenter().margin(2);
-		GridWidget.Adder gridAdder = grid.createAdder(2);
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "information.documentation"), ConfirmLinkScreen.opening(this, "https://mclegoman.com/Luminance")).build(), 1);
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "information.source_code"), ConfirmLinkScreen.opening(this, "https://github.com/MCLegoMan/Luminance")).build(), 1);
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "information.report"), ConfirmLinkScreen.opening(this, "https://github.com/MCLegoMan/Luminance/issues")).build(), 1);
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "information.credits"), button -> ClientData.minecraft.setScreen(new CreditsAttributionScreen(ClientData.minecraft.currentScreen, isPride))).build(), 1);
+		GridWidget.Adder gridAdder = grid.createAdder(1);
+		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "information.source_code"), ConfirmLinkScreen.opening(this, "https://github.com/MCLegoMan/Luminance")).width(304).build());
+		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "information.report"), ConfirmLinkScreen.opening(this, "https://github.com/MCLegoMan/Luminance/issues")).width(304).build());
+		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "information.credits"), button -> ClientData.minecraft.setScreen(new CreditsAttributionScreen(ClientData.minecraft.currentScreen, isPride))).width(304).build());
 		return grid;
 	}
 	private GridWidget createFooter() {
 		GridWidget grid = new GridWidget();
 		grid.getMainPositioner().alignHorizontalCenter().margin(2);
-		GridWidget.Adder GRID_ADDER = grid.createAdder(1);
-		GRID_ADDER.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "back"), (button) -> this.shouldClose = true).build());
+		GridWidget.Adder gridAdder = grid.createAdder(1);
+		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "back"), (button) -> this.shouldClose = true).build());
 		return grid;
 	}
 	public void initTabNavigation() {
