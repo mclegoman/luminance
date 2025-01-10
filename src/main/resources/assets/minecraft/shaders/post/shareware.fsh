@@ -12,13 +12,16 @@ uniform float Saturation;
 
 out vec4 fragColor;
 
+uniform float Scale;
+uniform vec3 Gray;
+
 void main() {
-    vec2 scaleFactors = InSize / 2;
+    vec2 scaleFactors = InSize / Scale;
     vec2 truncPos = floor(texCoord * scaleFactors) / scaleFactors;
     vec4 baseTexel = texture2D(InSampler, truncPos);
     vec3 truncTexel = floor(baseTexel.rgb * ColorResolution) / ColorResolution;
 
-    float luma = dot(truncTexel, vec3(0.3, 0.59, 0.11));
+    float luma = dot(truncTexel, Gray);
     vec3 chroma = (truncTexel - luma) * Saturation;
     fragColor = vec4(luma + chroma, 1.0);
 }
