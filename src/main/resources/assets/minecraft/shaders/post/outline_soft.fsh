@@ -10,6 +10,8 @@ uniform float LumaLevel;
 
 out vec4 fragColor;
 
+uniform vec3 Gray;
+
 void main(){
     vec4 center = texture(InSampler, texCoord);
     vec4 up     = texture(InSampler, texCoord + vec2(        0.0, -oneTexel.y));
@@ -29,7 +31,7 @@ void main(){
     vec4 l2Diff = abs(center - left2);
     vec4 r2Diff = abs(center - right2);
     vec4 sum = uDiff + dDiff + lDiff + rDiff + u2Diff + d2Diff + l2Diff + r2Diff;
-    vec4 gray = vec4(0.3, 0.59, 0.11, 0.0);
+    vec4 gray = vec4(Gray, 0.0);
     float sumLuma = 1.0 - dot(clamp(sum, 0.0, 1.0), gray);
 
     // Get luminance of center pixel and adjust

@@ -9,6 +9,7 @@
         { "name": "InSize",    "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
         { "name": "OutSize",   "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
         { "name": "LumaRamp",  "type": "float",     "count": 1,  "values": [ 16.0 ] },
-        { "name": "LumaLevel", "type": "float",     "count": 1,  "values": [ 4.0 ] }
+        { "name": "LumaLevel", "type": "float",     "count": 1,  "values": [ 4.0 ] },
+        { "name": "Gray",      "type": "float",     "count": 3,  "values": [ 0.3, 0.59, 0.11 ] }
     ]
 }

@@ -5,9 +5,10 @@ uniform sampler2D InSampler;
 in vec2 texCoord;
 in vec2 oneTexel;
 
-uniform float LumaRamp;
-
 out vec4 fragColor;
+
+uniform vec3 Gray;
+uniform vec2 Brightness;
 
 void main(){
     vec4 center = texture(InSampler, texCoord);
@@ -23,7 +24,7 @@ void main(){
     vec4 ur     = texture(InSampler, texCoord + vec2( oneTexel.x, -oneTexel.y));
     vec4 bl     = texture(InSampler, texCoord + vec2(-oneTexel.x,  oneTexel.y));
     vec4 br     = texture(InSampler, texCoord + vec2( oneTexel.x,  oneTexel.y));
-    vec4 gray = vec4(0.3, 0.59, 0.11, 0.0);
+    vec4 gray = vec4(Gray, 0.0);
     float uDiff = dot(abs(center - up), gray);
     float dDiff = dot(abs(center - down), gray);
     float lDiff = dot(abs(center - left), gray);
@@ -37,7 +38,7 @@ void main(){
     float blDiff = dot(abs(center - bl), gray);
     float brDiff = dot(abs(center - br), gray);
     float sum = uDiff + dDiff + lDiff + rDiff + u2Diff + d2Diff + l2Diff + r2Diff + ulDiff + urDiff + blDiff + brDiff;
-    float sumLuma = clamp(sum, 0.0, 1.0);
+    float sumLuma = clamp(sum*Brightness.r + Brightness.g, 0.0, 1.0);
 
     fragColor = vec4(sumLuma, sumLuma, sumLuma, 1.0);
 }
