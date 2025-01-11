@@ -7,7 +7,7 @@
     },
     "passes": [
         {
-            "program": "luminance:post/green",
+            "program": "luminance:post/nearest",
             "inputs": [
                 {
                     "sampler_name": "In",

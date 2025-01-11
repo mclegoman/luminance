@@ -1,16 +1,21 @@
 #version 150
 
 uniform sampler2D InSampler;
-uniform vec4 ColorModulate;
 
 in vec2 texCoord;
 out vec4 fragColor;
 
-const vec3 palette[4] = vec3[4](
-    vec3(0.058, 0.219, 0.058),
-    vec3(0.188, 0.384, 0.188),
-    vec3(0.545, 0.674, 0.058),
-    vec3(0.607, 0.737, 0.058)
+uniform vec3 Color1;
+uniform vec3 Color2;
+uniform vec3 Color3;
+uniform vec3 Color4;
+uniform vec4 ColorModulate;
+
+vec3 palette[4] = vec3[4](
+    Color1,
+    Color2,
+    Color3,
+    Color4
 );
 
 void main() {
