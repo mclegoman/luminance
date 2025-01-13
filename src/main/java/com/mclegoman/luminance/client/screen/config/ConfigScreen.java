@@ -7,16 +7,17 @@
 
 package com.mclegoman.luminance.client.screen.config;
 
+import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.debug.Debug;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.logo.LuminanceLogo;
 import com.mclegoman.luminance.client.screen.config.information.InformationScreen;
 import com.mclegoman.luminance.client.shaders.Shader;
+import com.mclegoman.luminance.client.shaders.Uniforms;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import com.mclegoman.luminance.config.ConfigHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -25,6 +26,7 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
+import org.quiltmc.config.api.values.TrackedValue;
 
 public class ConfigScreen extends Screen {
 	private final Screen parentScreen;
@@ -83,7 +85,7 @@ public class ConfigScreen extends Screen {
 				ClientData.minecraft.setScreen(new ConfigScreen(parentScreen, false, this.saveConfig, this.splashText, this.isPride));
 			}
 			if (this.shouldClose) {
-				if (this.saveConfig) ConfigHelper.saveConfig(true);
+				if (this.saveConfig) LuminanceConfig.config.save();
 				ClientData.minecraft.setScreen(parentScreen);
 			}
 		} catch (Exception error) {
@@ -94,19 +96,20 @@ public class ConfigScreen extends Screen {
 		GridWidget grid = new GridWidget();
 		grid.getMainPositioner().alignHorizontalCenter().margin(2);
 		GridWidget.Adder gridAdder = grid.createAdder(2);
-		gridAdder.add(new SliderWidget(gridAdder.getGridWidget().getX(), gridAdder.getGridWidget().getY(), 150, 20, Translation.getConfigTranslation(Data.version.getID(), "alpha", new Object[]{Text.literal((int) ConfigHelper.getConfig("alpha_level") + "%")}, false), (int)ConfigHelper.getConfig("alpha_level") / 100.0F) {
+		gridAdder.add(new SliderWidget(gridAdder.getGridWidget().getX(), gridAdder.getGridWidget().getY(), 150, 20, Translation.getConfigTranslation(Data.version.getID(), "alpha", new Object[]{Text.literal(Uniforms.getRawAlpha() + "%")}, false), Uniforms.getRawAlpha() / 100.0F) {
 			@Override
 			protected void updateMessage() {
-				setMessage(Translation.getConfigTranslation(Data.version.getID(),  "alpha", new Object[]{Text.literal((int) ConfigHelper.getConfig("alpha_level") + "%")}, false));
+				setMessage(Translation.getConfigTranslation(Data.version.getID(),  "alpha", new Object[]{Text.literal(Uniforms.getRawAlpha() + "%")}, false));
 			}
 			@Override
 			protected void applyValue() {
-				ConfigHelper.setConfig("alpha_level", (int) ((value) * 100));
+				LuminanceConfig.config.alphaLevel.setValue((int) ((value) * 100), false);
 				saveConfig = true;
 			}
 		}, 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.version.getID(), "alpha", new Object[]{Translation.getConfigTranslation(Data.version.getID(), "keybinding", new Object[]{Keybindings.adjustAlpha.getBoundKeyLocalizedText()}, new Formatting[]{Formatting.RED, Formatting.BOLD})}, true)));
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "alpha.show_overlay", new Object[]{Translation.getVariableTranslation(Data.version.getID(), "onff", (boolean) ConfigHelper.getConfig("show_alpha_level_overlay"))}), (button) -> {
-			ConfigHelper.setConfig("show_alpha_level_overlay", !(boolean) ConfigHelper.getConfig("show_alpha_level_overlay"));
+		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "alpha.show_overlay", new Object[]{Translation.getVariableTranslation(Data.version.getID(), "onff", LuminanceConfig.config.showAlphaLevelOverlay.value())}), (button) -> {
+			LuminanceConfig.config.showAlphaLevelOverlay.setValue(!LuminanceConfig.config.showAlphaLevelOverlay.value(), false);
+			this.saveConfig = true;
 			this.refresh = true;
 		}).build(), 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.version.getID(), "alpha.show_overlay", true)));
 		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "information"), button -> ClientData.minecraft.setScreen(new InformationScreen(ClientData.minecraft.currentScreen, false, splashText, isPride))).width(304).build(), 2);
@@ -129,14 +132,13 @@ public class ConfigScreen extends Screen {
 	private GridWidget createFooter() {
 		GridWidget grid = new GridWidget();
 		grid.getMainPositioner().alignHorizontalCenter().margin(2);
-		GridWidget.Adder GRID_ADDER = grid.createAdder(2);
-		GRID_ADDER.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "reset"), (button) -> {
-			if (com.mclegoman.luminance.config.ConfigHelper.resetConfig()) {
-				this.saveConfig = true;
-				this.refresh = true;
-			}
+		GridWidget.Adder gridAdder = grid.createAdder(2);
+		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "reset"), (button) -> {
+			for (TrackedValue value : LuminanceConfig.config.values()) value.setValue(value.getDefaultValue(), false);
+			this.saveConfig = true;
+			this.refresh = true;
 		}).build());
-		GRID_ADDER.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "back"), (button) -> this.shouldClose = true).build());
+		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "back"), (button) -> this.shouldClose = true).build());
 		return grid;
 	}
 	public void initTabNavigation() {

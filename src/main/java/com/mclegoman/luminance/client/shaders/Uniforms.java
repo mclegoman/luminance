@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.client.shaders;
 
+import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.events.Events;
@@ -18,7 +19,6 @@ import com.mclegoman.luminance.client.util.LuminanceIdentifier;
 import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import com.mclegoman.luminance.config.ConfigHelper;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
@@ -27,14 +27,12 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public class Uniforms {
-	private static int prevAlpha = (int)ConfigHelper.getConfig("alpha_level");
+	private static int prevAlpha = getRawAlpha();
 	public static void tick() {
 		if (!updatingAlpha() && updatingAlpha) {
 			updatingAlpha = false;
-			if ((int)ConfigHelper.getConfig("alpha_level") != prevAlpha) ConfigHelper.saveConfig(true);
+			if (getRawAlpha() != prevAlpha) LuminanceConfig.config.save();
 		}
 		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.tick(ClientData.minecraft.getRenderTickCounter().getTickDelta(true)));
 	}
@@ -43,8 +41,12 @@ public class Uniforms {
 			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("viewDistance"), Uniforms::getViewDistance, 2f, null);
 			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("fov"), Uniforms::getFov, 0f, 360f);
 			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("fps"), Uniforms::getFps, 0f, null);
-			//registerLuminanceUniform(LuminanceIdentifier.ofLuminance("eyePosition"), Uniforms::getEyePosition, null, null);
-			//registerLuminanceUniform(LuminanceIdentifier.ofLuminance("position"), Uniforms::getPosition, null, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("eyeX"), Uniforms::getEyeX, null, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("eyeY"), Uniforms::getEyeY, null, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("eyeZ"), Uniforms::getEyeZ, null, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("posX"), Uniforms::getPosX, null, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("posY"), Uniforms::getPosY, null, null);
+			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("posZ"), Uniforms::getPosZ, null, null);
 			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("pitch"), Uniforms::getPitch, -90f, 90f);
 			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("yaw"), Uniforms::getYaw, -180f, 180f);
 			registerLuminanceUniform(LuminanceIdentifier.ofLuminance("currentHealth"), Uniforms::getCurrentHealth, 0f, null);
@@ -98,7 +100,6 @@ public class Uniforms {
 	public static float getFps(float tickDelta) {
 		return ClientData.minecraft.getCurrentFps();
 	}
-
 	// TODO: Make Time Uniform be configurable (or moreso, all uniforms).
 	private static float time = 0f;
 	private static float prevTickDelta = 0.0F;
@@ -115,13 +116,23 @@ public class Uniforms {
 		prevTickDelta = tickDelta;
 		return time;
 	}
-
-
-	public static List<Float> getEyePosition(float tickDelta) {
-		return ClientData.minecraft.player != null ? List.of((float) ClientData.minecraft.player.getEyePos().x, (float) ClientData.minecraft.player.getEyePos().y, (float) ClientData.minecraft.player.getEyePos().z) : List.of(0.0F, 66.0F, 0.0F);
+	public static float getEyeX(float tickDelta) {
+		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getEyePos().x : 0.0F;
 	}
-	public static List<Float> getPosition(float tickDelta) {
-		return ClientData.minecraft.player != null ? List.of((float) ClientData.minecraft.player.getPos().x, (float) ClientData.minecraft.player.getPos().y, (float) ClientData.minecraft.player.getPos().z) : List.of(0.0F, 64.0F, 0.0F);
+	public static float getEyeY(float tickDelta) {
+		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getEyePos().y : 66.0F;
+	}
+	public static float getEyeZ(float tickDelta) {
+		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getEyePos().z : 0.0F;
+	}
+	public static float getPosX(float tickDelta) {
+		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getPos().x :0.0F;
+	}
+	public static float getPosY(float tickDelta) {
+		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getPos().y : 64.0F;
+	}
+	public static float getPosZ(float tickDelta) {
+		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getPos().z : 0.0F;
 	}
 	public static float getPitch(float tickDelta) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getPitch(tickDelta) % 360.0F : 0.0F;
@@ -196,25 +207,30 @@ public class Uniforms {
 		return ClientData.minecraft.world != null && ClientData.minecraft.player != null ? ClientData.minecraft.world.getBiome(ClientData.minecraft.player.getBlockPos()).value().getTemperature() : 1.0F;
 	}
 	public static float getAlpha(float tickDelta) {
-		return Math.clamp(((int)ConfigHelper.getConfig("alpha_level") / 100.0F), 0.0F, 1.0F);
+		return Math.clamp(getRawAlpha() / 100.0F, 0.0F, 1.0F);
+	}
+	public static int getRawAlpha() {
+		return LuminanceConfig.config.alphaLevel.value();
 	}
 	public static void setAlpha(int value) {
-		ConfigHelper.setConfig("alpha_level", Math.clamp(value, 0, 100));
+		LuminanceConfig.config.alphaLevel.setValue(Math.clamp(value, 0, 100), false);
+		alphaLevelOverlay();
 	}
 	public static void resetAlpha() {
 		setAlpha(100);
-		if ((boolean)ConfigHelper.getConfig("show_alpha_level_overlay")) MessageOverlay.setOverlay(Translation.getTranslation(Data.version.getID(), "alpha_level", new Object[]{ConfigHelper.getConfig("alpha_level") + "%"}, new Formatting[]{Formatting.GOLD}));
 	}
 	public static void adjustAlpha(int amount) {
-		setAlpha((int)ConfigHelper.getConfig("alpha_level") + amount);
-		if ((boolean)ConfigHelper.getConfig("show_alpha_level_overlay")) MessageOverlay.setOverlay(Translation.getTranslation(Data.version.getID(), "alpha_level", new Object[]{ConfigHelper.getConfig("alpha_level") + "%"}, new Formatting[]{Formatting.GOLD}));
+		setAlpha(getRawAlpha() + amount);
+	}
+	private static void alphaLevelOverlay() {
+		if (LuminanceConfig.config.showAlphaLevelOverlay.value()) MessageOverlay.setOverlay(Translation.getTranslation(Data.version.getID(), "alpha_level", new Object[]{getRawAlpha() + "%"}, new Formatting[]{Formatting.GOLD}));
 	}
 	public static boolean updatingAlpha = false;
 	public static boolean updatingAlpha() {
 		boolean value = Keybindings.adjustAlpha.isPressed();
 		if (value) {
 			if (!updatingAlpha) {
-				prevAlpha = (int)ConfigHelper.getConfig("alpha_level");
+				prevAlpha = getRawAlpha();
 			}
 			updatingAlpha = true;
 		}

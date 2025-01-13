@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class ConfigProvider implements SimpleConfig.DefaultConfig {
 	private String contents = "";
 	private List<Couple<String, ?>> configList = new ArrayList<>();
