@@ -5,13 +5,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public abstract class TreeUniform implements Uniform {
+public abstract class TreeUniform<V,P> implements Uniform<V> {
     public final String name;
-    public final List<TreeUniform> children;
+    public final List<TreeUniform<?,V>> children;
     @Nullable
-    public TreeUniform parent;
+    public TreeUniform<P,?> parent;
 
     protected TreeUniform(String name) {
         this.name = name;
@@ -28,35 +27,20 @@ public abstract class TreeUniform implements Uniform {
     protected void updateRecursively(ShaderTime shaderTime) {
         updateValue(shaderTime);
 
-        for (TreeUniform child : children) {
+        for (TreeUniform<?,V> child : children) {
             child.updateRecursively(shaderTime);
         }
     }
 
     public abstract void updateValue(ShaderTime shaderTime);
 
-    public TreeUniform addChildren(TreeUniform... children) {
+    @SafeVarargs
+    public final TreeUniform<V,P> addChildren(TreeUniform<?, V>... children) {
         this.children.addAll(List.of(children));
-        for (TreeUniform child : children) {
+        for (TreeUniform<?,V> child : children) {
             child.parent = this;
         }
         return this;
-    }
-
-    @Override
-    public Optional<Float> getMin() {
-        if (parent == null) {
-            return Optional.empty();
-        }
-        return parent.getMin();
-    }
-
-    @Override
-    public Optional<Float> getMax() {
-        if (parent == null) {
-            return Optional.empty();
-        }
-        return parent.getMax();
     }
 
     @Override

@@ -8,12 +8,11 @@
 package com.mclegoman.luminance.client.shaders;
 
 import com.google.gson.JsonObject;
-import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.events.Runnables;
-import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.ShaderProgramInterface;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
@@ -44,12 +43,12 @@ public class Shaders {
 			public void run(PostEffectPass postEffectPass) {
 				ShaderProgram program = postEffectPass.getProgram();
 				for (String uniformName : ((ShaderProgramInterface)program).luminance$getUniformNames()) {
-					com.mclegoman.luminance.client.shaders.uniforms.Uniform uniform = Events.ShaderUniform.registry.get(uniformName);
+					com.mclegoman.luminance.client.shaders.uniforms.Uniform<?> uniform = Events.ShaderUniform.registry.get(uniformName);
 					if (uniform == null) {
 						continue;
 					}
 
-					program.getUniformOrDefault(uniformName).set(uniform.get());
+					set(program.getUniform(uniformName), uniform.get(UniformConfig.EMPTY, Uniforms.shaderTime));
 				}
 				//Events.ShaderUniform.registry.forEach((id, uniform) -> {
 				//	try {
@@ -307,6 +306,16 @@ public class Shaders {
 			}
 		} catch (Exception error) {
 			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
+		}
+	}
+	public static void set(Uniform uniform, Object values) {
+		//TODO: implement for all necessary types
+		if (values instanceof Float f) {
+			uniform.set(f);
+		} else if (values instanceof float[] f) {
+			uniform.set(f);
+		} else {
+			Data.version.sendToLog(LogType.WARN, Translation.getString("Cannot set shader uniform: {}", values));
 		}
 	}
 	// This is identical to the deprecated `PostEffectProcessor.render(framebuffer, objectAllocator);` function.

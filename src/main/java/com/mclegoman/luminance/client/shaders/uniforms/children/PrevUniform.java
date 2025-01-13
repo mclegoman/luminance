@@ -4,7 +4,9 @@ import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.TreeUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
 
-public class PrevUniform extends TreeUniform {
+import java.util.Optional;
+
+public class PrevUniform extends TreeUniform<Float, Float> {
     protected float current;
     protected float prev;
 
@@ -14,16 +16,25 @@ public class PrevUniform extends TreeUniform {
 
     @Override
     public void updateValue(ShaderTime shaderTime) {
-        if (parent == null) {
-            return;
-        }
-
         prev = current;
+        assert parent != null;
         current = parent.get(UniformConfig.EMPTY, shaderTime);
     }
 
     @Override
-    public float get(UniformConfig config, ShaderTime shaderTime) {
+    public Float get(UniformConfig config, ShaderTime shaderTime) {
         return prev;
+    }
+
+    @Override
+    public Optional<Float> getMin() {
+        assert parent != null;
+        return parent.getMin();
+    }
+
+    @Override
+    public Optional<Float> getMax() {
+        assert parent != null;
+        return parent.getMax();
     }
 }

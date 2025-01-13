@@ -102,13 +102,13 @@ public class Uniforms {
 	}
 
 	public static void registerStandardTree(String path, String name, Callables.ShaderRender<Float> callable, @Nullable Float min, @Nullable Float max) {
-		registerTree(path, new RootUniform(callable, min, max, name).addChildren(new DeltaUniform(), new PrevUniform(), new SmoothUniform().addChildren(new DeltaUniform(), new PrevUniform())));
+		registerTree(path, new RootUniform(name, callable, min, max).addChildren(new DeltaUniform(), new PrevUniform(), new SmoothUniform().addChildren(new DeltaUniform(), new PrevUniform())));
 	}
 
-	public static void registerTree(String path, TreeUniform treeUniform) {
+	public static void registerTree(String path, TreeUniform<?,?> treeUniform) {
 		String name = path+"_"+treeUniform.name;
 		Events.ShaderUniform.register(name, treeUniform);
-		for (TreeUniform child : treeUniform.children) {
+		for (TreeUniform<?,?> child : treeUniform.children) {
 			registerTree(name, child);
 		}
 	}

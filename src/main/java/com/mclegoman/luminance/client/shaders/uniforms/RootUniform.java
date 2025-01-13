@@ -13,17 +13,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class RootUniform extends TreeUniform {
+public class RootUniform extends TreeUniform<Float,Void> {
 	protected final Callables.ShaderRender<Float> callable;
 	@Nullable private final Float min;
 	@Nullable private final Float max;
 
 	protected float value;
 
-	public RootUniform(Callables.ShaderRender<Float> callable, String name) {
-		this(callable, null, null, name);
+	public RootUniform(String name, Callables.ShaderRender<Float> callable) {
+		this(name, callable, null, null);
 	}
-	public RootUniform(Callables.ShaderRender<Float> callable, @Nullable Float min, @Nullable Float max, String name) {
+	public RootUniform(String name, Callables.ShaderRender<Float> callable, @Nullable Float min, @Nullable Float max) {
 		super(name);
 		this.callable = callable;
 		this.min = min;
@@ -31,7 +31,7 @@ public class RootUniform extends TreeUniform {
 	}
 
 	@Override
-	public float get(UniformConfig config, ShaderTime shaderTime) {
+	public Float get(UniformConfig config, ShaderTime shaderTime) {
 		return this.value;
 	}
 

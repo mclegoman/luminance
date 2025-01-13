@@ -8,22 +8,27 @@
 package com.mclegoman.luminance.client.shaders.overrides;
 
 import com.mclegoman.luminance.client.events.Events;
+import com.mclegoman.luminance.client.shaders.Uniforms;
 import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
 
 public class UniformSource implements OverrideSource {
     protected final String name;
 
     protected Uniform uniform = null;
 
+    public final UniformConfig uniformConfig;
+
     public UniformSource(String name) {
         this.name = name;
+        this.uniformConfig = UniformConfig.EMPTY;
     }
 
     @Override
     public Float get() {
         Uniform uniform = getUniform();
         if (uniform == null) return null;
-        return uniform.get();
+        return uniform.get(uniformConfig, Uniforms.shaderTime);
     }
 
     @Override

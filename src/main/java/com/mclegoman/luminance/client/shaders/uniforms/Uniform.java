@@ -11,12 +11,12 @@ import com.mclegoman.luminance.client.shaders.ShaderTime;
 
 import java.util.Optional;
 
-public interface Uniform {
-	float get(UniformConfig config, ShaderTime shaderTime);
+public interface Uniform<V> {
+	V get(UniformConfig config, ShaderTime shaderTime);
 
 	void tick();
 	void update(ShaderTime shaderTime);
 
-	Optional<Float> getMin();
-	Optional<Float> getMax();
+	Optional<V> getMin();
+	Optional<V> getMax();
 }

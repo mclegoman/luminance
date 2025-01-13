@@ -5,7 +5,9 @@ import com.mclegoman.luminance.client.shaders.uniforms.TreeUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
 import net.minecraft.util.math.MathHelper;
 
-public class SmoothUniform extends TreeUniform {
+import java.util.Optional;
+
+public class SmoothUniform extends TreeUniform<Float, Float> {
     protected float smooth;
 
     public SmoothUniform() {
@@ -14,15 +16,24 @@ public class SmoothUniform extends TreeUniform {
 
     @Override
     public void updateValue(ShaderTime shaderTime) {
-        if (parent == null) {
-            return;
-        }
-
+        assert parent != null;
         smooth = MathHelper.lerp(shaderTime.getDeltaTime(), smooth, parent.get(UniformConfig.EMPTY, shaderTime));
     }
 
     @Override
-    public float get(UniformConfig config, ShaderTime shaderTime) {
+    public Float get(UniformConfig config, ShaderTime shaderTime) {
         return smooth;
+    }
+
+    @Override
+    public Optional<Float> getMin() {
+        assert parent != null;
+        return parent.getMin();
+    }
+
+    @Override
+    public Optional<Float> getMax() {
+        assert parent != null;
+        return parent.getMax();
     }
 }
