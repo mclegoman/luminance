@@ -18,19 +18,25 @@ import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.client.option.KeyBinding;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Keybindings {
 	public static final KeyBinding adjustAlpha;
 	public static final KeyBinding openConfig;
-	public static final KeyBinding debug;
-	public static final KeyBinding debug_2;
-	public static final KeyBinding[] allKeybindings;
+	public static KeyBinding debug;
+	public static KeyBinding debug_2;
+	public static final List<KeyBinding> allKeybindings = new ArrayList<>();
 	static {
-		allKeybindings = new KeyBinding[]{
-				adjustAlpha = KeybindingHelper.getKeybinding(Data.version.getID(), Data.version.getID(), "adjust_alpha", GLFW.GLFW_KEY_J),
-				openConfig = KeybindingHelper.getKeybinding(Data.version.getID(), Data.version.getID(), "open_config", GLFW.GLFW_KEY_UNKNOWN),
-				debug = KeybindingHelper.getKeybinding(Data.version.getID(), Data.version.getID(), "debug", GLFW.GLFW_KEY_UNKNOWN),
-				debug_2 = KeybindingHelper.getKeybinding(Data.version.getID(), Data.version.getID(), "debug_2", GLFW.GLFW_KEY_UNKNOWN)
-		};
+		allKeybindings.add(adjustAlpha = KeybindingHelper.getKeybinding(Data.version.getID(), Data.version.getID(), "adjust_alpha", GLFW.GLFW_KEY_J));
+		allKeybindings.add(openConfig = KeybindingHelper.getKeybinding(Data.version.getID(), Data.version.getID(), "open_config", GLFW.GLFW_KEY_UNKNOWN));
+		if (ClientData.isDevelopment) {
+			allKeybindings.add(debug = KeybindingHelper.getKeybinding(Data.version.getID(), Data.version.getID(), "debug", GLFW.GLFW_KEY_UNKNOWN));
+			allKeybindings.add(debug_2 = KeybindingHelper.getKeybinding(Data.version.getID(), Data.version.getID(), "debug_2", GLFW.GLFW_KEY_UNKNOWN));
+		} else {
+			debug = null;
+			debug_2 = null;
+		}
 	}
 	public static void init() {
 		Data.version.sendToLog(LogType.INFO, Translation.getString("Initializing keybindings!"));
@@ -39,11 +45,13 @@ public class Keybindings {
 		if (openConfig.wasPressed()) {
 			ClientData.minecraft.setScreen(new ConfigScreen(ClientData.minecraft.currentScreen, false, DateHelper.isPride()));
 		}
-		if (debug.wasPressed()) Debug.debugShader = !Debug.debugShader;
-		if (debug_2.wasPressed()) {
-			switch (Debug.debugRenderType) {
-				case GAME -> Debug.debugRenderType = Shader.RenderType.WORLD;
-				case WORLD -> Debug.debugRenderType = Shader.RenderType.GAME;
+		if (ClientData.isDevelopment) {
+			if (debug != null && debug.wasPressed()) Debug.debugShader = !Debug.debugShader;
+			if (debug_2 != null && debug_2.wasPressed()) {
+				switch (Debug.debugRenderType) {
+					case GAME -> Debug.debugRenderType = Shader.RenderType.WORLD;
+					case WORLD -> Debug.debugRenderType = Shader.RenderType.GAME;
+				}
 			}
 		}
 	}

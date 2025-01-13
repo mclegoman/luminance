@@ -114,18 +114,19 @@ public class ConfigScreen extends Screen {
 		}).build(), 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.version.getID(), "alpha.show_overlay", true)));
 		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "information"), button -> ClientData.minecraft.setScreen(new InformationScreen(ClientData.minecraft.currentScreen, false, splashText, isPride))).width(304).build(), 2);
 
-		// TODO: Remove once shader rendering is finished.
-		gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShader}), button -> {
-			Debug.debugShader = !Debug.debugShader;
-			this.refresh = true;
-		}).build());
-		gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Render Type: {}", false, new Object[]{Debug.debugRenderType.toString()}), button -> {
-			switch (Debug.debugRenderType) {
-				case GAME -> Debug.debugRenderType = Shader.RenderType.WORLD;
-				case WORLD -> Debug.debugRenderType = Shader.RenderType.GAME;
-			}
-			this.refresh = true;
-		}).build());
+		if (ClientData.isDevelopment) {
+			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShader}), button -> {
+				Debug.debugShader = !Debug.debugShader;
+				this.refresh = true;
+			}).build());
+			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Render Type: {}", false, new Object[]{Debug.debugRenderType.toString()}), button -> {
+				switch (Debug.debugRenderType) {
+					case GAME -> Debug.debugRenderType = Shader.RenderType.WORLD;
+					case WORLD -> Debug.debugRenderType = Shader.RenderType.GAME;
+				}
+				this.refresh = true;
+			}).build());
+		}
 
 		return grid;
 	}

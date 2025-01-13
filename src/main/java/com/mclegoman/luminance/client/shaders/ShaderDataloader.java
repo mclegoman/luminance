@@ -10,6 +10,7 @@ package com.mclegoman.luminance.client.shaders;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.debug.Debug;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.translation.Translation;
@@ -129,11 +130,12 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 		} catch (Exception error) {
 			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to apply shaders dataloader: {}", error));
 		}
-
-		// Test Shader: remove/comment out when shader rendering is finished.
-		Events.ShaderRender.register(Identifier.of(Data.version.getID(), "test"), new ArrayList<>());
-		Events.ShaderRender.modify(Identifier.of(Data.version.getID(), "test"), List.of(new Shader.Data(Identifier.of(Data.version.getID(), "test"), new Shader(Shaders.get(Identifier.of("luminance", "outlined")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
-		//Events.ShaderRender.modify(Identifier.of(Data.version.getID(), "test"), List.of(new Shader.Data(Identifier.of(Data.version.getID(), "test"), new Shader(Shaders.get(Identifier.of("minecraft", "phosphor")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
+		if (ClientData.isDevelopment) {
+			// Test Shader: remove/comment out when shader rendering is finished.
+			Events.ShaderRender.register(Identifier.of(Data.version.getID(), "debug"), new ArrayList<>());
+			Events.ShaderRender.modify(Identifier.of(Data.version.getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.version.getID(), "debug"), new Shader(Shaders.get(Identifier.of("minecraft", "creeper")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
+			//Events.ShaderRender.modify(Identifier.of(Data.version.getID(), "test"), List.of(new Shader.Data(Identifier.of(Data.version.getID(), "test"), new Shader(Shaders.get(Identifier.of("minecraft", "phosphor")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
+		}
 	}
 	@Override
 	public Identifier getFabricId() {
