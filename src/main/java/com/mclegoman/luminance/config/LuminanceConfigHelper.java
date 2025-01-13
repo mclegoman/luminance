@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.config;
 
+import com.mclegoman.luminance.config.serializers.LuminanceSerializer;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import org.quiltmc.config.api.ReflectiveConfig;
 import org.quiltmc.config.api.serializers.TomlSerializer;
@@ -18,6 +19,7 @@ import java.nio.file.Path;
 
 public class LuminanceConfigHelper {
 	private static ConfigEnvironment tomlConfigEnvironment;
+	private static ConfigEnvironment propertiesConfigEnvironment;
 	private static ConfigEnvironment jsonConfigEnvironment;
 	public static <C extends ReflectiveConfig> C register(SerializerType type, String namespace, String id, Class<C> config) {
 		return ConfigFactory.create(getConfigEnvironment(type), namespace, id, Path.of(""), builder -> {}, config, builder -> {});
@@ -25,6 +27,7 @@ public class LuminanceConfigHelper {
 	public static <C extends ReflectiveConfig> void reset(C config) {
 		reset(config, true);
 	}
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static <C extends ReflectiveConfig> void reset(C config, boolean save) {
 		for (TrackedValue value : config.values()) value.setValue(value.getDefaultValue(), false);
 		if (save) config.save();
@@ -36,6 +39,13 @@ public class LuminanceConfigHelper {
 				jsonConfigEnvironment.registerSerializer(TomlSerializer.INSTANCE);
 			}
 			return jsonConfigEnvironment;
+		} else if (type == SerializerType.PROPERTIES) {
+			if (propertiesConfigEnvironment == null) {
+				LuminanceSerializer serializer = new LuminanceSerializer("properties");
+				propertiesConfigEnvironment = new ConfigEnvironment(FabricLoaderImpl.INSTANCE.getConfigDir(), "properties", serializer);
+				propertiesConfigEnvironment.registerSerializer(serializer);
+			}
+			return propertiesConfigEnvironment;
 		} else {
 			if (tomlConfigEnvironment == null) {
 				tomlConfigEnvironment = new ConfigEnvironment(FabricLoaderImpl.INSTANCE.getConfigDir(), "toml", TomlSerializer.INSTANCE);
@@ -46,6 +56,7 @@ public class LuminanceConfigHelper {
 	}
 	public enum SerializerType {
 		TOML,
+		PROPERTIES,
 		JSON5
 	}
 }

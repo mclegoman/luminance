@@ -210,10 +210,10 @@ public class Uniforms {
 		return Math.clamp(getRawAlpha() / 100.0F, 0.0F, 1.0F);
 	}
 	public static int getRawAlpha() {
-		return LuminanceConfig.config.alphaLevel.value();
+		return LuminanceConfig.config.alpha_level.value();
 	}
 	public static void setAlpha(int value) {
-		LuminanceConfig.config.alphaLevel.setValue(Math.clamp(value, 0, 100), false);
+		LuminanceConfig.config.alpha_level.setValue(Math.clamp(value, 0, 100), false);
 		alphaLevelOverlay();
 	}
 	public static void resetAlpha() {
@@ -223,7 +223,7 @@ public class Uniforms {
 		setAlpha(getRawAlpha() + amount);
 	}
 	private static void alphaLevelOverlay() {
-		if (LuminanceConfig.config.showAlphaLevelOverlay.value()) MessageOverlay.setOverlay(Translation.getTranslation(Data.version.getID(), "alpha_level", new Object[]{getRawAlpha() + "%"}, new Formatting[]{Formatting.GOLD}));
+		if (LuminanceConfig.config.show_alpha_level_overlay.value()) MessageOverlay.setOverlay(Translation.getTranslation(Data.version.getID(), "alpha_level", new Object[]{getRawAlpha() + "%"}, new Formatting[]{Formatting.GOLD}));
 	}
 	public static boolean updatingAlpha = false;
 	public static boolean updatingAlpha() {

@@ -44,6 +44,8 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api}"
 	include(implementation("org.quiltmc:quilt-config:${project.quilt_config}"))
 	include(implementation("org.quiltmc.quilt-config.serializers:toml:${project.quilt_config}"))
+	include(implementation("org.quiltmc.quilt-config.serializers:json5:${project.quilt_config}"))
+	include(implementation("com.electronwill.night-config:toml:${project.toml}"))
 
 	// Compatibility
 	modCompileOnly "maven.modrinth:sodium:${project.sodium}"
