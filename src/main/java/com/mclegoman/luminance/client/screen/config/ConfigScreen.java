@@ -103,12 +103,12 @@ public class ConfigScreen extends Screen {
 			}
 			@Override
 			protected void applyValue() {
-				LuminanceConfig.config.alpha_level.setValue((int) ((value) * 100), false);
+				LuminanceConfig.config.alphaLevel.setValue((int) ((value) * 100), false);
 				saveConfig = true;
 			}
 		}, 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.version.getID(), "alpha", new Object[]{Translation.getConfigTranslation(Data.version.getID(), "keybinding", new Object[]{Keybindings.adjustAlpha.getBoundKeyLocalizedText()}, new Formatting[]{Formatting.RED, Formatting.BOLD})}, true)));
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "alpha.show_overlay", new Object[]{Translation.getVariableTranslation(Data.version.getID(), "onff", LuminanceConfig.config.show_alpha_level_overlay.value())}), (button) -> {
-			LuminanceConfig.config.show_alpha_level_overlay.setValue(!LuminanceConfig.config.show_alpha_level_overlay.value(), false);
+		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "alpha.show_overlay", new Object[]{Translation.getVariableTranslation(Data.version.getID(), "onff", LuminanceConfig.config.showAlphaLevelOverlay.value())}), (button) -> {
+			LuminanceConfig.config.showAlphaLevelOverlay.setValue(!LuminanceConfig.config.showAlphaLevelOverlay.value(), false);
 			this.saveConfig = true;
 			this.refresh = true;
 		}).build(), 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.version.getID(), "alpha.show_overlay", true)));
