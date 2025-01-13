@@ -18,6 +18,7 @@ import com.mclegoman.luminance.client.shaders.Uniforms;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
+import com.mclegoman.luminance.config.LuminanceConfigHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -26,7 +27,6 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
-import org.quiltmc.config.api.values.TrackedValue;
 
 public class ConfigScreen extends Screen {
 	private final Screen parentScreen;
@@ -134,7 +134,7 @@ public class ConfigScreen extends Screen {
 		grid.getMainPositioner().alignHorizontalCenter().margin(2);
 		GridWidget.Adder gridAdder = grid.createAdder(2);
 		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "reset"), (button) -> {
-			for (TrackedValue value : LuminanceConfig.config.values()) value.setValue(value.getDefaultValue(), false);
+			LuminanceConfigHelper.reset(LuminanceConfig.config, false);
 			this.saveConfig = true;
 			this.refresh = true;
 		}).build());

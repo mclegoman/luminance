@@ -10,6 +10,7 @@ package com.mclegoman.luminance.config;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import org.quiltmc.config.api.ReflectiveConfig;
 import org.quiltmc.config.api.serializers.TomlSerializer;
+import org.quiltmc.config.api.values.TrackedValue;
 import org.quiltmc.config.implementor_api.ConfigEnvironment;
 import org.quiltmc.config.implementor_api.ConfigFactory;
 
@@ -20,6 +21,13 @@ public class LuminanceConfigHelper {
 	private static ConfigEnvironment jsonConfigEnvironment;
 	public static <C extends ReflectiveConfig> C register(SerializerType type, String namespace, String id, Class<C> config) {
 		return ConfigFactory.create(getConfigEnvironment(type), namespace, id, Path.of(""), builder -> {}, config, builder -> {});
+	}
+	public static <C extends ReflectiveConfig> void reset(C config) {
+		reset(config, true);
+	}
+	public static <C extends ReflectiveConfig> void reset(C config, boolean save) {
+		for (TrackedValue value : config.values()) value.setValue(value.getDefaultValue(), false);
+		if (save) config.save();
 	}
 	public static ConfigEnvironment getConfigEnvironment(SerializerType type) {
 		if (type == SerializerType.JSON5) {
