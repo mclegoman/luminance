@@ -247,14 +247,14 @@ public class Events {
 		}
 	}
 	public static class ShaderUniform {
-		public static final Map<LuminanceIdentifier, Uniform> registry = new HashMap<>();
-		public static void register(LuminanceIdentifier id, Uniform uniform) {
+		public static final Map<String, Uniform> registry = new HashMap<>();
+		public static void register(String id, Uniform uniform) {
 			if (!registry.containsKey(id)) registry.put(id, uniform);
 		}
-		public static void modify(LuminanceIdentifier id, Uniform uniform) {
+		public static void modify(String id, Uniform uniform) {
 			if (registry.containsKey(id)) registry.replace(id, uniform);
 		}
-		public static void remove(LuminanceIdentifier id) {
+		public static void remove(String id) {
 			registry.remove(id);
 		}
 	}
