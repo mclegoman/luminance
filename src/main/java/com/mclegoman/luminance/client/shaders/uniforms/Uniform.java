@@ -7,13 +7,15 @@
 
 package com.mclegoman.luminance.client.shaders.uniforms;
 
+import com.mclegoman.luminance.client.shaders.ShaderTime;
+
 import java.util.Optional;
 
 public interface Uniform {
-	float get();
+	float get(UniformConfig config, ShaderTime shaderTime);
 
 	void tick();
-	void update(float tickDelta, float deltaTime);
+	void update(ShaderTime shaderTime);
 
 	Optional<Float> getMin();
 	Optional<Float> getMax();

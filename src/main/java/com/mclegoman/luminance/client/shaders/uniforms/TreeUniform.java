@@ -1,5 +1,6 @@
 package com.mclegoman.luminance.client.shaders.uniforms;
 
+import com.mclegoman.luminance.client.shaders.ShaderTime;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -18,21 +19,21 @@ public abstract class TreeUniform implements Uniform {
     }
 
     @Override
-    public void update(float tickDelta, float deltaTime) {
+    public void update(ShaderTime shaderTime) {
         if (parent == null) {
-            updateRecursively(tickDelta, deltaTime);
+            updateRecursively(shaderTime);
         }
     }
 
-    protected void updateRecursively(float tickDelta, float deltaTime) {
-        updateValue(tickDelta, deltaTime);
+    protected void updateRecursively(ShaderTime shaderTime) {
+        updateValue(shaderTime);
 
         for (TreeUniform child : children) {
-            child.updateRecursively(tickDelta, deltaTime);
+            child.updateRecursively(shaderTime);
         }
     }
 
-    public abstract void updateValue(float tickDelta, float deltaTime);
+    public abstract void updateValue(ShaderTime shaderTime);
 
     public TreeUniform addChildren(TreeUniform... children) {
         this.children.addAll(List.of(children));

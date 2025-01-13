@@ -10,7 +10,6 @@ package com.mclegoman.luminance.client.events;
 import com.mclegoman.luminance.client.shaders.Shader;
 import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.client.util.LuminanceIdentifier;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.util.Identifier;

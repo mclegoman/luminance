@@ -275,20 +275,20 @@ public class Shaders {
 	public static String getUniformName(Identifier id) {
 		return id.toString();
 	}
-	//public static void setFloatArray(ShaderProgram program, Identifier id,  Callables.ShaderRender<float[]> callable) {
-	//	try {
-	//		set(program, id, callable.call(ClientData.minecraft.getRenderTickCounter().getTickDelta(true)));
-	//	} catch (Exception error) {
-	//		Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
-	//	}
-	//}
-	//public static void setVector3f(ShaderProgram program, Identifier id,  Callables.ShaderRender<Vector3f> callable) {
-	//	try {
-	//		set(program, id, callable.call(ClientData.minecraft.getRenderTickCounter().getTickDelta(true)));
-	//	} catch (Exception error) {
-	//		Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
-	//	}
-	//}
+	public static void setFloatArray(ShaderProgram program, Identifier id,  Callables.ShaderRender<float[]> callable) {
+		try {
+			set(program, id, callable.call(Uniforms.shaderTime));
+		} catch (Exception error) {
+			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
+		}
+	}
+	public static void setVector3f(ShaderProgram program, Identifier id,  Callables.ShaderRender<Vector3f> callable) {
+		try {
+			set(program, id, callable.call(Uniforms.shaderTime));
+		} catch (Exception error) {
+			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
+		}
+	}
 	public static void set(ShaderProgram program, Identifier id, float... values) {
 		try {
 			if (program != null) {

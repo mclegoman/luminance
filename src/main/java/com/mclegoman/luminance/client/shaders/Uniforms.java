@@ -31,6 +31,8 @@ import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class Uniforms {
+	public static ShaderTime shaderTime = new ShaderTime();
+
 	private static int prevAlpha = getRawAlpha();
 	public static void tick() {
 		if (!updatingAlpha() && updatingAlpha) {
@@ -41,11 +43,8 @@ public class Uniforms {
 	}
 
 	public static void update() {
-		float tickDelta = ClientData.minecraft.getRenderTickCounter().getTickDelta(true);
-		float deltaTime = ((tickDelta < prevTickDelta ? 1 : 0) + tickDelta-prevTickDelta);
-		prevTickDelta = tickDelta;
-
-		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.update(tickDelta, deltaTime));
+		shaderTime.update(ClientData.minecraft.getRenderTickCounter().getTickDelta(true));
+		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.update(shaderTime));
 	}
 
 	public static void init() {
@@ -77,8 +76,8 @@ public class Uniforms {
 			registerStandardTree(path, "isSneaking", Uniforms::getIsSneaking, 0f, 1f);
 			registerStandardTree(path, "isCrawling", Uniforms::getIsCrawling, 0f, 1f);
 			registerStandardTree(path, "isInvisible", Uniforms::getIsInvisible, 0f, 1f);
-			registerStandardTree(path, "isWithered", (tickDelta, deltaTime) -> Uniforms.getHasEffect(StatusEffects.WITHER), 0f, 1f);
-			registerStandardTree(path, "isPoisoned", (tickDelta, deltaTime) -> Uniforms.getHasEffect(StatusEffects.POISON), 0f, 1f);
+			registerStandardTree(path, "isWithered", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.WITHER), 0f, 1f);
+			registerStandardTree(path, "isPoisoned", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.POISON), 0f, 1f);
 			registerStandardTree(path, "isBurning", Uniforms::getIsBurning, 0f, 1f);
 			registerStandardTree(path, "isOnGround", Uniforms::getIsOnGround, 0f, 1f);
 			registerStandardTree(path, "isOnLadder", Uniforms::getIsOnLadder, 0f, 1f);
@@ -114,19 +113,18 @@ public class Uniforms {
 		}
 	}
 
-	public static float getViewDistance(float tickDelta, float deltaTime) {
+	public static float getViewDistance(ShaderTime shaderTime) {
 		return ClientData.minecraft.options != null ? ClientData.minecraft.options.getViewDistance().getValue() : 12.0F;
 	}
-	public static float getFov(float tickDelta, float deltaTime) {
-		return Accessors.getGameRenderer() != null ? Accessors.getGameRenderer().invokeGetFov(ClientData.minecraft.gameRenderer.getCamera(), tickDelta, false) : 70.0F;
+	public static float getFov(ShaderTime shaderTime) {
+		return Accessors.getGameRenderer() != null ? Accessors.getGameRenderer().invokeGetFov(ClientData.minecraft.gameRenderer.getCamera(), shaderTime.getTickDelta(), false) : 70.0F;
 	}
-	public static float getFps(float tickDelta, float deltaTime) {
+	public static float getFps(ShaderTime shaderTime) {
 		return ClientData.minecraft.getCurrentFps();
 	}
 	// TODO: Make Time Uniform be configurable (or moreso, all uniforms).
 	private static float time = 0f;
-	private static float prevTickDelta = 0.0F;
-	public static float getGameTime(float tickDelta, float deltaTime) {
+	public static float getGameTime(ShaderTime shaderTime) {
 		// Ideally, this would be customisable using a config, but this works for now.
 		// Could we add something like this to the post/x.json and program/x.json files?
 		// options {
@@ -134,101 +132,101 @@ public class Uniforms {
 		// }
 		// NOTE: adding data to the json isn't actually that bad, see PostEffectPipelineMixin
 
-		time += deltaTime/24000f;
+		time += shaderTime.getDeltaTime()/24000f;
 		if (time > 1) time -= 1;
 		return time;
 	}
-	public static float getEyeX(float tickDelta, float deltaTime) {
+	public static float getEyeX(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getEyePos().x : 0.0F;
 	}
-	public static float getEyeY(float tickDelta, float deltaTime) {
+	public static float getEyeY(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getEyePos().y : 66.0F;
 	}
-	public static float getEyeZ(float tickDelta, float deltaTime) {
+	public static float getEyeZ(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getEyePos().z : 0.0F;
 	}
-	public static float getPosX(float tickDelta, float deltaTime) {
+	public static float getPosX(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getPos().x :0.0F;
 	}
-	public static float getPosY(float tickDelta, float deltaTime) {
+	public static float getPosY(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getPos().y : 64.0F;
 	}
-	public static float getPosZ(float tickDelta, float deltaTime) {
+	public static float getPosZ(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getPos().z : 0.0F;
 	}
-	public static float getPitch(float tickDelta, float deltaTime) {
-		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getPitch(tickDelta) % 360.0F : 0.0F;
+	public static float getPitch(ShaderTime shaderTime) {
+		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getPitch(shaderTime.getTickDelta()) % 360.0F : 0.0F;
 	}
-	public static float getYaw(float tickDelta, float deltaTime) {
-		return ClientData.minecraft.player != null ? MathHelper.floorMod(ClientData.minecraft.player.getYaw(tickDelta)+180f,360.0F)-180f : 0.0F;
+	public static float getYaw(ShaderTime shaderTime) {
+		return ClientData.minecraft.player != null ? MathHelper.floorMod(ClientData.minecraft.player.getYaw(shaderTime.getTickDelta())+180f,360.0F)-180f : 0.0F;
 	}
-	public static float getCurrentHealth(float tickDelta, float deltaTime) {
+	public static float getCurrentHealth(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getHealth() : 20.0F;
 	}
-	public static float getMaxHealth(float tickDelta, float deltaTime) {
+	public static float getMaxHealth(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getMaxHealth() : 20.0F;
 	}
-	public static float getCurrentAbsorption(float tickDelta, float deltaTime) {
+	public static float getCurrentAbsorption(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getAbsorptionAmount() : 0.0F;
 	}
-	public static float getMaxAbsorption(float tickDelta, float deltaTime) {
+	public static float getMaxAbsorption(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getMaxAbsorption() : 0.0F;
 	}
-	public static float getCurrentHurtTime(float tickDelta, float deltaTime) {
+	public static float getCurrentHurtTime(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.hurtTime : 0.0F;
 	}
-	public static float getMaxHurtTime(float tickDelta, float deltaTime) {
+	public static float getMaxHurtTime(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.maxHurtTime : 10.0F;
 	}
-	public static float getCurrentAir(float tickDelta, float deltaTime) {
+	public static float getCurrentAir(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getAir() : 10.0F;
 	}
-	public static float getMaxAir(float tickDelta, float deltaTime) {
+	public static float getMaxAir(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getMaxAir() : 10.0F;
 	}
-	public static float getIsAlive(float tickDelta, float deltaTime) {
+	public static float getIsAlive(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.isAlive() ? 1.0F : 0.0F) : 0.0F;
 	}
-	public static float getIsDead(float tickDelta, float deltaTime) {
+	public static float getIsDead(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.isDead() ? 1.0F : 0.0F) : 0.0F;
 	}
-	public static float getIsSprinting(float tickDelta, float deltaTime) {
+	public static float getIsSprinting(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.isSprinting() ? 1.0F : 0.0F) : 0.0F;
 	}
-	public static float getIsSwimming(float tickDelta, float deltaTime) {
+	public static float getIsSwimming(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.isSwimming() ? 1.0F : 0.0F) : 0.0F;
 	}
-	public static float getIsSneaking(float tickDelta, float deltaTime) {
+	public static float getIsSneaking(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.isSneaking() ? 1.0F : 0.0F) : 0.0F;
 	}
-	public static float getIsCrawling(float tickDelta, float deltaTime) {
+	public static float getIsCrawling(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.isCrawling() ? 1.0F : 0.0F) : 0.0F;
 	}
-	public static float getIsInvisible(float tickDelta, float deltaTime) {
+	public static float getIsInvisible(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.isInvisible() ? 1.0F : 0.0F) : 0.0F;
 	}
 	public static float getHasEffect(RegistryEntry<StatusEffect> statusEffect) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.hasStatusEffect(statusEffect) ? 1.0F : 0.0F) : 0.0F;
 	}
-	public static float getIsBurning(float tickDelta, float deltaTime) {
+	public static float getIsBurning(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.isOnFire() ? 1.0F : 0.0F) : 0.0F;
 	}
-	public static float getIsOnGround(float tickDelta, float deltaTime) {
+	public static float getIsOnGround(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.isOnGround() ? 1.0F : 0.0F) : 1.0F;
 	}
-	public static float getIsOnLadder(float tickDelta, float deltaTime) {
+	public static float getIsOnLadder(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.isHoldingOntoLadder() ? 1.0F : 0.0F) : 1.0F;
 	}
-	public static float getIsRiding(float tickDelta, float deltaTime) {
+	public static float getIsRiding(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.isRiding() ? 1.0F : 0.0F) : 0.0F;
 	}
-	public static float getHasPassengers(float tickDelta, float deltaTime) {
+	public static float getHasPassengers(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.hasPassengers() ? 1.0F : 0.0F) : 0.0F;
 	}
-	public static float getBiomeTemperature(float tickDelta, float deltaTime) {
+	public static float getBiomeTemperature(ShaderTime shaderTime) {
 		return ClientData.minecraft.world != null && ClientData.minecraft.player != null ? ClientData.minecraft.world.getBiome(ClientData.minecraft.player.getBlockPos()).value().getTemperature() : 1.0F;
 	}
-	public static float getAlpha(float tickDelta, float deltaTime) {
+	public static float getAlpha(ShaderTime shaderTime) {
 		return Math.clamp(getRawAlpha() / 100.0F, 0.0F, 1.0F);
 	}
 	public static int getRawAlpha() {
@@ -258,20 +256,20 @@ public class Uniforms {
 		}
 		return value;
 	}
-	public static float getPerspective(float tickDelta, float deltaTime) {
+	public static float getPerspective(ShaderTime shaderTime) {
 		if (ClientData.minecraft.options != null) {
 			Perspective perspective = ClientData.minecraft.options.getPerspective();
 			return perspective.equals(Perspective.THIRD_PERSON_FRONT) ? 3.0F : (perspective.equals(Perspective.THIRD_PERSON_BACK) ? 2.0F : (perspective.equals(Perspective.FIRST_PERSON) ? 1.0F : 0.0F));
 		}
 		return 1.0F;
 	}
-	public static float getSelectedSlot(float tickDelta, float deltaTime) {
+	public static float getSelectedSlot(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getInventory().selectedSlot : 0.0F;
 	}
-	public static float getScore(float tickDelta, float deltaTime) {
+	public static float getScore(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getScore() : 0.0F;
 	}
-	public static float getVelocity(float tickDelta, float deltaTime) {
+	public static float getVelocity(ShaderTime shaderTime) {
 		if (ClientData.minecraft.player != null) {
 			float x = (float) (ClientData.minecraft.player.getX() - ClientData.minecraft.player.prevX);
 			float y = (float) (ClientData.minecraft.player.getY() - ClientData.minecraft.player.prevY);
@@ -280,17 +278,17 @@ public class Uniforms {
 		}
 		return 0.0F;
 	}
-	public static float getSkyAngle(float tickDelta, float deltaTime) {
-		return ClientData.minecraft.world != null ? ClientData.minecraft.world.getSkyAngle(tickDelta) : 0.0F;
+	public static float getSkyAngle(ShaderTime shaderTime) {
+		return ClientData.minecraft.world != null ? ClientData.minecraft.world.getSkyAngle(shaderTime.getTickDelta()) : 0.0F;
 	}
-	public static float getSunAngle(float tickDelta, float deltaTime) {
-		float skyAngle = getSkyAngle(tickDelta, deltaTime);
+	public static float getSunAngle(ShaderTime shaderTime) {
+		float skyAngle = getSkyAngle(shaderTime);
 		return skyAngle < 0.75F ? skyAngle + 0.25F : skyAngle - 0.75F;
 	}
-	public static float getIsDay(float tickDelta, float deltaTime) {
-		return (getSunAngle(tickDelta, deltaTime) <= 0.5) ? 1.0F : 0.0F;
+	public static float getIsDay(ShaderTime shaderTime) {
+		return (getSunAngle(shaderTime) <= 0.5) ? 1.0F : 0.0F;
 	}
-	public static float getStarBrightness(float tickDelta, float deltaTime) {
-		return ClientData.minecraft.world != null ? ClientData.minecraft.world.getStarBrightness(tickDelta) : 0.0F;
+	public static float getStarBrightness(ShaderTime shaderTime) {
+		return ClientData.minecraft.world != null ? ClientData.minecraft.world.getStarBrightness(shaderTime.getTickDelta()) : 0.0F;
 	}
 }

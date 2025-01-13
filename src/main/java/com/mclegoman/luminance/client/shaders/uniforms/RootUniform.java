@@ -8,6 +8,7 @@
 package com.mclegoman.luminance.client.shaders.uniforms;
 
 import com.mclegoman.luminance.client.events.Callables;
+import com.mclegoman.luminance.client.shaders.ShaderTime;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -30,17 +31,17 @@ public class RootUniform extends TreeUniform {
 	}
 
 	@Override
-	public float get() {
+	public float get(UniformConfig config, ShaderTime shaderTime) {
 		return this.value;
 	}
 
 	@Override
-	public void updateValue(float tickDelta, float deltaTime) {
-		value = call(tickDelta, deltaTime);
+	public void updateValue(ShaderTime shaderTime) {
+		value = call(shaderTime);
 	}
 
-	protected float call(float tickDelta, float deltaTime) {
-		float value = this.callable.call(tickDelta, deltaTime);
+	protected float call(ShaderTime shaderTime) {
+		float value = this.callable.call(shaderTime);
 		Optional<Float> min = getMin();
 		if (min.isPresent() && value < min.get()) {
 			return min.get();
