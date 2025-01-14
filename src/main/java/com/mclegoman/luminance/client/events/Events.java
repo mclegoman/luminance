@@ -36,9 +36,7 @@ public class Events {
 		}
 	}
 
-	public static class Registry<T> extends GenericRegistry<Identifier, T> {
-		public final Map<Identifier, T> registry = new HashMap<>();
-	}
+	public static class Registry<T> extends GenericRegistry<Identifier, T> {}
 
 	public static final Registry<Runnable> OnShaderDataReset = new Registry<>();
 	public static final Registry<Runnables.ShaderData> OnShaderDataRegistered = new Registry<>();
