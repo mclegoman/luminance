@@ -7,8 +7,6 @@
 
 package com.mclegoman.luminance.entrypoint;
 
-import net.fabricmc.loader.api.ModContainer;
-
 public interface LuminanceInit {
-	void init(ModContainer mod);
+	void init(String modId);
 }

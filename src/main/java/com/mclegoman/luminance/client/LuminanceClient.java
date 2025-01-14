@@ -17,10 +17,9 @@ import com.mclegoman.luminance.client.util.Tick;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import com.mclegoman.luminance.entrypoint.LuminanceInit;
-import net.fabricmc.loader.api.ModContainer;
 
 public class LuminanceClient implements LuminanceInit {
-	public void init(ModContainer mod) {
+	public void init(String modId) {
 		try {
 			Data.version.sendToLog(LogType.INFO, Translation.getString("Initializing {}", Data.version.getName()));
 			Keybindings.init();

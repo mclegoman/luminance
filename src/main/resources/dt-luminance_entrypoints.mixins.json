@@ -7,5 +7,9 @@
 	],
 	"injectors": {
 		"defaultRequire": 1
-	}
+	},
+	"mixins": [
+		"BootstrapAccessor",
+		"RegistriesMixin"
+	]
 }

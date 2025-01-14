@@ -42,10 +42,11 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api}"
-	include(implementation("org.quiltmc:quilt-config:${project.quilt_config}"))
-	include(implementation("org.quiltmc.quilt-config.serializers:toml:${project.quilt_config}"))
-	include(implementation("org.quiltmc.quilt-config.serializers:json5:${project.quilt_config}"))
-	include(implementation("com.electronwill.night-config:toml:${project.toml}"))
+	include(modImplementation("org.quiltmc:quilt-config:${project.quilt_config}"))
+	include(modImplementation("org.quiltmc.quilt-config.serializers:toml:${project.quilt_config}"))
+	include(modImplementation("org.quiltmc.quilt-config.serializers:json5:${project.quilt_config}"))
+	include(modImplementation("com.electronwill.night-config:toml:${project.toml}"))
+	include(modImplementation("com.electronwill.night-config:core:${project.toml}"))
 
 	// Compatibility
 	modCompileOnly "maven.modrinth:sodium:${project.sodium}"
