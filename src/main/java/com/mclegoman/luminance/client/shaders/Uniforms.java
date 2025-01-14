@@ -102,12 +102,12 @@ public class Uniforms {
 		}
 	}
 
-	public static void registerStandardTree(String path, String name, Callables.SingleValueShaderRender callable, @Nullable Float min, @Nullable Float max) {
+	public static void registerStandardTree(String path, String name, Callables.SingleUniformCalculation callable, @Nullable Float min, @Nullable Float max) {
 		registerStandardTree(path, name, ((shaderTime, uniformValue) -> uniformValue.set(0, callable.call(shaderTime))), 1, min, max);
 	}
 
-	public static void registerStandardTree(String path, String name, Callables.ShaderRender callable, int length, @Nullable Float min, @Nullable Float max) {
-		registerTree(path, addStandardChildren(new RootUniform(name, callable, length, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length)), length));
+	public static void registerStandardTree(String path, String name, @Nullable Callables.UniformCalculation updateFunc, int length, @Nullable Float min, @Nullable Float max) {
+		registerTree(path, addStandardChildren(new RootUniform(name, updateFunc, length, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length)), length));
 	}
 
 	public static TreeUniform addStandardChildren(TreeUniform treeUniform, int length) {
@@ -117,11 +117,11 @@ public class Uniforms {
 
 	public static TreeUniform addElementChildren(TreeUniform treeUniform, int length) {
 		if (length == 2) {
-			treeUniform.addChildren(new ElementUniform("x"), new ElementUniform("y"));
+			treeUniform.addChildren(new ElementUniform("x", 0), new ElementUniform("y", 1));
 		} else if (length == 3) {
-			treeUniform.addChildren(new ElementUniform("x"), new ElementUniform("y"), new ElementUniform("z"));
+			treeUniform.addChildren(new ElementUniform("x", 0), new ElementUniform("y", 1), new ElementUniform("z", 2));
 		} else if (length == 4) {
-			treeUniform.addChildren(new ElementUniform("x"), new ElementUniform("y"), new ElementUniform("z"), new ElementUniform("w"));
+			treeUniform.addChildren(new ElementUniform("x", 0), new ElementUniform("y", 1), new ElementUniform("z", 2), new ElementUniform("w", 3));
 		}
 		return treeUniform;
 	}

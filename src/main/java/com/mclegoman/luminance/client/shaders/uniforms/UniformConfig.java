@@ -1,9 +1,27 @@
 package com.mclegoman.luminance.client.shaders.uniforms;
 
-public class UniformConfig {
-    public static final UniformConfig EMPTY = new UniformConfig();
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.dynamic.Codecs;
 
-    public Object getConfig(String id) {
-        return null;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class UniformConfig {
+    public static final UniformConfig EMPTY = new UniformConfig(new ArrayList<>());
+
+    public final Map<String, List<Object>> config;
+
+    public UniformConfig(List<ConfigData> configValues) {
+        this.config = new HashMap<>(configValues.size());
+        for (ConfigData configData : configValues) {
+            this.config.put(configData.name, configData.objects);
+        }
+    }
+
+    public record ConfigData(String name, List<Object> objects) {
+        public static final Codec<ConfigData> CODEC = RecordCodecBuilder.create((instance) -> instance.group(Codec.STRING.fieldOf("name").forGetter(ConfigData::name), Codecs.BASIC_OBJECT.listOf().fieldOf("values").forGetter(ConfigData::objects)).apply(instance, ConfigData::new));
     }
 }

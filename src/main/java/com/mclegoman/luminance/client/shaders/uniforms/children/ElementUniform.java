@@ -4,17 +4,14 @@ import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 
-import java.util.Locale;
-
 public class ElementUniform extends ChildUniform {
     protected UniformValue element;
     int index;
 
-    public ElementUniform(String name) {
+    public ElementUniform(String name, int index) {
         super(name);
         element = new UniformValue(1);
-        index = name.toLowerCase(Locale.ROOT).charAt(0)-'x';
-        if (index == -1) index = 3;
+        this.index = index;
     }
 
     @Override
@@ -30,10 +27,7 @@ public class ElementUniform extends ChildUniform {
     @Override
     public void updateValue(ShaderTime shaderTime) {
         assert parent != null;
-        UniformValue uniformValue = parent.get(UniformConfig.EMPTY, shaderTime);
-        if (index >= 0 && index < element.values.size()) {
-            element.set(0, uniformValue.values.get(index));
-        }
+        element.set(0, parent.get(UniformConfig.EMPTY, shaderTime).values.get(index));
     }
 
     @Override

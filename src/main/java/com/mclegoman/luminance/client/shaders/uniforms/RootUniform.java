@@ -14,18 +14,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class RootUniform extends TreeUniform {
-	protected final Callables.ShaderRender callable;
+	@Nullable protected final Callables.UniformCalculation updateFunc;
 	@Nullable private final UniformValue min;
 	@Nullable private final UniformValue max;
 
 	protected UniformValue value;
 
-	public RootUniform(String name, Callables.ShaderRender callable, int length) {
-		this(name, callable, length, null, null);
-	}
-	public RootUniform(String name, Callables.ShaderRender callable, int length, @Nullable UniformValue min, @Nullable UniformValue max) {
+	public RootUniform(String name, @Nullable Callables.UniformCalculation updateFunc, int length, @Nullable UniformValue min, @Nullable UniformValue max) {
 		super(name);
-		this.callable = callable;
+		this.updateFunc = updateFunc;
 		this.min = min;
 		this.max = max;
 
@@ -49,7 +46,10 @@ public class RootUniform extends TreeUniform {
 
 	@Override
 	public void updateValue(ShaderTime shaderTime) {
-		call(shaderTime);
+		if (this.updateFunc != null) {
+			this.updateFunc.call(shaderTime, value);
+			clampToRange();
+		}
 	}
 
 	@Override
@@ -57,10 +57,9 @@ public class RootUniform extends TreeUniform {
 
 	}
 
-	protected void call(ShaderTime shaderTime) {
-		this.callable.call(shaderTime, value);
+	protected void clampToRange() {
 		getMin().ifPresent(value::max);
-        getMax().ifPresent(value::min);
+		getMax().ifPresent(value::min);
 	}
 
 	@Override

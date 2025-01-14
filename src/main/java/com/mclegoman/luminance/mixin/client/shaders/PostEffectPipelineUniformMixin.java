@@ -10,6 +10,7 @@ package com.mclegoman.luminance.mixin.client.shaders;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mclegoman.luminance.client.shaders.interfaces.PipelineUniformInterface;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
 import com.mojang.datafixers.kinds.App;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -33,12 +34,15 @@ public class PostEffectPipelineUniformMixin implements PipelineUniformInterface 
     private static <O> Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> codecBuilderOverride(Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> builder) {
         return instance -> instance.group(
                 RecordCodecBuilder.mapCodec(builder).forGetter(Function.identity()),
-                Codec.STRING.sizeLimitedListOf(4).lenientOptionalFieldOf("override").forGetter((uniform -> ((PipelineUniformInterface)uniform).luminance$getOverride()))
-        ).apply(instance, (uniform, override) -> {
+                Codec.STRING.sizeLimitedListOf(4).lenientOptionalFieldOf("override").forGetter((uniform -> ((PipelineUniformInterface)uniform).luminance$getOverride())),
+                UniformConfig.ConfigData.CODEC.listOf().lenientOptionalFieldOf("config").forGetter((uniform -> ((PipelineUniformInterface)uniform).luminance$getConfig()))
+        ).apply(instance, (uniform, override, config) -> {
             override.ifPresent(strings -> ((PipelineUniformInterface) uniform).luminance$setOverride(strings));
+            config.ifPresent(list -> ((PipelineUniformInterface) uniform).luminance$setConfig(list));
             return uniform;
         });
     }
+
 
     @Unique
     private List<String> override;
@@ -51,5 +55,19 @@ public class PostEffectPipelineUniformMixin implements PipelineUniformInterface 
     @Override
     public void luminance$setOverride(List<String> override) {
         this.override = override;
+    }
+
+
+    @Unique
+    private List<UniformConfig.ConfigData> config;
+
+    @Override
+    public Optional<List<UniformConfig.ConfigData>> luminance$getConfig() {
+        return Optional.ofNullable(config);
+    }
+
+    @Override
+    public void luminance$setConfig(List<UniformConfig.ConfigData> config) {
+        this.config = config;
     }
 }

@@ -37,35 +37,6 @@ public class Shaders {
 		Uniforms.init();
 		Events.BeforeGameRender.register(Identifier.of(Data.version.getID(), "update"), Uniforms::update);
 
-		Events.BeforeShaderRender.register(Identifier.of(Data.version.getID(), "main"), new Runnables.Shader() {
-			@Override
-			public void run(PostEffectPass postEffectPass) {
-				ShaderProgram program = postEffectPass.getProgram();
-				for (String uniformName : ((ShaderProgramInterface)program).luminance$getUniformNames()) {
-					com.mclegoman.luminance.client.shaders.uniforms.Uniform uniform = Events.ShaderUniform.registry.get(uniformName);
-					if (uniform == null) {
-						continue;
-					}
-
-					GlUniform glUniform = program.getUniform(uniformName);
-					assert glUniform != null;
-					set(glUniform, uniform.get(UniformConfig.EMPTY, Uniforms.shaderTime));
-				}
-				//Events.ShaderUniform.registry.forEach((id, uniform) -> {
-				//	try {
-				//		uniform.call(ClientData.minecraft.getRenderTickCounter().getTickDelta(true));
-				//		program.getUniformOrDefault(id.toUnderscoreSeparatedString()).set(uniform.get());
-				//		program.getUniformOrDefault(id.toUnderscoreSeparatedString() + "_prev").set(uniform.getPrev());
-				//		program.getUniformOrDefault(id.toUnderscoreSeparatedString() + "_delta").set(uniform.getDelta());
-				//		program.getUniformOrDefault(id.toUnderscoreSeparatedString() + "_smooth").set(uniform.getSmooth(ClientData.minecraft.getRenderTickCounter().getTickDelta(true)));
-				//		program.getUniformOrDefault(id.toUnderscoreSeparatedString() + "_smoothPrev").set(uniform.getSmoothPrev());
-				//		program.getUniformOrDefault(id.toUnderscoreSeparatedString() + "_smoothDelta").set(uniform.getSmoothDelta());
-				//	} catch (Exception error) {
-				//		Data.version.sendToLog(LogType.WARN, error.getLocalizedMessage());
-				//	}
-				//});
-			}
-		});
 //		Events.AfterHandRender.register(Identifier.of(Data.version.getID(), "main"), new Runnables.GameRender() {
 //			@Override
 //			public void run(Framebuffer framebuffer, ObjectAllocator objectAllocator) {
