@@ -8,10 +8,9 @@
 package com.mclegoman.luminance.client.shaders;
 
 import com.google.gson.JsonObject;
-import com.mclegoman.luminance.client.data.ClientData;
-import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.events.Runnables;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
@@ -25,7 +24,6 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.math.MathHelper;
 import org.joml.Vector3f;
 
 import java.util.concurrent.Callable;
@@ -33,26 +31,10 @@ import java.util.concurrent.Callable;
 public class Shaders {
 	public static void init() {
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new ShaderDataloader());
+
 		Uniforms.init();
-		Events.BeforeShaderRender.register(Identifier.of(Data.version.getID(), "main"), new Runnables.Shader() {
-			@Override
-			public void run(PostEffectPass postEffectPass) {
-				ShaderProgram program = postEffectPass.getProgram();
-				Events.ShaderUniform.registry.forEach((id, uniform) -> {
-					try {
-						uniform.call(ClientData.minecraft.getRenderTickCounter().getTickDelta(true));
-						program.getUniformOrDefault(id.toUnderscoreSeparatedString()).set(uniform.get());
-						program.getUniformOrDefault(id.toUnderscoreSeparatedString() + "_prev").set(uniform.getPrev());
-						program.getUniformOrDefault(id.toUnderscoreSeparatedString() + "_delta").set(uniform.getDelta());
-						program.getUniformOrDefault(id.toUnderscoreSeparatedString() + "_smooth").set(uniform.getSmooth(ClientData.minecraft.getRenderTickCounter().getTickDelta(true)));
-						program.getUniformOrDefault(id.toUnderscoreSeparatedString() + "_smoothPrev").set(uniform.getSmoothPrev());
-						program.getUniformOrDefault(id.toUnderscoreSeparatedString() + "_smoothDelta").set(uniform.getSmoothDelta());
-					} catch (Exception error) {
-						Data.version.sendToLog(LogType.WARN, error.getLocalizedMessage());
-					}
-				});
-			}
-		});
+		Events.BeforeGameRender.register(Identifier.of(Data.version.getID(), "update"), Uniforms::update);
+
 //		Events.AfterHandRender.register(Identifier.of(Data.version.getID(), "main"), new Runnables.GameRender() {
 //			@Override
 //			public void run(Framebuffer framebuffer, ObjectAllocator objectAllocator) {
@@ -247,34 +229,11 @@ public class Shaders {
 		}
 		return Identifier.of(id);
 	}
-	public static float getSmooth(float tickDelta, float prev, float current) {
-		return MathHelper.lerp(tickDelta, prev, current);
-	}
-	public static float[] getSmooth(float tickDelta, float[] prev, float[] current) {
-		if (prev.length == current.length) {
-			return new float[]{getSmooth(tickDelta, prev[0], current[0]), getSmooth(tickDelta, prev[1], current[1]), getSmooth(tickDelta, prev[2], current[2])};
-		}
-		return new float[]{};
-	}
 	public static Uniform getUniform(ShaderProgram program, Identifier id) {
 		return program.getUniform(getUniformName(id));
 	}
 	public static String getUniformName(Identifier id) {
 		return id.toString();
-	}
-	public static void setFloatArray(ShaderProgram program, Identifier id,  Callables.ShaderRender<float[]> callable) {
-		try {
-			set(program, id, callable.call(ClientData.minecraft.getRenderTickCounter().getTickDelta(true)));
-		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
-		}
-	}
-	public static void setVector3f(ShaderProgram program, Identifier id,  Callables.ShaderRender<Vector3f> callable) {
-		try {
-			set(program, id, callable.call(ClientData.minecraft.getRenderTickCounter().getTickDelta(true)));
-		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
-		}
 	}
 	public static void set(ShaderProgram program, Identifier id, float... values) {
 		try {
@@ -295,6 +254,9 @@ public class Shaders {
 		} catch (Exception error) {
 			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
 		}
+	}
+	public static void set(GlUniform uniform, UniformValue uniformValue) {
+		uniform.set(uniformValue.values, uniformValue.values.size());
 	}
 	// This is identical to the deprecated `PostEffectProcessor.render(framebuffer, objectAllocator);` function.
 	public static void renderShaderUsingAllocator(PostEffectProcessor processor, Framebuffer framebuffer, ObjectAllocator objectAllocator) {

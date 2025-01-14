@@ -7,19 +7,17 @@
 
 package com.mclegoman.luminance.client.shaders.uniforms;
 
+import com.mclegoman.luminance.client.shaders.ShaderTime;
+
 import java.util.Optional;
 
 public interface Uniform {
-	float get();
-	float getPrev();
-	float getDelta();
-	float getSmooth(float tickDelta);
-	float getSmoothPrev();
-	float getSmoothDelta();
+	UniformValue get(UniformConfig config, ShaderTime shaderTime);
+	int getLength();
 
-	void tick(float tickDelta);
-	void call(float tickDelta) throws Exception;
+	void tick();
+	void update(ShaderTime shaderTime);
 
-	Optional<Float> getMin();
-	Optional<Float> getMax();
+	Optional<UniformValue> getMin();
+	Optional<UniformValue> getMax();
 }

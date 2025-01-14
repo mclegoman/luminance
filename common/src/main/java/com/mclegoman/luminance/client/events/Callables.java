@@ -7,9 +7,22 @@
 
 package com.mclegoman.luminance.client.events;
 
+import com.mclegoman.luminance.client.shaders.ShaderTime;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
+
 public class Callables {
-	public interface ShaderRender<V> {
-		// This should be updated to contain the shader's options JsonObject when we add it.
-		V call(float tickDelta);
+	@FunctionalInterface
+	public interface UniformCalculation {
+		void call(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue);
+	}
+
+	@FunctionalInterface
+	public interface SingleUniformCalculation {
+		float call(ShaderTime shaderTime);
+
+		default UniformCalculation convert() {
+			return (config, shaderTime, uniformValue) -> uniformValue.set(0, call(shaderTime));
+		}
 	}
 }
