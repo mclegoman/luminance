@@ -107,7 +107,7 @@ public class Uniforms {
 	}
 
 	public static void registerStandardTree(String path, String name, Callables.ShaderRender callable, int length, @Nullable Float min, @Nullable Float max) {
-		registerTree(path, addStandardChildren(new RootUniform(name, callable, length, UniformValue.fromFloat(min), UniformValue.fromFloat(max)), length));
+		registerTree(path, addStandardChildren(new RootUniform(name, callable, length, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length)), length));
 	}
 
 	public static TreeUniform addStandardChildren(TreeUniform treeUniform, int length) {

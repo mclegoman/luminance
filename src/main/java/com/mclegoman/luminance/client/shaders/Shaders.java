@@ -26,10 +26,8 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.math.MathHelper;
 import org.joml.Vector3f;
 
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class Shaders {
@@ -262,35 +260,12 @@ public class Shaders {
 		}
 		return Identifier.of(id);
 	}
-	public static float getSmooth(float tickDelta, float prev, float current) {
-		return MathHelper.lerp(tickDelta, prev, current);
-	}
-	public static float[] getSmooth(float tickDelta, float[] prev, float[] current) {
-		if (prev.length == current.length) {
-			return new float[]{getSmooth(tickDelta, prev[0], current[0]), getSmooth(tickDelta, prev[1], current[1]), getSmooth(tickDelta, prev[2], current[2])};
-		}
-		return new float[]{};
-	}
 	public static Uniform getUniform(ShaderProgram program, Identifier id) {
 		return program.getUniform(getUniformName(id));
 	}
 	public static String getUniformName(Identifier id) {
 		return id.toString();
 	}
-	//public static void setFloatArray(ShaderProgram program, Identifier id,  Callables.ShaderRender<float[]> callable) {
-	//	try {
-	//		set(program, id, callable.call(Uniforms.shaderTime));
-	//	} catch (Exception error) {
-	//		Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
-	//	}
-	//}
-	//public static void setVector3f(ShaderProgram program, Identifier id,  Callables.ShaderRender<Vector3f> callable) {
-	//	try {
-	//		set(program, id, callable.call(Uniforms.shaderTime));
-	//	} catch (Exception error) {
-	//		Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
-	//	}
-	//}
 	public static void set(ShaderProgram program, Identifier id, float... values) {
 		try {
 			if (program != null) {

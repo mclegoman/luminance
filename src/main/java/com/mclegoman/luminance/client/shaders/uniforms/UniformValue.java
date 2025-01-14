@@ -23,12 +23,14 @@ public class UniformValue {
     }
 
     @Nullable
-    public static UniformValue fromFloat(@Nullable Float f) {
+    public static UniformValue fromFloat(@Nullable Float f, int length) {
         if (f == null) {
             return null;
         }
-        UniformValue uniformValue = new UniformValue(1);
-        uniformValue.values.set(0, f);
+        UniformValue uniformValue = new UniformValue(length);
+        for (int i = 0; i < length; i++) {
+            uniformValue.values.set(i, f);
+        }
         return uniformValue;
     }
 
