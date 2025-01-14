@@ -4,17 +4,17 @@ import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 
-public class SmoothUniform extends ChildUniform {
-    protected UniformValue smooth;
+import java.util.Locale;
 
-    public SmoothUniform() {
-        super("smooth");
-    }
+public class ElementUniform extends ChildUniform {
+    protected UniformValue element;
+    int index;
 
-    @Override
-    public void onRegister(String fullName) {
-        assert parent != null;
-        smooth = new UniformValue(parent.getLength());
+    public ElementUniform(String name) {
+        super(name);
+        element = new UniformValue(1);
+        index = name.toLowerCase(Locale.ROOT).charAt(0)-'x';
+        if (index == -1) index = 3;
     }
 
     @Override
@@ -23,15 +23,26 @@ public class SmoothUniform extends ChildUniform {
     }
 
     @Override
+    public int getLength() {
+        return 1;
+    }
+
+    @Override
     public void updateValue(ShaderTime shaderTime) {
         assert parent != null;
         UniformValue uniformValue = parent.get(UniformConfig.EMPTY, shaderTime);
-        smooth = uniformValue.copyTo(smooth);
-        smooth.lerp(uniformValue, shaderTime.getDeltaTime());
+        if (index >= 0 && index < element.values.size()) {
+            element.set(0, uniformValue.values.get(index));
+        }
+    }
+
+    @Override
+    public void onRegister(String fullName) {
+
     }
 
     @Override
     public UniformValue get(UniformConfig config, ShaderTime shaderTime) {
-        return smooth;
+        return element;
     }
 }

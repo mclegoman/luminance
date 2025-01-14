@@ -1,7 +1,5 @@
 package com.mclegoman.luminance.client.shaders;
 
-import com.mclegoman.luminance.client.data.ClientData;
-
 public class ShaderTime {
     private float tickDelta;
     private float deltaTime;

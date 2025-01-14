@@ -8,11 +8,11 @@
 package com.mclegoman.luminance.client.shaders;
 
 import com.google.gson.JsonObject;
-import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.events.Runnables;
 import com.mclegoman.luminance.client.shaders.interfaces.ShaderProgramInterface;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
@@ -29,6 +29,7 @@ import net.minecraft.util.JsonHelper;
 import net.minecraft.util.math.MathHelper;
 import org.joml.Vector3f;
 
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class Shaders {
@@ -43,12 +44,14 @@ public class Shaders {
 			public void run(PostEffectPass postEffectPass) {
 				ShaderProgram program = postEffectPass.getProgram();
 				for (String uniformName : ((ShaderProgramInterface)program).luminance$getUniformNames()) {
-					com.mclegoman.luminance.client.shaders.uniforms.Uniform<?> uniform = Events.ShaderUniform.registry.get(uniformName);
+					com.mclegoman.luminance.client.shaders.uniforms.Uniform uniform = Events.ShaderUniform.registry.get(uniformName);
 					if (uniform == null) {
 						continue;
 					}
 
-					set(program.getUniform(uniformName), uniform.get(UniformConfig.EMPTY, Uniforms.shaderTime));
+					GlUniform glUniform = program.getUniform(uniformName);
+					assert glUniform != null;
+					set(glUniform, uniform.get(UniformConfig.EMPTY, Uniforms.shaderTime));
 				}
 				//Events.ShaderUniform.registry.forEach((id, uniform) -> {
 				//	try {
@@ -274,20 +277,20 @@ public class Shaders {
 	public static String getUniformName(Identifier id) {
 		return id.toString();
 	}
-	public static void setFloatArray(ShaderProgram program, Identifier id,  Callables.ShaderRender<float[]> callable) {
-		try {
-			set(program, id, callable.call(Uniforms.shaderTime));
-		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
-		}
-	}
-	public static void setVector3f(ShaderProgram program, Identifier id,  Callables.ShaderRender<Vector3f> callable) {
-		try {
-			set(program, id, callable.call(Uniforms.shaderTime));
-		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
-		}
-	}
+	//public static void setFloatArray(ShaderProgram program, Identifier id,  Callables.ShaderRender<float[]> callable) {
+	//	try {
+	//		set(program, id, callable.call(Uniforms.shaderTime));
+	//	} catch (Exception error) {
+	//		Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
+	//	}
+	//}
+	//public static void setVector3f(ShaderProgram program, Identifier id,  Callables.ShaderRender<Vector3f> callable) {
+	//	try {
+	//		set(program, id, callable.call(Uniforms.shaderTime));
+	//	} catch (Exception error) {
+	//		Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
+	//	}
+	//}
 	public static void set(ShaderProgram program, Identifier id, float... values) {
 		try {
 			if (program != null) {
@@ -308,15 +311,8 @@ public class Shaders {
 			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
 		}
 	}
-	public static void set(Uniform uniform, Object values) {
-		//TODO: implement for all necessary types
-		if (values instanceof Float f) {
-			uniform.set(f);
-		} else if (values instanceof float[] f) {
-			uniform.set(f);
-		} else {
-			Data.version.sendToLog(LogType.WARN, Translation.getString("Cannot set shader uniform: {}", values));
-		}
+	public static void set(GlUniform uniform, UniformValue uniformValue) {
+		uniform.set(uniformValue.values, uniformValue.values.size());
 	}
 	// This is identical to the deprecated `PostEffectProcessor.render(framebuffer, objectAllocator);` function.
 	public static void renderShaderUsingAllocator(PostEffectProcessor processor, Framebuffer framebuffer, ObjectAllocator objectAllocator) {

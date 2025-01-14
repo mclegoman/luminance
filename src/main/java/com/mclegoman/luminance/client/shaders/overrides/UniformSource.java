@@ -28,7 +28,7 @@ public class UniformSource implements OverrideSource {
     public Float get() {
         Uniform uniform = getUniform();
         if (uniform == null) return null;
-        return uniform.get(uniformConfig, Uniforms.shaderTime);
+        return uniform.get(uniformConfig, Uniforms.shaderTime).values.getFirst();
     }
 
     @Override

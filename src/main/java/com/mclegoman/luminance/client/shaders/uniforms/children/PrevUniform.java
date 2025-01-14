@@ -1,40 +1,35 @@
 package com.mclegoman.luminance.client.shaders.uniforms.children;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
-import com.mclegoman.luminance.client.shaders.uniforms.TreeUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 
-import java.util.Optional;
-
-public class PrevUniform extends TreeUniform<Float, Float> {
-    protected float current;
-    protected float prev;
+public class PrevUniform extends ChildUniform {
+    protected UniformValue prev;
 
     public PrevUniform() {
         super("prev");
     }
 
     @Override
+    public void onRegister(String fullName) {
+        assert parent != null;
+        prev = new UniformValue(parent.getLength());
+    }
+
+    @Override
+    public void preParentUpdate(ShaderTime shaderTime) {
+        assert parent != null;
+        prev = parent.get(UniformConfig.EMPTY, shaderTime).copyTo(prev);
+    }
+
+    @Override
     public void updateValue(ShaderTime shaderTime) {
-        prev = current;
-        assert parent != null;
-        current = parent.get(UniformConfig.EMPTY, shaderTime);
+
     }
 
     @Override
-    public Float get(UniformConfig config, ShaderTime shaderTime) {
+    public UniformValue get(UniformConfig config, ShaderTime shaderTime) {
         return prev;
-    }
-
-    @Override
-    public Optional<Float> getMin() {
-        assert parent != null;
-        return parent.getMin();
-    }
-
-    @Override
-    public Optional<Float> getMax() {
-        assert parent != null;
-        return parent.getMax();
     }
 }

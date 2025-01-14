@@ -14,7 +14,9 @@ import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.shaders.uniforms.RootUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.TreeUniform;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 import com.mclegoman.luminance.client.shaders.uniforms.children.DeltaUniform;
+import com.mclegoman.luminance.client.shaders.uniforms.children.ElementUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.children.PrevUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.children.SmoothUniform;
 import com.mclegoman.luminance.client.translation.Translation;
@@ -28,6 +30,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public class Uniforms {
@@ -53,12 +56,10 @@ public class Uniforms {
 			registerStandardTree(path, "viewDistance", Uniforms::getViewDistance, 2f, null);
 			registerStandardTree(path, "fov", Uniforms::getFov, 0f, 360f);
 			registerStandardTree(path, "fps", Uniforms::getFps, 0f, null);
-			registerStandardTree(path, "eyeX", Uniforms::getEyeX, null, null);
-			registerStandardTree(path, "eyeY", Uniforms::getEyeY, null, null);
-			registerStandardTree(path, "eyeZ", Uniforms::getEyeZ, null, null);
-			registerStandardTree(path, "posX", Uniforms::getPosX, null, null);
-			registerStandardTree(path, "posY", Uniforms::getPosY, null, null);
-			registerStandardTree(path, "posZ", Uniforms::getPosZ, null, null);
+
+			registerStandardTree(path, "eye", Uniforms::getEye, 3, null, null);
+			registerStandardTree(path, "pos", Uniforms::getPos, 3, null, null);
+
 			registerStandardTree(path, "pitch", Uniforms::getPitch, -90f, 90f);
 			registerStandardTree(path, "yaw", Uniforms::getYaw, -180f, 180f);
 			registerStandardTree(path, "currentHealth", Uniforms::getCurrentHealth, 0f, null);
@@ -101,14 +102,35 @@ public class Uniforms {
 		}
 	}
 
-	public static void registerStandardTree(String path, String name, Callables.ShaderRender<Float> callable, @Nullable Float min, @Nullable Float max) {
-		registerTree(path, new RootUniform(name, callable, min, max).addChildren(new DeltaUniform(), new PrevUniform(), new SmoothUniform().addChildren(new DeltaUniform(), new PrevUniform())));
+	public static void registerStandardTree(String path, String name, Callables.SingleValueShaderRender callable, @Nullable Float min, @Nullable Float max) {
+		registerStandardTree(path, name, ((shaderTime, uniformValue) -> uniformValue.set(0, callable.call(shaderTime))), 1, min, max);
 	}
 
-	public static void registerTree(String path, TreeUniform<?,?> treeUniform) {
+	public static void registerStandardTree(String path, String name, Callables.ShaderRender callable, int length, @Nullable Float min, @Nullable Float max) {
+		registerTree(path, addStandardChildren(new RootUniform(name, callable, length, UniformValue.fromFloat(min), UniformValue.fromFloat(max)), length));
+	}
+
+	public static TreeUniform addStandardChildren(TreeUniform treeUniform, int length) {
+		addElementChildren(treeUniform.addChildren(addElementChildren(new DeltaUniform(), length), addElementChildren(new PrevUniform(), length), new SmoothUniform().addChildren(addElementChildren(new DeltaUniform(), length), addElementChildren(new PrevUniform(), length))), length);
+		return treeUniform;
+	}
+
+	public static TreeUniform addElementChildren(TreeUniform treeUniform, int length) {
+		if (length == 2) {
+			treeUniform.addChildren(new ElementUniform("x"), new ElementUniform("y"));
+		} else if (length == 3) {
+			treeUniform.addChildren(new ElementUniform("x"), new ElementUniform("y"), new ElementUniform("z"));
+		} else if (length == 4) {
+			treeUniform.addChildren(new ElementUniform("x"), new ElementUniform("y"), new ElementUniform("z"), new ElementUniform("w"));
+		}
+		return treeUniform;
+	}
+
+	public static void registerTree(String path, TreeUniform treeUniform) {
 		String name = path+"_"+treeUniform.name;
+		treeUniform.onRegister(name);
 		Events.ShaderUniform.register(name, treeUniform);
-		for (TreeUniform<?,?> child : treeUniform.children) {
+		for (TreeUniform child : treeUniform.children) {
 			registerTree(name, child);
 		}
 	}
@@ -136,24 +158,23 @@ public class Uniforms {
 		if (time > 1) time -= 1;
 		return time;
 	}
-	public static float getEyeX(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getEyePos().x : 0.0F;
+
+	public static void getEye(ShaderTime shaderTime, UniformValue uniformValue) {
+		if (ClientData.minecraft.player != null) {
+			uniformValue.set(ClientData.minecraft.player.getEyePos());
+		} else {
+			uniformValue.set(new Vec3d(0, 66, 0));
+		}
 	}
-	public static float getEyeY(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getEyePos().y : 66.0F;
+	public static void getPos(ShaderTime shaderTime, UniformValue uniformValue) {
+		if (ClientData.minecraft.player != null) {
+			uniformValue.set(ClientData.minecraft.player.getPos());
+		} else {
+			uniformValue.set(new Vec3d(0, 64, 0));
+		}
 	}
-	public static float getEyeZ(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getEyePos().z : 0.0F;
-	}
-	public static float getPosX(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getPos().x :0.0F;
-	}
-	public static float getPosY(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getPos().y : 64.0F;
-	}
-	public static float getPosZ(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? (float) ClientData.minecraft.player.getPos().z : 0.0F;
-	}
+
+
 	public static float getPitch(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getPitch(shaderTime.getTickDelta()) % 360.0F : 0.0F;
 	}
