@@ -14,6 +14,7 @@ import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.shaders.uniforms.RootUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.TreeUniform;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 import com.mclegoman.luminance.client.shaders.uniforms.children.DeltaUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.children.ElementUniform;
@@ -53,61 +54,74 @@ public class Uniforms {
 	public static void init() {
 		try {
 			String path = Data.version.getID();
-			registerStandardTree(path, "viewDistance", Uniforms::getViewDistance, 2f, null);
-			registerStandardTree(path, "fov", Uniforms::getFov, 0f, 360f);
-			registerStandardTree(path, "fps", Uniforms::getFps, 0f, null);
+			registerSingleTree(path, "viewDistance", Uniforms::getViewDistance, 2f, null);
+			registerSingleTree(path, "fov", Uniforms::getFov, 0f, 360f);
+			registerSingleTree(path, "fps", Uniforms::getFps, 0f, null);
 
-			registerStandardTree(path, "eye", Uniforms::getEye, 3, null, null);
-			registerStandardTree(path, "pos", Uniforms::getPos, 3, null, null);
+			registerStandardTree(path, "eye", Uniforms::getEye, null, null, 3, false);
+			registerStandardTree(path, "pos", Uniforms::getPos, null, null, 3, false);
 
-			registerStandardTree(path, "pitch", Uniforms::getPitch, -90f, 90f);
-			registerStandardTree(path, "yaw", Uniforms::getYaw, -180f, 180f);
-			registerStandardTree(path, "currentHealth", Uniforms::getCurrentHealth, 0f, null);
-			registerStandardTree(path, "maxHealth", Uniforms::getMaxHealth, 0f, null);
-			registerStandardTree(path, "currentAbsorption", Uniforms::getCurrentAbsorption, 0f, null);
-			registerStandardTree(path, "maxAbsorption", Uniforms::getMaxAbsorption, 0f, null);
-			registerStandardTree(path, "currentHurtTime", Uniforms::getCurrentHurtTime, 0f, null);
-			registerStandardTree(path, "maxHurtTime", Uniforms::getMaxHurtTime, 0f, null);
-			registerStandardTree(path, "currentAir", Uniforms::getCurrentAir, 0f, null);
-			registerStandardTree(path, "maxAir", Uniforms::getMaxAir, 0f, null);
-			registerStandardTree(path, "isAlive", Uniforms::getIsAlive, 0f, 1f);
-			registerStandardTree(path, "isDead", Uniforms::getIsDead, 0f, 1f);
-			registerStandardTree(path, "isSprinting", Uniforms::getIsSprinting, 0f, 1f);
-			registerStandardTree(path, "isSwimming", Uniforms::getIsSwimming, 0f, 1f);
-			registerStandardTree(path, "isSneaking", Uniforms::getIsSneaking, 0f, 1f);
-			registerStandardTree(path, "isCrawling", Uniforms::getIsCrawling, 0f, 1f);
-			registerStandardTree(path, "isInvisible", Uniforms::getIsInvisible, 0f, 1f);
-			registerStandardTree(path, "isWithered", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.WITHER), 0f, 1f);
-			registerStandardTree(path, "isPoisoned", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.POISON), 0f, 1f);
-			registerStandardTree(path, "isBurning", Uniforms::getIsBurning, 0f, 1f);
-			registerStandardTree(path, "isOnGround", Uniforms::getIsOnGround, 0f, 1f);
-			registerStandardTree(path, "isOnLadder", Uniforms::getIsOnLadder, 0f, 1f);
-			registerStandardTree(path, "isRiding", Uniforms::getIsRiding, 0f, 1f);
-			registerStandardTree(path, "hasPassengers", Uniforms::getHasPassengers, 0f, 1f);
-			registerStandardTree(path, "biomeTemperature", Uniforms::getBiomeTemperature, 0f, 1f);
-			registerStandardTree(path, "alpha", Uniforms::getAlpha, 0f, 1f);
-			registerStandardTree(path, "perspective", Uniforms::getPerspective, 0f, 3f);
-			registerStandardTree(path, "selectedSlot", Uniforms::getSelectedSlot, 0f, 8f);
-			registerStandardTree(path, "score", Uniforms::getScore, 0f, null);
-			registerStandardTree(path, "velocity", Uniforms::getVelocity, 0f, null);
-			registerStandardTree(path, "skyAngle", Uniforms::getSkyAngle, 0f, 1f);
-			registerStandardTree(path, "sunAngle", Uniforms::getSunAngle, 0f ,1f);
-			registerStandardTree(path, "isDay", Uniforms::getIsDay, 0f, 1f);
-			registerStandardTree(path, "starBrightness", Uniforms::getStarBrightness, 0f, 1f);
+			registerSingleTree(path, "pitch", Uniforms::getPitch, -90f, 90f);
+			registerSingleTree(path, "yaw", Uniforms::getYaw, -180f, 180f);
+			registerSingleTree(path, "currentHealth", Uniforms::getCurrentHealth, 0f, null);
+			registerSingleTree(path, "maxHealth", Uniforms::getMaxHealth, 0f, null);
+			registerSingleTree(path, "currentAbsorption", Uniforms::getCurrentAbsorption, 0f, null);
+			registerSingleTree(path, "maxAbsorption", Uniforms::getMaxAbsorption, 0f, null);
+			registerSingleTree(path, "currentHurtTime", Uniforms::getCurrentHurtTime, 0f, null);
+			registerSingleTree(path, "maxHurtTime", Uniforms::getMaxHurtTime, 0f, null);
+			registerSingleTree(path, "currentAir", Uniforms::getCurrentAir, 0f, null);
+			registerSingleTree(path, "maxAir", Uniforms::getMaxAir, 0f, null);
+			registerSingleTree(path, "isAlive", Uniforms::getIsAlive, 0f, 1f);
+			registerSingleTree(path, "isDead", Uniforms::getIsDead, 0f, 1f);
+			registerSingleTree(path, "isSprinting", Uniforms::getIsSprinting, 0f, 1f);
+			registerSingleTree(path, "isSwimming", Uniforms::getIsSwimming, 0f, 1f);
+			registerSingleTree(path, "isSneaking", Uniforms::getIsSneaking, 0f, 1f);
+			registerSingleTree(path, "isCrawling", Uniforms::getIsCrawling, 0f, 1f);
+			registerSingleTree(path, "isInvisible", Uniforms::getIsInvisible, 0f, 1f);
+			registerSingleTree(path, "isWithered", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.WITHER), 0f, 1f);
+			registerSingleTree(path, "isPoisoned", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.POISON), 0f, 1f);
+			registerSingleTree(path, "isBurning", Uniforms::getIsBurning, 0f, 1f);
+			registerSingleTree(path, "isOnGround", Uniforms::getIsOnGround, 0f, 1f);
+			registerSingleTree(path, "isOnLadder", Uniforms::getIsOnLadder, 0f, 1f);
+			registerSingleTree(path, "isRiding", Uniforms::getIsRiding, 0f, 1f);
+			registerSingleTree(path, "hasPassengers", Uniforms::getHasPassengers, 0f, 1f);
+			registerSingleTree(path, "biomeTemperature", Uniforms::getBiomeTemperature, 0f, 1f);
+			registerSingleTree(path, "alpha", Uniforms::getAlpha, 0f, 1f);
+			registerSingleTree(path, "perspective", Uniforms::getPerspective, 0f, 3f);
+			registerSingleTree(path, "selectedSlot", Uniforms::getSelectedSlot, 0f, 8f);
+			registerSingleTree(path, "score", Uniforms::getScore, 0f, null);
+			registerSingleTree(path, "velocity", Uniforms::getVelocity, 0f, null);
+			registerSingleTree(path, "skyAngle", Uniforms::getSkyAngle, 0f, 1f);
+			registerSingleTree(path, "sunAngle", Uniforms::getSunAngle, 0f ,1f);
+			registerSingleTree(path, "isDay", Uniforms::getIsDay, 0f, 1f);
+			registerSingleTree(path, "starBrightness", Uniforms::getStarBrightness, 0f, 1f);
 
 			// Time Uniform should be updated to be customizable.
-			registerStandardTree(path, "gameTime", Uniforms::getGameTime, 0f, 1f);
+			registerStandardTree(path, "time", Uniforms::getGameTime, 0f, 1f, 1, true);
 		} catch (Exception error) {
 			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
 		}
 	}
 
-	public static void registerStandardTree(String path, String name, Callables.SingleUniformCalculation callable, @Nullable Float min, @Nullable Float max) {
-		registerStandardTree(path, name, ((shaderTime, uniformValue) -> uniformValue.set(0, callable.call(shaderTime))), 1, min, max);
+	public static void registerSingleTree(String path, String name, Callables.SingleUniformCalculation callable, @Nullable Float min, @Nullable Float max) {
+		registerStandardTree(path, name, callable.convert(), min, max, 1, false);
 	}
 
-	public static void registerStandardTree(String path, String name, @Nullable Callables.UniformCalculation updateFunc, int length, @Nullable Float min, @Nullable Float max) {
-		registerTree(path, addStandardChildren(new RootUniform(name, updateFunc, length, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length)), length));
+	public static void registerStandardTree(String path, String name, @Nullable Callables.UniformCalculation callable, @Nullable Float min, @Nullable Float max, int length, boolean useConfig) {
+		RootUniform uniform = new RootUniform(name, callable, length, useConfig, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length));
+		if (!useConfig) {
+			addStandardChildren(uniform, length);
+		}
+		registerTree(path, uniform);
+	}
+
+	public static void registerTree(String path, TreeUniform treeUniform) {
+		String name = path+"_"+treeUniform.name;
+		treeUniform.onRegister(name);
+		Events.ShaderUniform.register(name, treeUniform);
+		for (TreeUniform child : treeUniform.children) {
+			registerTree(name, child);
+		}
 	}
 
 	public static TreeUniform addStandardChildren(TreeUniform treeUniform, int length) {
@@ -126,15 +140,6 @@ public class Uniforms {
 		return treeUniform;
 	}
 
-	public static void registerTree(String path, TreeUniform treeUniform) {
-		String name = path+"_"+treeUniform.name;
-		treeUniform.onRegister(name);
-		Events.ShaderUniform.register(name, treeUniform);
-		for (TreeUniform child : treeUniform.children) {
-			registerTree(name, child);
-		}
-	}
-
 	public static float getViewDistance(ShaderTime shaderTime) {
 		return ClientData.minecraft.options != null ? ClientData.minecraft.options.getViewDistance().getValue() : 12.0F;
 	}
@@ -144,29 +149,20 @@ public class Uniforms {
 	public static float getFps(ShaderTime shaderTime) {
 		return ClientData.minecraft.getCurrentFps();
 	}
-	// TODO: Make Time Uniform be configurable (or moreso, all uniforms).
-	private static float time = 0f;
-	public static float getGameTime(ShaderTime shaderTime) {
-		// Ideally, this would be customisable using a config, but this works for now.
-		// Could we add something like this to the post/x.json and program/x.json files?
-		// options {
-		//     "luminance_time": 20
-		// }
-		// NOTE: adding data to the json isn't actually that bad, see PostEffectPipelineMixin
 
-		time += shaderTime.getDeltaTime()/24000f;
-		if (time > 1) time -= 1;
-		return time;
+	public static void getGameTime(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		float period = config.getOrDefault("period", 0, 1f).floatValue();
+		uniformValue.set(0, shaderTime.getModuloTime(period)/period);
 	}
 
-	public static void getEye(ShaderTime shaderTime, UniformValue uniformValue) {
+	public static void getEye(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
 			uniformValue.set(ClientData.minecraft.player.getEyePos());
 		} else {
 			uniformValue.set(new Vec3d(0, 66, 0));
 		}
 	}
-	public static void getPos(ShaderTime shaderTime, UniformValue uniformValue) {
+	public static void getPos(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
 			uniformValue.set(ClientData.minecraft.player.getPos());
 		} else {

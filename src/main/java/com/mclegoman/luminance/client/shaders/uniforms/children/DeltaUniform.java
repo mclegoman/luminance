@@ -13,24 +13,25 @@ public class DeltaUniform extends ChildUniform {
 
     @Override
     public void onRegister(String fullName) {
+        super.onRegister(fullName);
         assert parent != null;
         delta = new UniformValue(parent.getLength());
     }
 
     @Override
-    public void preParentUpdate(ShaderTime shaderTime) {
+    public void beforeParentCalculation(UniformConfig config, ShaderTime shaderTime) {
         assert parent != null;
-        delta = parent.get(UniformConfig.EMPTY, shaderTime).copyTo(delta);
+        delta = parent.get(config, shaderTime).copyTo(delta);
     }
 
     @Override
-    public void updateValue(ShaderTime shaderTime) {
+    public void calculateCache(UniformConfig config, ShaderTime shaderTime) {
         assert parent != null;
-        delta.subtract(parent.get(UniformConfig.EMPTY, shaderTime));
+        delta.subtract(parent.get(config, shaderTime));
     }
 
     @Override
-    public UniformValue get(UniformConfig config, ShaderTime shaderTime) {
+    public UniformValue getCache(UniformConfig config, ShaderTime shaderTime) {
         return delta;
     }
 }

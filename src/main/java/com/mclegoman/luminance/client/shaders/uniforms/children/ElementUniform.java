@@ -15,28 +15,23 @@ public class ElementUniform extends ChildUniform {
     }
 
     @Override
-    public void preParentUpdate(ShaderTime shaderTime) {
-
-    }
-
-    @Override
     public int getLength() {
         return 1;
     }
 
     @Override
-    public void updateValue(ShaderTime shaderTime) {
+    public void beforeParentCalculation(UniformConfig config, ShaderTime shaderTime) {
+
+    }
+
+    @Override
+    public void calculateCache(UniformConfig config, ShaderTime shaderTime) {
         assert parent != null;
-        element.set(0, parent.get(UniformConfig.EMPTY, shaderTime).values.get(index));
+        element.set(0, parent.get(config, shaderTime).values.get(index));
     }
 
     @Override
-    public void onRegister(String fullName) {
-
-    }
-
-    @Override
-    public UniformValue get(UniformConfig config, ShaderTime shaderTime) {
+    public UniformValue getCache(UniformConfig config, ShaderTime shaderTime) {
         return element;
     }
 }

@@ -51,6 +51,15 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 	@Inject(method = "method_62257", at = @At("HEAD"))
 	private void luminance$beforeRender(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
+		Events.BeforeShaderRender.registry.forEach(((id, runnable) -> runnable.run((PostEffectPass)(Object)this)));
+	}
+	@Inject(method = "method_62257", at = @At("TAIL"))
+	private void luminance$afterRender(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
+		Events.AfterShaderRender.registry.forEach(((id, runnable) -> runnable.run((PostEffectPass)(Object)this)));
+	}
+
+	@Inject(method = "method_62257", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/Framebuffer;setClearColor(FFFF)V"))
+	private void luminance$setUniformValues(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
 		for (String uniformName : ((ShaderProgramInterface)program).luminance$getUniformNames()) {
 			com.mclegoman.luminance.client.shaders.uniforms.Uniform uniform = Events.ShaderUniform.registry.get(uniformName);
 			if (uniform == null) {
@@ -62,25 +71,6 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 			Shaders.set(glUniform, uniform.get(uniformConfigs.getOrDefault(uniformName, UniformConfig.EMPTY), Uniforms.shaderTime));
 		}
 
-		Events.BeforeShaderRender.registry.forEach(((id, runnable) -> runnable.run((PostEffectPass)(Object)this)));
-	}
-	@Inject(method = "method_62257", at = @At("TAIL"))
-	private void luminance$afterRender(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
-		Events.AfterShaderRender.registry.forEach(((id, runnable) -> runnable.run((PostEffectPass)(Object)this)));
-	}
-
-	@Inject(method = "<init>", at = @At("TAIL"))
-	private void initialiseUniformData(String id, ShaderProgram program, Identifier outputTargetId, List<PostEffectPipeline.Uniform> uniforms, CallbackInfo ci) {
-		for (PostEffectPipeline.Uniform uniform : uniforms) {
-			PipelineUniformInterface data = (PipelineUniformInterface)(Object)uniform;
-            assert data != null;
-            data.luminance$getOverride().ifPresent((override) -> uniformOverrides.put(uniform.name(), new LuminanceUniformOverride(override)));
-			data.luminance$getConfig().ifPresent((list) -> uniformConfigs.put(uniform.name(), new UniformConfig(list)));
-		}
-	}
-
-	@Inject(method = "method_62257", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/Framebuffer;setClearColor(FFFF)V"))
-	private void setUniformOverrides(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
 		uniformOverrides.forEach((name, override) -> {
 			GlUniform glUniform = program.getUniform(name);
 			if (glUniform == null) {
@@ -103,6 +93,18 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 			glUniform.set(values, values.size());
 		});
+
+		Events.AfterUniformsSet.registry.forEach(((id, runnable) -> runnable.run((PostEffectPass)(Object)this)));
+	}
+
+	@Inject(method = "<init>", at = @At("TAIL"))
+	private void initialiseUniformData(String id, ShaderProgram program, Identifier outputTargetId, List<PostEffectPipeline.Uniform> uniforms, CallbackInfo ci) {
+		for (PostEffectPipeline.Uniform uniform : uniforms) {
+			PipelineUniformInterface data = (PipelineUniformInterface)(Object)uniform;
+			assert data != null;
+			data.luminance$getOverride().ifPresent((override) -> uniformOverrides.put(uniform.name(), new LuminanceUniformOverride(override)));
+			data.luminance$getConfig().ifPresent((list) -> uniformConfigs.put(uniform.name(), new UniformConfig(list)));
+		}
 	}
 
 	@Override

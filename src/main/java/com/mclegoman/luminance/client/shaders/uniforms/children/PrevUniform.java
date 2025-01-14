@@ -13,23 +13,24 @@ public class PrevUniform extends ChildUniform {
 
     @Override
     public void onRegister(String fullName) {
+        super.onRegister(fullName);
         assert parent != null;
         prev = new UniformValue(parent.getLength());
     }
 
     @Override
-    public void preParentUpdate(ShaderTime shaderTime) {
+    public void beforeParentCalculation(UniformConfig config, ShaderTime shaderTime) {
         assert parent != null;
-        prev = parent.get(UniformConfig.EMPTY, shaderTime).copyTo(prev);
+        prev = parent.get(config, shaderTime).copyTo(prev);
     }
 
     @Override
-    public void updateValue(ShaderTime shaderTime) {
+    public void calculateCache(UniformConfig config, ShaderTime shaderTime) {
 
     }
 
     @Override
-    public UniformValue get(UniformConfig config, ShaderTime shaderTime) {
+    public UniformValue getCache(UniformConfig config, ShaderTime shaderTime) {
         return prev;
     }
 }

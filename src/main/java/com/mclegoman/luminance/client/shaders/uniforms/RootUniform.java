@@ -14,24 +14,19 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class RootUniform extends TreeUniform {
-	@Nullable protected final Callables.UniformCalculation updateFunc;
+	@Nullable protected final Callables.UniformCalculation callable;
 	@Nullable private final UniformValue min;
 	@Nullable private final UniformValue max;
 
 	protected UniformValue value;
 
-	public RootUniform(String name, @Nullable Callables.UniformCalculation updateFunc, int length, @Nullable UniformValue min, @Nullable UniformValue max) {
-		super(name);
-		this.updateFunc = updateFunc;
+	public RootUniform(String name, @Nullable Callables.UniformCalculation callable, int length, boolean useConfig, @Nullable UniformValue min, @Nullable UniformValue max) {
+		super(name, useConfig);
+		this.callable = callable;
 		this.min = min;
 		this.max = max;
 
 		this.value = new UniformValue(length);
-	}
-
-	@Override
-	public UniformValue get(UniformConfig config, ShaderTime shaderTime) {
-		return this.value;
 	}
 
 	@Override
@@ -40,21 +35,21 @@ public class RootUniform extends TreeUniform {
 	}
 
 	@Override
-	public void preParentUpdate(ShaderTime shaderTime) {
+	public void beforeParentCalculation(UniformConfig config, ShaderTime shaderTime) {
 
 	}
 
 	@Override
-	public void updateValue(ShaderTime shaderTime) {
-		if (this.updateFunc != null) {
-			this.updateFunc.call(shaderTime, value);
+	public void calculateCache(UniformConfig config, ShaderTime shaderTime) {
+		if (this.callable != null) {
+			this.callable.call(config, shaderTime, value);
 			clampToRange();
 		}
 	}
 
 	@Override
-	public void onRegister(String fullName) {
-
+	public UniformValue getCache(UniformConfig config, ShaderTime shaderTime) {
+		return this.value;
 	}
 
 	protected void clampToRange() {

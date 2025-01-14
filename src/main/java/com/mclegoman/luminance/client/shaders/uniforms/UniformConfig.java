@@ -1,8 +1,10 @@
 package com.mclegoman.luminance.client.shaders.uniforms;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JavaOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.dynamic.Codecs;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +21,20 @@ public class UniformConfig {
         for (ConfigData configData : configValues) {
             this.config.put(configData.name, configData.objects);
         }
+    }
+
+    public Number getOrDefault(String name, int index, Number defaultValue) {
+        List<Object> objects = config.get(name);
+        if (objects == null || objects.size() <= index) {
+            return defaultValue;
+        }
+
+        Object object = objects.get(index);
+        if (object instanceof Number number) {
+            return number;
+        }
+
+        return defaultValue;
     }
 
     public record ConfigData(String name, List<Object> objects) {

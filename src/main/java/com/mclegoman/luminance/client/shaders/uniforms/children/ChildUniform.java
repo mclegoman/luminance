@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public abstract class ChildUniform extends TreeUniform {
     protected ChildUniform(String name) {
-        super(name);
+        super(name, false);
     }
 
     @Override

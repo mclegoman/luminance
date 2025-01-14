@@ -12,15 +12,17 @@ import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 
 public class Callables {
+	@FunctionalInterface
 	public interface UniformCalculation {
-		void call(ShaderTime shaderTime, UniformValue uniformValue);
+		void call(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue);
 	}
 
+	@FunctionalInterface
 	public interface SingleUniformCalculation {
 		float call(ShaderTime shaderTime);
-	}
 
-	public interface ConfigurableUniformCalculation {
-		void call(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue);
+		default UniformCalculation convert() {
+			return (config, shaderTime, uniformValue) -> uniformValue.set(0, call(shaderTime));
+		}
 	}
 }

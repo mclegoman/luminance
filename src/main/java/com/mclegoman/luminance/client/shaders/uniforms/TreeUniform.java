@@ -12,33 +12,45 @@ public abstract class TreeUniform implements Uniform {
     @Nullable
     public TreeUniform parent;
 
-    protected TreeUniform(String name) {
+    public boolean useConfig;
+    public TreeUniform root;
+
+    protected TreeUniform(String name, boolean useConfig) {
         this.name = name;
+        this.useConfig = useConfig;
         this.children = new ArrayList<>();
     }
 
     @Override
     public void update(ShaderTime shaderTime) {
-        if (parent == null) {
-            updateRecursively(shaderTime);
+        if (!useConfig && parent == null) {
+            updateRecursively(UniformConfig.EMPTY, shaderTime);
         }
     }
 
-    protected void updateRecursively(ShaderTime shaderTime) {
+    @Override
+    public UniformValue get(UniformConfig config, ShaderTime shaderTime) {
+        if (useConfig) {
+            root.updateRecursively(config, shaderTime);
+        }
+        return getCache(config, shaderTime);
+    }
+
+    protected void updateRecursively(UniformConfig config, ShaderTime shaderTime) {
         for (TreeUniform child : children) {
-            child.preParentUpdate(shaderTime);
+            child.beforeParentCalculation(config, shaderTime);
         }
 
-        updateValue(shaderTime);
+        calculateCache(config, shaderTime);
 
         for (TreeUniform child : children) {
-            child.updateRecursively(shaderTime);
+            child.updateRecursively(config, shaderTime);
         }
     }
 
-
-    public abstract void preParentUpdate(ShaderTime shaderTime);
-    public abstract void updateValue(ShaderTime shaderTime);
+    public abstract UniformValue getCache(UniformConfig config, ShaderTime shaderTime);
+    public abstract void beforeParentCalculation(UniformConfig config, ShaderTime shaderTime);
+    public abstract void calculateCache(UniformConfig config, ShaderTime shaderTime);
 
     public final TreeUniform addChildren(TreeUniform... children) {
         this.children.addAll(List.of(children));
@@ -48,7 +60,13 @@ public abstract class TreeUniform implements Uniform {
         return this;
     }
 
-    public abstract void onRegister(String fullName);
+    public void onRegister(String fullName) {
+        root = this;
+        while (root.parent != null) {
+            root = root.parent;
+        }
+        useConfig = root.useConfig;
+    }
 
     @Override
     public void tick() {}

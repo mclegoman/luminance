@@ -230,6 +230,21 @@ public class Events {
 			registry.remove(id);
 		}
 	}
+	public static class AfterUniformsSet {
+		public static final Map<Identifier, Runnables.Shader> registry = new HashMap<>();
+		public static void register(Identifier id, Runnables.Shader runnable) {
+			if (!registry.containsKey(id)) registry.put(id, runnable);
+		}
+		public static Runnables.Shader get(Identifier id) {
+			return registry.get(id);
+		}
+		public static void modify(Identifier id, Runnables.Shader runnable) {
+			registry.replace(id, runnable);
+		}
+		public static void remove(Identifier id) {
+			registry.remove(id);
+		}
+	}
 	public static class AfterShaderRender {
 		public static final Map<Identifier, Runnables.Shader> registry = new HashMap<>();
 		public static void register(Identifier id, Runnables.Shader runnable) {
