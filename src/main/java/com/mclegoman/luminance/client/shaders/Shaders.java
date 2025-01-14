@@ -10,8 +10,6 @@ package com.mclegoman.luminance.client.shaders;
 import com.google.gson.JsonObject;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.events.Runnables;
-import com.mclegoman.luminance.client.shaders.interfaces.ShaderProgramInterface;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;

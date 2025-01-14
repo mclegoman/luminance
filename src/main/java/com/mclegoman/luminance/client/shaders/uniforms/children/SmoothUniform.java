@@ -19,14 +19,14 @@ public class SmoothUniform extends ChildUniform {
     }
 
     @Override
-    public void beforeParentCalculation(UniformConfig config, ShaderTime shaderTime) {
+    public void beforeParentCacheUpdate(UniformConfig config, ShaderTime shaderTime) {
 
     }
 
     @Override
     public void calculateCache(UniformConfig config, ShaderTime shaderTime) {
         assert parent != null;
-        UniformValue uniformValue = parent.get(config, shaderTime);
+        UniformValue uniformValue = parent.getCache(config, shaderTime);
         smooth = uniformValue.copyTo(smooth);
         smooth.lerp(uniformValue, shaderTime.getDeltaTime());
     }

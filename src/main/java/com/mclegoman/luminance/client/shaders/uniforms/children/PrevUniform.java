@@ -19,9 +19,9 @@ public class PrevUniform extends ChildUniform {
     }
 
     @Override
-    public void beforeParentCalculation(UniformConfig config, ShaderTime shaderTime) {
+    public void beforeParentCacheUpdate(UniformConfig config, ShaderTime shaderTime) {
         assert parent != null;
-        prev = parent.get(config, shaderTime).copyTo(prev);
+        prev = parent.getCache(config, shaderTime).copyTo(prev);
     }
 
     @Override

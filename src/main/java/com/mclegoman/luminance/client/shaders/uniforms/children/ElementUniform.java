@@ -20,14 +20,14 @@ public class ElementUniform extends ChildUniform {
     }
 
     @Override
-    public void beforeParentCalculation(UniformConfig config, ShaderTime shaderTime) {
+    public void beforeParentCacheUpdate(UniformConfig config, ShaderTime shaderTime) {
 
     }
 
     @Override
     public void calculateCache(UniformConfig config, ShaderTime shaderTime) {
         assert parent != null;
-        element.set(0, parent.get(config, shaderTime).values.get(index));
+        element.set(0, parent.getCache(config, shaderTime).values.get(index));
     }
 
     @Override

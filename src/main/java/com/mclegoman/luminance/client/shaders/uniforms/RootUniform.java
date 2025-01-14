@@ -35,7 +35,7 @@ public class RootUniform extends TreeUniform {
 	}
 
 	@Override
-	public void beforeParentCalculation(UniformConfig config, ShaderTime shaderTime) {
+	public void beforeParentCacheUpdate(UniformConfig config, ShaderTime shaderTime) {
 
 	}
 

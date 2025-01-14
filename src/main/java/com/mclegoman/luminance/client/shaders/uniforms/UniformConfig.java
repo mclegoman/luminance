@@ -1,10 +1,8 @@
 package com.mclegoman.luminance.client.shaders.uniforms;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JavaOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.dynamic.Codecs;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;

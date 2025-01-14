@@ -38,7 +38,7 @@ public abstract class TreeUniform implements Uniform {
 
     protected void updateRecursively(UniformConfig config, ShaderTime shaderTime) {
         for (TreeUniform child : children) {
-            child.beforeParentCalculation(config, shaderTime);
+            child.beforeParentCacheUpdate(config, shaderTime);
         }
 
         calculateCache(config, shaderTime);
@@ -49,7 +49,7 @@ public abstract class TreeUniform implements Uniform {
     }
 
     public abstract UniformValue getCache(UniformConfig config, ShaderTime shaderTime);
-    public abstract void beforeParentCalculation(UniformConfig config, ShaderTime shaderTime);
+    public abstract void beforeParentCacheUpdate(UniformConfig config, ShaderTime shaderTime);
     public abstract void calculateCache(UniformConfig config, ShaderTime shaderTime);
 
     public final TreeUniform addChildren(TreeUniform... children) {

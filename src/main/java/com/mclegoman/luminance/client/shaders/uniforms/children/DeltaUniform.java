@@ -19,15 +19,15 @@ public class DeltaUniform extends ChildUniform {
     }
 
     @Override
-    public void beforeParentCalculation(UniformConfig config, ShaderTime shaderTime) {
+    public void beforeParentCacheUpdate(UniformConfig config, ShaderTime shaderTime) {
         assert parent != null;
-        delta = parent.get(config, shaderTime).copyTo(delta);
+        delta = parent.getCache(config, shaderTime).copyTo(delta);
     }
 
     @Override
     public void calculateCache(UniformConfig config, ShaderTime shaderTime) {
         assert parent != null;
-        delta.subtract(parent.get(config, shaderTime));
+        delta.subtract(parent.getCache(config, shaderTime));
     }
 
     @Override
