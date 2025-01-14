@@ -21,7 +21,7 @@
   "environment": "client",
   "entrypoints": {
     "luminance_client": [
-      "com.mclegoman.luminance.client.LuminanceClient"
+      "com.mclegoman.luminance.modloader.client.LuminanceFabricLoader"
     ],
     "modmenu": [
 	    "com.mclegoman.luminance.compat.ModMenuCompat"
