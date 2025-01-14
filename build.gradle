@@ -1,154 +1,117 @@
 plugins {
-	id "fabric-loom" version "1.9-SNAPSHOT"
-	id "com.github.breadmoirai.github-release" version "2.4.1"
-	id "com.modrinth.minotaur" version "2.+"
-	id "maven-publish"
+	id 'dev.architectury.loom' version '1.9-SNAPSHOT' apply false
+	id 'architectury-plugin' version '3.4-SNAPSHOT'
+	id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
+	id "io.github.pacifistmc.forgix" version "1.2.9"
 }
-group = project.maven_group
-version = String.valueOf(project.mod_version + (project.isDirty == "true" ? "+dirty." + System.currentTimeSeconds() : "")) + "+" + project.mc_version
 
-base {
-	archivesName = project.archive_name
+architectury {
+	minecraft = project.minecraft
 }
-loom {
-	mods {
-		"luminance" {
-			sourceSet("main")
-		}
+
+allprojects {
+	group = rootProject.maven_group
+	version = ("${project.mod_version}+${project.mc_version.replace("/", "-")}") + (project.isDirty == "true" ? "+dirty." + System.currentTimeSeconds() : "")
+}
+
+subprojects {
+	apply plugin: 'dev.architectury.loom'
+	apply plugin: 'architectury-plugin'
+	apply plugin: 'maven-publish'
+
+	base {
+		archivesName = "$rootProject.mod_name-$project.name"
 	}
-}
-runClient.doFirst {
-	args += ["--username", "Luminance${new Random().nextInt(1000)}"]
-}
-repositories {
-	maven { url = "https://jitpack.io" }
-	maven { url = "https://maven.terraformersmc.com/releases/" }
-	mavenCentral()
-	exclusiveContent {
-		forRepository {
-			maven {
-				name = "Modrinth"
-				url = "https://api.modrinth.com/maven"
+
+	repositories {
+		maven { url = "https://jitpack.io" }
+		maven { url = "https://maven.terraformersmc.com/releases/" }
+		mavenCentral()
+		mavenLocal()
+		exclusiveContent {
+			forRepository {
+				maven {
+					name = "Modrinth"
+					url = "https://api.modrinth.com/maven"
+				}
+			}
+			filter {
+				includeGroup "maven.modrinth"
 			}
 		}
-		filter {
-			includeGroup "maven.modrinth"
+		flatDir {
+			dirs("../libs")
+			dirs("libs")
+		}
+		maven { url = "https://maven.quiltmc.org/repository/release/" }
+	}
+
+	loom {
+		mods {
+			"perspective" {
+				sourceSet("main")
+			}
 		}
 	}
-	maven { url = "https://maven.quiltmc.org/repository/release/" }
-}
-dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft}"
-	mappings "net.fabricmc:yarn:${project.mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api}"
-	include(implementation("org.quiltmc:quilt-config:${project.quilt_config}"))
-	include(implementation("org.quiltmc.quilt-config.serializers:toml:${project.quilt_config}"))
-	include(implementation("org.quiltmc.quilt-config.serializers:json5:${project.quilt_config}"))
-	include(implementation("com.electronwill.night-config:toml:${project.toml}"))
 
-	// Compatibility
-	modCompileOnly "maven.modrinth:sodium:${project.sodium}"
-	modCompileOnly "maven.modrinth:iris:${project.iris}"
-	modCompileOnly "com.terraformersmc:modmenu:${project.modmenu}"
-	modCompileOnly fileTree(dir: 'libs', include: '*.jar')
+	dependencies {
+		minecraft "net.minecraft:minecraft:$rootProject.minecraft"
+		mappings("net.fabricmc:yarn:${project.mappings}:v2")
+		modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_api}")
+		include(modImplementation("org.quiltmc:quilt-config:${project.quilt_config}"))
+		include(modImplementation("org.quiltmc.quilt-config.serializers:toml:${project.quilt_config}"))
+		include(modImplementation("org.quiltmc.quilt-config.serializers:json5:${project.quilt_config}"))
+		include(modImplementation("com.electronwill.night-config:toml:${project.toml}"))
+		include(modImplementation("com.electronwill.night-config:core:${project.toml}"))
 
-	// Development Environment Only
-	modImplementation "com.ptsmods:devlogin:3.4.1"
-}
-processResources {
-	inputs.property "version", project.version
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		// Compatibility
+		modCompileOnly "maven.modrinth:sodium:${project.sodium}"
+		modCompileOnly "maven.modrinth:iris:${project.iris}"
+		modCompileOnly "com.terraformersmc:modmenu:${project.modmenu}"
+		modCompileOnly fileTree(dir: 'libs', include: '*.jar')
 	}
-}
-tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
-}
-java {
-	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
-}
-jar {
-	from("licence") {
-		rename { "${it}_${base.archivesName}"}
+	java {
+		withSourcesJar()
+
+		sourceCompatibility = JavaVersion.VERSION_21
+		targetCompatibility = JavaVersion.VERSION_21
 	}
-}
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
+
+	tasks.withType(JavaCompile).configureEach {
+		it.options.release = 21
+	}
+
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				artifactId = base.archivesName.get()
+				from components.java
+			}
+		}
+
+		repositories {
 		}
 	}
-	repositories {
+}
+
+forgix {
+	group = "${project.maven_group}.${project.mod_name}"
+	mergedJarName = "${project.mod_name}-${project.version}+${project.minecraft}.jar"
+	outputDir = "build/libs/merged"
+//	neoforge {
+//		projectName = "neoforge"
+//		jarLocation = "build/libs/${project.archives_name}-neoforge-${project.version}.jar"
+//		additionalRelocate "com.mclegoman.luminance", "neoforge.com.mclegoman.luminance"
+//	}
+	quilt {
+		projectName = "quilt"
+		jarLocation = "build/libs/${project.mod_name}-quilt-${project.version}.jar"
+		additionalRelocate "com.mclegoman.luminance", "quilt.com.mclegoman.luminance"
 	}
-}
-if (rootProject.file(".env").exists()) {
-	githubRelease {
-		token rootProject.file(".env").text.readLines().get(1).replace("GITHUB=", "").replace("\"", "")
-		owner "MCLegoMan"
-		repo "${project.mod_name}"
-		tagName "${project.mod_version}-${project.mc_version.replace("/", "-")}"
-		targetCommitish "${(project.version_type == "release" ? "release" : "development")}-${project.mc_version.replace("/", "-")}"
-		releaseName "[${project.mc_version}] ${project.mod_name} ${project.mod_version}"
-		generateReleaseNotes false
-		body String.valueOf(((project.version_type == "release") ? rootProject.file("changelog/header_release.md").text : rootProject.file("changelog/header_development.md").text) + "\n## ${project.mod_name} ${project.mod_version} for ${project.mc_version}\n\n" + rootProject.file("changelog/body.md").text + "\n\n" + ((project.version_type == "release") ? rootProject.file("changelog/footer_release.md").text : rootProject.file("changelog/footer_development.md").text))
-		draft false
-		if (project.version_type == "release") prerelease false
-		else prerelease true
-		releaseAssets tasks.remapJar
-		allowUploadToExisting.set false
-		overwrite false
-		dryRun false
-		apiEndpoint "https://api.github.com"
-		client
+	fabric {
+		projectName = "fabric"
+		jarLocation = "build/libs/${project.mod_name}-fabric-${project.version}.jar"
+		additionalRelocate "com.mclegoman.luminance", "fabric.com.mclegoman.luminance"
 	}
-	modrinth {
-		token = rootProject.file(".env").text.readLines().get(0).replace("MODRINTH=", "").replace("\"", "")
-		projectId = "${project.modrinth_id}"
-		versionName = "[${project.mc_version}] ${project.mod_name} ${project.mod_version}"
-		versionNumber = "${project.mod_version}${project.mc_version}"
-		versionType = "${project.version_type}"
-		uploadFile = tasks.remapJar
-		gameVersions = List.of(project.mc_versions.split(", "))
-		loaders = ["fabric", "quilt"]
-		changelog = String.valueOf(((project.version_type == "release") ? rootProject.file("changelog/header_release.md").text : rootProject.file("changelog/header_development.md").text) + "\n## ${project.mod_name} ${project.mod_version} for ${project.mc_version}\n\n" + rootProject.file("changelog/body.md").text + "\n\n" + ((project.version_type == "release") ? rootProject.file("changelog/footer_release.md").text : rootProject.file("changelog/footer_development.md").text))
-		dependencies {
-			required.project "fabric-api"
-			required.project "qsl"
-		}
-	}
-	tasks.register("uploadVersion") {
-		group = project.archive_name
-		description = "Upload project to both GitHub and Modrinth."
-		dependsOn(tasks.githubRelease)
-		dependsOn(tasks.modrinth)
-	}
-}
-tasks.register("quickPlaySingleplayer") {
-	group = project.archive_name
-	description = "Uses Quick Play to join singleplayer world `New World` on launch."
-	dependsOn(tasks.runClient.args(["--quickPlaySingleplayer", "New World"]))
-}
-tasks.register("quickPlayMultiplayer") {
-	group = project.archive_name
-	description = "Uses Quick Play to join multiplayer server `localhost:25565` on launch."
-	dependsOn(tasks.runClient.args(["--quickPlayMultiplayer", "localhost:25565"]))
-}
-tasks.register("runClientLoggedIn") {
-	group = project.archive_name
-	description = "Uses DevLogin to login to your Minecraft Account"
-	dependsOn(tasks.runClient.args(["--msa"]))
-}
-tasks.register("quickPlaySingleplayerLoggedIn") {
-	group = project.archive_name
-	description = "Uses Quick Play to join singleplayer world `New World` on launch and uses DevLogin to login to your Minecraft Account."
-	dependsOn(tasks.runClient.args(["--quickPlaySingleplayer", "New World", "--msa"]))
-}
-tasks.register("quickPlayMultiplayerLoggedIn") {
-	group = project.archive_name
-	description = "Uses Quick Play to join multiplayer server `localhost:25565` on launch and uses DevLogin to login to your Minecraft Account."
-	dependsOn(tasks.runClient.args(["--quickPlayMultiplayer", "localhost:25565", "--msa"]))
 }

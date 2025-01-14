@@ -16,13 +16,11 @@ import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.client.util.Tick;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import com.mclegoman.luminance.entrypoint.LuminanceInit;
-import net.fabricmc.loader.api.ModContainer;
 
-public class LuminanceClient implements LuminanceInit {
-	public void init(ModContainer mod) {
+public class LuminanceClient {
+	public static void init(String modId) {
 		try {
-			Data.version.sendToLog(LogType.INFO, Translation.getString("Initializing {}", Data.version.getName()));
+			Data.version.sendToLog(LogType.INFO, Translation.getString("Initializing {}:client", Data.version.getName()));
 			Keybindings.init();
 			TextureHelper.init();
 			CompatHelper.init();
@@ -30,7 +28,7 @@ public class LuminanceClient implements LuminanceInit {
 			MessageOverlay.init();
 			Tick.init();
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to run onInitializeClient: {}", error));
+			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to run client:init: {}", error));
 		}
 	}
 }
