@@ -20,258 +20,48 @@ import java.util.List;
 import java.util.Map;
 
 public class Events {
-    public static class BeforeInGameHudRender {
-        public static final Map<Identifier, Runnables.InGameHudRender> registry = new HashMap<>();
-        public static void register(Identifier id, Runnables.InGameHudRender runnable) {
-            if (!registry.containsKey(id)) registry.put(id, runnable);
-        }
-        public static Runnables.InGameHudRender get(Identifier id) {
-            return registry.get(id);
-        }
-        public static void modify(Identifier id, Runnables.InGameHudRender runnable) {
-            registry.replace(id, runnable);
-        }
-        public static void remove(Identifier id) {
-            registry.remove(id);
-        }
-    }
-    public static class AfterInGameHudRender {
-        public static final Map<Identifier, Runnables.InGameHudRender> registry = new HashMap<>();
-        public static void register(Identifier id, Runnables.InGameHudRender runnable) {
-            if (!registry.containsKey(id)) registry.put(id, runnable);
-        }
-        public static Runnables.InGameHudRender get(Identifier id) {
-            return registry.get(id);
-        }
-        public static void modify(Identifier id, Runnables.InGameHudRender runnable) {
-            registry.replace(id, runnable);
-        }
-        public static void remove(Identifier id) {
-            registry.remove(id);
-        }
-    }
-	public static class OnShaderDataReset {
-		public static final Map<Identifier, Runnable> registry = new HashMap<>();
-		public static void register(Identifier id, Runnable runnable) {
-			if (!registry.containsKey(id)) registry.put(id, runnable);
+	public static class GenericRegistry<K, V> {
+		public final Map<K, V> registry = new HashMap<>();
+		public void register(K key, V value) {
+			if (!registry.containsKey(key)) registry.put(key, value);
 		}
-		public static Runnable get(Identifier id) {
-			return registry.get(id);
+		public V get(K key) {
+			return registry.get(key);
 		}
-		public static void modify(Identifier id, Runnable runnable) {
-			registry.replace(id, runnable);
+		public void modify(K key, V value) {
+			registry.replace(key, value);
 		}
-		public static void remove(Identifier id) {
-			registry.remove(id);
+		public void remove(K key) {
+			registry.remove(key);
 		}
 	}
-	public static class OnShaderDataRegistered {
-		public static final Map<Identifier, Runnables.ShaderData> registry = new HashMap<>();
-		public static void register(Identifier id, Runnables.ShaderData runnable) {
-			if (!registry.containsKey(id)) registry.put(id, runnable);
-		}
-		public static Runnables.ShaderData get(Identifier id) {
-			return registry.get(id);
-		}
-		public static void modify(Identifier id, Runnables.ShaderData runnable) {
-			registry.replace(id, runnable);
-		}
-		public static void remove(Identifier id) {
-			registry.remove(id);
-		}
+
+	public static class Registry<T> extends GenericRegistry<Identifier, T> {
+		public final Map<Identifier, T> registry = new HashMap<>();
 	}
-	public static class OnShaderDataRemoved {
-		public static final Map<Identifier, Runnables.ShaderData> registry = new HashMap<>();
-		public static void register(Identifier id, Runnables.ShaderData runnable) {
-			if (!registry.containsKey(id)) registry.put(id, runnable);
-		}
-		public static Runnables.ShaderData get(Identifier id) {
-			return registry.get(id);
-		}
-		public static void modify(Identifier id, Runnables.ShaderData runnable) {
-			registry.replace(id, runnable);
-		}
-		public static void remove(Identifier id) {
-			registry.remove(id);
-		}
-	}
-	public static class AfterShaderDataRegistered {
-		public static final Map<Identifier, Runnable> registry = new HashMap<>();
-		public static void register(Identifier id, Runnable runnable) {
-			if (!registry.containsKey(id)) registry.put(id, runnable);
-		}
-		public static Runnable get(Identifier id) {
-			return registry.get(id);
-		}
-		public static void modify(Identifier id, Runnable runnable) {
-			registry.replace(id, runnable);
-		}
-		public static void remove(Identifier id) {
-			registry.remove(id);
-		}
-	}
-	public static class BeforeWorldRender {
-		public static final Map<Identifier, Runnable> registry = new HashMap<>();
-		public static void register(Identifier id, Runnable runnable) {
-			if (!registry.containsKey(id)) registry.put(id, runnable);
-		}
-		public static Runnable get(Identifier id) {
-			return registry.get(id);
-		}
-		public static void modify(Identifier id, Runnable runnable) {
-			registry.replace(id, runnable);
-		}
-		public static void remove(Identifier id) {
-			registry.remove(id);
-		}
-	}
-	public static class AfterWeatherRender {
-		public static final Map<Identifier, Runnables.WorldRender> registry = new HashMap<>();
-		public static void register(Identifier id, Runnables.WorldRender runnable) {
-			if (!registry.containsKey(id)) registry.put(id, runnable);
-		}
-		public static Runnables.WorldRender get(Identifier id) {
-			return registry.get(id);
-		}
-		public static void modify(Identifier id, Runnables.WorldRender runnable) {
-			registry.replace(id, runnable);
-		}
-		public static void remove(Identifier id) {
-			registry.remove(id);
-		}
-	}
-	public static class AfterWorldRender {
-		public static final Map<Identifier, Runnables.GameRender> registry = new HashMap<>();
-		public static void register(Identifier id, Runnables.GameRender runnable) {
-			if (!registry.containsKey(id)) registry.put(id, runnable);
-		}
-		public static Runnables.GameRender get(Identifier id) {
-			return registry.get(id);
-		}
-		public static void modify(Identifier id, Runnables.GameRender runnable) {
-			registry.replace(id, runnable);
-		}
-		public static void remove(Identifier id) {
-			registry.remove(id);
-		}
-	}
-	public static class AfterHandRender {
-		public static final Map<Identifier, Runnables.GameRender> registry = new HashMap<>();
-		public static void register(Identifier id, Runnables.GameRender runnable) {
-			if (!registry.containsKey(id)) registry.put(id, runnable);
-		}
-		public static Runnables.GameRender get(Identifier id) {
-			return registry.get(id);
-		}
-		public static void modify(Identifier id, Runnables.GameRender runnable) {
-			registry.replace(id, runnable);
-		}
-		public static void remove(Identifier id) {
-			registry.remove(id);
-		}
-	}
-	public static class BeforeGameRender {
-		public static final Map<Identifier, Runnable> registry = new HashMap<>();
-		public static void register(Identifier id, Runnable runnable) {
-			if (!registry.containsKey(id)) registry.put(id, runnable);
-		}
-		public static Runnable get(Identifier id) {
-			return registry.get(id);
-		}
-		public static void modify(Identifier id, Runnable runnable) {
-			registry.replace(id, runnable);
-		}
-		public static void remove(Identifier id) {
-			registry.remove(id);
-		}
-	}
-	public static class AfterGameRender {
-		public static final Map<Identifier, Runnables.GameRender> registry = new HashMap<>();
-		public static void register(Identifier id, Runnables.GameRender runnable) {
-			if (!registry.containsKey(id)) registry.put(id, runnable);
-		}
-		public static Runnables.GameRender get(Identifier id) {
-			return registry.get(id);
-		}
-		public static void modify(Identifier id, Runnables.GameRender runnable) {
-			registry.replace(id, runnable);
-		}
-		public static void remove(Identifier id) {
-			registry.remove(id);
-		}
-	}
-	public static class OnResized {
-		public static final Map<Identifier, Runnables.OnResized> registry = new HashMap<>();
-		public static void register(Identifier id, Runnables.OnResized runnable) {
-			if (!registry.containsKey(id)) registry.put(id, runnable);
-		}
-		public static Runnables.OnResized get(Identifier id) {
-			return registry.get(id);
-		}
-		public static void modify(Identifier id, Runnables.OnResized runnable) {
-			registry.replace(id, runnable);
-		}
-		public static void remove(Identifier id) {
-			registry.remove(id);
-		}
-	}
-	public static class BeforeShaderRender {
-		public static final Map<Identifier, Runnables.Shader> registry = new HashMap<>();
-		public static void register(Identifier id, Runnables.Shader runnable) {
-			if (!registry.containsKey(id)) registry.put(id, runnable);
-		}
-		public static Runnables.Shader get(Identifier id) {
-			return registry.get(id);
-		}
-		public static void modify(Identifier id, Runnables.Shader runnable) {
-			registry.replace(id, runnable);
-		}
-		public static void remove(Identifier id) {
-			registry.remove(id);
-		}
-	}
-	public static class AfterUniformsSet {
-		public static final Map<Identifier, Runnables.Shader> registry = new HashMap<>();
-		public static void register(Identifier id, Runnables.Shader runnable) {
-			if (!registry.containsKey(id)) registry.put(id, runnable);
-		}
-		public static Runnables.Shader get(Identifier id) {
-			return registry.get(id);
-		}
-		public static void modify(Identifier id, Runnables.Shader runnable) {
-			registry.replace(id, runnable);
-		}
-		public static void remove(Identifier id) {
-			registry.remove(id);
-		}
-	}
-	public static class AfterShaderRender {
-		public static final Map<Identifier, Runnables.Shader> registry = new HashMap<>();
-		public static void register(Identifier id, Runnables.Shader runnable) {
-			if (!registry.containsKey(id)) registry.put(id, runnable);
-		}
-		public static Runnables.Shader get(Identifier id) {
-			return registry.get(id);
-		}
-		public static void modify(Identifier id, Runnables.Shader runnable) {
-			registry.replace(id, runnable);
-		}
-		public static void remove(Identifier id) {
-			registry.remove(id);
-		}
-	}
-	public static class ShaderUniform {
-		public static final Map<String, Uniform> registry = new HashMap<>();
-		public static void register(String id, Uniform uniform) {
-			if (!registry.containsKey(id)) registry.put(id, uniform);
-		}
-		public static void modify(String id, Uniform uniform) {
-			if (registry.containsKey(id)) registry.replace(id, uniform);
-		}
-		public static void remove(String id) {
-			registry.remove(id);
-		}
-	}
+
+	public static final Registry<Runnable> OnShaderDataReset = new Registry<>();
+	public static final Registry<Runnables.ShaderData> OnShaderDataRegistered = new Registry<>();
+	public static final Registry<Runnables.ShaderData> OnShaderDataRemoved= new Registry<>();
+	public static final Registry<Runnable> AfterShaderDataRegistered = new Registry<>();
+
+	public static final Registry<Runnables.InGameHudRender> BeforeInGameHudRender = new Registry<>();
+	public static final Registry<Runnables.InGameHudRender> AfterInGameHudRender = new Registry<>();
+	public static final Registry<Runnable> BeforeWorldRender = new Registry<>();
+	public static final Registry<Runnables.WorldRender> AfterWeatherRender = new Registry<>();
+	public static final Registry<Runnables.GameRender> AfterWorldRender = new Registry<>();
+	public static final Registry<Runnables.GameRender> AfterHandRender = new Registry<>();
+	public static final Registry<Runnable> BeforeGameRender = new Registry<>();
+	public static final Registry<Runnables.GameRender> AfterGameRender = new Registry<>();
+
+	public static final Registry<Runnables.OnResized> OnResized = new Registry<>();
+
+	public static final Registry<Runnables.Shader> BeforeShaderRender = new Registry<>();
+	public static final Registry<Runnables.Shader> AfterShaderRender = new Registry<>();
+
+	public static final GenericRegistry<String, Uniform> ShaderUniform = new GenericRegistry<>();
+
+
 	public static class ShaderRender {
 		public static final Map<Identifier, List<Shader.Data>> registry = new HashMap<>();
 		public static void register(Identifier id, List<Shader.Data> shaders) {

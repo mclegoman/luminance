@@ -93,8 +93,6 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 			glUniform.set(values, values.size());
 		});
-
-		Events.AfterUniformsSet.registry.forEach(((id, runnable) -> runnable.run((PostEffectPass)(Object)this)));
 	}
 
 	@Inject(method = "<init>", at = @At("TAIL"))
