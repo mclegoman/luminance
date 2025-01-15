@@ -31,7 +31,6 @@ import java.util.concurrent.Callable;
 public class Shaders {
 	public static final List<ShaderRegistry> registry = new ArrayList<>();
 	public static void init() {
-		ShaderDataloaderInit.init();
 		Uniforms.init();
 		Events.BeforeGameRender.register(Identifier.of(Data.version.getID(), "update"), Uniforms::update);
 
