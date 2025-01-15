@@ -2,6 +2,7 @@ package com.mclegoman.luminance.client.shaders.uniforms.children;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
+import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 
 public class SmoothUniform extends ChildUniform {
@@ -34,5 +35,10 @@ public class SmoothUniform extends ChildUniform {
     @Override
     public UniformValue getCache(UniformConfig config, ShaderTime shaderTime) {
         return smooth;
+    }
+
+    @Override
+    public UniformConfig getDefaultConfig() {
+        return EmptyConfig.INSTANCE;
     }
 }

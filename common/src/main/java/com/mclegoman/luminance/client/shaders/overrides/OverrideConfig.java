@@ -3,6 +3,7 @@ package com.mclegoman.luminance.client.shaders.overrides;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 
 import java.util.List;
+import java.util.Optional;
 
 public class OverrideConfig implements UniformConfig {
     protected UniformConfig uniformConfig;
@@ -22,8 +23,8 @@ public class OverrideConfig implements UniformConfig {
     }
 
     @Override
-    public Number getOrDefault(String name, int index, Number defaultValue) {
-        return uniformConfig.getOrDefault(preprocessName(name), index, defaultValue);
+    public Optional<Number> getNumber(String name, int index) {
+        return uniformConfig.getNumber(preprocessName(name), index);
     }
 
     @Override

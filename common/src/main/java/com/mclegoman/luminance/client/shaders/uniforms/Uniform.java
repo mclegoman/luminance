@@ -21,4 +21,6 @@ public interface Uniform {
 
 	Optional<UniformValue> getMin();
 	Optional<UniformValue> getMax();
+
+	UniformConfig getDefaultConfig();
 }

@@ -1,8 +1,11 @@
 package com.mclegoman.luminance.client.shaders.uniforms.config;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class MapConfig implements UniformConfig {
     private final Map<String, List<Object>> config;
@@ -14,22 +17,23 @@ public class MapConfig implements UniformConfig {
         }
     }
 
-    public Number getOrDefault(String name, int index, Number defaultValue) {
+    @Override
+    public Optional<Number> getNumber(String name, int index) {
         List<Object> objects = config.get(name);
         if (objects == null || objects.size() <= index) {
-            return defaultValue;
+            return Optional.empty();
         }
 
         Object object = objects.get(index);
         if (object instanceof Number number) {
-            return number;
+            return Optional.of(number);
         }
 
-        return defaultValue;
+        return Optional.empty();
     }
 
+    @Override @Nullable
     public List<Object> get(String name) {
         return config.get(name);
     }
-
 }

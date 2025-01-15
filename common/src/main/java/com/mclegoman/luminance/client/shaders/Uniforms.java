@@ -19,6 +19,8 @@ import com.mclegoman.luminance.client.shaders.uniforms.children.DeltaUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.children.ElementUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.children.PrevUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.children.SmoothUniform;
+import com.mclegoman.luminance.client.shaders.uniforms.config.ConfigData;
+import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.client.util.Accessors;
@@ -33,6 +35,8 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class Uniforms {
 	public static ShaderTime shaderTime = new ShaderTime();
@@ -58,8 +62,8 @@ public class Uniforms {
 			registerSingleTree(path, "fov", Uniforms::getFov, 0f, 360f);
 			registerSingleTree(path, "fps", Uniforms::getFps, 0f, null);
 
-			registerStandardTree(path, "eye", Uniforms::getEye, null, null, 3, false);
-			registerStandardTree(path, "pos", Uniforms::getPos, null, null, 3, false);
+			registerStandardTree(path, "eye", Uniforms::getEye, null, null, 3, null);
+			registerStandardTree(path, "pos", Uniforms::getPos, null, null, 3, null);
 
 			registerSingleTree(path, "pitch", Uniforms::getPitch, -90f, 90f);
 			registerSingleTree(path, "yaw", Uniforms::getYaw, -180f, 180f);
@@ -97,19 +101,19 @@ public class Uniforms {
 			registerSingleTree(path, "starBrightness", Uniforms::getStarBrightness, 0f, 1f);
 
 			// Time Uniform should be updated to be customizable.
-			registerStandardTree(path, "time", Uniforms::getGameTime, 0f, 1f, 1, true);
+			registerStandardTree(path, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("period", List.of(1.0f)))));
 		} catch (Exception error) {
 			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
 		}
 	}
 
 	public static void registerSingleTree(String path, String name, Callables.SingleUniformCalculation callable, @Nullable Float min, @Nullable Float max) {
-		registerStandardTree(path, name, callable.convert(), min, max, 1, false);
+		registerStandardTree(path, name, callable.convert(), min, max, 1, null);
 	}
 
-	public static void registerStandardTree(String path, String name, Callables.UniformCalculation callable, @Nullable Float min, @Nullable Float max, int length, boolean useConfig) {
-		RootUniform uniform = new RootUniform(name, callable, length, useConfig, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length));
-		if (!useConfig) {
+	public static void registerStandardTree(String path, String name, Callables.UniformCalculation callable, @Nullable Float min, @Nullable Float max, int length, @Nullable UniformConfig uniformConfig) {
+		RootUniform uniform = new RootUniform(name, callable, length, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length), uniformConfig);
+		if (!uniform.useConfig) {
 			addStandardChildren(uniform, length);
 		}
 		registerTree(path, uniform);
@@ -151,7 +155,7 @@ public class Uniforms {
 	}
 
 	public static void getGameTime(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
-		float period = config.getOrDefault("period", 0, 1f).floatValue();
+		float period = config.getNumber("period", 0).orElse(1.0).floatValue();
 		uniformValue.set(0, shaderTime.getModuloTime(period)/period);
 	}
 
