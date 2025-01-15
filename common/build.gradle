@@ -3,5 +3,15 @@ architectury {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader"
+    modImplementation("net.fabricmc:fabric-loader:$rootProject.fabric_loader")
+    modImplementation("org.quiltmc:quilt-config:${rootProject.quilt_config}")
+    modImplementation("org.quiltmc.quilt-config.serializers:toml:${rootProject.quilt_config}")
+    modImplementation("org.quiltmc.quilt-config.serializers:json5:${rootProject.quilt_config}")
+    modImplementation("com.electronwill.night-config:toml:${rootProject.toml}")
+    modImplementation("com.electronwill.night-config:core:${rootProject.toml}")
+
+    // Compatibility
+    modCompileOnly "maven.modrinth:sodium:${rootProject.sodium}"
+    modCompileOnly "maven.modrinth:iris:${rootProject.iris}"
+    modCompileOnly "com.terraformersmc:modmenu:${rootProject.modmenu}"
 }

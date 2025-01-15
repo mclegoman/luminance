@@ -28,6 +28,13 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader"
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
+
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_api}")
+    include(modImplementation("org.quiltmc:quilt-config:${rootProject.quilt_config}"))
+    include(modImplementation("org.quiltmc.quilt-config.serializers:toml:${rootProject.quilt_config}"))
+    include(modImplementation("org.quiltmc.quilt-config.serializers:json5:${rootProject.quilt_config}"))
+    include(modImplementation("com.electronwill.night-config:toml:${rootProject.toml}"))
+    include(modImplementation("com.electronwill.night-config:core:${rootProject.toml}"))
 }
 
 processResources {
