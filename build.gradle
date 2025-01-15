@@ -10,8 +10,8 @@ architectury {
 }
 
 allprojects {
-	group = rootProject.maven_group
-	version = ("${project.mod_version}+${project.mc_version.replace("/", "-")}")
+	group = project.maven_group
+	version = project.mod_version
 }
 
 subprojects {
