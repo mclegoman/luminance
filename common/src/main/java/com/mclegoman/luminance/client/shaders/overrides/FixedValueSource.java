@@ -7,6 +7,9 @@
 
 package com.mclegoman.luminance.client.shaders.overrides;
 
+import com.mclegoman.luminance.client.shaders.ShaderTime;
+import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
+
 public class FixedValueSource implements OverrideSource {
     public float value;
 
@@ -15,7 +18,7 @@ public class FixedValueSource implements OverrideSource {
     }
 
     @Override
-    public Float get() {
+    public Float get(UniformConfig config, ShaderTime shaderTime) {
         return value;
     }
 

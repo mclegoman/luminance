@@ -8,6 +8,7 @@
 package com.mclegoman.luminance.client.shaders.uniforms;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
+import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 
 import java.util.Optional;
 

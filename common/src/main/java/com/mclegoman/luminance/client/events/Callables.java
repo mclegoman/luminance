@@ -8,8 +8,8 @@
 package com.mclegoman.luminance.client.events;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
+import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 
 public class Callables {
 	@FunctionalInterface

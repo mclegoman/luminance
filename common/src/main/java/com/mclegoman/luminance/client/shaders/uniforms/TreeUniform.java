@@ -1,6 +1,8 @@
 package com.mclegoman.luminance.client.shaders.uniforms;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
+import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
+import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public abstract class TreeUniform implements Uniform {
     @Override
     public void update(ShaderTime shaderTime) {
         if (!useConfig && parent == null) {
-            updateRecursively(UniformConfig.EMPTY, shaderTime);
+            updateRecursively(EmptyConfig.INSTANCE, shaderTime);
         }
     }
 

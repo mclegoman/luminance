@@ -10,7 +10,7 @@ package com.mclegoman.luminance.mixin.client.shaders;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mclegoman.luminance.client.shaders.interfaces.PipelineUniformInterface;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
+import com.mclegoman.luminance.client.shaders.uniforms.config.ConfigData;
 import com.mojang.datafixers.kinds.App;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -35,7 +35,7 @@ public class PostEffectPipelineUniformMixin implements PipelineUniformInterface 
         return instance -> instance.group(
                 RecordCodecBuilder.mapCodec(builder).forGetter(Function.identity()),
                 Codec.STRING.sizeLimitedListOf(4).lenientOptionalFieldOf("override").forGetter((uniform -> ((PipelineUniformInterface)uniform).luminance$getOverride())),
-                UniformConfig.ConfigData.CODEC.listOf().lenientOptionalFieldOf("config").forGetter((uniform -> ((PipelineUniformInterface)uniform).luminance$getConfig()))
+                ConfigData.CODEC.listOf().lenientOptionalFieldOf("config").forGetter((uniform -> ((PipelineUniformInterface)uniform).luminance$getConfig()))
         ).apply(instance, (uniform, override, config) -> {
             override.ifPresent(strings -> ((PipelineUniformInterface) uniform).luminance$setOverride(strings));
             config.ifPresent(list -> ((PipelineUniformInterface) uniform).luminance$setConfig(list));
@@ -59,15 +59,15 @@ public class PostEffectPipelineUniformMixin implements PipelineUniformInterface 
 
 
     @Unique
-    private List<UniformConfig.ConfigData> config;
+    private List<ConfigData> config;
 
     @Override
-    public Optional<List<UniformConfig.ConfigData>> luminance$getConfig() {
+    public Optional<List<ConfigData>> luminance$getConfig() {
         return Optional.ofNullable(config);
     }
 
     @Override
-    public void luminance$setConfig(List<UniformConfig.ConfigData> config) {
+    public void luminance$setConfig(List<ConfigData> config) {
         this.config = config;
     }
 }

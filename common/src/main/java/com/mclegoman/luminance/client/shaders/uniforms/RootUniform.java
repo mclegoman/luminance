@@ -9,6 +9,7 @@ package com.mclegoman.luminance.client.shaders.uniforms;
 
 import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.shaders.ShaderTime;
+import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;

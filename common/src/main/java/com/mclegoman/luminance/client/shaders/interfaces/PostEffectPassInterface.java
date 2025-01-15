@@ -8,7 +8,7 @@
 package com.mclegoman.luminance.client.shaders.interfaces;
 
 import com.mclegoman.luminance.client.shaders.overrides.UniformOverride;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
+import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import net.minecraft.client.gl.PostEffectPipeline;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.util.Identifier;
