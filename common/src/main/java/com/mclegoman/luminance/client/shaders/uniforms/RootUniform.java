@@ -15,13 +15,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class RootUniform extends TreeUniform {
-	@Nullable protected final Callables.UniformCalculation callable;
+	protected final Callables.UniformCalculation callable;
 	@Nullable private final UniformValue min;
 	@Nullable private final UniformValue max;
 
 	protected UniformValue value;
 
-	public RootUniform(String name, @Nullable Callables.UniformCalculation callable, int length, boolean useConfig, @Nullable UniformValue min, @Nullable UniformValue max) {
+	public RootUniform(String name, Callables.UniformCalculation callable, int length, boolean useConfig, @Nullable UniformValue min, @Nullable UniformValue max) {
 		super(name, useConfig);
 		this.callable = callable;
 		this.min = min;
@@ -42,10 +42,8 @@ public class RootUniform extends TreeUniform {
 
 	@Override
 	public void calculateCache(UniformConfig config, ShaderTime shaderTime) {
-		if (this.callable != null) {
-			this.callable.call(config, shaderTime, value);
-			clampToRange();
-		}
+		this.callable.call(config, shaderTime, value);
+		clampToRange();
 	}
 
 	@Override

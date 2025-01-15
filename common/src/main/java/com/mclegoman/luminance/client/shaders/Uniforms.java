@@ -107,7 +107,7 @@ public class Uniforms {
 		registerStandardTree(path, name, callable.convert(), min, max, 1, false);
 	}
 
-	public static void registerStandardTree(String path, String name, @Nullable Callables.UniformCalculation callable, @Nullable Float min, @Nullable Float max, int length, boolean useConfig) {
+	public static void registerStandardTree(String path, String name, Callables.UniformCalculation callable, @Nullable Float min, @Nullable Float max, int length, boolean useConfig) {
 		RootUniform uniform = new RootUniform(name, callable, length, useConfig, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length));
 		if (!useConfig) {
 			addStandardChildren(uniform, length);
