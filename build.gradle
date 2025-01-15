@@ -11,7 +11,7 @@ architectury {
 
 allprojects {
 	group = rootProject.maven_group
-	version = ("${project.mod_version}+${project.mc_version.replace("/", "-")}") + (project.isDirty == "true" ? "+dirty." + System.currentTimeSeconds() : "")
+	version = ("${project.mod_version}+${project.mc_version.replace("/", "-")}")
 }
 
 subprojects {
@@ -90,7 +90,7 @@ subprojects {
 
 forgix {
 	group = "${project.maven_group}.${project.archive_name}"
-	mergedJarName = "${project.archive_name}-${project.version}+${project.minecraft}.jar"
+	mergedJarName = "${project.archive_name}-${project.version}+${project.minecraft}" + (project.isDirty == "true" ? "+dirty." + System.currentTimeSeconds() : "") + ".jar"
 	outputDir = "build/libs/merged"
 //	neoforge {
 //		projectName = "neoforge"

@@ -42,6 +42,10 @@
       {
         "id": "fabric-lifecycle-events-v1",
         "version": "*"
+      },
+      {
+        "id": "java",
+        "version": ">=21"
       }
     ]
   },
