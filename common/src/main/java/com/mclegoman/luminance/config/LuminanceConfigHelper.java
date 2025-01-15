@@ -7,14 +7,15 @@
 
 package com.mclegoman.luminance.config;
 
+import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.config.serializers.LuminanceSerializer;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
 import org.quiltmc.config.api.ReflectiveConfig;
 import org.quiltmc.config.api.serializers.TomlSerializer;
 import org.quiltmc.config.api.values.TrackedValue;
 import org.quiltmc.config.implementor_api.ConfigEnvironment;
 import org.quiltmc.config.implementor_api.ConfigFactory;
 
+import java.io.File;
 import java.nio.file.Path;
 
 public class LuminanceConfigHelper {
@@ -35,20 +36,20 @@ public class LuminanceConfigHelper {
 	public static ConfigEnvironment getConfigEnvironment(SerializerType type) {
 		if (type == SerializerType.JSON5) {
 			if (jsonConfigEnvironment == null) {
-				jsonConfigEnvironment = new ConfigEnvironment(FabricLoaderImpl.INSTANCE.getConfigDir(), "toml", TomlSerializer.INSTANCE);
+				jsonConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "toml", TomlSerializer.INSTANCE);
 				jsonConfigEnvironment.registerSerializer(TomlSerializer.INSTANCE);
 			}
 			return jsonConfigEnvironment;
 		} else if (type == SerializerType.PROPERTIES) {
 			if (propertiesConfigEnvironment == null) {
 				LuminanceSerializer serializer = new LuminanceSerializer("properties");
-				propertiesConfigEnvironment = new ConfigEnvironment(FabricLoaderImpl.INSTANCE.getConfigDir(), "properties", serializer);
+				propertiesConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "properties", serializer);
 				propertiesConfigEnvironment.registerSerializer(serializer);
 			}
 			return propertiesConfigEnvironment;
 		} else {
 			if (tomlConfigEnvironment == null) {
-				tomlConfigEnvironment = new ConfigEnvironment(FabricLoaderImpl.INSTANCE.getConfigDir(), "toml", TomlSerializer.INSTANCE);
+				tomlConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "toml", TomlSerializer.INSTANCE);
 				tomlConfigEnvironment.registerSerializer(TomlSerializer.INSTANCE);
 			}
 			return tomlConfigEnvironment;

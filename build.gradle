@@ -20,7 +20,7 @@ subprojects {
 	apply plugin: 'maven-publish'
 
 	base {
-		archivesName = "$rootProject.mod_name-$project.name"
+		archivesName = "$rootProject.archive_name-$project.name"
 	}
 
 	repositories {
@@ -96,8 +96,8 @@ subprojects {
 }
 
 forgix {
-	group = "${project.maven_group}.${project.mod_name}"
-	mergedJarName = "${project.mod_name}-${project.version}+${project.minecraft}.jar"
+	group = "${project.maven_group}.${project.archive_name}"
+	mergedJarName = "${project.archive_name}-${project.version}+${project.minecraft}.jar"
 	outputDir = "build/libs/merged"
 //	neoforge {
 //		projectName = "neoforge"
@@ -106,12 +106,12 @@ forgix {
 //	}
 	quilt {
 		projectName = "quilt"
-		jarLocation = "build/libs/${project.mod_name}-quilt-${project.version}.jar"
+		jarLocation = "build/libs/${project.archive_name}-quilt-${project.version}.jar"
 		additionalRelocate "com.mclegoman.luminance", "quilt.com.mclegoman.luminance"
 	}
 	fabric {
 		projectName = "fabric"
-		jarLocation = "build/libs/${project.mod_name}-fabric-${project.version}.jar"
+		jarLocation = "build/libs/${project.archive_name}-fabric-${project.version}.jar"
 		additionalRelocate "com.mclegoman.luminance", "fabric.com.mclegoman.luminance"
 	}
 }

@@ -1,1 +1,0 @@
-![](https://mclegoman.com/images/d/df/Luminance.png)  

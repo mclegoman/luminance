@@ -30,13 +30,12 @@ import java.util.Map;
 
 public class ShaderDataloader extends JsonDataLoader implements IdentifiableResourceReloadListener {
 	protected static boolean isReloading;
-	public static final List<ShaderRegistry> registry = new ArrayList<>();
 	public static final String resourceLocation = "luminance";
 	public ShaderDataloader() {
 		super(new Gson(), resourceLocation);
 	}
 	private void reset() {
-		registry.clear();
+		Shaders.registry.clear();
 		Events.OnShaderDataReset.registry.forEach((id, runnable) -> {
 			try {
 				runnable.run();
@@ -52,26 +51,20 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 		try {
 			manager.getResourceOrThrow(shaderData.getPostEffect(true));
 			boolean alreadyRegistered = false;
-			for (ShaderRegistry data : registry) {
+			for (ShaderRegistry data : Shaders.registry) {
 				if (data.getID().equals(shaderData.getID())) {
 					alreadyRegistered = true;
 					Data.version.sendToLog(LogType.WARN, Translation.getString("Failed to add \"{}\" shader to registry: This shader has already been registered!", shaderData.getID()));
 					break;
 				}
 			}
-			if (!alreadyRegistered) registry.add(shaderData);
+			if (!alreadyRegistered) Shaders.registry.add(shaderData);
 		} catch (Exception error) {
 			Data.version.sendToLog(LogType.WARN, "Failed to add shader to registry: " + error);
 		}
 	}
-	public static int getShaderAmount() {
-		return registry.size();
-	}
-	public static boolean isValidIndex(int index) {
-		return index <= getShaderAmount() && index >= 0;
-	}
 	private void remove(ShaderRegistry shaderData) {
-		registry.removeIf((shader) -> (shader.getID().equals(shaderData.getID())));
+		Shaders.registry.removeIf((shader) -> (shader.getID().equals(shaderData.getID())));
 	}
 	@Override
 	public void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {

@@ -12,9 +12,12 @@ import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+
+import java.util.Optional;
 
 public class ResourcePacks {
 	/**
@@ -27,19 +30,22 @@ public class ResourcePacks {
 	 * You only need to include the licence in your comment if it is not GNU LGPLv3.
 	 */
 	public static void init() {
-		/*
-            Super Secret Settings
-            Contributor(s): Mojang Studios, Microsoft Corporation, dannytaylor, Nettakrim
-            Licence: Minecraft EULA
-            Notes: These shaders have been modified to work with the latest version of minecraft, and also contain new code.
-        */
-		register(Identifier.of("super_secret_settings"), Data.getModContainer("luminance"), Translation.getTranslation(Data.version.getID(), "resource_pack.super_secret_settings"), ResourcePackActivationType.DEFAULT_ENABLED);
-		/*
-            Luminance: Default
-            Contributor(s): dannytaylor
-            Licence: GNU LGPLv3
-        */
-		register(Identifier.of("luminance_default"), Data.getModContainer("luminance"), Translation.getTranslation(Data.version.getID(), "resource_pack.luminance_default"), ResourcePackActivationType.DEFAULT_ENABLED);
+		Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(Data.version.getID());
+		if (modContainer.isPresent()) {
+			/*
+	            Super Secret Settings
+	            Contributor(s): Mojang Studios, Microsoft Corporation, dannytaylor, Nettakrim
+	            Licence: Minecraft EULA
+	            Notes: These shaders have been modified to work with the latest version of minecraft, and also contain new code.
+            */
+			register(Identifier.of("super_secret_settings"), modContainer.get(), Translation.getTranslation(Data.version.getID(), "resource_pack.super_secret_settings"), ResourcePackActivationType.DEFAULT_ENABLED);
+			/*
+	            Luminance: Default
+	            Contributor(s): dannytaylor
+	            Licence: GNU LGPLv3
+	        */
+			register(Identifier.of("luminance_default"), modContainer.get(), Translation.getTranslation(Data.version.getID(), "resource_pack.luminance_default"), ResourcePackActivationType.DEFAULT_ENABLED);
+		}
 	}
 	public static void register(Identifier id, ModContainer container, Text text, ResourcePackActivationType activationType) {
 		try {

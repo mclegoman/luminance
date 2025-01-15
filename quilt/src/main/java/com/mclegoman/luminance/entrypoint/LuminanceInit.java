@@ -5,9 +5,8 @@
     Licence: GNU LGPLv3
 */
 
-package com.mclegoman.luminance.client.util;
+package com.mclegoman.luminance.entrypoint;
 
-public class Tick {
-	public static void init() {
-	}
+public interface LuminanceInit {
+	void init(String modId);
 }

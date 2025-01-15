@@ -15,23 +15,23 @@ import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.gl.*;
 import net.minecraft.client.render.DefaultFramebufferSet;
 import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.util.ObjectAllocator;
-import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 public class Shaders {
+	public static final List<ShaderRegistry> registry = new ArrayList<>();
 	public static void init() {
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new ShaderDataloader());
-
+		ShaderDataloaderInit.init();
 		Uniforms.init();
 		Events.BeforeGameRender.register(Identifier.of(Data.version.getID(), "update"), Uniforms::update);
 
@@ -177,11 +177,11 @@ public class Shaders {
 		}
 	}
 	public static ShaderRegistry get(int shaderIndex) {
-		return ShaderDataloader.isValidIndex(shaderIndex) ? ShaderDataloader.registry.get(shaderIndex) : null;
+		return isValidIndex(shaderIndex) ? registry.get(shaderIndex) : null;
 	}
 	public static ShaderRegistry get(Identifier id) {
 		int index = getShaderIndex(id);
-		return ShaderDataloader.isValidIndex(index) ? get(index) : null;
+		return isValidIndex(index) ? get(index) : null;
 	}
 	public static Shader get(ShaderRegistry shaderData, Callable<Shader.RenderType> renderType, Callable<Boolean> shouldRender) {
 		return new Shader(shaderData, renderType, shouldRender);
@@ -194,8 +194,8 @@ public class Shaders {
 	}
 	public static int getShaderIndex(Identifier id) {
 		if (id != null) {
-			for (ShaderRegistry data : ShaderDataloader.registry) {
-				if (data.getID().equals(id)) return ShaderDataloader.registry.indexOf(data);
+			for (ShaderRegistry data : registry) {
+				if (data.getID().equals(id)) return registry.indexOf(data);
 			}
 		}
 		return -1;
@@ -223,7 +223,7 @@ public class Shaders {
 	public static Identifier guessPostShader(String id) {
 		// If the shader registry contains at least one shader with the name, the first detected instance will be used.
 		if (!id.contains(":")) {
-			for (ShaderRegistry registry : ShaderDataloader.registry) {
+			for (ShaderRegistry registry : registry) {
 				if (registry.getID().getPath().equalsIgnoreCase(id)) return registry.getID();
 			}
 		}
@@ -264,5 +264,11 @@ public class Shaders {
 		PostEffectProcessor.FramebufferSet framebufferSet = PostEffectProcessor.FramebufferSet.singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer));
 		processor.render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet);
 		frameGraphBuilder.run(objectAllocator);
+	}
+	public static int getShaderAmount() {
+		return registry.size();
+	}
+	public static boolean isValidIndex(int index) {
+		return index <= getShaderAmount() && index >= 0;
 	}
 }

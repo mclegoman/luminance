@@ -29,7 +29,8 @@
   },
   "mixins": [
     "dt-luminance.mixins.json",
-    "dt-luminance_entrypoints.mixins.json"
+    "dt-luminance_entrypoints.mixins.json",
+    "dt-luminance_fabric.mixins.json"
   ],
   "depends": {
     "minecraft": [
@@ -48,9 +49,6 @@
       "links": {
         "mclegoman.donate": "https://ko-fi.com/mclegoman"
       }
-    },
-    "catalogue": {
-      "configFactory": "com.mclegoman.luminance.compat.CatalogueCompat"
     }
   }
 }

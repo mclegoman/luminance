@@ -9,8 +9,9 @@ package com.mclegoman.luminance.client.data;
 
 import com.mclegoman.luminance.client.config.LuminanceConfig;
 import net.minecraft.client.MinecraftClient;
+import org.quiltmc.loader.impl.QuiltLoaderImpl;
 
 public class ClientData {
 	public static final MinecraftClient minecraft = MinecraftClient.getInstance();
-	public static final boolean isDevelopment = LuminanceConfig.config.debug.value();
+	public static final boolean isDevelopment = QuiltLoaderImpl.INSTANCE.isDevelopmentEnvironment() || LuminanceConfig.config.debug.value();
 }

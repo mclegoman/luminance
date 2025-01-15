@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "com.mclegoman.luminance.mixin.entrypoint",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"MinecraftClientMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"mixins": [
+		"BootstrapAccessor",
+		"RegistriesMixin"
+	]
+}

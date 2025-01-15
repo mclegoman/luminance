@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.entrypoint;
 
+
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 
