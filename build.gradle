@@ -95,16 +95,16 @@ forgix {
 //	neoforge {
 //		projectName = "neoforge"
 //		jarLocation = "build/libs/${project.archives_name}-neoforge-${project.version}.jar"
-//		additionalRelocate "com.mclegoman.luminance", "neoforge.com.mclegoman.luminance"
+//		additionalRelocate "com.mclegoman.luminance", "com.mclegoman.luminance.neoforge"
 //	}
 	quilt {
 		projectName = "quilt"
 		jarLocation = "build/libs/${project.archive_name}-quilt-${project.version}.jar"
-		additionalRelocate "com.mclegoman.luminance", "quilt.com.mclegoman.luminance"
+		additionalRelocate "com.mclegoman.luminance", "com.mclegoman.luminance.quilt"
 	}
 	fabric {
 		projectName = "fabric"
 		jarLocation = "build/libs/${project.archive_name}-fabric-${project.version}.jar"
-		additionalRelocate "com.mclegoman.luminance", "fabric.com.mclegoman.luminance"
+		additionalRelocate "com.mclegoman.luminance", "com.mclegoman.luminance.fabric"
 	}
 }
