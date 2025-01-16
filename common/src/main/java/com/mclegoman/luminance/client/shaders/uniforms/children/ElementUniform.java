@@ -5,6 +5,8 @@ import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 
+import java.util.Optional;
+
 public class ElementUniform extends ChildUniform {
     protected UniformValue element;
     int index;
