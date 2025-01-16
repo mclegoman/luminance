@@ -4,6 +4,8 @@ import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 
+import java.util.Optional;
+
 public class ElementUniform extends ChildUniform {
     protected UniformValue element;
     int index;
@@ -33,5 +35,17 @@ public class ElementUniform extends ChildUniform {
     @Override
     public UniformValue getCache(UniformConfig config, ShaderTime shaderTime) {
         return element;
+    }
+
+    @Override
+    public Optional<UniformValue> getMin() {
+        assert parent != null;
+        return parent.getMin().map(min -> UniformValue.fromFloat(min.values.get(index), 1));
+    }
+
+    @Override
+    public Optional<UniformValue> getMax() {
+        assert parent != null;
+        return parent.getMax().map(max -> UniformValue.fromFloat(max.values.get(index), 1));
     }
 }
