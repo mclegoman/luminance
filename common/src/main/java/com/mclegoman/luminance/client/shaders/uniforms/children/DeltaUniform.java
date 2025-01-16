@@ -1,8 +1,9 @@
 package com.mclegoman.luminance.client.shaders.uniforms.children;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
+import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
+import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 
 public class DeltaUniform extends ChildUniform {
     protected UniformValue delta;
@@ -33,5 +34,10 @@ public class DeltaUniform extends ChildUniform {
     @Override
     public UniformValue getCache(UniformConfig config, ShaderTime shaderTime) {
         return delta;
+    }
+
+    @Override
+    public UniformConfig getDefaultConfig() {
+        return EmptyConfig.INSTANCE;
     }
 }

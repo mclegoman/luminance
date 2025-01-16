@@ -17,7 +17,9 @@ import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface
 import com.mclegoman.luminance.client.shaders.interfaces.ShaderProgramInterface;
 import com.mclegoman.luminance.client.shaders.overrides.LuminanceUniformOverride;
 import com.mclegoman.luminance.client.shaders.overrides.UniformOverride;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
+import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
+import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
+import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import net.minecraft.client.gl.*;
 import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.render.RenderPass;
@@ -68,7 +70,7 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 			GlUniform glUniform = program.getUniform(uniformName);
 			assert glUniform != null;
-			Shaders.set(glUniform, uniform.get(uniformConfigs.getOrDefault(uniformName, UniformConfig.EMPTY), Uniforms.shaderTime));
+			Shaders.set(glUniform, uniform.get(uniformConfigs.getOrDefault(uniformName, EmptyConfig.INSTANCE), Uniforms.shaderTime));
 		}
 
 		uniformOverrides.forEach((name, override) -> {
@@ -78,7 +80,7 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 			}
 
 			//the double looping of the same array here is to avoid needing to call luminance$getCurrentUniformValues unless its needed
-			List<Float> values = override.getOverride();
+			List<Float> values = override.getOverride(uniformConfigs.getOrDefault(name, EmptyConfig.INSTANCE), Uniforms.shaderTime);
             for (Float value : values) {
                 if (value == null) {
                     List<Float> current = ((ShaderProgramInterface)program).luminance$getCurrentUniformValues(name);
@@ -101,7 +103,7 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 			PipelineUniformInterface data = (PipelineUniformInterface)(Object)uniform;
 			assert data != null;
 			data.luminance$getOverride().ifPresent((override) -> uniformOverrides.put(uniform.name(), new LuminanceUniformOverride(override)));
-			data.luminance$getConfig().ifPresent((list) -> uniformConfigs.put(uniform.name(), new UniformConfig(list)));
+			data.luminance$getConfig().ifPresent((list) -> uniformConfigs.put(uniform.name(), new MapConfig(list)));
 		}
 	}
 

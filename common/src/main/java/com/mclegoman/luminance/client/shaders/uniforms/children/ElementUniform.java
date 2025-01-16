@@ -1,10 +1,9 @@
 package com.mclegoman.luminance.client.shaders.uniforms.children;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
-
-import java.util.Optional;
+import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
+import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 
 public class ElementUniform extends ChildUniform {
     protected UniformValue element;
@@ -35,6 +34,11 @@ public class ElementUniform extends ChildUniform {
     @Override
     public UniformValue getCache(UniformConfig config, ShaderTime shaderTime) {
         return element;
+    }
+
+    @Override
+    public UniformConfig getDefaultConfig() {
+        return EmptyConfig.INSTANCE;
     }
 
     @Override

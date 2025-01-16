@@ -9,22 +9,27 @@ package com.mclegoman.luminance.client.shaders.uniforms;
 
 import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.shaders.ShaderTime;
+import com.mclegoman.luminance.client.shaders.uniforms.config.DefaultableConfig;
+import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
+import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 public class RootUniform extends TreeUniform {
-	@Nullable protected final Callables.UniformCalculation callable;
+	protected final Callables.UniformCalculation callable;
 	@Nullable private final UniformValue min;
 	@Nullable private final UniformValue max;
+	private final UniformConfig defaultConfig;
 
 	protected UniformValue value;
 
-	public RootUniform(String name, @Nullable Callables.UniformCalculation callable, int length, boolean useConfig, @Nullable UniformValue min, @Nullable UniformValue max) {
-		super(name, useConfig);
+	public RootUniform(String name, Callables.UniformCalculation callable, int length, @Nullable UniformValue min, @Nullable UniformValue max, @Nullable UniformConfig defaultConfig) {
+		super(name, defaultConfig != null);
 		this.callable = callable;
 		this.min = min;
 		this.max = max;
+		this.defaultConfig = defaultConfig == null ? EmptyConfig.INSTANCE : defaultConfig;
 
 		this.value = new UniformValue(length);
 	}
@@ -41,10 +46,8 @@ public class RootUniform extends TreeUniform {
 
 	@Override
 	public void calculateCache(UniformConfig config, ShaderTime shaderTime) {
-		if (this.callable != null) {
-			this.callable.call(config, shaderTime, value);
-			clampToRange();
-		}
+		this.callable.call(new DefaultableConfig(config, getDefaultConfig()), shaderTime, value);
+		clampToRange();
 	}
 
 	@Override
@@ -65,5 +68,10 @@ public class RootUniform extends TreeUniform {
 	@Override
 	public Optional<UniformValue> getMax() {
 		return Optional.ofNullable(max);
+	}
+
+	@Override
+	public UniformConfig getDefaultConfig() {
+		return defaultConfig;
 	}
 }

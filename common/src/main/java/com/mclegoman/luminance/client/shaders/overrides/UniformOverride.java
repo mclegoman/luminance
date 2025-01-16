@@ -7,8 +7,11 @@
 
 package com.mclegoman.luminance.client.shaders.overrides;
 
+import com.mclegoman.luminance.client.shaders.ShaderTime;
+import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
+
 import java.util.List;
 
 public interface UniformOverride {
-    List<Float> getOverride();
+    List<Float> getOverride(UniformConfig config, ShaderTime shaderTime);
 }

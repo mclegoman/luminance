@@ -7,6 +7,9 @@
 
 package com.mclegoman.luminance.client.shaders.overrides;
 
+import com.mclegoman.luminance.client.shaders.ShaderTime;
+import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +29,17 @@ public class LuminanceUniformOverride implements UniformOverride {
     }
 
     @Override
-    public List<Float> getOverride() {
-        updateValues();
+    public List<Float> getOverride(UniformConfig config, ShaderTime shaderTime) {
+        updateValues(config, shaderTime);
         return values;
     }
 
-    protected void updateValues() {
+    protected void updateValues(UniformConfig config, ShaderTime shaderTime) {
+        OverrideConfig overrideConfig = new OverrideConfig(config);
         for (int i = 0; i < values.size(); i++) {
             OverrideSource overrideSource = overrideSources.get(i);
-            values.set(i, overrideSource != null ? overrideSource.get() : null);
+            overrideConfig.setIndex(i);
+            values.set(i, overrideSource != null ? overrideSource.get(overrideConfig, shaderTime) : null);
         }
     }
 
