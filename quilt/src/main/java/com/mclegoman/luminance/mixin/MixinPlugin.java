@@ -12,6 +12,7 @@ import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import org.objectweb.asm.tree.ClassNode;
+import org.quiltmc.loader.api.QuiltLoader;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
@@ -35,7 +36,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 		String mixin = mixinClassName.replaceFirst("com.mclegoman.luminance.mixin.", "");
 		switch (mixin) {
 			case "compat.modmenu.FabricModMixin", "compat.modmenu.ModsScreenMixin" -> {
-				boolean isModMenuInstalled = Data.isModInstalled("modmenu");
+				boolean isModMenuInstalled = QuiltLoader.isModLoaded("modmenu");
 				List<String> modsInstalled = new ArrayList<>();
 				if (isModMenuInstalled) modsInstalled.add("modmenu");
 				if (!modsInstalled.isEmpty()) Data.getVersion().sendToLog(LogType.INFO, Translation.getString("Enabling {}: {}", mixin, modsInstalled));

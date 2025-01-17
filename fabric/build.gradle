@@ -43,7 +43,7 @@ processResources {
     filesMatching('fabric.mod.json') {
         expand version: project.version
     }
-    from("$rootDir/common/src/main/resources")
+    from("$rootDir/src/main/resources")
 }
 
 shadowJar {

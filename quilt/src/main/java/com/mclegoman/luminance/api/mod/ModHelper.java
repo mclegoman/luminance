@@ -28,4 +28,7 @@ public class ModHelper {
 			return Optional.of(new ModContainer(new ModContainer.ModMetadata(metadata.id(), metadata.version().raw(), metadata.name(), metadata.description(), licenses, contributors)));
 		} else return Optional.empty();
 	}
+	public static boolean isModLoaded(String modId) {
+		return QuiltLoader.isModLoaded(modId);
+	}
 }
