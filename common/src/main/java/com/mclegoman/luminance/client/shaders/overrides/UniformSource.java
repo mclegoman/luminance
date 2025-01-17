@@ -11,10 +11,12 @@ import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
+import org.jetbrains.annotations.Nullable;
 
 public class UniformSource implements OverrideSource {
     protected final String name;
 
+    @Nullable
     protected Uniform uniform = null;
 
     public UniformSource(String name) {
@@ -35,6 +37,8 @@ public class UniformSource implements OverrideSource {
 
     @Override
     public UniformConfig getTemplateConfig() {
+        Uniform uniform = getUniform();
+        if (uniform == null) return null;
         return uniform.getDefaultConfig();
     }
 
