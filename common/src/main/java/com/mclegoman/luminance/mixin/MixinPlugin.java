@@ -38,7 +38,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 				boolean isModMenuInstalled = Data.isModInstalled("modmenu");
 				List<String> modsInstalled = new ArrayList<>();
 				if (isModMenuInstalled) modsInstalled.add("modmenu");
-				if (!modsInstalled.isEmpty()) Data.version.sendToLog(LogType.INFO, Translation.getString("Enabling {}: {}", mixin, modsInstalled));
+				if (!modsInstalled.isEmpty()) Data.getVersion().sendToLog(LogType.INFO, Translation.getString("Enabling {}: {}", mixin, modsInstalled));
 				return !modsInstalled.isEmpty();
 			}
 			default -> {

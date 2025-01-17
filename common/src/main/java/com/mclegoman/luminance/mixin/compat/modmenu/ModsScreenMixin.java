@@ -30,9 +30,9 @@ public abstract class ModsScreenMixin {
 	@Inject(method = "draw", at = @At("RETURN"))
 	private void luminance$draw(DrawContext context, int mouseX, int mouseY, CallbackInfo ci) {
 		if (CompatHelper.getLuminanceModMenuBadge(this.mod.getId())) {
-			int width = ClientData.minecraft.textRenderer.getWidth(Translation.getTranslation(Data.version.getID(), "name")) + 6;
+			int width = ClientData.minecraft.textRenderer.getWidth(Translation.getTranslation(Data.getVersion().getID(), "name")) + 6;
 			if (badgeX + width < badgeMax) {
-				DrawingUtil.drawBadge(context, badgeX, badgeY, width, Translation.getTranslation(Data.version.getID(), "name").asOrderedText(), 0xFFFF8F8F, 0xFFB73A3A, 0xFFFFFF);
+				DrawingUtil.drawBadge(context, badgeX, badgeY, width, Translation.getTranslation(Data.getVersion().getID(), "name").asOrderedText(), 0xFFFF8F8F, 0xFFB73A3A, 0xFFFFFF);
 				badgeX += width + 3;
 			}
 		}

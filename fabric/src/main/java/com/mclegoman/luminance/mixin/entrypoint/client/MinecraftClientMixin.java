@@ -5,10 +5,11 @@
     Licence: GNU LGPLv3
 */
 
-package com.mclegoman.luminance.mixin.entrypoint;
+package com.mclegoman.luminance.mixin.entrypoint.client;
 
-import com.mclegoman.luminance.entrypoint.LuminanceEntrypoint;
-import com.mclegoman.luminance.entrypoint.LuminanceInit;
+import com.mclegoman.luminance.api.entrypoint.LuminanceEntrypoint;
+import com.mclegoman.luminance.api.entrypoint.LuminanceEntrypointKeys;
+import com.mclegoman.luminance.api.entrypoint.LuminanceInit;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,6 +21,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MinecraftClientMixin {
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;<init>(Lnet/minecraft/client/MinecraftClient;Ljava/io/File;)V"))
 	private void luminance$clientInit(RunArgs runArgs, CallbackInfo ci) {
-		LuminanceEntrypoint.init(LuminanceEntrypoint.clientInitKey, LuminanceInit.class, LuminanceInit::init);
+		LuminanceEntrypoint.init(LuminanceEntrypointKeys.clientInitKey, LuminanceInit.class, LuminanceInit::init);
 	}
 }

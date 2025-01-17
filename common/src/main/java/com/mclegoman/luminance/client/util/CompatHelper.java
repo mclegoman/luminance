@@ -23,8 +23,8 @@ public class CompatHelper {
 	public static final Map<Couple<String, String>, Couple<Callable<String>, Callable<Boolean>>> overriddenModMenuIcons = new HashMap<>();
 	public static final List<String> luminanceModMenuBadge = new ArrayList<>();
 	public static void init() {
-		addOverrideModMenuIcon(new Couple<>(Data.version.getID(), "pride"), () -> "assets/" + Data.version.getID() + "/icons/pride.png", DateHelper::isPride);
-		addLuminanceModMenuBadge(Data.version.getID());
+		addOverrideModMenuIcon(new Couple<>(Data.getVersion().getID(), "pride"), () -> "assets/" + Data.getVersion().getID() + "/icons/pride.png", DateHelper::isPride);
+		addLuminanceModMenuBadge(Data.getVersion().getID());
 	}
 	public static boolean isIrisShadersEnabled() {
 		try {

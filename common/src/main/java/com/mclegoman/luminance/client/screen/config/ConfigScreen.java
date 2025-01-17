@@ -76,7 +76,7 @@ public class ConfigScreen extends Screen {
 			grid.forEachChild(this::addDrawableChild);
 			initTabNavigation();
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to initialize config screen: {}", error));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to initialize config screen: {}", error));
 		}
 	}
 	public void tick() {
@@ -89,30 +89,30 @@ public class ConfigScreen extends Screen {
 				ClientData.minecraft.setScreen(parentScreen);
 			}
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to tick luminance$config screen: {}", error));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to tick luminance$config screen: {}", error));
 		}
 	}
 	private GridWidget createConfig() {
 		GridWidget grid = new GridWidget();
 		grid.getMainPositioner().alignHorizontalCenter().margin(2);
 		GridWidget.Adder gridAdder = grid.createAdder(2);
-		gridAdder.add(new SliderWidget(gridAdder.getGridWidget().getX(), gridAdder.getGridWidget().getY(), 150, 20, Translation.getConfigTranslation(Data.version.getID(), "alpha", new Object[]{Text.literal(Uniforms.getRawAlpha() + "%")}, false), Uniforms.getRawAlpha() / 100.0F) {
+		gridAdder.add(new SliderWidget(gridAdder.getGridWidget().getX(), gridAdder.getGridWidget().getY(), 150, 20, Translation.getConfigTranslation(Data.getVersion().getID(), "alpha", new Object[]{Text.literal(Uniforms.getRawAlpha() + "%")}, false), Uniforms.getRawAlpha() / 100.0F) {
 			@Override
 			protected void updateMessage() {
-				setMessage(Translation.getConfigTranslation(Data.version.getID(),  "alpha", new Object[]{Text.literal(Uniforms.getRawAlpha() + "%")}, false));
+				setMessage(Translation.getConfigTranslation(Data.getVersion().getID(),  "alpha", new Object[]{Text.literal(Uniforms.getRawAlpha() + "%")}, false));
 			}
 			@Override
 			protected void applyValue() {
 				LuminanceConfig.config.alphaLevel.setValue((int) ((value) * 100), false);
 				saveConfig = true;
 			}
-		}, 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.version.getID(), "alpha", new Object[]{Translation.getConfigTranslation(Data.version.getID(), "keybinding", new Object[]{Keybindings.adjustAlpha.getBoundKeyLocalizedText()}, new Formatting[]{Formatting.RED, Formatting.BOLD})}, true)));
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "alpha.show_overlay", new Object[]{Translation.getVariableTranslation(Data.version.getID(), "onff", LuminanceConfig.config.showAlphaLevelOverlay.value())}), (button) -> {
+		}, 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha", new Object[]{Translation.getConfigTranslation(Data.getVersion().getID(), "keybinding", new Object[]{Keybindings.adjustAlpha.getBoundKeyLocalizedText()}, new Formatting[]{Formatting.RED, Formatting.BOLD})}, true)));
+		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", LuminanceConfig.config.showAlphaLevelOverlay.value())}), (button) -> {
 			LuminanceConfig.config.showAlphaLevelOverlay.setValue(!LuminanceConfig.config.showAlphaLevelOverlay.value(), false);
 			this.saveConfig = true;
 			this.refresh = true;
-		}).build(), 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.version.getID(), "alpha.show_overlay", true)));
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "information"), button -> ClientData.minecraft.setScreen(new InformationScreen(ClientData.minecraft.currentScreen, false, splashText, isPride))).width(304).build(), 2);
+		}).build(), 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", true)));
+		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information"), button -> ClientData.minecraft.setScreen(new InformationScreen(ClientData.minecraft.currentScreen, false, splashText, isPride))).width(304).build(), 2);
 
 		if (ClientData.isDevelopment) {
 			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShader}), button -> {
@@ -134,12 +134,12 @@ public class ConfigScreen extends Screen {
 		GridWidget grid = new GridWidget();
 		grid.getMainPositioner().alignHorizontalCenter().margin(2);
 		GridWidget.Adder gridAdder = grid.createAdder(2);
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "reset"), (button) -> {
+		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "reset"), (button) -> {
 			LuminanceConfigHelper.reset(LuminanceConfig.config, false);
 			this.saveConfig = true;
 			this.refresh = true;
 		}).build());
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.version.getID(), "back"), (button) -> this.shouldClose = true).build());
+		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "back"), (button) -> this.shouldClose = true).build());
 		return grid;
 	}
 	public void initTabNavigation() {

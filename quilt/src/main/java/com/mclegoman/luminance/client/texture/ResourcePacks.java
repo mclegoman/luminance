@@ -30,7 +30,7 @@ public class ResourcePacks {
 	 * You only need to include the licence in your comment if it is not GNU LGPLv3.
 	 */
 	public static void init() {
-		Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(Data.version.getID());
+		Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(Data.getVersion().getID());
 		if (modContainer.isPresent()) {
 			/*
 	            Super Secret Settings
@@ -38,21 +38,21 @@ public class ResourcePacks {
 	            Licence: Minecraft EULA
 	            Notes: These shaders have been modified to work with the latest version of minecraft, and also contain new code.
             */
-			register(Identifier.of("super_secret_settings"), modContainer.get(), Translation.getTranslation(Data.version.getID(), "resource_pack.super_secret_settings"), ResourcePackActivationType.DEFAULT_ENABLED);
+			register(Identifier.of("super_secret_settings"), modContainer.get(), Translation.getTranslation(Data.getVersion().getID(), "resource_pack.super_secret_settings"), ResourcePackActivationType.DEFAULT_ENABLED);
 			/*
 	            Luminance: Default
 	            Contributor(s): dannytaylor
 	            Licence: GNU LGPLv3
 	        */
-			register(Identifier.of("luminance_default"), modContainer.get(), Translation.getTranslation(Data.version.getID(), "resource_pack.luminance_default"), ResourcePackActivationType.DEFAULT_ENABLED);
+			register(Identifier.of("luminance_default"), modContainer.get(), Translation.getTranslation(Data.getVersion().getID(), "resource_pack.luminance_default"), ResourcePackActivationType.DEFAULT_ENABLED);
 		}
 	}
 	public static void register(Identifier id, ModContainer container, Text text, ResourcePackActivationType activationType) {
 		try {
-			Data.version.sendToLog(LogType.INFO, Translation.getString("Registering resource pack: {}", id.getPath()));
+			Data.getVersion().sendToLog(LogType.INFO, Translation.getString("Registering resource pack: {}", id.getPath()));
 			ResourceManagerHelper.registerBuiltinResourcePack(id, container, text, activationType);
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to register resource pack: {}", error));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to register resource pack: {}", error));
 		}
 	}
 }

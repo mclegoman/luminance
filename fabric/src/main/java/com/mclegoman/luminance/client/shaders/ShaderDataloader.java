@@ -40,7 +40,7 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 			try {
 				runnable.run();
 			} catch (Exception error) {
-				Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to execute OnShaderDataReset event with id: {}:{}:", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute OnShaderDataReset event with id: {}:{}:", id, error));
 			}
 		});
 	}
@@ -54,13 +54,13 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 			for (ShaderRegistry data : Shaders.registry) {
 				if (data.getID().equals(shaderData.getID())) {
 					alreadyRegistered = true;
-					Data.version.sendToLog(LogType.WARN, Translation.getString("Failed to add \"{}\" shader to registry: This shader has already been registered!", shaderData.getID()));
+					Data.getVersion().sendToLog(LogType.WARN, Translation.getString("Failed to add \"{}\" shader to registry: This shader has already been registered!", shaderData.getID()));
 					break;
 				}
 			}
 			if (!alreadyRegistered) Shaders.registry.add(shaderData);
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.WARN, "Failed to add shader to registry: " + error);
+			Data.getVersion().sendToLog(LogType.WARN, "Failed to add shader to registry: " + error);
 		}
 	}
 	private void remove(ShaderRegistry shaderData) {
@@ -86,7 +86,7 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 							try {
 								runnable.run(shaderData);
 							} catch (Exception error) {
-								Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to execute OnShaderDataRegistered event with id: {}:{}:", id, error));
+								Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute OnShaderDataRegistered event with id: {}:{}:", id, error));
 							}
 						});
 					} else {
@@ -95,19 +95,19 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 							try {
 								runnable.run(shaderData);
 							} catch (Exception error) {
-								Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to execute OnShaderDataRemoved event with id: {}:{}:", id, error));
+								Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute OnShaderDataRemoved event with id: {}:{}:", id, error));
 							}
 						});
 					}
 				} catch (Exception error) {
-					Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to load luminance shader: {}", error));
+					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to load luminance shader: {}", error));
 				}
 			});
 			Events.AfterShaderDataRegistered.registry.forEach((id, runnable) -> {
 				try {
 					runnable.run();
 				} catch (Exception error) {
-					Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterShaderDataRegistered event with id: {}:{}:", id, error));
+					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterShaderDataRegistered event with id: {}:{}:", id, error));
 				}
 			});
 			Events.ShaderRender.registry.forEach((id, shaders) -> {
@@ -115,23 +115,23 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 					try {
 						if (shader.shader() != null) shader.shader().reload();
 					} catch (Exception error) {
-						Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to reload shader with id: {}:{}:", id, error));
+						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to reload shader with id: {}:{}:", id, error));
 					}
 				});
 			});
 			isReloading = false;
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to apply shaders dataloader: {}", error));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to apply shaders dataloader: {}", error));
 		}
 		if (ClientData.isDevelopment) {
 			// Test Shader: remove/comment out when shader rendering is finished.
-			Events.ShaderRender.register(Identifier.of(Data.version.getID(), "debug"), new ArrayList<>());
-			Events.ShaderRender.modify(Identifier.of(Data.version.getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.version.getID(), "debug"), new Shader(Shaders.get(Identifier.of("minecraft", "blobs2")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
-			//Events.ShaderRender.modify(Identifier.of(Data.version.getID(), "test"), List.of(new Shader.Data(Identifier.of(Data.version.getID(), "test"), new Shader(Shaders.get(Identifier.of("minecraft", "phosphor")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
+			Events.ShaderRender.register(Identifier.of(Data.getVersion().getID(), "debug"), new ArrayList<>());
+			Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(Shaders.get(Identifier.of("minecraft", "blobs2")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
+			//Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "test"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "test"), new Shader(Shaders.get(Identifier.of("minecraft", "phosphor")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
 		}
 	}
 	@Override
 	public Identifier getFabricId() {
-		return Identifier.of(Data.version.getID(), resourceLocation);
+		return Identifier.of(Data.getVersion().getID(), resourceLocation);
 	}
 }

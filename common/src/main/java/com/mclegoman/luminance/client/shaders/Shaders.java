@@ -32,9 +32,9 @@ public class Shaders {
 	public static final List<ShaderRegistry> registry = new ArrayList<>();
 	public static void init() {
 		Uniforms.init();
-		Events.BeforeGameRender.register(Identifier.of(Data.version.getID(), "update"), Uniforms::update);
+		Events.BeforeGameRender.register(Identifier.of(Data.getVersion().getID(), "update"), Uniforms::update);
 
-//		Events.AfterHandRender.register(Identifier.of(Data.version.getID(), "main"), new Runnables.GameRender() {
+//		Events.AfterHandRender.register(Identifier.of(Data.getVersion().getID(), "main"), new Runnables.GameRender() {
 //			@Override
 //			public void run(Framebuffer framebuffer, ObjectAllocator objectAllocator) {
 //				Events.ShaderRender.registry.forEach((id, shaders) -> {
@@ -46,17 +46,17 @@ public class Shaders {
 //										renderUsingAllocator(id, shader, framebuffer, objectAllocator);
 //								}
 //							} catch (Exception error) {
-//								Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterHandRender shader with id: {}:{}", id, error));
+//								Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterHandRender shader with id: {}:{}", id, error));
 //							}
 //						});
 //					} catch (Exception error) {
-//						Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterHandRender shader with id: {}:{}", id, error));
+//						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterHandRender shader with id: {}:{}", id, error));
 //					}
 //				});
 //			}
 //		});
 		// This renders the shader in the world if it has depth. We really should try to render the hand in-depth, but this works for now.
-		Events.AfterWeatherRender.register(Identifier.of(Data.version.getID(), "main"), new Runnables.WorldRender() {
+		Events.AfterWeatherRender.register(Identifier.of(Data.getVersion().getID(), "main"), new Runnables.WorldRender() {
 			@Override
 			public void run(FrameGraphBuilder builder, int textureWidth, int textureHeight, DefaultFramebufferSet framebufferSet) {
 
@@ -73,16 +73,16 @@ public class Shaders {
 										renderUsingFramebufferSet(id, shader, builder, textureWidth, textureHeight, framebufferSet);
 								}
 							} catch (Exception error) {
-								Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterWeatherRender shader with id: {}:{}", id, error));
+								Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterWeatherRender shader with id: {}:{}", id, error));
 							}
 						});
 					} catch (Exception error) {
-						Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterWeatherRender shader with id: {}:{}", id, error));
+						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterWeatherRender shader with id: {}:{}", id, error));
 					}
 				});
 			}
 		});
-		Events.AfterGameRender.register(Identifier.of(Data.version.getID(), "main"), new Runnables.GameRender() {
+		Events.AfterGameRender.register(Identifier.of(Data.getVersion().getID(), "main"), new Runnables.GameRender() {
 			@Override
 			public void run(Framebuffer framebuffer, ObjectAllocator objectAllocator) {
 				Events.ShaderRender.registry.forEach((id, shaders) -> {
@@ -94,11 +94,11 @@ public class Shaders {
 										renderUsingAllocator(id, shader, framebuffer, objectAllocator);
 								}
 							} catch (Exception error) {
-								Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
+								Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
 							}
 						});
 					} catch (Exception error) {
-						Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
+						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
 					}
 				});
 			}
@@ -112,7 +112,7 @@ public class Shaders {
 						try {
 							shader.shader().setPostProcessor();
 						} catch (Exception error) {
-							Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set \"{}:{}:{}\" post processor: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
+							Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set \"{}:{}:{}\" post processor: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
@@ -120,7 +120,7 @@ public class Shaders {
 				}
 			}
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
 		}
 	}
 	public static void renderUsingFramebufferSet(PostEffectProcessor processor, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet) {
@@ -131,11 +131,11 @@ public class Shaders {
 					// this is because FrameGraphBuilder delays calls, so any rendersystem methods wont work with their intended timing
 					processor.render(builder, textureWidth, textureHeight, framebufferSet);
 				} catch (Exception error) {
-					Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to render processor: {}", error.getLocalizedMessage()));
+					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render processor: {}", error.getLocalizedMessage()));
 				}
 			}
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to render post effect processor: {}", error.getLocalizedMessage()));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render post effect processor: {}", error.getLocalizedMessage()));
 		}
 	}
 	private static void renderUsingAllocator(Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
@@ -146,7 +146,7 @@ public class Shaders {
 						try {
 							shader.shader().setPostProcessor();
 						} catch (Exception error) {
-							Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set \"{}:{}:{}\" post processor: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
+							Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set \"{}:{}:{}\" post processor: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
@@ -154,7 +154,7 @@ public class Shaders {
 				}
 			}
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
 		}
 	}
 	public static void renderUsingAllocator(PostEffectProcessor processor, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
@@ -168,11 +168,11 @@ public class Shaders {
 					RenderSystem.depthMask(true);
 					RenderSystem.disableBlend();
 				} catch (Exception error) {
-					Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to render processor: {}", error.getLocalizedMessage()));
+					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render processor: {}", error.getLocalizedMessage()));
 				}
 			}
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to render post effect processor: {}", error.getLocalizedMessage()));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render post effect processor: {}", error.getLocalizedMessage()));
 		}
 	}
 	public static ShaderRegistry get(int shaderIndex) {
@@ -214,7 +214,7 @@ public class Shaders {
 	public static Text getShaderName(int shaderIndex, boolean shouldShowNamespace) {
 		ShaderRegistry shader = get(shaderIndex);
 		if (shader != null) return Translation.getShaderTranslation(shader.getID(), shader.getTranslatable(), shouldShowNamespace);
-		return Translation.getErrorTranslation(Data.version.getID());
+		return Translation.getErrorTranslation(Data.getVersion().getID());
 	}
 	public static Text getShaderName(int shaderIndex) {
 		return getShaderName(shaderIndex, true);
@@ -241,7 +241,7 @@ public class Shaders {
 				if (uniform != null) uniform.set(values);
 			}
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
 		}
 	}
 	public static void set(ShaderProgram program, Identifier id, Vector3f values) {
@@ -251,7 +251,7 @@ public class Shaders {
 				if (uniform != null) uniform.set(values);
 			}
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
 		}
 	}
 	public static void set(GlUniform uniform, UniformValue uniformValue) {

@@ -48,13 +48,13 @@ public class CreditsAttributionScreen extends Screen {
 		this.creditsJsonId = creditsJsonId;
 	}
 	public CreditsAttributionScreen(Screen parentScreen, boolean isPride) {
-		this(parentScreen, isPride, Identifier.of(Data.version.getID(), "/texts/credits.json"));
+		this(parentScreen, isPride, Identifier.of(Data.getVersion().getID(), "/texts/credits.json"));
 	}
 	public CreditsAttributionScreen(Screen parentScreen, Identifier creditsJsonId) {
 		this(parentScreen, DateHelper.isPride(), creditsJsonId);
 	}
 	public CreditsAttributionScreen(Screen parentScreen) {
-		this(parentScreen, DateHelper.isPride(), Identifier.of(Data.version.getID(), "/texts/credits.json"));
+		this(parentScreen, DateHelper.isPride(), Identifier.of(Data.getVersion().getID(), "/texts/credits.json"));
 	}
 	public void tick() {
 		if (this.time > (this.creditsHeight + ClientData.minecraft.getWindow().getScaledHeight() + 64)) this.close();
@@ -79,10 +79,10 @@ public class CreditsAttributionScreen extends Screen {
 				reader.read(reader1);
 			} catch (Exception error) {
 				reader1.close();
-				Data.version.sendToLog(LogType.ERROR, Translation.getString("An error occurred whilst trying to load credits! {}", error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("An error occurred whilst trying to load credits! {}", error));
 			}
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("An error occurred whilst trying to load credits! {}", error));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("An error occurred whilst trying to load credits! {}", error));
 		}
 	}
 	protected void readCredits(Reader reader) {
@@ -90,7 +90,7 @@ public class CreditsAttributionScreen extends Screen {
 			readSection(JsonHelper.deserialize(reader));
 			addEmptyLine();
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("An error occurred whilst trying to load credits! {}", error));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("An error occurred whilst trying to load credits! {}", error));
 		}
 	}
 	protected JsonArray readSection(JsonObject section) {

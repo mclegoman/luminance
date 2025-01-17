@@ -57,7 +57,7 @@ public class Uniforms {
 
 	public static void init() {
 		try {
-			String path = Data.version.getID();
+			String path = Data.getVersion().getID();
 			registerSingleTree(path, "viewDistance", Uniforms::getViewDistance, 2f, null);
 			registerSingleTree(path, "fov", Uniforms::getFov, 0f, 360f);
 			registerSingleTree(path, "fps", Uniforms::getFps, 0f, null);
@@ -103,7 +103,7 @@ public class Uniforms {
 			// Time Uniform should be updated to be customizable.
 			registerStandardTree(path, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("period", List.of(1.0f)))));
 		} catch (Exception error) {
-			Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
 		}
 	}
 
@@ -264,7 +264,7 @@ public class Uniforms {
 		setAlpha(getRawAlpha() + amount);
 	}
 	private static void alphaLevelOverlay() {
-		if (LuminanceConfig.config.showAlphaLevelOverlay.value()) MessageOverlay.setOverlay(Translation.getTranslation(Data.version.getID(), "alpha_level", new Object[]{getRawAlpha() + "%"}, new Formatting[]{Formatting.GOLD}));
+		if (LuminanceConfig.config.showAlphaLevelOverlay.value()) MessageOverlay.setOverlay(Translation.getTranslation(Data.getVersion().getID(), "alpha_level", new Object[]{getRawAlpha() + "%"}, new Formatting[]{Formatting.GOLD}));
 	}
 	public static boolean updatingAlpha = false;
 	public static boolean updatingAlpha() {

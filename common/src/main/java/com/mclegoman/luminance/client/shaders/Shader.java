@@ -36,7 +36,7 @@ public class Shader {
 		try {
 			this.postProcessor = ClientData.minecraft.getShaderLoader().loadPostEffect(this.shaderId, DefaultFramebufferSet.STAGES);
 		} catch (Exception error) {
-			com.mclegoman.luminance.common.data.Data.version.sendToLog(LogType.ERROR, Translation.getString("Failed to set post processor: {}", error));
+			com.mclegoman.luminance.common.data.Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set post processor: {}", error));
 			closePostProcessor();
 		}
 	}

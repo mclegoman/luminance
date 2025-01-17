@@ -28,18 +28,18 @@ public class Keybindings {
 	public static KeyBinding debug_2;
 	public static final List<KeyBinding> allKeybindings = new ArrayList<>();
 	static {
-		allKeybindings.add(adjustAlpha = KeybindingHelper.getKeybinding(Data.version.getID(), Data.version.getID(), "adjust_alpha", GLFW.GLFW_KEY_J));
-		allKeybindings.add(openConfig = KeybindingHelper.getKeybinding(Data.version.getID(), Data.version.getID(), "open_config", GLFW.GLFW_KEY_UNKNOWN));
+		allKeybindings.add(adjustAlpha = KeybindingHelper.getKeybinding(Data.getVersion().getID(), Data.getVersion().getID(), "adjust_alpha", GLFW.GLFW_KEY_J));
+		allKeybindings.add(openConfig = KeybindingHelper.getKeybinding(Data.getVersion().getID(), Data.getVersion().getID(), "open_config", GLFW.GLFW_KEY_UNKNOWN));
 		if (ClientData.isDevelopment) {
-			allKeybindings.add(debug = KeybindingHelper.getKeybinding(Data.version.getID(), Data.version.getID(), "debug", GLFW.GLFW_KEY_UNKNOWN));
-			allKeybindings.add(debug_2 = KeybindingHelper.getKeybinding(Data.version.getID(), Data.version.getID(), "debug_2", GLFW.GLFW_KEY_UNKNOWN));
+			allKeybindings.add(debug = KeybindingHelper.getKeybinding(Data.getVersion().getID(), Data.getVersion().getID(), "debug", GLFW.GLFW_KEY_UNKNOWN));
+			allKeybindings.add(debug_2 = KeybindingHelper.getKeybinding(Data.getVersion().getID(), Data.getVersion().getID(), "debug_2", GLFW.GLFW_KEY_UNKNOWN));
 		} else {
 			debug = null;
 			debug_2 = null;
 		}
 	}
 	public static void init() {
-		Data.version.sendToLog(LogType.INFO, Translation.getString("Initializing keybindings!"));
+		Data.getVersion().sendToLog(LogType.INFO, Translation.getString("Initializing keybindings!"));
 	}
 	public static void tick() {
 		if (openConfig.wasPressed()) {
