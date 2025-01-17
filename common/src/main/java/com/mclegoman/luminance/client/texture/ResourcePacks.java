@@ -9,12 +9,8 @@ package com.mclegoman.luminance.client.texture;
 
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.Optional;
@@ -38,21 +34,13 @@ public class ResourcePacks {
 	            Licence: Minecraft EULA
 	            Notes: These shaders have been modified to work with the latest version of minecraft, and also contain new code.
             */
-			register(Identifier.of("super_secret_settings"), modContainer.get(), Translation.getTranslation(Data.getVersion().getID(), "resource_pack.super_secret_settings"), ResourcePackActivationType.DEFAULT_ENABLED);
+			ResourcePackHelper.register(Identifier.of("super_secret_settings"), modContainer.get(), Translation.getTranslation(Data.getVersion().getID(), "resource_pack.super_secret_settings"), ActivationType.enabledDefault);
 			/*
 	            Luminance: Default
 	            Contributor(s): dannytaylor
 	            Licence: GNU LGPLv3
 	        */
-			register(Identifier.of("luminance_default"), modContainer.get(), Translation.getTranslation(Data.getVersion().getID(), "resource_pack.luminance_default"), ResourcePackActivationType.DEFAULT_ENABLED);
-		}
-	}
-	public static void register(Identifier id, ModContainer container, Text text, ResourcePackActivationType activationType) {
-		try {
-			Data.getVersion().sendToLog(LogType.INFO, Translation.getString("Registering resource pack: {}", id.getPath()));
-			ResourceManagerHelper.registerBuiltinResourcePack(id, container, text, activationType);
-		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to register resource pack: {}", error));
+			ResourcePackHelper.register(Identifier.of("luminance_default"), modContainer.get(), Translation.getTranslation(Data.getVersion().getID(), "resource_pack.luminance_default"), ActivationType.enabledDefault);
 		}
 	}
 }

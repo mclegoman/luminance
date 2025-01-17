@@ -9,6 +9,7 @@ package com.mclegoman.luminance.client;
 
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.shaders.Shaders;
+import com.mclegoman.luminance.client.texture.ResourcePacks;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.client.util.CompatHelper;
 import com.mclegoman.luminance.client.util.MessageOverlay;
@@ -20,6 +21,7 @@ public class LuminanceClient {
 	public static void init(String modId) {
 		try {
 			Data.getVersion().sendToLog(LogType.INFO, Translation.getString("Initializing {}:client", Data.getVersion().getName()));
+			ResourcePacks.init();
 			Keybindings.init();
 			CompatHelper.init();
 			Shaders.init();
