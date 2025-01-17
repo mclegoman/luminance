@@ -2,10 +2,7 @@ package com.mclegoman.luminance.client.shaders.uniforms.config;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class MapConfig implements UniformConfig {
     private final Map<String, List<Object>> config;
@@ -16,6 +13,17 @@ public class MapConfig implements UniformConfig {
             this.config.put(configData.name(), configData.objects());
         }
     }
+
+    @Override
+    public Set<String> getNames() {
+        return config.keySet();
+    }
+
+    @Override @Nullable
+    public List<Object> getObjects(String name) {
+        return config.get(name);
+    }
+
 
     @Override
     public Optional<Number> getNumber(String name, int index) {
@@ -30,10 +38,5 @@ public class MapConfig implements UniformConfig {
         }
 
         return Optional.empty();
-    }
-
-    @Override @Nullable
-    public List<Object> get(String name) {
-        return config.get(name);
     }
 }

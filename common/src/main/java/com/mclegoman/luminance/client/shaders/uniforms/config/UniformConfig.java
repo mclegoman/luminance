@@ -4,9 +4,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface UniformConfig {
-    Optional<Number> getNumber(String name, int index);
+    Set<String> getNames();
     @Nullable
-    List<Object> get(String name);
+    List<Object> getObjects(String name);
+    Optional<Number> getNumber(String name, int index);
 }

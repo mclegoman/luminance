@@ -14,4 +14,6 @@ public interface OverrideSource {
     Float get(UniformConfig config, ShaderTime shaderTime);
 
     String getString();
+
+    UniformConfig getTemplateConfig();
 }

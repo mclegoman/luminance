@@ -33,6 +33,11 @@ public class UniformSource implements OverrideSource {
         return name;
     }
 
+    @Override
+    public UniformConfig getTemplateConfig() {
+        return uniform.getDefaultConfig();
+    }
+
     public Uniform getUniform() {
         if (uniform == null) {
             uniform = Events.ShaderUniform.registry.get(name);

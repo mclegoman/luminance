@@ -4,6 +4,7 @@ import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class OverrideConfig implements UniformConfig {
     protected UniformConfig uniformConfig;
@@ -23,12 +24,17 @@ public class OverrideConfig implements UniformConfig {
     }
 
     @Override
-    public Optional<Number> getNumber(String name, int index) {
-        return uniformConfig.getNumber(preprocessName(name), index);
+    public Set<String> getNames() {
+        return uniformConfig.getNames();
     }
 
     @Override
-    public List<Object> get(String name) {
-        return uniformConfig.get(preprocessName(name));
+    public List<Object> getObjects(String name) {
+        return uniformConfig.getObjects(preprocessName(name));
+    }
+
+    @Override
+    public Optional<Number> getNumber(String name, int index) {
+        return uniformConfig.getNumber(preprocessName(name), index);
     }
 }
