@@ -29,7 +29,8 @@
   },
   "mixins": [
     "dt-luminance_entrypoints.mixins.json",
-    "dt-luminance.mixins.json"
+    "dt-luminance_fabric.mixins.json",
+    "dt-luminance_common.mixins.json"
   ],
   "depends": {
     "minecraft": [

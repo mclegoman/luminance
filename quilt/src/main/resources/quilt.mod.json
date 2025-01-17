@@ -51,6 +51,7 @@
   },
   "mixin": [
     "dt-luminance_entrypoints.mixins.json",
-    "dt-luminance.mixins.json"
+    "dt-luminance_quilt.mixins.json",
+    "dt-luminance_common.mixins.json"
   ]
 }

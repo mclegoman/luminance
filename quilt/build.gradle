@@ -47,7 +47,7 @@ processResources {
     filesMatching('quilt.mod.json') {
         expand group: project.group, version: project.version
     }
-    from("$rootDir/src/main/resources")
+    from("$rootDir/common/src/main/resources")
 }
 
 shadowJar {

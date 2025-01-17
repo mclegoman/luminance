@@ -18,10 +18,10 @@
 		"client.shaders.PostEffectProcessorMixin",
 		"client.shaders.ShaderProgramMixin",
 		"client.shaders.WorldRendererMixin",
-		"compat.modmenu.FabricModMixin",
 		"compat.modmenu.ModsScreenMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
-	}
+	},
+	"refmap": "luminance-common-common-refmap.json"
 }
