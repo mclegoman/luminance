@@ -10,6 +10,7 @@ package com.mclegoman.luminance.client.shaders.overrides;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
+import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +39,7 @@ public class UniformSource implements OverrideSource {
     @Override
     public UniformConfig getTemplateConfig() {
         Uniform uniform = getUniform();
-        if (uniform == null) return null;
+        if (uniform == null) return EmptyConfig.INSTANCE;
         return uniform.getDefaultConfig();
     }
 
