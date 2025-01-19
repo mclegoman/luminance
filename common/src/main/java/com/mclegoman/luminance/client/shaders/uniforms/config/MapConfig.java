@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class MapConfig implements UniformConfig {
-    private final Map<String, List<Object>> config;
+    public final Map<String, List<Object>> config;
 
     public MapConfig(List<ConfigData> configValues) {
         this.config = new HashMap<>(configValues.size());
