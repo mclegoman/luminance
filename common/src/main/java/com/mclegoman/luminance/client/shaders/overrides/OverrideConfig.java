@@ -1,6 +1,7 @@
 package com.mclegoman.luminance.client.shaders.overrides;
 
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +29,7 @@ public class OverrideConfig implements UniformConfig {
         return uniformConfig.getNames();
     }
 
-    @Override
+    @Override @Nullable
     public List<Object> getObjects(String name) {
         return uniformConfig.getObjects(preprocessName(name));
     }

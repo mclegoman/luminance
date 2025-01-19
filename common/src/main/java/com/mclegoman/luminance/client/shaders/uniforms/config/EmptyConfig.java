@@ -16,7 +16,7 @@ public class EmptyConfig implements UniformConfig {
 
     @Override @Nullable
     public List<Object> getObjects(String name) {
-        return List.of();
+        return null;
     }
 
     @Override
