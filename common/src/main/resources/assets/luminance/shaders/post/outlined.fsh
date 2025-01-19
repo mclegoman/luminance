@@ -94,6 +94,9 @@ void main() {
     } else {
         color = texture(InSampler, texCoord);
     }
+
+    // TODO: this bit is no longer needed, transparency.json willve already merged everything into minecraft:main - the depth samplers are still seperate though
+
     color_layers[0] = vec4(mix(texture(InSampler, texCoord).rgb, outline(color, InDepthSampler).rgb, luminance_alpha_smooth), 1.0);
     depth_layers[0] = texture(InDepthSampler, texCoord).r;
     active_layers = 1;
