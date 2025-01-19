@@ -1,5 +1,6 @@
 package com.mclegoman.luminance.client.shaders.overrides;
 
+import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,10 +11,20 @@ import java.util.Set;
 public class OverrideConfig implements UniformConfig {
     protected UniformConfig uniformConfig;
 
-    private int index;
+    protected int index;
 
     public OverrideConfig(UniformConfig uniformConfig) {
         this.uniformConfig = uniformConfig;
+    }
+
+    public OverrideConfig(UniformConfig uniformConfig, int index) {
+        MapConfig mapConfig = new MapConfig(List.of());
+        String prefix = index+"_";
+        for (String name : uniformConfig.getNames()) {
+            mapConfig.config.put(prefix+name, uniformConfig.getObjects(name));
+        }
+        this.uniformConfig = mapConfig;
+        this.index = index;
     }
 
     public void setIndex(int index) {
