@@ -34,10 +34,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Mixin(priority = 100, value = PostEffectPass.class)
 public abstract class PostEffectPassMixin implements PostEffectPassInterface {
@@ -48,8 +45,8 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	@Shadow @Final private List<PostEffectPipeline.Uniform> uniforms;
 
 	@Shadow @Final private Identifier outputTargetId;
-	@Unique private final Map<String, UniformOverride> uniformOverrides = new HashMap<>();
-	@Unique private final Map<String, UniformConfig> uniformConfigs = new HashMap<>();
+	@Unique private final Map<String, UniformOverride> luminance$uniformOverrides = new HashMap<>();
+	@Unique private final Map<String, UniformConfig> luminance$uniformConfigs = new HashMap<>();
 
 	@Inject(method = "method_62257", at = @At("HEAD"))
 	private void luminance$beforeRender(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
@@ -70,17 +67,17 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 			GlUniform glUniform = program.getUniform(uniformName);
 			assert glUniform != null;
-			Shaders.set(glUniform, uniform.get(uniformConfigs.getOrDefault(uniformName, EmptyConfig.INSTANCE), Uniforms.shaderTime));
+			Shaders.set(glUniform, uniform.get(luminance$uniformConfigs.getOrDefault(uniformName, EmptyConfig.INSTANCE), Uniforms.shaderTime));
 		}
 
-		uniformOverrides.forEach((name, override) -> {
+		luminance$uniformOverrides.forEach((name, override) -> {
 			GlUniform glUniform = program.getUniform(name);
 			if (glUniform == null) {
 				return;
 			}
 
 			//the double looping of the same array here is to avoid needing to call luminance$getCurrentUniformValues unless its needed
-			List<Float> values = override.getOverride(uniformConfigs.getOrDefault(name, EmptyConfig.INSTANCE), Uniforms.shaderTime);
+			List<Float> values = override.getOverride(luminance$uniformConfigs.getOrDefault(name, EmptyConfig.INSTANCE), Uniforms.shaderTime);
             for (Float value : values) {
                 if (value == null) {
                     List<Float> current = ((ShaderProgramInterface)program).luminance$getCurrentUniformValues(name);
@@ -102,8 +99,26 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 		for (PostEffectPipeline.Uniform uniform : uniforms) {
 			PipelineUniformInterface data = (PipelineUniformInterface)(Object)uniform;
 			assert data != null;
-			data.luminance$getOverride().ifPresent((override) -> uniformOverrides.put(uniform.name(), new LuminanceUniformOverride(override)));
-			data.luminance$getConfig().ifPresent((list) -> uniformConfigs.put(uniform.name(), new MapConfig(list)));
+
+			data.luminance$getOverride().ifPresent((override) -> {
+				int uniformSize = uniform.values().size();
+				int overrideSize = override.size();
+
+				if (uniformSize != overrideSize) {
+					override = new ArrayList<>(override);
+					if (overrideSize < uniformSize) {
+						for (int i = overrideSize; i < uniformSize; i++) {
+							override.add(null);
+						}
+					} else {
+						override.subList(uniformSize, overrideSize).clear();
+					}
+				}
+
+				luminance$uniformOverrides.put(uniform.name(), new LuminanceUniformOverride(override));
+			});
+
+			data.luminance$getConfig().ifPresent((list) -> luminance$uniformConfigs.put(uniform.name(), new MapConfig(list)));
 		}
 	}
 
@@ -124,30 +139,30 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 	@Override
 	public UniformOverride luminance$getUniformOverride(String uniform) {
-		return uniformOverrides.get(uniform);
+		return luminance$uniformOverrides.get(uniform);
 	}
 
 	@Override
 	public UniformOverride luminance$addUniformOverride(String uniform, UniformOverride override) {
-		return uniformOverrides.put(uniform, override);
+		return luminance$uniformOverrides.put(uniform, override);
 	}
 
 	@Override
 	public Map<String, UniformConfig> luminance$getUniformConfigs() {
-		return uniformConfigs;
+		return luminance$uniformConfigs;
 	}
 
 	@Override
 	public UniformOverride luminance$removeUniformOverride(String uniform) {
 		// removing a uniformOverride for a uniform which is only defined in the shader program and not also the pass causes the value to be left as it was
 		// to fix this the uniform is just forcefully reset
-		resetUniform(uniform);
+		luminance$resetUniform(uniform);
 
-		return uniformOverrides.remove(uniform);
+		return luminance$uniformOverrides.remove(uniform);
 	}
 
 	@Unique
-	private void resetUniform(String uniformName) {
+	private void luminance$resetUniform(String uniformName) {
 		// NOTE: this sets it to the value in the shaderprogram, not the posteffectpass
 		// this should never cause an issue, since the posteffectpass uniforms are set halfway through method_62257, and used moments later, so the window of time where it can cause a desync is like 15 lines of code
 
@@ -164,16 +179,16 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	}
 
 	@Unique
-	private boolean forceVisit;
+	private boolean luminance$forceVisit;
 
 	@Override
 	public void luminance$setForceVisit(boolean to) {
-		forceVisit = to;
+		luminance$forceVisit = to;
 	}
 
 	@Inject(at = @At(value = "TAIL"), method = "render")
 	private void forceVisit(FrameGraphBuilder builder, Map<Identifier, Handle<Framebuffer>> handles, Matrix4f projectionMatrix, CallbackInfo ci, @Local RenderPass renderPass) {
-		if (forceVisit) {
+		if (luminance$forceVisit) {
 			((FramePassInterface)renderPass).luminance$setForceVisit(true);
 		}
 	}
