@@ -32,7 +32,7 @@ public class OverrideConfig implements UniformConfig {
     }
 
     private String preprocessName(String name) {
-        return index+"_"+name;
+        return index >= 0 ? index+"_"+name : name;
     }
 
     @Override

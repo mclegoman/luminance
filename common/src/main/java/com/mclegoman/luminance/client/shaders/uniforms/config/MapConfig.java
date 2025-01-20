@@ -39,4 +39,15 @@ public class MapConfig implements UniformConfig {
 
         return Optional.empty();
     }
+
+    public void mergeWithConfig(UniformConfig newConfig) {
+        if (newConfig == null) return;
+
+        for (String s : newConfig.getNames()) {
+            List<Object> objects = newConfig.getObjects(s);
+            if (objects != null) {
+                config.putIfAbsent(s, objects);
+            }
+        }
+    }
 }
