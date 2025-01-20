@@ -115,6 +115,8 @@ public class Uniforms {
 		RootUniform uniform = new RootUniform(name, callable, length, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length), uniformConfig);
 		if (!uniform.useConfig) {
 			addStandardChildren(uniform, length);
+		} else {
+			addElementChildren(uniform, length);
 		}
 		registerTree(path, uniform);
 	}

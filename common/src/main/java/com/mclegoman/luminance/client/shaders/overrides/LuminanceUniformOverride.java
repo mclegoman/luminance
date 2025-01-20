@@ -7,8 +7,12 @@
 
 package com.mclegoman.luminance.client.shaders.overrides;
 
+import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.shaders.ShaderTime;
+import com.mclegoman.luminance.client.shaders.Uniforms;
+import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,5 +67,43 @@ public class LuminanceUniformOverride implements UniformOverride {
         } catch (Exception ignored) {
             return new UniformSource(string);
         }
+    }
+
+    @Nullable
+    public static LuminanceUniformOverride overrideFromUniform(String name) {
+        Uniform uniform = Events.ShaderUniform.registry.get(name);
+        if (uniform == null) return null;
+
+        List<String> overrideStrings = new ArrayList<>();
+        int count = uniform.get(uniform.getDefaultConfig(), Uniforms.shaderTime).values.size();
+        if (count <= 4) {
+            if (count == 1) {
+                overrideStrings.add(name);
+            }
+            if (count >= 2) {
+                overrideStrings.add(name + "_x");
+                overrideStrings.add(name + "_y");
+            }
+            if (count >= 3) {
+                overrideStrings.add(name + "_z");
+            }
+            if (count == 4) {
+                overrideStrings.add(name + "_w");
+            }
+        }
+
+        for (int i = 0; i < count; i++) {
+            if (i > overrideStrings.size()) {
+                overrideStrings.add(null);
+                continue;
+            }
+
+            String s = overrideStrings.get(i);
+            if (s != null && Events.ShaderUniform.registry.get(s) == null) {
+                overrideStrings.set(i, null);
+            }
+        }
+
+        return new LuminanceUniformOverride(overrideStrings);
     }
 }
