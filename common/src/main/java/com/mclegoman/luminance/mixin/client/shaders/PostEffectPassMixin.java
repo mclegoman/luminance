@@ -101,7 +101,7 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 			assert data != null;
 
 			data.luminance$getOverride().ifPresent((override) -> {
-				int uniformSize = uniform.values().size();
+				int uniformSize = program.getUniformDefinition(uniform.name()).count();
 				int overrideSize = override.size();
 
 				if (uniformSize != overrideSize) {
