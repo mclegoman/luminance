@@ -46,6 +46,7 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	@Shadow @Final private Identifier outputTargetId;
 	@Unique private final Map<String, UniformOverride> luminance$uniformOverrides = new HashMap<>();
 	@Unique private final Map<String, UniformConfig> luminance$uniformConfigs = new HashMap<>();
+	@Unique private final Map<Identifier, Object> luminance$customData = new HashMap<>();
 
 	@Inject(method = "method_62257", at = @At("HEAD"))
 	private void luminance$beforeRender(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
@@ -127,11 +128,6 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	}
 
 	@Override
-	public ShaderProgram luminance$getProgram() {
-		return program;
-	}
-
-	@Override
 	public List<PostEffectPipeline.Uniform> luminance$getUniforms() {
 		return uniforms;
 	}
@@ -190,5 +186,15 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 		if (luminance$forceVisit) {
 			((FramePassInterface)renderPass).luminance$setForceVisit(true);
 		}
+	}
+
+	@Override
+	public Object luminance$putCustomData(Identifier identifier, Object object) {
+		return luminance$customData.put(identifier, object);
+	}
+
+	@Override
+	public Optional<Object> luminance$getCustomData(Identifier identifier) {
+		return Optional.ofNullable(luminance$customData.get(identifier));
 	}
 }
