@@ -131,7 +131,18 @@ public class Uniforms {
 	}
 
 	public static TreeUniform addStandardChildren(TreeUniform treeUniform, int length) {
-		addElementChildren(treeUniform.addChildren(addElementChildren(new DeltaUniform(), length), addElementChildren(new PrevUniform(), length), new SmoothUniform().addChildren(addElementChildren(new DeltaUniform(), length), addElementChildren(new PrevUniform(), length))), length);
+		addElementChildren(
+				treeUniform.addChildren(
+						addElementChildren(new DeltaUniform(), length),
+						addElementChildren(new PrevUniform(), length),
+						addElementChildren(new SmoothUniform().addChildren(
+								addElementChildren(new DeltaUniform(), length),
+								addElementChildren(new PrevUniform(), length)),
+								length
+						)
+				),
+				length
+		);
 		return treeUniform;
 	}
 
