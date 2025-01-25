@@ -9,7 +9,7 @@ package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mclegoman.luminance.client.shaders.interfaces.PipelineUniformInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineUniformInterface;
 import com.mclegoman.luminance.client.shaders.uniforms.config.ConfigData;
 import com.mojang.datafixers.kinds.App;
 import com.mojang.serialization.Codec;
@@ -27,11 +27,11 @@ import java.util.function.Function;
 public class PostEffectPipelineUniformMixin implements PipelineUniformInterface {
     @WrapOperation(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/RecordCodecBuilder;create(Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false))
     private static <O> Codec<O> wrapCreateOverride(Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> builder, Operation<Codec<O>> original) {
-        return original.call(codecBuilderOverride(builder));
+        return original.call(luminance$codecBuilderOverride(builder));
     }
 
     @Unique
-    private static <O> Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> codecBuilderOverride(Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> builder) {
+    private static <O> Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> luminance$codecBuilderOverride(Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> builder) {
         return instance -> instance.group(
                 RecordCodecBuilder.mapCodec(builder).forGetter(Function.identity()),
                 Codec.STRING.sizeLimitedListOf(4).lenientOptionalFieldOf("override").forGetter((uniform -> ((PipelineUniformInterface)uniform).luminance$getOverride())),
@@ -45,29 +45,29 @@ public class PostEffectPipelineUniformMixin implements PipelineUniformInterface 
 
 
     @Unique
-    private List<String> override;
+    private List<String> luminance$override;
 
     @Unique
     public Optional<List<String>> luminance$getOverride() {
-        return Optional.ofNullable(override);
+        return Optional.ofNullable(luminance$override);
     }
 
     @Override
     public void luminance$setOverride(List<String> override) {
-        this.override = override;
+        this.luminance$override = override;
     }
 
 
     @Unique
-    private List<ConfigData> config;
+    private List<ConfigData> luminance$config;
 
     @Override
     public Optional<List<ConfigData>> luminance$getConfig() {
-        return Optional.ofNullable(config);
+        return Optional.ofNullable(luminance$config);
     }
 
     @Override
     public void luminance$setConfig(List<ConfigData> config) {
-        this.config = config;
+        this.luminance$config = config;
     }
 }

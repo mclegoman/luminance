@@ -12,7 +12,7 @@ import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.shaders.Shaders;
 import com.mclegoman.luminance.client.shaders.Uniforms;
 import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
-import com.mclegoman.luminance.client.shaders.interfaces.PipelineUniformInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineUniformInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.ShaderProgramInterface;
 import com.mclegoman.luminance.client.shaders.overrides.*;

@@ -9,7 +9,7 @@ package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mclegoman.luminance.client.shaders.interfaces.PipelineTargetInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTargetInterface;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -26,11 +26,11 @@ import java.util.function.Function;
 public interface PostEffectPipelineTargetMixin {
     @WrapOperation(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Codec;either(Lcom/mojang/serialization/Codec;Lcom/mojang/serialization/Codec;)Lcom/mojang/serialization/Codec;", remap = false))
     private static <F, S> Codec<Either<F, S>> wrapCreatePersistent(Codec<F> first, Codec<S> second, Operation<Codec<Either<F, S>>> original) {
-        return original.call(codecBuilderPersistent(first), codecBuilderPersistent(second));
+        return original.call(luminance$codecBuilderPersistent(first), luminance$codecBuilderPersistent(second));
     }
 
     @Unique
-    private static <F> Codec<F> codecBuilderPersistent(Codec<F> original) {
+    private static <F> Codec<F> luminance$codecBuilderPersistent(Codec<F> original) {
         return RecordCodecBuilder.create(instance ->
                 instance.group(
                         MapCodec.assumeMapUnsafe(original).forGetter(Function.identity()),

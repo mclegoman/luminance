@@ -5,7 +5,7 @@
     Licence: GNU LGPLv3
 */
 
-package com.mclegoman.luminance.client.shaders.interfaces;
+package com.mclegoman.luminance.client.shaders.interfaces.pipeline;
 
 import com.mclegoman.luminance.client.shaders.uniforms.config.ConfigData;
 
