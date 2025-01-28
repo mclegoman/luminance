@@ -15,6 +15,7 @@ import com.mclegoman.luminance.client.events.Runnables;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 import com.mclegoman.luminance.client.translation.Translation;
+import com.mclegoman.luminance.client.util.CompatHelper;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.client.gl.*;
@@ -38,43 +39,37 @@ public class Shaders {
 	public static void init() {
 		Uniforms.init();
 		Events.BeforeGameRender.register(Identifier.of(Data.getVersion().getID(), "update"), Uniforms::update);
-
-//		Events.AfterHandRender.register(Identifier.of(Data.getVersion().getID(), "main"), new Runnables.GameRender() {
-//			@Override
-//			public void run(Framebuffer framebuffer, ObjectAllocator objectAllocator) {
-//				Events.ShaderRender.registry.forEach((id, shaders) -> {
-//					try {
-//						if (shaders != null) shaders.forEach(shader -> {
-//							try {
-//								if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-//									if ((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth())) && (!shader.shader().getUseDepth() || CompatHelper.isIrisShadersEnabled()))
-//										renderUsingAllocator(id, shader, framebuffer, objectAllocator);
-//								}
-//							} catch (Exception error) {
-//								Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterHandRender shader with id: {}:{}", id, error));
-//							}
-//						});
-//					} catch (Exception error) {
-//						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterHandRender shader with id: {}:{}", id, error));
-//					}
-//				});
-//			}
-//		});
-		// This renders the shader in the world if it has depth. We really should try to render the hand in-depth, but this works for now.
-		Events.AfterWeatherRender.register(Identifier.of(Data.getVersion().getID(), "main"), new Runnables.WorldRender() {
+		Events.AfterHandRender.register(Identifier.of(Data.getVersion().getID(), "main"), new Runnables.GameRender() {
 			@Override
-			public void run(FrameGraphBuilder builder, int textureWidth, int textureHeight, DefaultFramebufferSet framebufferSet) {
-
+			public void run(Framebuffer framebuffer, ObjectAllocator objectAllocator) {
 				Events.ShaderRender.registry.forEach((id, shaders) -> {
 					try {
 						if (shaders != null) shaders.forEach(shader -> {
 							try {
-//								if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-//									if (shader.shader().getUseDepth() && !CompatHelper.isIrisShadersEnabled())
-//										renderUsingFramebufferSet(id, shader, builder, textureWidth, textureHeight, framebufferSet);
-//								}
 								if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-									if (shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth())
+									if ((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth())) && (!shader.shader().getUseDepth() || CompatHelper.isIrisShadersEnabled()))
+										renderUsingAllocator(id, shader, framebuffer, objectAllocator);
+								}
+							} catch (Exception error) {
+								Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterHandRender shader with id: {}:{}", id, error));
+							}
+						});
+					} catch (Exception error) {
+						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterHandRender shader with id: {}:{}", id, error));
+					}
+				});
+			}
+		});
+		// This renders the shader in the world if it has depth. We really should try to render the hand in-depth, but this works for now.
+		Events.AfterWeatherRender.register(Identifier.of(Data.getVersion().getID(), "main"), new Runnables.WorldRender() {
+			@Override
+			public void run(FrameGraphBuilder builder, int textureWidth, int textureHeight, DefaultFramebufferSet framebufferSet) {
+				Events.ShaderRender.registry.forEach((id, shaders) -> {
+					try {
+						if (shaders != null) shaders.forEach(shader -> {
+							try {
+								if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
+									if (shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || shader.shader().getShaderData().getDisableGameRendertype() || (shader.shader().getUseDepth() && !CompatHelper.isIrisShadersEnabled()))
 										renderUsingFramebufferSet(id, shader, builder, textureWidth, textureHeight, framebufferSet);
 								}
 							} catch (Exception error) {
