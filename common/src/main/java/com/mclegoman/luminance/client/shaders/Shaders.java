@@ -17,7 +17,6 @@ import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gl.*;
 import net.minecraft.client.render.DefaultFramebufferSet;
 import net.minecraft.client.render.FrameGraphBuilder;
@@ -166,29 +165,11 @@ public class Shaders {
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
-					if (shader.shader().getPostProcessor() != null) renderProcessorUsingAllocator(shader.shader().getPostProcessor(), framebuffer, objectAllocator, null);
+					if (shader.shader().getPostProcessor() != null) renderShaderUsingAllocator(shader.shader().getPostProcessor(), framebuffer, objectAllocator, null);
 				}
 			}
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
-		}
-	}
-	public static void renderProcessorUsingAllocator(PostEffectProcessor processor, Framebuffer framebuffer, ObjectAllocator objectAllocator, @Nullable Identifier customPasses) {
-		try {
-			if (processor != null) {
-				try {
-					RenderSystem.enableBlend();
-					RenderSystem.defaultBlendFunc();
-					RenderSystem.depthMask(false);
-					renderShaderUsingAllocator(processor, framebuffer, objectAllocator, customPasses);
-					RenderSystem.depthMask(true);
-					RenderSystem.disableBlend();
-				} catch (Exception error) {
-					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render processor: {}", error.getLocalizedMessage()));
-				}
-			}
-		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render post effect processor: {}", error.getLocalizedMessage()));
 		}
 	}
 	public static ShaderRegistryEntry get(int shaderIndex) {
@@ -318,7 +299,7 @@ public class Shaders {
 			if (ClientData.isDevelopment) {
 				// Test Shader: remove/comment out when shader rendering is finished.
 				Events.ShaderRender.register(Identifier.of(Data.getVersion().getID(), "debug"), new ArrayList<>());
-				Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(get(Identifier.of("minecraft", "blobs2")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
+				Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(get(Identifier.of("luminance", "gentoo")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
 				//Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "test"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "test"), new Shader(get(Identifier.of("minecraft", "phosphor")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
 			}
 		} catch (Exception error) {
