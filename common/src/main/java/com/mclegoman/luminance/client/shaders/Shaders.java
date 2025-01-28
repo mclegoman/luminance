@@ -126,20 +126,20 @@ public class Shaders {
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
-					if (shader.shader().getPostProcessor() != null) renderProcessorUsingFramebufferSet(shader.shader().getPostProcessor(), builder, textureWidth, textureHeight, framebufferSet, null);
+					renderProcessorUsingFramebufferSet(shader.shader(), builder, textureWidth, textureHeight, framebufferSet, null);
 				}
 			}
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
 		}
 	}
-	public static void renderProcessorUsingFramebufferSet(PostEffectProcessor processor, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet, @Nullable Identifier customPasses) {
+	public static void renderProcessorUsingFramebufferSet(Shader shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet, @Nullable Identifier customPasses) {
 		try {
-			if (processor != null) {
+			if (shader.getPostProcessor() != null) {
 				try {
 					// the depth masking done in renderUsingAllocator is instead done for everything already before this method is called
 					// this is because FrameGraphBuilder delays calls, so any rendersystem methods wont work with their intended timing
-					((PostEffectProcessorInterface)processor).luminance$render(builder, textureWidth, textureHeight, framebufferSet, customPasses);
+					((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, framebufferSet, customPasses);
 				} catch (Exception error) {
 					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render processor: {}", error.getLocalizedMessage()));
 				}
@@ -160,7 +160,7 @@ public class Shaders {
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
-					if (shader.shader().getPostProcessor() != null) renderShaderUsingAllocator(shader.shader().getPostProcessor(), framebuffer, objectAllocator, null);
+					renderShaderUsingAllocator(shader.shader(), framebuffer, objectAllocator, null);
 				}
 			}
 		} catch (Exception error) {
@@ -271,11 +271,13 @@ public class Shaders {
 		uniform.set(uniformValue.values, uniformValue.values.size());
 	}
 	// This is identical to the deprecated `PostEffectProcessor.render(framebuffer, objectAllocator);` function.
-	public static void renderShaderUsingAllocator(PostEffectProcessor processor, Framebuffer framebuffer, ObjectAllocator objectAllocator, @Nullable Identifier customPasses) {
-		FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
-		PostEffectProcessor.FramebufferSet framebufferSet = PostEffectProcessor.FramebufferSet.singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer));
-		((PostEffectProcessorInterface)processor).luminance$render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet, customPasses);
-		frameGraphBuilder.run(objectAllocator);
+	public static void renderShaderUsingAllocator(Shader shader, Framebuffer framebuffer, ObjectAllocator objectAllocator, @Nullable Identifier customPasses) {
+		if (shader.getPostProcessor() != null) {
+			FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
+			PostEffectProcessor.FramebufferSet framebufferSet = PostEffectProcessor.FramebufferSet.singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer));
+			((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet, customPasses);
+			frameGraphBuilder.run(objectAllocator);
+		}
 	}
 	public static int getShaderAmount() {
 		return getShaderAmount(getMainRegistryId());
