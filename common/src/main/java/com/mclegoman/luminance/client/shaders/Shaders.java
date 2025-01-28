@@ -8,6 +8,8 @@
 package com.mclegoman.luminance.client.shaders;
 
 import com.google.gson.JsonObject;
+import com.mclegoman.luminance.client.data.ClientData;
+import com.mclegoman.luminance.client.debug.Debug;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.events.Runnables;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
@@ -283,5 +285,17 @@ public class Shaders {
 	}
 	public static boolean isValidIndex(Identifier registry, int index) {
 		return index <= getShaderAmount(registry) && index >= 0;
+	}
+	protected static void applyDebugShader() {
+		try {
+			if (ClientData.isDevelopment) {
+				// Test Shader: remove/comment out when shader rendering is finished.
+				Events.ShaderRender.register(Identifier.of(Data.getVersion().getID(), "debug"), new ArrayList<>());
+				Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(Shaders.get(Shaders.getMainRegistryId(), Identifier.of("minecraft", "blobs2")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
+				//Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "test"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "test"), new Shader(Shaders.get(Identifier.of("minecraft", "phosphor")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
+			}
+		} catch (Exception error) {
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to apply debug shader: {}", error));
+		}
 	}
 }
