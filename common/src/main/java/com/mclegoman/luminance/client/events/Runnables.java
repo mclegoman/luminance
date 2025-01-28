@@ -7,7 +7,7 @@
 
 package com.mclegoman.luminance.client.events;
 
-import com.mclegoman.luminance.client.shaders.ShaderRegistry;
+import com.mclegoman.luminance.client.shaders.ShaderRegistryEntry;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.PostEffectPass;
 import net.minecraft.client.gui.DrawContext;
@@ -24,7 +24,7 @@ public class Runnables {
 		default void run(PostEffectPass postEffectPass) {}
 	}
 	public interface ShaderData {
-		default void run(ShaderRegistry shaderData) {}
+		default void run(ShaderRegistryEntry shaderData) {}
 	}
 	public interface OnResized {
 		default void run(int width, int height) {}

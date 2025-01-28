@@ -10,12 +10,12 @@ package com.mclegoman.luminance.client.shaders;
 import com.google.gson.JsonObject;
 import net.minecraft.util.Identifier;
 
-public class ShaderRegistry {
+public class ShaderRegistryEntry {
 	private final Identifier id;
 	private final boolean translatable;
 	private final boolean disableGameRendertype;
 	private final JsonObject custom;
-	private ShaderRegistry(Identifier id, boolean translatable, boolean disableGameRendertype, JsonObject custom) {
+	private ShaderRegistryEntry(Identifier id, boolean translatable, boolean disableGameRendertype, JsonObject custom) {
 		this.id = id;
 		this.translatable = translatable;
 		this.disableGameRendertype = disableGameRendertype;
@@ -47,8 +47,8 @@ public class ShaderRegistry {
 			this.custom = custom;
 			return this;
 		}
-		public ShaderRegistry build() {
-			return new ShaderRegistry(this.id, this.translatable, this.disableGameRendertype, this.custom);
+		public ShaderRegistryEntry build() {
+			return new ShaderRegistryEntry(this.id, this.translatable, this.disableGameRendertype, this.custom);
 		}
 	}
 	public Identifier getID() {

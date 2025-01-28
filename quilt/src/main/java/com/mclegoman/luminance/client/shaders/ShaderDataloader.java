@@ -8,6 +8,7 @@
 package com.mclegoman.luminance.client.shaders;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mclegoman.luminance.client.data.ClientData;
@@ -35,7 +36,7 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 		super(new Gson(), resourceLocation);
 	}
 	private void reset() {
-		Shaders.registry.clear();
+		Shaders.registries.clear();
 		Events.OnShaderDataReset.registry.forEach((id, runnable) -> {
 			try {
 				runnable.run();
@@ -44,27 +45,36 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 			}
 		});
 	}
-	private ShaderRegistry getShaderData(Identifier id, boolean translatable, boolean disableGameRendertype, JsonObject custom) {
-		return ShaderRegistry.builder(id).translatable(translatable).disableGameRendertype(disableGameRendertype).custom(custom).build();
+	private ShaderRegistryEntry getShaderData(Identifier id, boolean translatable, boolean disableGameRendertype, JsonObject custom) {
+		return ShaderRegistryEntry.builder(id).translatable(translatable).disableGameRendertype(disableGameRendertype).custom(custom).build();
 	}
-	private void add(ShaderRegistry shaderData, ResourceManager manager) {
+	private void add(List<Identifier> registries, ShaderRegistryEntry shaderData, ResourceManager manager) {
 		try {
 			manager.getResourceOrThrow(shaderData.getPostEffect(true));
 			boolean alreadyRegistered = false;
-			for (ShaderRegistry data : Shaders.registry) {
-				if (data.getID().equals(shaderData.getID())) {
-					alreadyRegistered = true;
-					Data.getVersion().sendToLog(LogType.WARN, Translation.getString("Failed to add \"{}\" shader to registry: This shader has already been registered!", shaderData.getID()));
-					break;
+			// If the registries are empty, we add the default registry.
+			if (registries.isEmpty()) registries.add(Identifier.of(Data.getVersion().getID(), "main"));
+			for (Identifier registry : registries) {
+				for (ShaderRegistryEntry data : Shaders.getRegistry(registry)) {
+					if (data.getID().equals(shaderData.getID())) {
+						alreadyRegistered = true;
+						Data.getVersion().sendToLog(LogType.WARN, Translation.getString("Failed to add \"{}\" shader to \"{}\" registry: This shader has already been registered!", shaderData.getID(), registry.toString()));
+						break;
+					}
 				}
+				if (!alreadyRegistered) Shaders.getRegistry(registry).add(shaderData);
 			}
-			if (!alreadyRegistered) Shaders.registry.add(shaderData);
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.WARN, "Failed to add shader to registry: " + error);
 		}
 	}
-	private void remove(ShaderRegistry shaderData) {
-		Shaders.registry.removeIf((shader) -> (shader.getID().equals(shaderData.getID())));
+	private void remove(List<Identifier> registries, ShaderRegistryEntry shaderData) {
+		for (Identifier registry : registries) Shaders.getRegistry(registry).removeIf((shader) -> (shader.getID().equals(shaderData.getID())));
+	}
+	private List<Identifier> getRegistries(JsonArray input) {
+		List<Identifier> output = new ArrayList<>();
+		for (JsonElement registry : input.asList()) output.add(Identifier.of(registry.getAsString()));
+		return output;
 	}
 	@Override
 	public void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {
@@ -79,9 +89,10 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 					boolean translatable = JsonHelper.getBoolean(reader, "translatable", false);
 					boolean disableGameRenderType = JsonHelper.hasBoolean(reader, "disable_screen_mode") ? JsonHelper.getBoolean(reader, "disable_screen_mode") : JsonHelper.getBoolean(reader, "disable_game_rendertype", false);
 					JsonObject customData = JsonHelper.getObject(reader, "customData", new JsonObject());
-					ShaderRegistry shaderData = getShaderData(post_effect, translatable, disableGameRenderType, customData);
+					JsonArray registries = JsonHelper.getArray(reader, "registries", new JsonArray());
+					ShaderRegistryEntry shaderData = getShaderData(post_effect, translatable, disableGameRenderType, customData);
 					if (enabled) {
-						add(shaderData, manager);
+						add(getRegistries(registries), shaderData, manager);
 						Events.OnShaderDataRegistered.registry.forEach((id, runnable) -> {
 							try {
 								runnable.run(shaderData);
@@ -90,7 +101,7 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 							}
 						});
 					} else {
-						remove(shaderData);
+						remove(getRegistries(registries), shaderData);
 						Events.OnShaderDataRemoved.registry.forEach((id, runnable) -> {
 							try {
 								runnable.run(shaderData);
@@ -126,7 +137,7 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 		if (ClientData.isDevelopment) {
 			// Test Shader: remove/comment out when shader rendering is finished.
 			Events.ShaderRender.register(Identifier.of(Data.getVersion().getID(), "debug"), new ArrayList<>());
-			Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(Shaders.get(Identifier.of("minecraft", "wobble")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
+			Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(Shaders.get(Shaders.getMainRegistryId(), Identifier.of("minecraft", "blobs2")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
 			//Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "test"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "test"), new Shader(Shaders.get(Identifier.of("minecraft", "phosphor")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
 		}
 	}

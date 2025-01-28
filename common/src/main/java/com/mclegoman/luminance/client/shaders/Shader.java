@@ -22,11 +22,11 @@ public class Shader {
 	private Identifier shaderId;
 	private Callable<RenderType> renderType;
 	private Callable<Boolean> shouldRender;
-	private ShaderRegistry shaderData;
-	public Shader(ShaderRegistry shaderData, Callable<RenderType> renderType, Callable<Boolean> shouldRender) {
+	private ShaderRegistryEntry shaderData;
+	public Shader(ShaderRegistryEntry shaderData, Callable<RenderType> renderType, Callable<Boolean> shouldRender) {
 		reload(shaderData, renderType, shouldRender);
 	}
-	public Shader(ShaderRegistry shaderData, Callable<RenderType> renderType) {
+	public Shader(ShaderRegistryEntry shaderData, Callable<RenderType> renderType) {
 		this(shaderData, renderType, () -> true);
 	}
 	public PostEffectProcessor getPostProcessor() {
@@ -74,10 +74,10 @@ public class Shader {
 		setUseDepth(false);
 		this.shouldRender = shouldRender;
 	}
-	public ShaderRegistry getShaderData() {
+	public ShaderRegistryEntry getShaderData() {
 		return this.shaderData;
 	}
-	public void setShaderData(ShaderRegistry shaderData) {
+	public void setShaderData(ShaderRegistryEntry shaderData) {
 		setUseDepth(false);
 		this.shaderData = shaderData;
 		if (getShaderData() != null) setShaderId(getShaderData().getPostEffect(false));
@@ -89,7 +89,7 @@ public class Shader {
 	public void reload() {
 		reload(shaderData, renderType, shouldRender);
 	}
-	public void reload(ShaderRegistry shaderData, Callable<RenderType> renderType, Callable<Boolean> shouldRender) {
+	public void reload(ShaderRegistryEntry shaderData, Callable<RenderType> renderType, Callable<Boolean> shouldRender) {
 		closePostProcessor();
 		setUseDepth(false);
 		setRenderType(renderType);

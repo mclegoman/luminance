@@ -27,11 +27,13 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class Shaders {
-	public static final List<ShaderRegistry> registry = new ArrayList<>();
+	protected static final Map<Identifier, List<ShaderRegistryEntry>> registries = new HashMap<>();
 	public static void init() {
 		Uniforms.init();
 		Events.BeforeGameRender.register(Identifier.of(Data.getVersion().getID(), "update"), Uniforms::update);
@@ -106,6 +108,16 @@ public class Shaders {
 			}
 		});
 	}
+	public static Identifier getMainRegistryId() {
+		return Identifier.of(Data.getVersion().getID(), "main");
+	}
+	public static List<ShaderRegistryEntry> getRegistry() {
+		return getRegistry(getMainRegistryId());
+	}
+	public static List<ShaderRegistryEntry> getRegistry(Identifier registry) {
+		if (!registries.containsKey(registry)) registries.put(registry, new ArrayList<>());
+		return registries.get(registry);
+	}
 	private static void renderUsingFramebufferSet(Identifier id, Shader.Data shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet) {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
@@ -177,32 +189,32 @@ public class Shaders {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render post effect processor: {}", error.getLocalizedMessage()));
 		}
 	}
-	public static ShaderRegistry get(int shaderIndex) {
-		return isValidIndex(shaderIndex) ? registry.get(shaderIndex) : null;
+	public static ShaderRegistryEntry get(Identifier registry, int shaderIndex) {
+		return isValidIndex(registry, shaderIndex) ? getRegistry(registry).get(shaderIndex) : null;
 	}
-	public static ShaderRegistry get(Identifier id) {
-		int index = getShaderIndex(id);
-		return isValidIndex(index) ? get(index) : null;
+	public static ShaderRegistryEntry get(Identifier registry, Identifier shaderId) {
+		int index = getShaderIndex(registry, shaderId);
+		return isValidIndex(registry, index) ? get(registry, index) : null;
 	}
-	public static Shader get(ShaderRegistry shaderData, Callable<Shader.RenderType> renderType, Callable<Boolean> shouldRender) {
+	public static Shader get(ShaderRegistryEntry shaderData, Callable<Shader.RenderType> renderType, Callable<Boolean> shouldRender) {
 		return new Shader(shaderData, renderType, shouldRender);
 	}
-	public static Shader get(ShaderRegistry shaderData, Callable<Shader.RenderType> renderType) {
+	public static Shader get(ShaderRegistryEntry shaderData, Callable<Shader.RenderType> renderType) {
 		return new Shader(shaderData, renderType);
 	}
 	public static Identifier getPostShader(Identifier post_effect, boolean full) {
 		return Identifier.of(post_effect.getNamespace(), ((full ? "post_effect/" : "") + post_effect.getPath() + (full ? ".json" : "")));
 	}
-	public static int getShaderIndex(Identifier id) {
-		if (id != null) {
-			for (ShaderRegistry data : registry) {
-				if (data.getID().equals(id)) return registry.indexOf(data);
+	public static int getShaderIndex(Identifier registry, Identifier shaderId) {
+		if (shaderId != null) {
+			for (ShaderRegistryEntry data : getRegistry(registry)) {
+				if (data.getID().equals(shaderId)) return getRegistry(registry).indexOf(data);
 			}
 		}
 		return -1;
 	}
-	public static JsonObject getCustom(int shaderIndex, String namespace) {
-		ShaderRegistry shader = get(shaderIndex);
+	public static JsonObject getCustom(Identifier registry, int shaderIndex, String namespace) {
+		ShaderRegistryEntry shader = get(registry, shaderIndex);
 		if (shader != null) {
 			JsonObject customData = shader.getCustom();
 			if (customData != null) {
@@ -213,19 +225,19 @@ public class Shaders {
 		}
 		return null;
 	}
-	public static Text getShaderName(int shaderIndex, boolean shouldShowNamespace) {
-		ShaderRegistry shader = get(shaderIndex);
+	public static Text getShaderName(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
+		ShaderRegistryEntry shader = get(registry, shaderIndex);
 		if (shader != null) return Translation.getShaderTranslation(shader.getID(), shader.getTranslatable(), shouldShowNamespace);
 		return Translation.getErrorTranslation(Data.getVersion().getID());
 	}
-	public static Text getShaderName(int shaderIndex) {
-		return getShaderName(shaderIndex, true);
+	public static Text getShaderName(Identifier registry, int shaderIndex) {
+		return getShaderName(registry, shaderIndex, true);
 	}
-	public static Identifier guessPostShader(String id) {
+	public static Identifier guessPostShader(Identifier registry, String id) {
 		// If the shader registry contains at least one shader with the name, the first detected instance will be used.
 		if (!id.contains(":")) {
-			for (ShaderRegistry registry : registry) {
-				if (registry.getID().getPath().equalsIgnoreCase(id)) return registry.getID();
+			for (ShaderRegistryEntry entry : getRegistry(registry)) {
+				if (entry.getID().getPath().equalsIgnoreCase(id)) return entry.getID();
 			}
 		}
 		return Identifier.of(id);
@@ -266,10 +278,10 @@ public class Shaders {
 		((PostEffectProcessorInterface)processor).luminance$render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet, customPasses);
 		frameGraphBuilder.run(objectAllocator);
 	}
-	public static int getShaderAmount() {
-		return registry.size();
+	public static int getShaderAmount(Identifier registry) {
+		return getRegistry(registry).size();
 	}
-	public static boolean isValidIndex(int index) {
-		return index <= getShaderAmount() && index >= 0;
+	public static boolean isValidIndex(Identifier registry, int index) {
+		return index <= getShaderAmount(registry) && index >= 0;
 	}
 }
