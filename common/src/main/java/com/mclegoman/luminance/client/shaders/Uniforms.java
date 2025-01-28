@@ -40,7 +40,6 @@ import java.util.List;
 
 public class Uniforms {
 	public static ShaderTime shaderTime = new ShaderTime();
-
 	private static int prevAlpha = getRawAlpha();
 	public static void tick() {
 		if (!updatingAlpha() && updatingAlpha) {
@@ -49,12 +48,10 @@ public class Uniforms {
 		}
 		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.tick());
 	}
-
 	public static void update() {
 		shaderTime.update(ClientData.minecraft.getRenderTickCounter().getTickDelta(true));
 		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.update(shaderTime));
 	}
-
 	public static void init() {
 		// 1. Something that could be nice would be the ability to reverse the value.
 		// when the value is at their max, it would return their min, and vice versa.
@@ -63,6 +60,7 @@ public class Uniforms {
 		// 3. a renderType uniform could be useful?
 		try {
 			String path = Data.getVersion().getID();
+			registerSingleTree(path, "hudHidden", Uniforms::getHudHidden, 0f, 1f);
 			registerSingleTree(path, "isInGui", Uniforms::getIsInGui, 0f, 1f);
 			registerSingleTree(path, "viewDistance", Uniforms::getViewDistance, 2f, null);
 			registerSingleTree(path, "fov", Uniforms::getFov, 0f, 360f);
@@ -112,11 +110,9 @@ public class Uniforms {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
 		}
 	}
-
 	public static void registerSingleTree(String path, String name, Callables.SingleUniformCalculation callable, @Nullable Float min, @Nullable Float max) {
 		registerStandardTree(path, name, callable.convert(), min, max, 1, null);
 	}
-
 	public static void registerStandardTree(String path, String name, Callables.UniformCalculation callable, @Nullable Float min, @Nullable Float max, int length, @Nullable UniformConfig uniformConfig) {
 		RootUniform uniform = new RootUniform(name, callable, length, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length), uniformConfig);
 		if (!uniform.useConfig) {
@@ -126,7 +122,6 @@ public class Uniforms {
 		}
 		registerTree(path, uniform);
 	}
-
 	public static void registerTree(String path, TreeUniform treeUniform) {
 		String name = path+"_"+treeUniform.name;
 		treeUniform.onRegister(name);
@@ -135,7 +130,6 @@ public class Uniforms {
 			registerTree(name, child);
 		}
 	}
-
 	public static TreeUniform addStandardChildren(TreeUniform treeUniform, int length) {
 		addElementChildren(
 				treeUniform.addChildren(
@@ -151,7 +145,6 @@ public class Uniforms {
 		);
 		return treeUniform;
 	}
-
 	public static TreeUniform addElementChildren(TreeUniform treeUniform, int length) {
 		if (length == 2) {
 			treeUniform.addChildren(new ElementUniform("x", 0), new ElementUniform("y", 1));
@@ -162,11 +155,12 @@ public class Uniforms {
 		}
 		return treeUniform;
 	}
-
+	public static float getHudHidden(ShaderTime shaderTime) {
+		return ClientData.minecraft.options != null ? (ClientData.minecraft.options.hudHidden ? 1.0F : 0.0F) : 0.0F;
+	}
 	public static float getIsInGui(ShaderTime shaderTime) {
 		return ClientData.minecraft.currentScreen != null ? 1.0F : 0.0F;
 	}
-
 	public static float getViewDistance(ShaderTime shaderTime) {
 		return ClientData.minecraft.options != null ? ClientData.minecraft.options.getViewDistance().getValue() : 12.0F;
 	}
@@ -176,12 +170,10 @@ public class Uniforms {
 	public static float getFps(ShaderTime shaderTime) {
 		return ClientData.minecraft.getCurrentFps();
 	}
-
 	public static void getGameTime(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		float period = config.getNumber("period", 0).orElse(1.0).floatValue();
 		uniformValue.set(0, shaderTime.getModuloTime(period)/period);
 	}
-
 	public static void getEye(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
 			uniformValue.set(ClientData.minecraft.player.getEyePos());
@@ -196,8 +188,6 @@ public class Uniforms {
 			uniformValue.set(new Vec3d(0, 64, 0));
 		}
 	}
-
-
 	public static float getPitch(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getPitch(shaderTime.getTickDelta()) % 360.0F : 0.0F;
 	}
