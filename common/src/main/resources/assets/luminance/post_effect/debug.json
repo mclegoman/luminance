@@ -1,14 +1,32 @@
 {
     "targets": {
-        "swap": {}
+        "0": {},
+        "1": {}
     },
     "passes": [
+        {
+            "program": "minecraft:post/blobs2",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                }
+            ],
+            "uniforms": [
+                {
+                    "name": "Radius",
+                    "values": [ 1.0 ],
+                    "override": [ "luminance_selectedSlot" ]
+                }
+            ],
+            "output": "0"
+        },
         {
             "program": "luminance:post/overlay",
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "minecraft:main"
+                    "target": "0"
                 },
                 {
                     "sampler_name": "Overlay",
@@ -25,14 +43,14 @@
                     "override": [ "luminance_isSprinting" ]
                 }
             ],
-            "output": "swap"
+            "output": "1"
         },
         {
             "program": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "swap"
+                    "target": "1"
                 }
             ],
             "output": "minecraft:main"

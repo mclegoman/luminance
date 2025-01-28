@@ -20,6 +20,7 @@ import com.mclegoman.luminance.client.shaders.uniforms.children.ElementUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.children.PrevUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.children.SmoothUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.config.ConfigData;
+import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import com.mclegoman.luminance.client.translation.Translation;
@@ -106,6 +107,7 @@ public class Uniforms {
 			registerSingleTree(path, "isDay", Uniforms::getIsDay, 0f, 1f);
 			registerSingleTree(path, "starBrightness", Uniforms::getStarBrightness, 0f, 1f);
 			registerStandardTree(path, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("period", List.of(1.0f)))));
+			registerStandardTree(path, "renderType", Uniforms::getRenderType, 0f, 1f, 1, EmptyConfig.INSTANCE);
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
 		}
@@ -324,5 +326,9 @@ public class Uniforms {
 	}
 	public static float getStarBrightness(ShaderTime shaderTime) {
 		return ClientData.minecraft.world != null ? ClientData.minecraft.world.getStarBrightness(shaderTime.getTickDelta()) : 0.0F;
+	}
+	public static void getRenderType(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		// TODO: Parse the shader's render type. (World = 0, Game = 1)
+		uniformValue.set(0, 0);
 	}
 }
