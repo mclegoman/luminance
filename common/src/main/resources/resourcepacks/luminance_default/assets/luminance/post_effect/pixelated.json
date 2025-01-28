@@ -17,6 +17,10 @@
                 {
                     "name": "Amount",
                     "values": [ 8.0 ]
+                },
+                {
+                    "name": "AmountMultiplier",
+                    "values": [ 1.0 ]
                 }
             ]
         },

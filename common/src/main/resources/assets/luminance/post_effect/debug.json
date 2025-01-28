@@ -1,31 +1,38 @@
 {
     "targets": {
-        "0": {}
+        "swap": {}
     },
     "passes": [
         {
-            "program": "luminance:post/pixelated",
+            "program": "luminance:post/overlay",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
+                },
+                {
+                    "sampler_name": "Overlay",
+                    "location": "luminance:debug",
+                    "width": 256,
+                    "height": 256,
+                    "bilinear": false
                 }
             ],
-            "output": "0",
             "uniforms": [
                 {
-                    "name": "Amount",
-                    "values": [ 8.0 ],
-                    "override": [ "luminance_selectedSlot_smooth" ]
+                    "name": "Alpha",
+                    "values": [ 1.0 ],
+                    "override": [ "luminance_isSprinting" ]
                 }
-            ]
+            ],
+            "output": "swap"
         },
         {
             "program": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "0"
+                    "target": "swap"
                 }
             ],
             "output": "minecraft:main"

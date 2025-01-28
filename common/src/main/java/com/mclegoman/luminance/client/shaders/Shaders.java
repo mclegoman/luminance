@@ -292,10 +292,8 @@ public class Shaders {
 	protected static void applyDebugShader() {
 		try {
 			if (ClientData.isDevelopment) {
-				// Test Shader: remove/comment out when shader rendering is finished.
 				Events.ShaderRender.register(Identifier.of(Data.getVersion().getID(), "debug"), new ArrayList<>());
-				Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(get(Identifier.of("luminance", "debug"), Identifier.of("luminance", "debug")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
-				//Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "test"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "test"), new Shader(get(Identifier.of("minecraft", "phosphor")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
+				Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(get(Identifier.of("luminance", "debug"), Identifier.of("luminance", "debug")), () -> Debug.debugRenderType, () -> Debug.debugShader)), new Shader.Data(Identifier.of(Data.getVersion().getID(), "test"), new Shader(get(Identifier.of("luminance", "test"), Identifier.of("minecraft", "shareware")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
 			}
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to apply debug shader: {}", error));
