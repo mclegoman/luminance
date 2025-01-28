@@ -25,6 +25,7 @@ public class Data {
 		}
 		if (version != null) return version;
 		else throw new NullPointerException("luminance version couldn't be obtained!");
+		// If you end up seeing this error in dev env, try reloading your gradle.
 	}
 	public static boolean isModInstalled(String modId) {
 		try {
