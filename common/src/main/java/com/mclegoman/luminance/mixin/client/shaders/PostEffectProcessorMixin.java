@@ -47,6 +47,7 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
 
     @Shadow public abstract void render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet);
 
+    @Shadow @Final private Map<Identifier, PostEffectPipeline.Targets> internalTargets;
     @Unique private Map<Identifier, List<PostEffectPass>> luminance$customPasses;
 
     @Unique @Nullable private Identifier luminance$currentCustomPasses;
@@ -148,5 +149,38 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     @Override
     public Set<Identifier> luminance$getCustomPassNames() {
         return luminance$customPasses.keySet();
+    }
+
+    @Override
+    public boolean luminance$usesDepth() {
+        if (luminance$passListUsesDepth(passes)) {
+            return true;
+        }
+        for (List<PostEffectPass> customPasses : luminance$customPasses.values()) {
+            if (luminance$passListUsesDepth(customPasses)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Unique
+    private boolean luminance$passListUsesDepth(List<PostEffectPass> passes) {
+        for (PostEffectPass pass : passes) {
+            if (((PostEffectPassInterface)pass).luminance$usesDepth()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean luminance$usesPersistentBuffers() {
+        for (PostEffectPipeline.Targets targets : internalTargets.values()) {
+            if (((PipelineTargetInterface)(Object)targets).luminance$getPersistent()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

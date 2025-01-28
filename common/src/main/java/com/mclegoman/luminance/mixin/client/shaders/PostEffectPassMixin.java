@@ -44,6 +44,7 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	@Shadow @Final private List<PostEffectPipeline.Uniform> uniforms;
 
 	@Shadow @Final private Identifier outputTargetId;
+	@Shadow @Final private List<PostEffectPass.Sampler> samplers;
 	@Unique private final Map<String, UniformOverride> luminance$uniformOverrides = new HashMap<>();
 	@Unique private final Map<String, UniformConfig> luminance$uniformConfigs = new HashMap<>();
 	@Unique private final Map<Identifier, Object> luminance$customData = new HashMap<>();
@@ -196,5 +197,15 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	@Override
 	public Optional<Object> luminance$getCustomData(Identifier identifier) {
 		return Optional.ofNullable(luminance$customData.get(identifier));
+	}
+
+	@Override
+	public boolean luminance$usesDepth() {
+		for (PostEffectPass.Sampler sampler : samplers) {
+			if (sampler instanceof PostEffectPass.TargetSampler targetSampler && targetSampler.depthBuffer()) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -8,6 +8,7 @@
 package com.mclegoman.luminance.client.shaders;
 
 import com.mclegoman.luminance.client.data.ClientData;
+import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.client.gl.PostEffectProcessor;
@@ -35,6 +36,9 @@ public class Shader {
 	public void setPostProcessor() {
 		try {
 			this.postProcessor = ClientData.minecraft.getShaderLoader().loadPostEffect(this.shaderId, DefaultFramebufferSet.STAGES);
+			if (postProcessor != null && ((PostEffectProcessorInterface)this.postProcessor).luminance$usesDepth()) {
+				setUseDepth(true);
+			}
 		} catch (Exception error) {
 			com.mclegoman.luminance.common.data.Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set post processor: {}", error));
 			closePostProcessor();
@@ -54,13 +58,13 @@ public class Shader {
 	}
 	private void setShaderId(Identifier id) {
 		setUseDepth(false);
+		closePostProcessor();
 		this.shaderId = id;
 	}
 	public Callable<RenderType> getRenderType() {
 		return this.renderType;
 	}
 	public void setRenderType(Callable<RenderType> renderType) {
-		setUseDepth(false);
 		this.renderType = renderType;
 	}
 	public Boolean getShouldRender() {
@@ -71,7 +75,6 @@ public class Shader {
 		}
 	}
 	public void setShouldRender(Callable<Boolean> shouldRender) {
-		setUseDepth(false);
 		this.shouldRender = shouldRender;
 	}
 	public ShaderRegistryEntry getShaderData() {
@@ -91,7 +94,6 @@ public class Shader {
 	}
 	public void reload(ShaderRegistryEntry shaderData, Callable<RenderType> renderType, Callable<Boolean> shouldRender) {
 		closePostProcessor();
-		setUseDepth(false);
 		setRenderType(renderType);
 		setShouldRender(shouldRender);
 		setShaderData(shaderData);

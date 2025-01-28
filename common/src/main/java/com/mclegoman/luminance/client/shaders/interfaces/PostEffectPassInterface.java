@@ -36,4 +36,6 @@ public interface PostEffectPassInterface {
     Object luminance$putCustomData(Identifier identifier, Object object);
 
     Optional<Object> luminance$getCustomData(Identifier identifier);
+
+    boolean luminance$usesDepth();
 }

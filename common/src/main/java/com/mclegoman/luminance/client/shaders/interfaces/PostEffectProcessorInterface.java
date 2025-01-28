@@ -27,4 +27,8 @@ public interface PostEffectProcessorInterface {
     void luminance$setCustomPasses(Map<Identifier, List<PostEffectPass>> customPasses);
 
     Set<Identifier> luminance$getCustomPassNames();
+
+    boolean luminance$usesDepth();
+
+    boolean luminance$usesPersistentBuffers();
 }

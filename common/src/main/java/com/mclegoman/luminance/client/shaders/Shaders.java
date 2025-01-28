@@ -28,10 +28,7 @@ import net.minecraft.util.JsonHelper;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 public class Shaders {
@@ -39,6 +36,8 @@ public class Shaders {
 	public static void init() {
 		Uniforms.init();
 		Events.BeforeGameRender.register(Identifier.of(Data.getVersion().getID(), "update"), Uniforms::update);
+
+
 		Events.AfterHandRender.register(Identifier.of(Data.getVersion().getID(), "main"), new Runnables.GameRender() {
 			@Override
 			public void run(Framebuffer framebuffer, ObjectAllocator objectAllocator) {
@@ -47,8 +46,9 @@ public class Shaders {
 						if (shaders != null) shaders.forEach(shader -> {
 							try {
 								if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-									if ((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth())) && (!shader.shader().getUseDepth() || CompatHelper.isIrisShadersEnabled()))
+									if ((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth())) && (!shader.shader().getUseDepth() || CompatHelper.isIrisShadersEnabled())) {
 										renderUsingAllocator(id, shader, framebuffer, objectAllocator);
+									}
 								}
 							} catch (Exception error) {
 								Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterHandRender shader with id: {}:{}", id, error));
@@ -69,8 +69,9 @@ public class Shaders {
 						if (shaders != null) shaders.forEach(shader -> {
 							try {
 								if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-									if (shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || shader.shader().getShaderData().getDisableGameRendertype() || (shader.shader().getUseDepth() && !CompatHelper.isIrisShadersEnabled()))
+									if ((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth()) && (shader.shader().getUseDepth() && !CompatHelper.isIrisShadersEnabled())) {
 										renderUsingFramebufferSet(id, shader, builder, textureWidth, textureHeight, framebufferSet);
+									}
 								}
 							} catch (Exception error) {
 								Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterWeatherRender shader with id: {}:{}", id, error));
@@ -90,8 +91,9 @@ public class Shaders {
 						if (shaders != null) shaders.forEach(shader -> {
 							try {
 								if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-									if (shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && !shader.shader().getShaderData().getDisableGameRendertype() && !shader.shader().getUseDepth())
+									if (shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && !shader.shader().getShaderData().getDisableGameRendertype() && !shader.shader().getUseDepth()) {
 										renderUsingAllocator(id, shader, framebuffer, objectAllocator);
+									}
 								}
 							} catch (Exception error) {
 								Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
@@ -130,7 +132,7 @@ public class Shaders {
 				}
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" using framebuffer set, shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
 		}
 	}
 	public static void renderProcessorUsingFramebufferSet(Shader shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet, @Nullable Identifier customPasses) {
@@ -164,7 +166,7 @@ public class Shaders {
 				}
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" using allocator, shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
 		}
 	}
 	public static ShaderRegistryEntry get(int shaderIndex) {
@@ -273,6 +275,7 @@ public class Shaders {
 	// This is identical to the deprecated `PostEffectProcessor.render(framebuffer, objectAllocator);` function.
 	public static void renderShaderUsingAllocator(Shader shader, Framebuffer framebuffer, ObjectAllocator objectAllocator, @Nullable Identifier customPasses) {
 		if (shader.getPostProcessor() != null) {
+			Data.getVersion().sendToLog(LogType.INFO, "rendering with allocator");
 			FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
 			PostEffectProcessor.FramebufferSet framebufferSet = PostEffectProcessor.FramebufferSet.singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer));
 			((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet, customPasses);
@@ -295,7 +298,7 @@ public class Shaders {
 		try {
 			if (ClientData.isDevelopment) {
 				Events.ShaderRender.register(Identifier.of(Data.getVersion().getID(), "debug"), new ArrayList<>());
-				Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(get(Identifier.of("luminance", "debug"), Identifier.of("luminance", "debug")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
+				Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(get(Identifier.of("luminance", "main"), Identifier.of("luminance", "outlined")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
 			}
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to apply debug shader: {}", error));
