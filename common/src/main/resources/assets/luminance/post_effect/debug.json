@@ -1,0 +1,34 @@
+{
+    "targets": {
+        "0": {}
+    },
+    "passes": [
+        {
+            "program": "luminance:post/pixelated",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                }
+            ],
+            "output": "0",
+            "uniforms": [
+                {
+                    "name": "Amount",
+                    "values": [ 8.0 ],
+                    "override": [ "luminance_selectedSlot_smooth" ]
+                }
+            ]
+        },
+        {
+            "program": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "0"
+                }
+            ],
+            "output": "minecraft:main"
+        }
+    ]
+}

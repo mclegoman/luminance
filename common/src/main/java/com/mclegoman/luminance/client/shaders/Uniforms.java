@@ -56,23 +56,32 @@ public class Uniforms {
 	}
 
 	public static void init() {
+		// 1. Something that could be nice would be the ability to reverse the value.
+		// when the value is at their max, it would return their min, and vice versa.
+		// for example; currentHealth would return 0, when at full health, and when at no health would return maxHeath.
+		// 2. A useful global config option could be a multiplier.
+		// 3. a renderType uniform could be useful?
 		try {
 			String path = Data.getVersion().getID();
+			registerSingleTree(path, "isInGui", Uniforms::getIsInGui, 0f, 1f);
 			registerSingleTree(path, "viewDistance", Uniforms::getViewDistance, 2f, null);
 			registerSingleTree(path, "fov", Uniforms::getFov, 0f, 360f);
 			registerSingleTree(path, "fps", Uniforms::getFps, 0f, null);
-
 			registerStandardTree(path, "eye", Uniforms::getEye, null, null, 3, null);
 			registerStandardTree(path, "pos", Uniforms::getPos, null, null, 3, null);
-
 			registerSingleTree(path, "pitch", Uniforms::getPitch, -90f, 90f);
 			registerSingleTree(path, "yaw", Uniforms::getYaw, -180f, 180f);
+			registerSingleTree(path, "velocity", Uniforms::getVelocity, 0f, null);
+			// currentHealth's max would be maxHealth, however, that would require min/max to be callable.
 			registerSingleTree(path, "currentHealth", Uniforms::getCurrentHealth, 0f, null);
 			registerSingleTree(path, "maxHealth", Uniforms::getMaxHealth, 0f, null);
+			// currentAbsorption's max would be maxAbsorption, however, that would require min/max to be callable.
 			registerSingleTree(path, "currentAbsorption", Uniforms::getCurrentAbsorption, 0f, null);
 			registerSingleTree(path, "maxAbsorption", Uniforms::getMaxAbsorption, 0f, null);
+			// currentHurtTime's max would be maxHurtTime, however, that would require min/max to be callable.
 			registerSingleTree(path, "currentHurtTime", Uniforms::getCurrentHurtTime, 0f, null);
 			registerSingleTree(path, "maxHurtTime", Uniforms::getMaxHurtTime, 0f, null);
+			// currentAir's max would be maxAir, however, that would require min/max to be callable.
 			registerSingleTree(path, "currentAir", Uniforms::getCurrentAir, 0f, null);
 			registerSingleTree(path, "maxAir", Uniforms::getMaxAir, 0f, null);
 			registerSingleTree(path, "isAlive", Uniforms::getIsAlive, 0f, 1f);
@@ -94,13 +103,10 @@ public class Uniforms {
 			registerSingleTree(path, "perspective", Uniforms::getPerspective, 0f, 3f);
 			registerSingleTree(path, "selectedSlot", Uniforms::getSelectedSlot, 0f, 8f);
 			registerSingleTree(path, "score", Uniforms::getScore, 0f, null);
-			registerSingleTree(path, "velocity", Uniforms::getVelocity, 0f, null);
 			registerSingleTree(path, "skyAngle", Uniforms::getSkyAngle, 0f, 1f);
 			registerSingleTree(path, "sunAngle", Uniforms::getSunAngle, 0f ,1f);
 			registerSingleTree(path, "isDay", Uniforms::getIsDay, 0f, 1f);
 			registerSingleTree(path, "starBrightness", Uniforms::getStarBrightness, 0f, 1f);
-
-			// Time Uniform should be updated to be customizable.
 			registerStandardTree(path, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("period", List.of(1.0f)))));
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
@@ -155,6 +161,10 @@ public class Uniforms {
 			treeUniform.addChildren(new ElementUniform("x", 0), new ElementUniform("y", 1), new ElementUniform("z", 2), new ElementUniform("w", 3));
 		}
 		return treeUniform;
+	}
+
+	public static float getIsInGui(ShaderTime shaderTime) {
+		return ClientData.minecraft.currentScreen != null ? 1.0F : 0.0F;
 	}
 
 	public static float getViewDistance(ShaderTime shaderTime) {
