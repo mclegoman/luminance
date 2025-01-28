@@ -191,8 +191,14 @@ public class Shaders {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render post effect processor: {}", error.getLocalizedMessage()));
 		}
 	}
+	public static ShaderRegistryEntry get(int shaderIndex) {
+		return get(getMainRegistryId(), shaderIndex);
+	}
 	public static ShaderRegistryEntry get(Identifier registry, int shaderIndex) {
 		return isValidIndex(registry, shaderIndex) ? getRegistry(registry).get(shaderIndex) : null;
+	}
+	public static ShaderRegistryEntry get(Identifier shaderId) {
+		return get(getMainRegistryId(), shaderId);
 	}
 	public static ShaderRegistryEntry get(Identifier registry, Identifier shaderId) {
 		int index = getShaderIndex(registry, shaderId);
@@ -207,6 +213,9 @@ public class Shaders {
 	public static Identifier getPostShader(Identifier post_effect, boolean full) {
 		return Identifier.of(post_effect.getNamespace(), ((full ? "post_effect/" : "") + post_effect.getPath() + (full ? ".json" : "")));
 	}
+	public static int getShaderIndex(Identifier shaderId) {
+		return getShaderIndex(getMainRegistryId(), shaderId);
+	}
 	public static int getShaderIndex(Identifier registry, Identifier shaderId) {
 		if (shaderId != null) {
 			for (ShaderRegistryEntry data : getRegistry(registry)) {
@@ -214,6 +223,9 @@ public class Shaders {
 			}
 		}
 		return -1;
+	}
+	public static JsonObject getCustom(int shaderIndex, String namespace) {
+		return getCustom(getMainRegistryId(), shaderIndex, namespace);
 	}
 	public static JsonObject getCustom(Identifier registry, int shaderIndex, String namespace) {
 		ShaderRegistryEntry shader = get(registry, shaderIndex);
@@ -227,13 +239,22 @@ public class Shaders {
 		}
 		return null;
 	}
+	public static Text getShaderName(int shaderIndex, boolean shouldShowNamespace) {
+		return getShaderName(getMainRegistryId(), shaderIndex, shouldShowNamespace);
+	}
 	public static Text getShaderName(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
 		ShaderRegistryEntry shader = get(registry, shaderIndex);
 		if (shader != null) return Translation.getShaderTranslation(shader.getID(), shader.getTranslatable(), shouldShowNamespace);
 		return Translation.getErrorTranslation(Data.getVersion().getID());
 	}
+	public static Text getShaderName(int shaderIndex) {
+		return getShaderName(getMainRegistryId(), shaderIndex);
+	}
 	public static Text getShaderName(Identifier registry, int shaderIndex) {
 		return getShaderName(registry, shaderIndex, true);
+	}
+	public static Identifier guessPostShader(String id) {
+		return guessPostShader(getMainRegistryId(), id);
 	}
 	public static Identifier guessPostShader(Identifier registry, String id) {
 		// If the shader registry contains at least one shader with the name, the first detected instance will be used.
@@ -280,8 +301,14 @@ public class Shaders {
 		((PostEffectProcessorInterface)processor).luminance$render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet, customPasses);
 		frameGraphBuilder.run(objectAllocator);
 	}
+	public static int getShaderAmount() {
+		return getShaderAmount(getMainRegistryId());
+	}
 	public static int getShaderAmount(Identifier registry) {
 		return getRegistry(registry).size();
+	}
+	public static boolean isValidIndex(int index) {
+		return isValidIndex(getMainRegistryId(), index);
 	}
 	public static boolean isValidIndex(Identifier registry, int index) {
 		return index <= getShaderAmount(registry) && index >= 0;
@@ -291,8 +318,8 @@ public class Shaders {
 			if (ClientData.isDevelopment) {
 				// Test Shader: remove/comment out when shader rendering is finished.
 				Events.ShaderRender.register(Identifier.of(Data.getVersion().getID(), "debug"), new ArrayList<>());
-				Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(Shaders.get(Shaders.getMainRegistryId(), Identifier.of("minecraft", "blobs2")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
-				//Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "test"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "test"), new Shader(Shaders.get(Identifier.of("minecraft", "phosphor")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
+				Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(get(Identifier.of("minecraft", "blobs2")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
+				//Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "test"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "test"), new Shader(get(Identifier.of("minecraft", "phosphor")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
 			}
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to apply debug shader: {}", error));
