@@ -109,7 +109,14 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
                 }
 
                 List<PostEffectPass> passes = builder.build();
-                passes.forEach((pass) -> luminance$trySetForceVisit(pass, pipeline.internalTargets()));
+
+                // for some reason custom passes aren't visited properly if we just let them into the frameGraphBuilder normally
+                // so instead of only force-visiting the persistent ones, we force visit all of them
+                // this would only cause a performance penalty if there are excessive passes in a custom pass that *should* be unvisited
+                // but if someone's using a custom pass, i (Nettakrim) think they probably know what they're doing
+                passes.forEach((pass) -> ((PostEffectPassInterface)pass).luminance$setForceVisit(true));
+                //passes.forEach((pass) -> luminance$trySetForceVisit(pass, pipeline.internalTargets()));
+
                 customPasses.put(entry.getKey(), passes);
             }
 
