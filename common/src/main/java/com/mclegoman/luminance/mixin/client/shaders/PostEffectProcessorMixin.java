@@ -140,9 +140,11 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
 
     @Override
     public void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet, @Nullable Identifier customPasses) {
-        luminance$currentCustomPasses = customPasses;
-        render(builder, textureWidth, textureHeight, framebufferSet);
-        luminance$currentCustomPasses = null;
+        if (customPasses == null || luminance$customPasses.containsKey(customPasses)) {
+            luminance$currentCustomPasses = customPasses;
+            render(builder, textureWidth, textureHeight, framebufferSet);
+            luminance$currentCustomPasses = null;
+        }
     }
 
     @ModifyReceiver(at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V")
