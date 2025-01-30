@@ -28,6 +28,7 @@ import com.mclegoman.luminance.client.util.Accessors;
 import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
@@ -67,6 +68,7 @@ public class Uniforms {
 			registerSingleTree(path, "fov", Uniforms::getFov, 0f, 360f);
 			registerSingleTree(path, "fps", Uniforms::getFps, 0f, null);
 			registerStandardTree(path, "eye", Uniforms::getEye, null, null, 3, null);
+			registerStandardTree(path, "eye_fract", Uniforms::getEyeFract, 0f, 1f, 3, null);
 			registerStandardTree(path, "pos", Uniforms::getPos, null, null, 3, null);
 			registerStandardTree(path, "pos_fract", Uniforms::getPosFract, 0f, 1f, 3, null);
 			registerSingleTree(path, "pitch", Uniforms::getPitch, -90f, 90f);
@@ -168,7 +170,7 @@ public class Uniforms {
 		return ClientData.minecraft.options != null ? ClientData.minecraft.options.getViewDistance().getValue() : 12.0F;
 	}
 	public static float getFov(ShaderTime shaderTime) {
-		return Accessors.getGameRenderer() != null ? Accessors.getGameRenderer().invokeGetFov(ClientData.minecraft.gameRenderer.getCamera(), shaderTime.getTickDelta(), false) : 70.0F;
+		return Accessors.getGameRenderer() != null ? (Accessors.getGameRenderer().invokeGetFov(ClientData.minecraft.gameRenderer.getCamera(), shaderTime.getTickDelta(), true)) : (ClientData.minecraft.options != null ? MinecraftClient.getInstance().options.getFov().getValue() : 70f);
 	}
 	public static float getFps(ShaderTime shaderTime) {
 		return ClientData.minecraft.getCurrentFps();
@@ -177,13 +179,22 @@ public class Uniforms {
 		float period = config.getNumber("period", 0).orElse(1.0).floatValue();
 		uniformValue.set(0, shaderTime.getModuloTime(period)/period);
 	}
+
 	public static void getEye(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(ClientData.minecraft.player.getEyePos());
+			uniformValue.set(ClientData.minecraft.player.getCameraPosVec(shaderTime.getTickDelta()));
 		} else {
 			uniformValue.set(new Vec3d(0, 66, 0));
 		}
 	}
+	public static void getEyeFract(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		if (ClientData.minecraft.player != null) {
+			uniformValue.set(fract(ClientData.minecraft.player.getCameraPosVec(shaderTime.getTickDelta())));
+		} else {
+			uniformValue.set(new Vec3d(0, 66, 0));
+		}
+	}
+
 	public static void getPos(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
 			uniformValue.set(ClientData.minecraft.player.getPos());
@@ -193,11 +204,13 @@ public class Uniforms {
 	}
 	public static void getPosFract(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
-			Vec3d pos = ClientData.minecraft.player.getPos();
-			uniformValue.set(new Vec3d(MathHelper.fractionalPart(pos.x), MathHelper.fractionalPart(pos.y), MathHelper.fractionalPart(pos.z)));
+			uniformValue.set(fract(ClientData.minecraft.player.getPos()));
 		} else {
 			uniformValue.set(new Vec3d(0, 0, 0));
 		}
+	}
+	private static Vec3d fract(Vec3d pos) {
+		return new Vec3d(MathHelper.fractionalPart(pos.x), MathHelper.fractionalPart(pos.y), MathHelper.fractionalPart(pos.z));
 	}
 
 	public static float getPitch(ShaderTime shaderTime) {
