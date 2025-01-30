@@ -68,6 +68,7 @@ public class Uniforms {
 			registerSingleTree(path, "fps", Uniforms::getFps, 0f, null);
 			registerStandardTree(path, "eye", Uniforms::getEye, null, null, 3, null);
 			registerStandardTree(path, "pos", Uniforms::getPos, null, null, 3, null);
+			registerStandardTree(path, "pos_fract", Uniforms::getPosFract, 0f, 1f, 3, null);
 			registerSingleTree(path, "pitch", Uniforms::getPitch, -90f, 90f);
 			registerSingleTree(path, "yaw", Uniforms::getYaw, -180f, 180f);
 			registerSingleTree(path, "velocity", Uniforms::getVelocity, 0f, null);
@@ -190,6 +191,15 @@ public class Uniforms {
 			uniformValue.set(new Vec3d(0, 64, 0));
 		}
 	}
+	public static void getPosFract(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		if (ClientData.minecraft.player != null) {
+			Vec3d pos = ClientData.minecraft.player.getPos();
+			uniformValue.set(new Vec3d(MathHelper.fractionalPart(pos.x), MathHelper.fractionalPart(pos.y), MathHelper.fractionalPart(pos.z)));
+		} else {
+			uniformValue.set(new Vec3d(0, 0, 0));
+		}
+	}
+
 	public static float getPitch(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getPitch(shaderTime.getTickDelta()) % 360.0F : 0.0F;
 	}
