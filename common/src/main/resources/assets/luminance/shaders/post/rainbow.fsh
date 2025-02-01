@@ -5,7 +5,7 @@ in vec2 texCoord;
 out vec4 fragColor;
 
 uniform float Colors;
-uniform vec2 Scale;
+uniform vec3 Scale;
 
 uniform vec3 Color1;
 uniform vec3 Color2;
@@ -28,6 +28,6 @@ vec3 colors[8] = vec3[](
 );
 
 void main() {
-    float color = mod(Scale.x*texCoord.x + Scale.y*texCoord.y, Colors);
+    float color = mod(Scale.x*texCoord.x + Scale.y*texCoord.y + Scale.z, Colors);
     fragColor = vec4(colors[clamp(int(color), 0, 7)] * texture(InSampler, texCoord).rgb, 1.0);
 }
