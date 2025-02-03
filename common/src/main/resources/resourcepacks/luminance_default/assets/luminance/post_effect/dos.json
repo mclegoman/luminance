@@ -1,5 +1,6 @@
 {
     "targets": {
+        "merge": {},
         "swap": {}
     },
     "passes": [
@@ -11,11 +12,18 @@
                     "target": "minecraft:main"
                 }
             ],
-            "uniforms": [
+            "output": "merge"
+        },
+        {
+            "program": "luminance:post/merge",
+            "inputs": [
                 {
-                    "name": "Amount",
-                    "values": [ 8.0, 8.0, 8.0 ],
-                    "override": [ "luminance_pos_x", "luminance_pos_y", "luminance_pos_z" ]
+                    "sampler_name": "In",
+                    "target": "merge"
+                },
+                {
+                    "sampler_name": "Merge",
+                    "target": "minecraft:main"
                 }
             ],
             "output": "swap"

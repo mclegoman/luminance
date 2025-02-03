@@ -1,8 +1,8 @@
 {
-  "post_effect": "minecraft:pencil",
+  "post_effect": "luminance:dos",
   "enabled": true,
   "translatable": true,
-  "disable_game_rendertype": true,
+  "disable_game_rendertype": false,
   "custom": {
     "souper_secret_settings": {
       "disable_soup": false

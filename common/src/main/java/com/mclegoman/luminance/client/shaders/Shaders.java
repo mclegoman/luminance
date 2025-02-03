@@ -28,7 +28,10 @@ import net.minecraft.util.JsonHelper;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class Shaders {
@@ -275,7 +278,7 @@ public class Shaders {
 	// This is identical to the deprecated `PostEffectProcessor.render(framebuffer, objectAllocator);` function.
 	public static void renderShaderUsingAllocator(Shader shader, Framebuffer framebuffer, ObjectAllocator objectAllocator, @Nullable Identifier customPasses) {
 		if (shader.getPostProcessor() != null) {
-			Data.getVersion().sendToLog(LogType.INFO, "rendering with allocator");
+			//Data.getVersion().sendToLog(LogType.INFO, "rendering with allocator");
 			FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
 			PostEffectProcessor.FramebufferSet framebufferSet = PostEffectProcessor.FramebufferSet.singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer));
 			((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet, customPasses);
@@ -298,7 +301,7 @@ public class Shaders {
 		try {
 			if (ClientData.isDevelopment) {
 				Events.ShaderRender.register(Identifier.of(Data.getVersion().getID(), "debug"), new ArrayList<>());
-				Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(get(Identifier.of("luminance", "main"), Identifier.of("luminance", "outlined")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
+				Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(get(Identifier.of("luminance", "debug"), Identifier.of("luminance", "debug")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
 			}
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to apply debug shader: {}", error));

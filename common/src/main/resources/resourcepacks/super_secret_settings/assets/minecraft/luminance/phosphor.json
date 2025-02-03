@@ -3,9 +3,6 @@
   "disable_game_rendertype": true,
   "translatable": true,
   "custom": {
-    "perspective": {
-      "entity_links": []
-    },
     "souper_secret_settings": {
       "disable_soup": false
     }

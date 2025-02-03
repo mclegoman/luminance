@@ -16,5 +16,6 @@
 	"shader.luminance.bloom_dither": "light-based dither",
 	"shader.luminance.depth_dither": "depth-based dither",
 	"shader.luminance.eightbit": "8-bit",
-	"shader.luminance.health_overlay": "health overlay"
+	"shader.luminance.health_overlay": "health overlay",
+	"shader.luminance.dos": "dos"
 }
