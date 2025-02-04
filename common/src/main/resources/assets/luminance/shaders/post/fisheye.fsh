@@ -5,12 +5,20 @@ uniform sampler2D InSampler;
 in vec2 texCoord;
 out vec4 fragColor;
 
-uniform float Strength;
+uniform vec2 Curvature;
+uniform vec2 Rotation;
+uniform float Scale;
 
-void main() {
-    vec2 coord = texCoord - vec2(0.5);
+uniform float Wrapping;
+
+vec4 wrapTexture(sampler2D tex, vec2 coord) {
+    return texture2D(tex, mix(coord, fract(coord), Wrapping));
+}
+
+void main(){
+    vec2 coord = (texCoord-vec2(0.5)) / Scale;
     float dist = length(coord);
-    float radius = ((atan(dist, sqrt(1.0 + pow(dist, 2.0) * -1.2)) / 3.141592653589793) * 2.625) * Strength;
-    float atanCoord = atan(coord.y, coord.x);
-    fragColor = vec4(texture(InSampler, vec2(radius * cos(atanCoord), radius * sin(atanCoord)) + vec2(0.5)).rgb, 1.0);
+    float radius = (atan(dist, sqrt(1.0 + dist * dist * Curvature.x)) / 3.14159) * Curvature.y;
+    float atanCoord = atan(coord.y, coord.x) * Rotation.y + Rotation.x;
+    fragColor = vec4(wrapTexture(InSampler, vec2(radius*cos(atanCoord), radius*sin(atanCoord)) + vec2(0.5)).rgb, 1.0);
 }

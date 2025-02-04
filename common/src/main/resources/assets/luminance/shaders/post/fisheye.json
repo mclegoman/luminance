@@ -5,9 +5,12 @@
 		{ "name": "InSampler" }
 	],
 	"uniforms": [
-		{ "name": "ProjMat",    "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
-		{ "name": "InSize",     "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
-		{ "name": "OutSize",    "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
-		{ "name": "Strength",    "type": "float",     "count": 1,  "values": [ 1.0 ] }
+		{ "name": "ProjMat",   "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+		{ "name": "InSize",    "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
+		{ "name": "OutSize",   "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
+		{ "name": "Curvature", "type": "float",     "count": 2,  "values": [ -1.2, 2.625 ] },
+		{ "name": "Rotation",  "type": "float",     "count": 2,  "values": [ 0.0, 1.0 ] },
+		{ "name": "Scale",     "type": "float",     "count": 1,  "values": [ 1.0 ] },
+		{ "name": "Wrapping",  "type": "float",     "count": 1,  "values": [ 0.0 ] }
 	]
 }
