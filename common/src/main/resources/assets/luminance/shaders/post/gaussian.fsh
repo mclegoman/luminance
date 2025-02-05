@@ -13,6 +13,7 @@ uniform vec2 BlurDir;
 uniform float Radius;
 uniform float RadiusMultiplier;
 uniform float Deviation;
+uniform float Min;
 
 uniform float Wrapping;
 
@@ -20,7 +21,7 @@ vec4 wrapTexture(sampler2D tex, vec2 coord) {
     return texture2D(tex, mix(coord, fract(coord), Wrapping));
 }
 
-float sigma = Radius*Deviation;
+float sigma = max(abs(Radius*Deviation),0.01);
 float exponent = 2.0*sigma*sigma;
 float factor = 0.398942280401432/sigma;
 
@@ -34,7 +35,7 @@ void main(){
     vec4 blurred = vec4(0.0);
     float totalStrength = 0.0;
 
-    for (int r = -kernelRadius; r <= kernelRadius; r++) {
+    for (int r = int(-kernelRadius*clamp(Min,0,1)); r <= kernelRadius; r++) {
         vec4 sampleValue = wrapTexture(InSampler, texCoord + (r * RadiusMultiplier) * oneTexel * BlurDir);
         float gauss = gaussian(r);
         blurred += sampleValue * gauss;

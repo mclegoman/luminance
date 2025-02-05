@@ -12,6 +12,7 @@
 		{ "name": "Radius",           "type": "float",     "count": 1,  "values": [ 5.0 ] },
 		{ "name": "RadiusMultiplier", "type": "float",     "count": 1,  "values": [ 1.0 ] },
 		{ "name": "Deviation",        "type": "float",     "count": 1,  "values": [ 0.333 ] },
-		{ "name": "Wrapping",         "type": "float",     "count": 1,  "values": [ 0.0 ] }
+		{ "name": "Wrapping",         "type": "float",     "count": 1,  "values": [ 0.0 ] },
+		{ "name": "Min",              "type": "float",     "count": 1,  "values": [ 1.0 ] }
 	]
 }
