@@ -7,26 +7,39 @@ in vec2 oneTexel;
 
 uniform vec2 InSize;
 
+out vec4 fragColor;
+
 uniform vec2 BlurDir;
 uniform float Radius;
 uniform float RadiusMultiplier;
+uniform float Deviation;
 
-out vec4 fragColor;
+uniform float Wrapping;
 
-float gaussian(float x) {
-    return exp(-(x * x) / (2.0 * (Radius / 3.0) * (Radius / 3.0))) / (sqrt(2.0 * 3.141592653589793) * (Radius / 3.0));
+vec4 wrapTexture(sampler2D tex, vec2 coord) {
+    return texture2D(tex, mix(coord, fract(coord), Wrapping));
 }
 
-void main() {
+float sigma = Radius*Deviation;
+float exponent = 2.0*sigma*sigma;
+float factor = 0.398942280401432/sigma;
+
+float gaussian(float x) {
+    return exp(-(x * x)/exponent)*factor;
+}
+
+void main(){
+    int kernelRadius = int(max(abs(ceil(Radius * 3.0)),1));
+
     vec4 blurred = vec4(0.0);
     float totalStrength = 0.0;
-    float totalAlpha = 0.0;
-    for(float r = -Radius; r <= Radius; r += 1.0) {
-        vec4 sampleValue = texture(InSampler, texCoord + oneTexel * r * RadiusMultiplier * BlurDir);
-        totalAlpha += sampleValue.a * gaussian(r);
-        blurred += sampleValue * gaussian(r);
-        totalStrength += gaussian(r);
+
+    for (int r = -kernelRadius; r <= kernelRadius; r++) {
+        vec4 sampleValue = wrapTexture(InSampler, texCoord + (r * RadiusMultiplier) * oneTexel * BlurDir);
+        float gauss = gaussian(r);
+        blurred += sampleValue * gauss;
+        totalStrength += gauss;
     }
-    blurred /= totalStrength;
-    fragColor = vec4(blurred.rgb, totalAlpha);
+
+    fragColor = blurred / totalStrength;
 }
