@@ -31,4 +31,6 @@ public interface PostEffectProcessorInterface {
     boolean luminance$usesDepth();
 
     boolean luminance$usesPersistentBuffers();
+
+    void luminance$setPersistentBufferSource(@Nullable Object source);
 }

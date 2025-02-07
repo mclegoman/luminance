@@ -52,6 +52,8 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
 
     @Unique @Nullable private Identifier luminance$currentCustomPasses;
 
+    @Unique private Object luminance$persistentBufferSource;
+
     @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/FrameGraphBuilder;createResourceHandle(Ljava/lang/String;Lnet/minecraft/client/util/ClosableFactory;)Lnet/minecraft/client/util/Handle;"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V", index = 1)
     private ClosableFactory<Framebuffer> replaceFramebufferFactory(ClosableFactory<Framebuffer> factory, @Local Map.Entry<Identifier, PostEffectPipeline.Targets> target) {
         PostEffectPipeline.Targets targets = target.getValue();
@@ -60,12 +62,13 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
         }
 
         SimpleFramebufferFactory simpleFramebufferFactory = (SimpleFramebufferFactory)factory;
-        return new PersistentFramebufferFactory(simpleFramebufferFactory, (PostEffectProcessor)(Object)this, target.getKey());
+        return new PersistentFramebufferFactory(simpleFramebufferFactory, luminance$persistentBufferSource, target.getKey());
     }
 
     @Inject(at = @At("RETURN"), method = "<init>")
     private void setForceVisit(List<PostEffectPass> passes, Map<Identifier, PostEffectPipeline.Targets> internalTargets, Set<Identifier> externalTargets, CallbackInfo ci) {
         passes.forEach((pass) -> luminance$trySetForceVisit(pass, internalTargets));
+        luminance$persistentBufferSource = this;
     }
 
     @Unique private static void luminance$trySetForceVisit(PostEffectPass postEffectPass, Map<Identifier, PostEffectPipeline.Targets> internalTargets) {
@@ -191,5 +194,10 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
             }
         }
         return false;
+    }
+
+    @Override
+    public void luminance$setPersistentBufferSource(@Nullable Object source) {
+        luminance$persistentBufferSource = source == null ? this : source;
     }
 }
