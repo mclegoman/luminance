@@ -36,14 +36,14 @@
                     "target": "merge"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "swap"
         },
         {
             "program": "minecraft:post/scan_pincushion",
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "minecraft:main"
+                    "target": "swap"
                 }
             ],
             "output": "merge"

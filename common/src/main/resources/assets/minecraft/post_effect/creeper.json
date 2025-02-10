@@ -36,7 +36,7 @@
                     "target": "swap"
                 }
             ],
-            "output": "minecraft:main",
+            "output": "merge",
             "uniforms": [
                 {
                     "name": "Resolution",
@@ -60,9 +60,17 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "minecraft:main",
-            "uniforms": [
-            ]
+            "output": "swap"
+        },
+        {
+            "program": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "swap"
+                }
+            ],
+            "output": "minecraft:main"
         }
     ]
 }

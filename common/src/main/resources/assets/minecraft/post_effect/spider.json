@@ -255,34 +255,44 @@
             ]
         },
         {
-            "program": "luminance:post/merge",
-            "inputs": [
-                {
-                    "sampler_name": "In",
-                    "target": "temp"
-                },
-                {
-                    "sampler_name": "Merge",
-                    "target": "minecraft:main"
-                }
-            ],
-            "output": "swap"
-        },
-        {
             "program": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "swap"
+                    "target": "temp"
                 }
             ],
-            "output": "minecraft:main",
+            "output": "swap",
             "uniforms": [
                 {
                     "name": "ColorModulate",
                     "values": [ 1.0, 0.8, 0.8, 1.0 ]
                 }
             ]
+        },
+        {
+            "program": "luminance:post/merge",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "swap"
+                },
+                {
+                    "sampler_name": "Merge",
+                    "target": "minecraft:main"
+                }
+            ],
+            "output": "temp"
+        },
+        {
+            "program": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "temp"
+                }
+            ],
+            "output": "minecraft:main"
         }
     ]
 }
