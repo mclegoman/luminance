@@ -3,11 +3,13 @@
 uniform sampler2D InSampler;
 in vec2 texCoord;
 out vec4 fragColor;
-uniform float Amount;
+uniform vec2 Amount;
 uniform float AmountMultiplier;
+uniform vec2 Offset;
 
 void main() {
-    float outputAmount = Amount * AmountMultiplier;
-    if (outputAmount == 0) outputAmount = 0.001;
-    fragColor = texture(InSampler, floor(texCoord / (outputAmount / textureSize(InSampler, 0)) + 0.5) * (outputAmount / textureSize(InSampler, 0)));
+    vec2 outputAmount = Amount * AmountMultiplier;
+    if (outputAmount.x == 0) outputAmount.x = 0.001;
+    if (outputAmount.y == 0) outputAmount.y = 0.001;
+    fragColor = texture(InSampler, floor(texCoord / (outputAmount / textureSize(InSampler, 0)) + Offset) * (outputAmount / textureSize(InSampler, 0)));
 }

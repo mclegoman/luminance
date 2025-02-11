@@ -16,11 +16,7 @@
             "uniforms": [
                 {
                     "name": "Amount",
-                    "values": [ 8.0 ]
-                },
-                {
-                    "name": "AmountMultiplier",
-                    "values": [ 1.0 ]
+                    "values": [ 8.0, 8.0 ]
                 }
             ]
         },
