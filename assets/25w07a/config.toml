@@ -11,6 +11,7 @@ post_effect_directories = [
 # an ./output/ folder will appear at each of these locations
 
 # directories where all the fsh/vsh files are kept, used to transfer the shader ids and uniforms
+# a program id like "minecraft:post/blit" will search all directories matching ".../minecraft/shaders" for a ".../minecraft/shaders/post/blit.json"
 shader_directories = [
     "assets/25w07a/vanilla 1.21.4/minecraft/shaders", # vanilla shaders
     "common/src/main/resources/assets/minecraft/shaders", # old super secret settings 
