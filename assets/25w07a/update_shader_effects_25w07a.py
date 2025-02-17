@@ -35,8 +35,8 @@ def createConfig(id, dir):
         print("toml overwritten due to missing data")
 
     root = configData['root_directory']
-    configData['post_effect_directories'] = [os.path.join(root, d) for d in configData['post_effect_directories']]
-    configData['shader_directories'] = [os.path.join(root, d) for d in configData['shader_directories']]
+    configData['post_effect_directories'] = [d if ":" in d else os.path.join(root, d) for d in configData['post_effect_directories']]
+    configData['shader_directories'] = [d if ":" in d else os.path.join(root, d) for d in configData['shader_directories']]
 
 
 def errorProgram(shader_type, shader_name):

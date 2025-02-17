@@ -1,5 +1,5 @@
 # relative directories can be awkward to work with
-# so this sets an absolute location that all the below directories below will be relative to
+# so this sets an absolute location that all the below directories below will be relative to (if they dont contain a :)
 root_directory = "C:/.../luminance"
 
 # (this config.toml does still need to be wherever the running directory of the script is)
