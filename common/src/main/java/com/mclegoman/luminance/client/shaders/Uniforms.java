@@ -67,6 +67,7 @@ public class Uniforms {
 			registerSingleTree(path, "viewDistance", Uniforms::getViewDistance, 2f, null);
 			registerSingleTree(path, "fov", Uniforms::getFov, 0f, 360f);
 			registerSingleTree(path, "fps", Uniforms::getFps, 0f, null);
+			registerStandardTree(path, "graphicsMode", Uniforms::getGraphicsMode, 0f, 2f, 1, EmptyConfig.INSTANCE);
 			registerStandardTree(path, "eye", Uniforms::getEye, null, null, 3, null);
 			registerStandardTree(path, "eye_fract", Uniforms::getEyeFract, 0f, 1f, 3, null);
 			registerStandardTree(path, "pos", Uniforms::getPos, null, null, 3, null);
@@ -110,7 +111,6 @@ public class Uniforms {
 			registerSingleTree(path, "isDay", Uniforms::getIsDay, 0f, 1f);
 			registerSingleTree(path, "starBrightness", Uniforms::getStarBrightness, 0f, 1f);
 			registerStandardTree(path, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("period", List.of(1.0f)))));
-			registerStandardTree(path, "renderType", Uniforms::getRenderType, 0f, 1f, 1, EmptyConfig.INSTANCE);
 			registerStandardTree(path, "random", Uniforms::getRandom, 0f, 1f, 1, EmptyConfig.INSTANCE);
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
@@ -173,6 +173,9 @@ public class Uniforms {
 	public static float getFov(ShaderTime shaderTime) {
 		return Accessors.getGameRenderer() != null ? (Accessors.getGameRenderer().invokeGetFov(ClientData.minecraft.gameRenderer.getCamera(), shaderTime.getTickDelta(), true)) : (ClientData.minecraft.options != null ? MinecraftClient.getInstance().options.getFov().getValue() : 70f);
 	}
+	public static void getGraphicsMode(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		uniformValue.set(0, ClientData.minecraft.options.getGraphicsMode().getValue().getId());
+	}
 	public static float getFps(ShaderTime shaderTime) {
 		return ClientData.minecraft.getCurrentFps();
 	}
@@ -180,7 +183,6 @@ public class Uniforms {
 		float period = config.getNumber("period", 0).orElse(1.0).floatValue();
 		uniformValue.set(0, shaderTime.getModuloTime(period)/period);
 	}
-
 	public static void getEye(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
 			uniformValue.set(ClientData.minecraft.player.getCameraPosVec(shaderTime.getTickDelta()));
@@ -195,7 +197,6 @@ public class Uniforms {
 			uniformValue.set(new Vec3d(0, 66, 0));
 		}
 	}
-
 	public static void getPos(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
 			uniformValue.set(ClientData.minecraft.player.getPos());
@@ -213,7 +214,6 @@ public class Uniforms {
 	private static Vec3d fract(Vec3d pos) {
 		return new Vec3d(MathHelper.fractionalPart(pos.x), MathHelper.fractionalPart(pos.y), MathHelper.fractionalPart(pos.z));
 	}
-
 	public static float getPitch(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getPitch(shaderTime.getTickDelta()) % 360.0F : 0.0F;
 	}
@@ -351,11 +351,6 @@ public class Uniforms {
 	public static float getStarBrightness(ShaderTime shaderTime) {
 		return ClientData.minecraft.world != null ? ClientData.minecraft.world.getStarBrightness(shaderTime.getTickDelta()) : 0.0F;
 	}
-	public static void getRenderType(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
-		// TODO: Parse the shader's render type. (World = 0, Game = 1)
-		uniformValue.set(0, 0);
-	}
-
 	public static void getRandom(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		uniformValue.set(0, Accessors.getGameRenderer().getRandom().nextFloat());
 	}

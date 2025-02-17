@@ -15,13 +15,7 @@ def createConfig(id):
         configData['fragment_shader'] = ""
     with open(id + ".toml", 'w') as f:
         for key, value in configData.items():
-            if isinstance(value, dict):
-                f.write(f'[{key}]\n')
-                write_dict(value, prefix + key + '.')
-            elif isinstance(value, list):
-                f.write(f'{key} = {value}\n')
-            else:
-                f.write(f'{key} = "{value}"\n')
+            f.write(f'{key} = "{value}"\n')
 
 def updateProgram(shader_type, shader_name, configData):
     parts = shader_name.split(":")
