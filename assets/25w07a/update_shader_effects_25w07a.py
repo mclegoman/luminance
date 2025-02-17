@@ -89,7 +89,7 @@ def updateShader(file, output_dir, configData):
 
             # if it cant load the proper programs, use a somewhat reasonable error value
             if program == None:
-                print("    !!! couldnt find program "+programName+" - add the path its in to the config")
+                print("    !!! couldnt find program "+programName+" - add the path it in to the config.toml")
                 errors += 1
                 pass_copy["vertex_shader"] = errorProgram("vertex_shader", programName)
                 pass_copy["fragment_shader"] = errorProgram("fragment_shader", programName)
