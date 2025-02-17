@@ -1,14 +1,22 @@
-post_effect_directories = [
-    # directory of post shaders
-    # eg "common/src/main/resources/assets/luminance/post_effect"
-    # the ./output/ folder appears here
-]
+# relative directories can be awkward to work with
+# so this sets an absolute location that all the below directories below will be relative to
+root_directory = "C:/.../luminance"
 
+# (this config.toml does still need to be wherever the running directory of the script is)
+
+# directories of the post shaders that need to be updated
+post_effect_directories = [
+    # eg "common/src/main/resources/assets/luminance/post_effect"
+]
+# an ./output/ folder will appear at each of these locations
+
+# directories where all the fsh/vsh files are kept
 shader_directories = [
     "assets/25w07a/vanilla 1.21.4/minecraft/shaders",
     "common/src/main/resources/assets/luminance/shaders",
-    # if a post effect shader uses custom programs, their directory will need to be added here
+    # if a post effect shader uses custom programs, the directory of those shaders will need to be added here
 ]
 
-# set this to the luminance directory, so it can access luminance's program definitions
-root_directory = "C:/.../luminance"
+# if the script runs successfully:
+# the .json files in the post_effect_directories can be replaced with the ones from their respective ./output/
+# and the .json files in the shader_directories can be removed

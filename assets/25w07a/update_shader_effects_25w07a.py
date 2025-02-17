@@ -2,13 +2,15 @@ import os
 import json
 import tomllib
 
-configData = {"root_directory":"", "post_effect_directories":[], "shader_directories":[]}
+configData = {}
 
 def createConfig(id, dir):
     global configData
     if os.path.isfile(id + ".toml"):
         with open(id + ".toml", "rb") as f:
             configData = tomllib.load(f)
+    else:
+        print(f'couldnt find config file "{id}.toml", creating...')
     
     changed = False
     if 'root_directory' not in configData:
@@ -28,14 +30,16 @@ def createConfig(id, dir):
                     s = "\",\n    \"".join(value).replace("\\","/")
                     f.write(f'{key} = [\n    "{s}"\n]\n\n')
                 else:
-                    f.write(f'{key} = "{value}"\n')
+                    s = value.replace("\\","/")
+                    f.write(f'{key} = "{s}"\n')
+        print("toml overwritten due to missing data")
 
     root = configData['root_directory']
     configData['post_effect_directories'] = [os.path.join(root, d) for d in configData['post_effect_directories']]
     configData['shader_directories'] = [os.path.join(root, d) for d in configData['shader_directories']]
 
 
-def updateProgram(shader_type, shader_name):
+def errorProgram(shader_type, shader_name):
     parts = shader_name.split(":")
     partsAmount = len(parts)
     if partsAmount == 1:
@@ -76,6 +80,7 @@ def updateShader(file, output_dir, configData):
     output = {}
     output["targets"] = input.get("targets", {})
     output["passes"] = []
+    errors = 0
     for pass_item in input.get("passes", []):
         pass_copy = pass_item.copy()
         if "program" in pass_copy:
@@ -85,8 +90,9 @@ def updateShader(file, output_dir, configData):
             # if it cant load the proper programs, use a somewhat reasonable error value
             if program == None:
                 print("    !!! couldnt find program "+programName+" - add the path its in to the config")
-                pass_copy["vertex_shader"] = updateProgram("vertex_shader", programName)
-                pass_copy["fragment_shader"] = updateProgram("fragment_shader", programName)
+                errors += 1
+                pass_copy["vertex_shader"] = errorProgram("vertex_shader", programName)
+                pass_copy["fragment_shader"] = errorProgram("fragment_shader", programName)
                 continue
 
             # forces shader to top of dict
@@ -106,13 +112,30 @@ def updateShader(file, output_dir, configData):
     output_file = os.path.join(output_dir, os.path.basename(file))
     with open(output_file, 'w') as f:
         json.dump(output, f, indent=4)
+    return errors
 
 dir = os.getcwd()
 createConfig("config", dir)
 
+errors = 0
 for post_directory in configData["post_effect_directories"]:
-    output_dir = os.path.join(post_directory, "output")
+    if (not os.path.isdir(post_directory)):
+        print(f'folder "{post_directory}" does not exist')
+        continue
+
     files = [f for f in os.listdir(post_directory) if f.endswith('.json')]
+    if (len(files) == 0):
+        print(f'no json files found in folder "{post_directory}"')
+        continue
+
+    output_dir = os.path.join(post_directory, "output")
     os.makedirs(output_dir, exist_ok=True)
     for file in files:
-        updateShader(os.path.join(post_directory, file), output_dir, configData)
+        try:
+            errors += updateShader(os.path.join(post_directory, file), output_dir, configData)
+        except Exception as e:
+            print("    !!! error occured:\n"+e)
+            errors += 1
+
+print(f"finished updating with {errors} errors")
+input("press ENTER to close...")
