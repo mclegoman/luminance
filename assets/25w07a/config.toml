@@ -10,10 +10,11 @@ post_effect_directories = [
 ]
 # an ./output/ folder will appear at each of these locations
 
-# directories where all the fsh/vsh files are kept
+# directories where all the fsh/vsh files are kept, used to transfer the shader ids and uniforms
 shader_directories = [
-    "assets/25w07a/vanilla 1.21.4/minecraft/shaders",
-    "common/src/main/resources/assets/luminance/shaders",
+    "assets/25w07a/vanilla 1.21.4/minecraft/shaders", # vanilla shaders
+    "common/src/main/resources/assets/minecraft/shaders", # old super secret settings 
+    "common/src/main/resources/assets/luminance/shaders", # luminance's custom shaders
     # if a post effect shader uses custom programs, the directory of those shaders will need to be added here
 ]
 
