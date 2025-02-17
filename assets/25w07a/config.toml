@@ -1,0 +1,14 @@
+post_effect_directories = [
+    # directory of post shaders
+    # eg "common/src/main/resources/assets/luminance/post_effect"
+    # the ./output/ folder appears here
+]
+
+shader_directories = [
+    "assets/25w07a/vanilla 1.21.4/minecraft/shaders",
+    "common/src/main/resources/assets/luminance/shaders",
+    # if a post effect shader uses custom programs, their directory will need to be added here
+]
+
+# set this to the luminance directory, so it can access luminance's program definitions
+root_directory = "C:/.../luminance"
