@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): dannytaylor, Nettakrim
+    Contributor(s): Nettakrim, dannytaylor
     Github: https://github.com/mclegoman/Luminance
     Licence: GNU LGPLv3
 */
@@ -9,12 +9,10 @@ package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mclegoman.luminance.client.events.Events;
-import com.mclegoman.luminance.client.shaders.Shader;
 import com.mclegoman.luminance.client.shaders.Shaders;
 import com.mclegoman.luminance.client.shaders.Uniforms;
 import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
-import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.ShaderProgramInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineUniformInterface;
 import com.mclegoman.luminance.client.shaders.overrides.LuminanceUniformOverride;
@@ -63,8 +61,6 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 	@Inject(method = "method_62257", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/Framebuffer;setClearColor(FFFF)V"))
 	private void luminance$setUniformValues(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
-		// TODO: allow uniforms to use renderType.
-		Shader.RenderType renderType = ((PostEffectProcessorInterface)program).luminance$getRenderType();
 		for (String uniformName : ((ShaderProgramInterface)program).luminance$getUniformNames()) {
 			com.mclegoman.luminance.client.shaders.uniforms.Uniform uniform = Events.ShaderUniform.registry.get(uniformName);
 			if (uniform == null) {
