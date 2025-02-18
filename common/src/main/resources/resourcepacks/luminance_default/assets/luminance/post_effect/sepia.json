@@ -5,18 +5,11 @@
     },
     "passes": [
         {
-            "program": "luminance:post/quantize_colors",
+            "program": "luminance:post/sepia",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
-                }
-            ],
-            "uniforms": [
-                {
-                    "name": "Amount",
-                    "values": [ 8.0, 8.0, 8.0 ],
-                    "override": [ "luminance_pos_x", "luminance_pos_y", "luminance_pos_z" ]
                 }
             ],
             "output": "merge"
