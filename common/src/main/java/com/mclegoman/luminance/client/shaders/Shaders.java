@@ -144,7 +144,7 @@ public class Shaders {
 				try {
 					// the depth masking done in renderUsingAllocator is instead done for everything already before this method is called
 					// this is because FrameGraphBuilder delays calls, so any rendersystem methods wont work with their intended timing
-					((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, framebufferSet, customPasses, shader.getRenderType().call());
+					((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, framebufferSet, customPasses);
 				} catch (Exception error) {
 					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render processor: {}", error.getLocalizedMessage()));
 				}
@@ -281,7 +281,7 @@ public class Shaders {
 			if (shader.getPostProcessor() != null) {
 				FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
 				PostEffectProcessor.FramebufferSet framebufferSet = PostEffectProcessor.FramebufferSet.singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer));
-				((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet, customPasses, shader.getRenderType().call());
+				((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet, customPasses);
 				frameGraphBuilder.run(objectAllocator);
 			}
 		} catch (Exception error) {

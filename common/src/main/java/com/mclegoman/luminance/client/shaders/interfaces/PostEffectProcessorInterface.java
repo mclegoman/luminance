@@ -1,13 +1,12 @@
 /*
     Luminance
-    Contributor(s): Nettakrim, dannytaylor
+    Contributor(s): Nettakrim
     Github: https://github.com/mclegoman/Luminance
     Licence: GNU LGPLv3
 */
 
 package com.mclegoman.luminance.client.shaders.interfaces;
 
-import com.mclegoman.luminance.client.shaders.Shader;
 import net.minecraft.client.gl.PostEffectPass;
 import net.minecraft.client.gl.PostEffectProcessor;
 import net.minecraft.client.render.FrameGraphBuilder;
@@ -23,7 +22,7 @@ public interface PostEffectProcessorInterface {
     @Nullable @Contract("null -> !null")
     List<PostEffectPass> luminance$getPasses(@Nullable Identifier identifier);
 
-    void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet, @Nullable Identifier customPasses, Shader.RenderType renderType);
+    void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet, @Nullable Identifier customPasses);
 
     void luminance$setCustomPasses(Map<Identifier, List<PostEffectPass>> customPasses);
 
@@ -34,6 +33,4 @@ public interface PostEffectProcessorInterface {
     boolean luminance$usesPersistentBuffers();
 
     void luminance$setPersistentBufferSource(@Nullable Object source);
-
-    Shader.RenderType luminance$getRenderType();
 }
