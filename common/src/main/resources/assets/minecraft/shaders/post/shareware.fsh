@@ -18,7 +18,7 @@ uniform vec3 Gray;
 void main() {
     vec2 scaleFactors = InSize / Scale;
     vec2 truncPos = floor(texCoord * scaleFactors) / scaleFactors;
-    vec4 baseTexel = texture2D(InSampler, truncPos);
+    vec4 baseTexel = texture(InSampler, truncPos);
     vec3 truncTexel = floor(baseTexel.rgb * ColorResolution) / ColorResolution;
 
     float luma = dot(truncTexel, Gray);

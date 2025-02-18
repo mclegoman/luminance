@@ -12,7 +12,7 @@ uniform float Scale;
 uniform float Wrapping;
 
 vec4 wrapTexture(sampler2D tex, vec2 coord) {
-    return texture2D(tex, mix(coord, fract(coord), Wrapping));
+    return texture(tex, mix(coord, fract(coord), Wrapping));
 }
 
 void main(){
