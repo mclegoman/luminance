@@ -17,5 +17,6 @@
 	"shader.luminance.depth_dither": "ɹǝɥʇᴉp pǝsɐq-ɥʇdǝp",
 	"shader.luminance.eightbit": "ʇᴉq-8",
 	"shader.luminance.health_overlay": "ʎɐlɹǝʌo ɥʇlɐǝɥ",
-	"shader.luminance.dos": "sop"
+	"shader.luminance.dos": "sop",
+	"shader.luminance.saturate": "ǝʇɐɹnʇɐs"
 }
