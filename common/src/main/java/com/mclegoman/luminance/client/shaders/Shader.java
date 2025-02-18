@@ -1,7 +1,7 @@
 /*
     Luminance
     Contributor(s): dannytaylor
-    Github: https://github.com/MCLegoMan/Luminance
+    Github: https://github.com/mclegoman/Luminance
     Licence: GNU LGPLv3
 */
 
@@ -86,8 +86,15 @@ public class Shader {
 		if (getShaderData() != null) setShaderId(getShaderData().getPostEffect(false));
 	}
 	public enum RenderType {
-		WORLD,
-		GAME
+		WORLD(0),
+		GAME(1);
+		private final int id;
+		RenderType(int id) {
+			this.id = id;
+		}
+		public int getId() {
+			return this.id;
+		}
 	}
 	public void reload() {
 		reload(shaderData, renderType, shouldRender);

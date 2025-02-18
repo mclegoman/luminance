@@ -1,7 +1,7 @@
 /*
     Luminance
     Contributor(s): dannytaylor, Nettakrim
-    Github: https://github.com/MCLegoMan/Luminance
+    Github: https://github.com/mclegoman/Luminance
     Licence: GNU LGPLv3
 */
 
@@ -144,7 +144,7 @@ public class Shaders {
 				try {
 					// the depth masking done in renderUsingAllocator is instead done for everything already before this method is called
 					// this is because FrameGraphBuilder delays calls, so any rendersystem methods wont work with their intended timing
-					((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, framebufferSet, customPasses);
+					((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, framebufferSet, customPasses, shader.getRenderType().call());
 				} catch (Exception error) {
 					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render processor: {}", error.getLocalizedMessage()));
 				}
@@ -277,12 +277,15 @@ public class Shaders {
 	}
 	// This is identical to the deprecated `PostEffectProcessor.render(framebuffer, objectAllocator);` function.
 	public static void renderShaderUsingAllocator(Shader shader, Framebuffer framebuffer, ObjectAllocator objectAllocator, @Nullable Identifier customPasses) {
-		if (shader.getPostProcessor() != null) {
-			//Data.getVersion().sendToLog(LogType.INFO, "rendering with allocator");
-			FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
-			PostEffectProcessor.FramebufferSet framebufferSet = PostEffectProcessor.FramebufferSet.singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer));
-			((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet, customPasses);
-			frameGraphBuilder.run(objectAllocator);
+		try {
+			if (shader.getPostProcessor() != null) {
+				FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
+				PostEffectProcessor.FramebufferSet framebufferSet = PostEffectProcessor.FramebufferSet.singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer));
+				((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet, customPasses, shader.getRenderType().call());
+				frameGraphBuilder.run(objectAllocator);
+			}
+		} catch (Exception error) {
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render processor: {}", error.getLocalizedMessage()));
 		}
 	}
 	public static int getShaderAmount() {

@@ -1,7 +1,7 @@
 /*
     Luminance
     Contributor(s): Nettakrim (also indirectly: cputnam-a11y in the fabric discord for showing me how to do the codec wrapping magic)
-    Github: https://github.com/MCLegoMan/Luminance
+    Github: https://github.com/mclegoman/Luminance
     Licence: GNU LGPLv3
 */
 

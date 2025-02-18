@@ -1,7 +1,7 @@
 /*
     Luminance
-    Contributor(s): Nettakrim
-    Github: https://github.com/MCLegoMan/Luminance
+    Contributor(s): Nettakrim, dannytaylor
+    Github: https://github.com/mclegoman/Luminance
     Licence: GNU LGPLv3
 */
 
@@ -13,10 +13,11 @@ import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mclegoman.luminance.client.shaders.PersistentFramebufferFactory;
+import com.mclegoman.luminance.client.shaders.Shader;
+import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTargetInterface;
-import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
 import net.minecraft.client.gl.*;
 import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.texture.TextureManager;
@@ -53,6 +54,8 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     @Unique @Nullable private Identifier luminance$currentCustomPasses;
 
     @Unique private Object luminance$persistentBufferSource;
+
+    @Unique private Shader.RenderType luminance$renderType;
 
     @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/FrameGraphBuilder;createResourceHandle(Ljava/lang/String;Lnet/minecraft/client/util/ClosableFactory;)Lnet/minecraft/client/util/Handle;"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V", index = 1)
     private ClosableFactory<Framebuffer> replaceFramebufferFactory(ClosableFactory<Framebuffer> factory, @Local Map.Entry<Identifier, PostEffectPipeline.Targets> target) {
@@ -142,8 +145,9 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     }
 
     @Override
-    public void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet, @Nullable Identifier customPasses) {
+    public void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet, @Nullable Identifier customPasses, Shader.RenderType renderType) {
         if (customPasses == null || luminance$customPasses.containsKey(customPasses)) {
+            luminance$renderType = renderType;
             luminance$currentCustomPasses = customPasses;
             render(builder, textureWidth, textureHeight, framebufferSet);
             luminance$currentCustomPasses = null;
@@ -199,5 +203,10 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     @Override
     public void luminance$setPersistentBufferSource(@Nullable Object source) {
         luminance$persistentBufferSource = source == null ? this : source;
+    }
+
+    @Override
+    public Shader.RenderType luminance$getRenderType() {
+        return luminance$renderType;
     }
 }

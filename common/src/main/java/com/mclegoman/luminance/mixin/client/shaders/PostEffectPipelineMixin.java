@@ -1,3 +1,10 @@
+/*
+    Luminance
+    Contributor(s): Nettakrim
+    Github: https://github.com/mclegoman/Luminance
+    Licence: GNU LGPLv3
+*/
+
 package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
