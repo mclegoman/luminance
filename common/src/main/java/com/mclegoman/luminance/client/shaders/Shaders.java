@@ -244,7 +244,7 @@ public class Shaders {
 				if (entry.getID().getPath().equalsIgnoreCase(id)) return entry.getID();
 			}
 		}
-		return Identifier.of(id);
+		return Identifier.tryParse(id);
 	}
 	public static Uniform getUniform(ShaderProgram program, Identifier id) {
 		return program.getUniform(getUniformName(id));
