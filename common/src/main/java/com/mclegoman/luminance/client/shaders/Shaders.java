@@ -233,9 +233,11 @@ public class Shaders {
 	public static Text getShaderName(Identifier registry, int shaderIndex) {
 		return getShaderName(registry, shaderIndex, true);
 	}
+	@Nullable
 	public static Identifier guessPostShader(String id) {
 		return guessPostShader(getMainRegistryId(), id);
 	}
+	@Nullable
 	public static Identifier guessPostShader(Identifier registry, String id) {
 		// If the shader registry contains at least one shader with the name, the first detected instance will be used.
 		if (!id.contains(":")) {
@@ -245,6 +247,7 @@ public class Shaders {
 		}
 		return Identifier.tryParse(id);
 	}
+	@Nullable
 	public static Uniform getUniform(ShaderProgram program, Identifier id) {
 		return program.getUniform(getUniformName(id));
 	}
