@@ -17,7 +17,6 @@ import com.mclegoman.luminance.client.util.JsonDataLoader;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.IdentifierHelper;
 import com.mclegoman.luminance.common.util.LogType;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
@@ -27,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ShaderDataloader extends JsonDataLoader implements IdentifiableResourceReloadListener {
+public class ShaderDataloader extends JsonDataLoader {
 	protected static boolean isReloading;
 	public static final String resourceLocation = "luminance";
 	public ShaderDataloader() {
@@ -133,9 +132,5 @@ public class ShaderDataloader extends JsonDataLoader implements IdentifiableReso
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to apply shaders dataloader: {}", error));
 		}
 		Shaders.applyDebugShader();
-	}
-	@Override
-	public Identifier getFabricId() {
-		return Identifier.of(Data.getVersion().getID(), resourceLocation);
 	}
 }
