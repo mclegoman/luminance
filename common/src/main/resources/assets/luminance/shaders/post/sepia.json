@@ -1,0 +1,16 @@
+{
+	"vertex": "minecraft:post/sobel",
+	"fragment": "luminance:post/sepia",
+	"samplers": [
+		{ "name": "InSampler" }
+	],
+	"uniforms": [
+		{ "name": "ProjMat",          "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+		{ "name": "InSize",          "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
+		{ "name": "OutSize",          "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
+		{ "name": "SepiaR", "type": "float",     "count": 3,  "values": [ 0.393, 0.769, 0.189 ] },
+		{ "name": "SepiaG", "type": "float",     "count": 3,  "values": [ 0.349, 0.686, 0.168 ] },
+		{ "name": "SepiaB", "type": "float",     "count": 3,  "values": [ 0.272, 0.534, 0.131 ] },
+		{ "name": "Intensity", "type": "float",     "count": 1,  "values": [ 1.0 ] }
+	]
+}

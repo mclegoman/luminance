@@ -1,27 +1,28 @@
 {
-  "required": true,
-  "package": "com.mclegoman.luminance.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "plugin": "com.mclegoman.luminance.mixin.MixinPlugin",
-  "client": [
-    "client.hud.InGameHudMixin",
-    "client.shaders.FrameGraphBuilderMixin",
-    "client.shaders.FramePassMixin",
-    "client.shaders.GameRendererAccessor",
-    "client.shaders.GameRendererMixin",
-    "client.shaders.MouseMixin",
-    "client.shaders.PostEffectPassMixin",
-    "client.shaders.PostEffectPipelineTargetMixin",
-    "client.shaders.PostEffectPipelineTargetsMixin",
-    "client.shaders.PostEffectPipelineUniformMixin",
-    "client.shaders.PostEffectPipelineMixin",
-    "client.shaders.PostEffectProcessorMixin",
-    "client.shaders.ShaderProgramMixin",
-    "client.shaders.WorldRendererMixin",
-    "compat.modmenu.ModsScreenMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  },
-  "refmap": "luminance-common-common-refmap.json"
+	"required": true,
+	"package": "com.mclegoman.luminance.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"plugin": "com.mclegoman.luminance.mixin.MixinPlugin",
+	"client": [
+		"client.hud.InGameHudMixin",
+		"client.resources.MinecraftClientMixin",
+		"client.shaders.FrameGraphBuilderMixin",
+		"client.shaders.FramePassMixin",
+		"client.shaders.GameRendererAccessor",
+		"client.shaders.GameRendererMixin",
+		"client.shaders.MouseMixin",
+		"client.shaders.PostEffectPassMixin",
+		"client.shaders.PostEffectPipelineMixin",
+		"client.shaders.PostEffectPipelineTargetMixin",
+		"client.shaders.PostEffectPipelineTargetsMixin",
+		"client.shaders.PostEffectPipelineUniformMixin",
+		"client.shaders.PostEffectProcessorMixin",
+		"client.shaders.ShaderProgramMixin",
+		"client.shaders.WorldRendererMixin",
+		"compat.modmenu.ModsScreenMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"refmap": "luminance-common-common-refmap.json"
 }

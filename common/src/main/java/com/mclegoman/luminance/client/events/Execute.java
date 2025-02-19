@@ -16,8 +16,12 @@ import net.minecraft.client.render.DefaultFramebufferSet;
 import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.ObjectAllocator;
+import net.minecraft.resource.ReloadableResourceManagerImpl;
 
 public class Execute {
+	public static void registerClientResourceReloaders(ReloadableResourceManagerImpl resourceManager) {
+		Events.ClientResourceReload.registry.forEach((id, resourceReloader) -> resourceManager.registerReloader(resourceReloader));
+	}
 	public static void beforeInGameHudRender(DrawContext context, RenderTickCounter renderTickCounter) {
 		Events.BeforeInGameHudRender.registry.forEach(((id, runnable) -> {
 			try {
