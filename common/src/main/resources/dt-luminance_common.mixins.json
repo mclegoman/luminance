@@ -5,11 +5,11 @@
 	"plugin": "com.mclegoman.luminance.mixin.MixinPlugin",
 	"client": [
 		"client.hud.InGameHudMixin",
+		"client.resources.MinecraftClientMixin",
 		"client.shaders.FrameGraphBuilderMixin",
 		"client.shaders.FramePassMixin",
 		"client.shaders.GameRendererAccessor",
 		"client.shaders.GameRendererMixin",
-		"client.shaders.MinecraftClientMixin",
 		"client.shaders.MouseMixin",
 		"client.shaders.PostEffectPassMixin",
 		"client.shaders.PostEffectPipelineMixin",

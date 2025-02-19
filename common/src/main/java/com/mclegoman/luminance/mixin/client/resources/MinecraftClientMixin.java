@@ -5,9 +5,9 @@
     Licence: GNU LGPLv3
 */
 
-package com.mclegoman.luminance.mixin.client.shaders;
+package com.mclegoman.luminance.mixin.client.resources;
 
-import com.mclegoman.luminance.client.shaders.ShaderDataloader;
+import com.mclegoman.luminance.client.events.Execute;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
 import net.minecraft.resource.ReloadableResourceManagerImpl;
@@ -23,6 +23,6 @@ public abstract class MinecraftClientMixin {
 	@Shadow @Final private ReloadableResourceManagerImpl resourceManager;
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resource/language/LanguageManager;<init>(Ljava/lang/String;Ljava/util/function/Consumer;)V"))
 	private void luminance$clientInit(RunArgs runArgs, CallbackInfo ci) {
-		this.resourceManager.registerReloader(new ShaderDataloader());
+		Execute.registerClientResourceReloaders(resourceManager);
 	}
 }

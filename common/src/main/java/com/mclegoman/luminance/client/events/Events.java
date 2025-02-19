@@ -12,6 +12,7 @@ import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
+import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class Events {
 	}
 
 	public static class Registry<T> extends GenericRegistry<Identifier, T> {}
+
+	public static final Registry<ResourceReloader> ClientResourceReload = new Registry<>();
 
 	public static final Registry<Runnable> OnShaderDataReset = new Registry<>();
 	public static final Registry<Runnables.ShaderData> OnShaderDataRegistered = new Registry<>();
