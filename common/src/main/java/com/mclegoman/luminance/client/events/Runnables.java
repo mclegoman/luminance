@@ -18,21 +18,21 @@ import net.minecraft.client.util.ObjectAllocator;
 
 public class Runnables {
 	public interface InGameHudRender {
-		default void run(DrawContext context, RenderTickCounter renderTickCounter) {}
+		void run(DrawContext context, RenderTickCounter renderTickCounter);
 	}
 	public interface Shader {
-		default void run(PostEffectPass postEffectPass) {}
+		void run(PostEffectPass postEffectPass);
 	}
 	public interface ShaderData {
-		default void run(ShaderRegistryEntry shaderData) {}
+		void run(ShaderRegistryEntry shaderData);
 	}
 	public interface OnResized {
-		default void run(int width, int height) {}
+		void run(int width, int height);
 	}
 	public interface WorldRender {
-		default void run(FrameGraphBuilder builder, int textureWidth, int textureHeight, DefaultFramebufferSet framebufferSet) {}
+		void run(FrameGraphBuilder builder, int textureWidth, int textureHeight, DefaultFramebufferSet framebufferSet);
 	}
 	public interface GameRender {
-		default void run(Framebuffer framebuffer, ObjectAllocator objectAllocator) {}
+		void run(Framebuffer framebuffer, ObjectAllocator objectAllocator);
 	}
 }
