@@ -16,6 +16,9 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.ObjectAllocator;
+import net.minecraft.util.Identifier;
+
+import java.util.List;
 
 public class Runnables {
 	public interface InGameHudRender {
@@ -25,7 +28,7 @@ public class Runnables {
 		void run(PostEffectPass postEffectPass);
 	}
 	public interface ShaderData {
-		void run(ShaderRegistryEntry shaderData);
+		void run(ShaderRegistryEntry shaderData, List<Identifier> registries);
 	}
 	public interface OnResized {
 		void run(int width, int height);

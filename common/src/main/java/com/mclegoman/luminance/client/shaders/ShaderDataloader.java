@@ -88,20 +88,21 @@ public class ShaderDataloader extends JsonDataLoader {
 					JsonObject customData = JsonHelper.getObject(reader, "customData", new JsonObject());
 					JsonArray registries = JsonHelper.getArray(reader, "registries", new JsonArray());
 					ShaderRegistryEntry shaderData = getShaderData(post_effect, translatable, disableGameRenderType, customData);
+					List<Identifier> registryList = getRegistries(registries);
 					if (enabled) {
-						add(getRegistries(registries), shaderData, manager);
+						add(registryList, shaderData, manager);
 						Events.OnShaderDataRegistered.registry.forEach((id, runnable) -> {
 							try {
-								runnable.run(shaderData);
+								runnable.run(shaderData, registryList);
 							} catch (Exception error) {
 								Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute OnShaderDataRegistered event with id: {}:{}:", id, error));
 							}
 						});
 					} else {
-						remove(getRegistries(registries), shaderData);
+						remove(registryList, shaderData);
 						Events.OnShaderDataRemoved.registry.forEach((id, runnable) -> {
 							try {
-								runnable.run(shaderData);
+								runnable.run(shaderData, registryList);
 							} catch (Exception error) {
 								Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute OnShaderDataRemoved event with id: {}:{}:", id, error));
 							}
