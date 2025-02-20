@@ -11,10 +11,9 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mclegoman.luminance.client.events.Execute;
-import com.mclegoman.luminance.client.shaders.PersistentFramebufferFactory;
+import com.mclegoman.luminance.client.shaders.DefaultableFramebufferSet;
 import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
 import com.mclegoman.luminance.common.data.Data;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.PostEffectProcessor;
 import net.minecraft.client.gl.SimpleFramebufferFactory;
@@ -64,39 +63,7 @@ public abstract class WorldRendererMixin {
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderLateDebug(Lnet/minecraft/client/render/FrameGraphBuilder;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/client/render/Fog;)V", shift = At.Shift.AFTER))
 	private void luminance$afterRenderWeather(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
-		boolean replace = framebufferSet.translucentFramebuffer == null;
-		if (replace) {
-			// this could potentially be done by instead replacing the framebufferset with a DefaultableFramebufferSet
-			// not sure if that has any advantages though
-			// TODO: it may be that this creates a bunch of unneeded passes in the pool instead of reusing the same empty framebuffer - this needs to be checked
-			PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(factory.get(), null, Identifier.of(Data.getVersion().getID(), "fabulous"));
-			framebufferSet.translucentFramebuffer = frameGraphBuilder.createResourceHandle("translucent", persistentFramebufferFactory);
-			framebufferSet.itemEntityFramebuffer = frameGraphBuilder.createResourceHandle("item_entity", persistentFramebufferFactory);
-			framebufferSet.particlesFramebuffer = frameGraphBuilder.createResourceHandle("particles", persistentFramebufferFactory);
-			framebufferSet.weatherFramebuffer = frameGraphBuilder.createResourceHandle("weather", persistentFramebufferFactory);
-			framebufferSet.cloudsFramebuffer = frameGraphBuilder.createResourceHandle("clouds", persistentFramebufferFactory);
-		}
-
-		// frameGraphBuilder delays calls, so the depth masking done in Shaders.renderUsingAllocator needs to be done here instead
-		// TODO: potentially move this into Execute? - in any case thisll need to change slightly when we get the hand renderer working
-		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.of(Data.getVersion().getID(), "prepare_shader_render"), () -> {
-			//RenderSystem.enableBlend();
-			//RenderSystem.defaultBlendFunc();
-			RenderSystem.depthMask(false);
-		});
-		Execute.afterWeatherRender(frameGraphBuilder, framebufferSet);
-		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.of(Data.getVersion().getID(), "cleanup_shader_render"), () -> {
-			RenderSystem.depthMask(true);
-			//RenderSystem.disableBlend();
-		});
-
-		if (replace) {
-			framebufferSet.translucentFramebuffer = null;
-			framebufferSet.itemEntityFramebuffer = null;
-			framebufferSet.particlesFramebuffer = null;
-			framebufferSet.weatherFramebuffer = null;
-			framebufferSet.cloudsFramebuffer = null;
-		}
+		Execute.afterWeatherRender(frameGraphBuilder, DefaultableFramebufferSet.addFabulousIfAbsent(framebufferSet, frameGraphBuilder, factory.get()));
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))

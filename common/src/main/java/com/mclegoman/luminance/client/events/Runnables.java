@@ -35,10 +35,7 @@ public class Runnables {
 
 		static void fromGameRender(WorldRender worldRender, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
 			FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
-
-			PostEffectProcessor.FramebufferSet framebufferSet = new DefaultableFramebufferSet(frameGraphBuilder, framebuffer);
-			//PostEffectProcessor.FramebufferSet framebufferSet = PostEffectProcessor.FramebufferSet.singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer));
-
+			PostEffectProcessor.FramebufferSet framebufferSet = new DefaultableFramebufferSet(frameGraphBuilder, framebuffer, DefaultableFramebufferSet.fabulous);
 			worldRender.run(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet);
 			frameGraphBuilder.run(objectAllocator);
 		}
