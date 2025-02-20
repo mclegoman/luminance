@@ -7,7 +7,7 @@
 
 package com.mclegoman.luminance.client.events;
 
-import com.mclegoman.luminance.client.shaders.DefaultableFramebufferSet;
+import com.mclegoman.luminance.client.shaders.LuminanceFramebufferSet;
 import com.mclegoman.luminance.client.shaders.ShaderRegistryEntry;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.PostEffectPass;
@@ -35,7 +35,7 @@ public class Runnables {
 
 		static void fromGameRender(WorldRender worldRender, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
 			FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
-			PostEffectProcessor.FramebufferSet framebufferSet = new DefaultableFramebufferSet(frameGraphBuilder, framebuffer, DefaultableFramebufferSet.fabulous);
+			PostEffectProcessor.FramebufferSet framebufferSet = new LuminanceFramebufferSet(frameGraphBuilder, framebuffer, LuminanceFramebufferSet.fabulous);
 			worldRender.run(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet);
 			frameGraphBuilder.run(objectAllocator);
 		}

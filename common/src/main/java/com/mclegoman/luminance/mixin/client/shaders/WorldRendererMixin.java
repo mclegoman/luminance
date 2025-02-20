@@ -11,7 +11,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mclegoman.luminance.client.events.Execute;
-import com.mclegoman.luminance.client.shaders.DefaultableFramebufferSet;
+import com.mclegoman.luminance.client.shaders.LuminanceFramebufferSet;
 import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
 import com.mclegoman.luminance.common.data.Data;
 import net.minecraft.client.gl.Framebuffer;
@@ -63,7 +63,7 @@ public abstract class WorldRendererMixin {
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderLateDebug(Lnet/minecraft/client/render/FrameGraphBuilder;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/client/render/Fog;)V", shift = At.Shift.AFTER))
 	private void luminance$afterRenderWeather(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
-		Execute.afterWeatherRender(frameGraphBuilder, DefaultableFramebufferSet.addFabulousIfAbsent(framebufferSet, frameGraphBuilder, factory.get()));
+		Execute.afterWeatherRender(frameGraphBuilder, LuminanceFramebufferSet.addFabulousIfAbsent(framebufferSet, frameGraphBuilder, factory.get()));
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))

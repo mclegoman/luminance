@@ -14,11 +14,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DefaultableFramebufferSet implements PostEffectProcessor.FramebufferSet {
+public class LuminanceFramebufferSet implements PostEffectProcessor.FramebufferSet {
     // when rendering shaders with the allocator, they cant access fabulous buffers
     // this stops the shaders from rendering, which isnt ideal, and it stops them working with iris
     // by swapping out the FramebufferSet.singleton with this class, it instead just returns an empty buffer
-    private Handle<Framebuffer> framebuffer;
+    private Handle<Framebuffer> mainFramebuffer;
     private Handle<Framebuffer> defaultFramebuffer;
 
     @Nullable
@@ -32,15 +32,15 @@ public class DefaultableFramebufferSet implements PostEffectProcessor.Framebuffe
             Identifier.ofVanilla("clouds")
     ));
 
-    public DefaultableFramebufferSet(FrameGraphBuilder builder, Framebuffer framebuffer, @Nullable Set<Identifier> useDefaultFor) {
-        this.framebuffer = builder.createObjectNode("main", framebuffer);
-        PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(new SimpleFramebufferFactory(framebuffer.textureWidth, framebuffer.textureHeight, framebuffer.useDepthAttachment), null, Identifier.of(Data.getVersion().getID(), "default"));
+    public LuminanceFramebufferSet(FrameGraphBuilder builder, Framebuffer mainFramebuffer, @Nullable Set<Identifier> useDefaultFor) {
+        this.mainFramebuffer = builder.createObjectNode("main", mainFramebuffer);
+        PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(new SimpleFramebufferFactory(mainFramebuffer.textureWidth, mainFramebuffer.textureHeight, mainFramebuffer.useDepthAttachment), null, Identifier.of(Data.getVersion().getID(), "default"));
         this.defaultFramebuffer = builder.createResourceHandle("luminance:default", persistentFramebufferFactory);
         this.useDefaultFor = useDefaultFor;
     }
 
-    private DefaultableFramebufferSet(Handle<Framebuffer> framebuffer, Handle<Framebuffer> defaultFramebuffer, @Nullable Set<Identifier> useDefaultFor) {
-        this.framebuffer = framebuffer;
+    private LuminanceFramebufferSet(Handle<Framebuffer> mainFramebuffer, Handle<Framebuffer> defaultFramebuffer, @Nullable Set<Identifier> useDefaultFor) {
+        this.mainFramebuffer = mainFramebuffer;
         this.defaultFramebuffer = defaultFramebuffer;
         this.useDefaultFor = useDefaultFor;
     }
@@ -50,14 +50,14 @@ public class DefaultableFramebufferSet implements PostEffectProcessor.Framebuffe
             return defaultFramebufferSet;
         }
         PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(factory, null, Identifier.of(Data.getVersion().getID(), "fabulous"));
-        return new DefaultableFramebufferSet(defaultFramebufferSet.mainFramebuffer, frameGraphBuilder.createResourceHandle("luminance:default", persistentFramebufferFactory), fabulous);
+        return new LuminanceFramebufferSet(defaultFramebufferSet.mainFramebuffer, frameGraphBuilder.createResourceHandle("luminance:default", persistentFramebufferFactory), fabulous);
     }
 
-    public void set(Identifier id, Handle<Framebuffer> framebufferx) {
+    public void set(Identifier id, Handle<Framebuffer> framebuffer) {
         if (id.equals(PostEffectProcessor.MAIN)) {
-            framebuffer = framebufferx;
+            mainFramebuffer = framebuffer;
         } else if (useDefault(id)) {
-            defaultFramebuffer = framebufferx;
+            defaultFramebuffer = framebuffer;
         } else {
             throw new IllegalArgumentException("No target with id " + id);
         }
@@ -65,7 +65,7 @@ public class DefaultableFramebufferSet implements PostEffectProcessor.Framebuffe
 
     @Nullable
     public Handle<Framebuffer> get(Identifier id) {
-        return id.equals(PostEffectProcessor.MAIN) ? framebuffer : null;
+        return id.equals(PostEffectProcessor.MAIN) ? mainFramebuffer : null;
     }
 
     @Override
