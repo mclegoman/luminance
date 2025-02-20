@@ -19,7 +19,6 @@ import com.mclegoman.luminance.client.util.CompatHelper;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.client.gl.*;
-import net.minecraft.client.render.DefaultFramebufferSet;
 import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.text.Text;
@@ -266,10 +265,7 @@ public class Shaders {
 	public static void renderShaderUsingAllocator(Shader shader, Framebuffer framebuffer, ObjectAllocator objectAllocator, @Nullable Identifier customPasses) {
 		try {
 			if (shader.getPostProcessor() != null) {
-				FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
-				PostEffectProcessor.FramebufferSet framebufferSet = PostEffectProcessor.FramebufferSet.singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer));
-				((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet, customPasses);
-				frameGraphBuilder.run(objectAllocator);
+				Runnables.GeneralRender.fromGameRender((builder, width, height, set) -> ((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, width, height, set, customPasses), framebuffer, objectAllocator);
 			}
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render processor: {}", error.getLocalizedMessage()));

@@ -66,6 +66,9 @@ public abstract class WorldRendererMixin {
 	private void luminance$afterRenderWeather(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
 		boolean replace = framebufferSet.translucentFramebuffer == null;
 		if (replace) {
+			// this could potentially be done by instead replacing the framebufferset with a DefaultableFramebufferSet
+			// not sure if that has any advantages though
+			// TODO: it may be that this creates a bunch of unneeded passes in the pool instead of reusing the same empty framebuffer - this needs to be checked
 			PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(factory.get(), null, Identifier.of(Data.getVersion().getID(), "fabulous"));
 			framebufferSet.translucentFramebuffer = frameGraphBuilder.createResourceHandle("translucent", persistentFramebufferFactory);
 			framebufferSet.itemEntityFramebuffer = frameGraphBuilder.createResourceHandle("item_entity", persistentFramebufferFactory);
