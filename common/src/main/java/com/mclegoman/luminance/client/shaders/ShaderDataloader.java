@@ -85,7 +85,7 @@ public class ShaderDataloader extends JsonDataLoader {
 					boolean enabled = JsonHelper.getBoolean(reader, "enabled", true);
 					boolean translatable = JsonHelper.getBoolean(reader, "translatable", false);
 					boolean disableGameRenderType = JsonHelper.hasBoolean(reader, "disable_screen_mode") ? JsonHelper.getBoolean(reader, "disable_screen_mode") : JsonHelper.getBoolean(reader, "disable_game_rendertype", false);
-					JsonObject customData = JsonHelper.getObject(reader, "customData", new JsonObject());
+					JsonObject customData = JsonHelper.getObject(reader, "custom", new JsonObject());
 					JsonArray registries = JsonHelper.getArray(reader, "registries", new JsonArray());
 					ShaderRegistryEntry shaderData = getShaderData(post_effect, translatable, disableGameRenderType, customData);
 					List<Identifier> registryList = getRegistries(registries);
