@@ -35,28 +35,31 @@ public class LuminanceConfigHelper {
 		if (save) config.save();
 	}
 	public static ConfigEnvironment getConfigEnvironment(SerializerType type) {
+		if (type.equals(SerializerType.JSON5) && !configEnvironments.containsKey(SerializerType.JSON5)) {
+			// Register JSON5 config serializer
+			ConfigEnvironment jsonConfigEnvironment;
+			jsonConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "json", Json5Serializer.INSTANCE);
+			jsonConfigEnvironment.registerSerializer(Json5Serializer.INSTANCE);
+			configEnvironments.put(SerializerType.JSON5, jsonConfigEnvironment);
+		}
+		else if (type.equals(SerializerType.PROPERTIES) && !configEnvironments.containsKey(SerializerType.PROPERTIES)) {
+			// Register PROPERTIES config serializer
+			ConfigEnvironment propertiesConfigEnvironment;
+			propertiesConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "properties", new LuminanceSerializer("properties"));
+			propertiesConfigEnvironment.registerSerializer(new LuminanceSerializer("properties"));
+			configEnvironments.put(SerializerType.PROPERTIES, propertiesConfigEnvironment);
+		} else if (type.equals(SerializerType.TOML) && !configEnvironments.containsKey(SerializerType.TOML)) {
+			// Register TOML config serializer
+			ConfigEnvironment tomlConfigEnvironment;
+			tomlConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "toml", TomlSerializer.INSTANCE);
+			tomlConfigEnvironment.registerSerializer(TomlSerializer.INSTANCE);
+			configEnvironments.put(SerializerType.TOML, tomlConfigEnvironment);
+		}
 		return configEnvironments.get(type);
 	}
 	public enum SerializerType {
 		TOML,
 		PROPERTIES,
 		JSON5
-	}
-	static {
-		// Register JSON5 config serializer
-		ConfigEnvironment jsonConfigEnvironment;
-		jsonConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "json", Json5Serializer.INSTANCE);
-		jsonConfigEnvironment.registerSerializer(Json5Serializer.INSTANCE);
-		configEnvironments.put(SerializerType.JSON5, jsonConfigEnvironment);
-		// Register PROPERTIES config serializer
-		ConfigEnvironment propertiesConfigEnvironment;
-		propertiesConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "properties", new LuminanceSerializer("properties"));
-		propertiesConfigEnvironment.registerSerializer(new LuminanceSerializer("properties"));
-		configEnvironments.put(SerializerType.PROPERTIES, propertiesConfigEnvironment);
-		// Register TOML config serializer
-		ConfigEnvironment tomlConfigEnvironment;
-		tomlConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "toml", TomlSerializer.INSTANCE);
-		tomlConfigEnvironment.registerSerializer(TomlSerializer.INSTANCE);
-		configEnvironments.put(SerializerType.TOML, tomlConfigEnvironment);
 	}
 }
