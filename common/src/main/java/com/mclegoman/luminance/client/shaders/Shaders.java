@@ -44,7 +44,7 @@ public class Shaders {
                 if (shaders != null) shaders.forEach(shader -> {
                     try {
                         if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-                            if (((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth())) && (!shader.shader().getUseDepth() || CompatHelper.isIrisShadersEnabled())) && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+                            if (((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth()))) && (!shader.shader().getUseDepth() || CompatHelper.isIrisShadersEnabled())) && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
                                 renderUsingAllocator(id, shader, framebuffer, objectAllocator);
                             }
                         }
@@ -62,7 +62,7 @@ public class Shaders {
                 if (shaders != null) shaders.forEach(shader -> {
                     try {
                         if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-                            if (((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth()) && (shader.shader().getUseDepth() && !CompatHelper.isIrisShadersEnabled())) || ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+                            if (((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth()))) && (shader.shader().getUseDepth() && !CompatHelper.isIrisShadersEnabled())) || ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
                                 renderUsingFramebufferSet(id, shader, builder, textureWidth, textureHeight, framebufferSet);
                             }
                         }
