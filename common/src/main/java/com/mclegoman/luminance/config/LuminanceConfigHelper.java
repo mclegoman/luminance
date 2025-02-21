@@ -10,6 +10,7 @@ package com.mclegoman.luminance.config;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.config.serializers.LuminanceSerializer;
 import org.quiltmc.config.api.ReflectiveConfig;
+import org.quiltmc.config.api.serializers.Json5Serializer;
 import org.quiltmc.config.api.serializers.TomlSerializer;
 import org.quiltmc.config.api.values.TrackedValue;
 import org.quiltmc.config.impl.ConfigImpl;
@@ -42,19 +43,20 @@ public class LuminanceConfigHelper {
 		JSON5
 	}
 	static {
-		ConfigEnvironment configEnvironment;
 		// Register JSON5 config serializer
-		configEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "toml", TomlSerializer.INSTANCE);
-		configEnvironment.registerSerializer(TomlSerializer.INSTANCE);
-		configEnvironments.put(SerializerType.JSON5, configEnvironment);
+		ConfigEnvironment jsonConfigEnvironment;
+		jsonConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "json", Json5Serializer.INSTANCE);
+		jsonConfigEnvironment.registerSerializer(Json5Serializer.INSTANCE);
+		configEnvironments.put(SerializerType.JSON5, jsonConfigEnvironment);
 		// Register PROPERTIES config serializer
-		LuminanceSerializer serializer = new LuminanceSerializer("properties");
-		configEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "properties", serializer);
-		configEnvironment.registerSerializer(serializer);
-		configEnvironments.put(SerializerType.PROPERTIES, configEnvironment);
+		ConfigEnvironment propertiesConfigEnvironment;
+		propertiesConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "properties", new LuminanceSerializer("properties"));
+		propertiesConfigEnvironment.registerSerializer(new LuminanceSerializer("properties"));
+		configEnvironments.put(SerializerType.PROPERTIES, propertiesConfigEnvironment);
 		// Register TOML config serializer
-		configEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "toml", TomlSerializer.INSTANCE);
-		configEnvironment.registerSerializer(TomlSerializer.INSTANCE);
-		configEnvironments.put(SerializerType.TOML, configEnvironment);
+		ConfigEnvironment tomlConfigEnvironment;
+		tomlConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "toml", TomlSerializer.INSTANCE);
+		tomlConfigEnvironment.registerSerializer(TomlSerializer.INSTANCE);
+		configEnvironments.put(SerializerType.TOML, tomlConfigEnvironment);
 	}
 }
