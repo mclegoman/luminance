@@ -112,11 +112,7 @@ vec4 outline( vec4 color, sampler2D DepthSampler ) {
 void main() {
     vec4 color;
     vec4 baseColor = texture(InSampler, texCoord);
-    if (Silhouette != 0) {
-        color = vec4(SilhouetteColor, 1.0);
-    } else {
-        color = baseColor;
-    }
+    color = mix(baseColor, vec4(SilhouetteColor, 1.0), Silhouette);
 
     color = outline(color, InDepthSampler);
 
