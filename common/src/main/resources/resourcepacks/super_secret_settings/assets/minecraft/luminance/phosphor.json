@@ -1,11 +1,12 @@
 {
   "post_effect": "minecraft:phosphor",
-  "disable_game_rendertype": true,
+  "enabled": true,
   "translatable": true,
+  "description": false,
+  "disable_game_rendertype": true,
   "custom": {
     "souper_secret_settings": {
       "disable_soup": false
     }
-  },
-  "enabled": true
+  }
 }

@@ -242,7 +242,7 @@ public class Shaders {
 	}
 	public static Text getShaderName(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
 		ShaderRegistryEntry shader = get(registry, shaderIndex);
-		if (shader != null) return Translation.getShaderTranslation(shader.getID(), shader.getTranslatable(), shouldShowNamespace);
+		if (shader != null) return Translation.getShaderText(shader.getID(), false, shader.getTranslatable(), shouldShowNamespace);
 		return Translation.getErrorTranslation(Data.getVersion().getID());
 	}
 	public static Text getShaderName(int shaderIndex) {
@@ -250,6 +250,20 @@ public class Shaders {
 	}
 	public static Text getShaderName(Identifier registry, int shaderIndex) {
 		return getShaderName(registry, shaderIndex, true);
+	}
+	public static Text getShaderDescription(int shaderIndex, boolean shouldShowNamespace) {
+		return getShaderDescription(getMainRegistryId(), shaderIndex, shouldShowNamespace);
+	}
+	public static Text getShaderDescription(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
+		ShaderRegistryEntry shader = get(registry, shaderIndex);
+		if (shader != null) return Translation.getShaderText(shader.getID(), true, shader.getTranslatable(), shouldShowNamespace);
+		return Translation.getErrorTranslation(Data.getVersion().getID());
+	}
+	public static Text getShaderDescription(int shaderIndex) {
+		return getShaderDescription(getMainRegistryId(), shaderIndex);
+	}
+	public static Text getShaderDescription(Identifier registry, int shaderIndex) {
+		return getShaderDescription(registry, shaderIndex, true);
 	}
 	@Nullable
 	public static Identifier guessPostShader(String id) {

@@ -2,6 +2,7 @@
   "post_effect": "luminance:grayscale",
   "enabled": true,
   "translatable": true,
+  "description": false,
   "disable_game_rendertype": false,
   "custom": {
     "souper_secret_settings": {

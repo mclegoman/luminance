@@ -41,7 +41,10 @@
 
 	"dannytaylor.donate": "Donate",
 
-	"shader.luminance.gaussian": "gaussian",
+	"gui.luminance.shader.luminance.debug": "Debug Shader",
+	"gui.luminance.shader.luminance.debug.description": "This shader is used by the Luminance developers for debug purposes.",
+
+	"gui.luminance.shader.luminance.gaussian": "gaussian",
 
 	"gui.luminance.keybindings.keybinding.toggle_debug_shader": "[DEBUG] Toggle Shader",
 	"gui.luminance.keybindings.keybinding.cycle_debug_render_type": "[DEBUG] Cycle Render Type"
