@@ -3,11 +3,7 @@
   "enabled": true,
   "translatable": true,
   "disable_game_rendertype": true,
-  "custom": {
-    "souper_secret_settings": {
-      "disable_soup": true
-    }
-  },
+  "custom": {},
   "registries": [
     "luminance:debug"
   ]

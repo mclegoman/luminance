@@ -8,7 +8,7 @@
       "entity_links": []
     },
     "souper_secret_settings": {
-      "disable_soup": false
+      "groups": [ "edible", "retro" ]
     }
   }
 }

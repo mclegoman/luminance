@@ -4,7 +4,7 @@
   "translatable": true,
   "custom": {
     "souper_secret_settings": {
-      "disable_soup": false
+      "groups": [ "edible", "persistent" ]
     }
   },
   "enabled": true

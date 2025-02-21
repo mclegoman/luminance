@@ -5,7 +5,7 @@
   "disable_game_rendertype": false,
   "custom": {
     "souper_secret_settings": {
-      "disable_soup": false
+      "groups": [ "edible", "filter" ]
     }
   }
 }
