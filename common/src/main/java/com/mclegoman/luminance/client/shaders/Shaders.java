@@ -285,7 +285,7 @@ public class Shaders {
 	}
 	protected static void applyDebugShader() {
 		try {
-			if (ClientData.isDevelopment) {
+			if (ClientData.isDevelopment()) {
 				Events.ShaderRender.register(Identifier.of(Data.getVersion().getID(), "debug"), new ArrayList<>());
 				Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(get(Identifier.of("luminance", "debug"), Identifier.of("luminance", "debug")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
 			}

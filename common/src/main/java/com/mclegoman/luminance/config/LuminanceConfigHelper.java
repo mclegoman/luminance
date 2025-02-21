@@ -12,18 +12,18 @@ import com.mclegoman.luminance.config.serializers.LuminanceSerializer;
 import org.quiltmc.config.api.ReflectiveConfig;
 import org.quiltmc.config.api.serializers.TomlSerializer;
 import org.quiltmc.config.api.values.TrackedValue;
+import org.quiltmc.config.impl.ConfigImpl;
 import org.quiltmc.config.implementor_api.ConfigEnvironment;
-import org.quiltmc.config.implementor_api.ConfigFactory;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LuminanceConfigHelper {
-	private static ConfigEnvironment tomlConfigEnvironment;
-	private static ConfigEnvironment propertiesConfigEnvironment;
-	private static ConfigEnvironment jsonConfigEnvironment;
+	private static final Map<SerializerType, ConfigEnvironment> configEnvironments = new HashMap<>();
 	public static <C extends ReflectiveConfig> C register(SerializerType type, String namespace, String id, Class<C> config) {
-		return ConfigFactory.create(getConfigEnvironment(type), namespace, id, Path.of(""), builder -> {}, config, builder -> {});
+		return ConfigImpl.createReflective(getConfigEnvironment(type), namespace, id, Path.of(""), builder -> {}, config, builder -> {});
 	}
 	public static <C extends ReflectiveConfig> void reset(C config) {
 		reset(config, true);
@@ -34,30 +34,27 @@ public class LuminanceConfigHelper {
 		if (save) config.save();
 	}
 	public static ConfigEnvironment getConfigEnvironment(SerializerType type) {
-		if (type == SerializerType.JSON5) {
-			if (jsonConfigEnvironment == null) {
-				jsonConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "toml", TomlSerializer.INSTANCE);
-				jsonConfigEnvironment.registerSerializer(TomlSerializer.INSTANCE);
-			}
-			return jsonConfigEnvironment;
-		} else if (type == SerializerType.PROPERTIES) {
-			if (propertiesConfigEnvironment == null) {
-				LuminanceSerializer serializer = new LuminanceSerializer("properties");
-				propertiesConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "properties", serializer);
-				propertiesConfigEnvironment.registerSerializer(serializer);
-			}
-			return propertiesConfigEnvironment;
-		} else {
-			if (tomlConfigEnvironment == null) {
-				tomlConfigEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "toml", TomlSerializer.INSTANCE);
-				tomlConfigEnvironment.registerSerializer(TomlSerializer.INSTANCE);
-			}
-			return tomlConfigEnvironment;
-		}
+		return configEnvironments.get(type);
 	}
 	public enum SerializerType {
 		TOML,
 		PROPERTIES,
 		JSON5
+	}
+	static {
+		ConfigEnvironment configEnvironment;
+		// Register JSON5 config serializer
+		configEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "toml", TomlSerializer.INSTANCE);
+		configEnvironment.registerSerializer(TomlSerializer.INSTANCE);
+		configEnvironments.put(SerializerType.JSON5, configEnvironment);
+		// Register PROPERTIES config serializer
+		LuminanceSerializer serializer = new LuminanceSerializer("properties");
+		configEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "properties", serializer);
+		configEnvironment.registerSerializer(serializer);
+		configEnvironments.put(SerializerType.PROPERTIES, configEnvironment);
+		// Register TOML config serializer
+		configEnvironment = new ConfigEnvironment(new File(ClientData.minecraft.runDirectory, "config").toPath(), "toml", TomlSerializer.INSTANCE);
+		configEnvironment.registerSerializer(TomlSerializer.INSTANCE);
+		configEnvironments.put(SerializerType.TOML, configEnvironment);
 	}
 }

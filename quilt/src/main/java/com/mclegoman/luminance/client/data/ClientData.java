@@ -13,5 +13,7 @@ import org.quiltmc.loader.api.QuiltLoader;
 
 public class ClientData {
 	public static final MinecraftClient minecraft = MinecraftClient.getInstance();
-	public static final boolean isDevelopment = QuiltLoader.isDevelopmentEnvironment() || LuminanceConfig.config.debug.value();
+	public static boolean isDevelopment() {
+		return QuiltLoader.isDevelopmentEnvironment() || LuminanceConfig.config.debug.value();
+	}
 }

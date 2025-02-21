@@ -114,7 +114,7 @@ public class ConfigScreen extends Screen {
 		}).build(), 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", true)));
 		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information"), button -> ClientData.minecraft.setScreen(new InformationScreen(ClientData.minecraft.currentScreen, false, splashText, isPride))).width(304).build(), 2);
 
-		if (ClientData.isDevelopment) {
+		if (ClientData.isDevelopment()) {
 			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShader}), button -> {
 				Debug.debugShader = !Debug.debugShader;
 				this.refresh = true;

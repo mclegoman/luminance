@@ -30,7 +30,7 @@ public class Keybindings {
 	static {
 		allKeybindings.add(adjustAlpha = KeybindingHelper.getKeybinding(Data.getVersion().getID(), Data.getVersion().getID(), "adjust_alpha", GLFW.GLFW_KEY_J));
 		allKeybindings.add(openConfig = KeybindingHelper.getKeybinding(Data.getVersion().getID(), Data.getVersion().getID(), "open_config", GLFW.GLFW_KEY_UNKNOWN));
-		if (ClientData.isDevelopment) {
+		if (ClientData.isDevelopment()) {
 			allKeybindings.add(debug = KeybindingHelper.getKeybinding(Data.getVersion().getID(), Data.getVersion().getID(), "debug", GLFW.GLFW_KEY_UNKNOWN));
 			allKeybindings.add(debug_2 = KeybindingHelper.getKeybinding(Data.getVersion().getID(), Data.getVersion().getID(), "debug_2", GLFW.GLFW_KEY_UNKNOWN));
 		} else {
@@ -45,7 +45,7 @@ public class Keybindings {
 		if (openConfig.wasPressed()) {
 			ClientData.minecraft.setScreen(new ConfigScreen(ClientData.minecraft.currentScreen, false, DateHelper.isPride()));
 		}
-		if (ClientData.isDevelopment) {
+		if (ClientData.isDevelopment()) {
 			if (debug != null && debug.wasPressed()) Debug.debugShader = !Debug.debugShader;
 			if (debug_2 != null && debug_2.wasPressed()) {
 				switch (Debug.debugRenderType) {
