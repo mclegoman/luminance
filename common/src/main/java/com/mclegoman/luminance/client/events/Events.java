@@ -54,6 +54,8 @@ public class Events {
 	public static final Registry<Runnables.GameRender> AfterHandRender = new Registry<>();
 	public static final Registry<Runnable> BeforeGameRender = new Registry<>();
 	public static final Registry<Runnables.GameRender> AfterGameRender = new Registry<>();
+	public static final Registry<Runnables.GameRender> AfterScreenBackgroundRender = new Registry<>();
+	public static final Registry<Runnables.GameRender> AfterPanoramaRender = new Registry<>();
 
 	public static final Registry<Runnables.OnResized> OnResized = new Registry<>();
 

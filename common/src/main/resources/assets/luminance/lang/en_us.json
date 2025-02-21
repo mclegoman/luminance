@@ -39,7 +39,10 @@
 	"gui.luminance.variable.onff.true": "ON",
 	"gui.luminance.variable.onff.false": "OFF",
 
-	"mclegoman.donate": "Donate",
+	"dannytaylor.donate": "Donate",
 
-	"shader.luminance.gaussian": "gaussian"
+	"shader.luminance.gaussian": "gaussian",
+
+	"gui.luminance.keybindings.keybinding.toggle_debug_shader": "[DEBUG] Toggle Shader",
+	"gui.luminance.keybindings.keybinding.cycle_debug_render_type": "[DEBUG] Cycle Render Type"
 }

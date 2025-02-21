@@ -75,22 +75,56 @@ public class Shaders {
             }
         }));
 		Events.AfterGameRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
-            try {
-                if (shaders != null) shaders.forEach(shader -> {
-                    try {
-                        if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-                            if ((shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && !shader.shader().getShaderData().getDisableGameRendertype() && !shader.shader().getUseDepth()) && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
-                                renderUsingAllocator(id, shader, framebuffer, objectAllocator);
-                            }
-                        }
-                    } catch (Exception error) {
-                        Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
-                    }
-                });
-            } catch (Exception error) {
-                Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
-            }
-        }));
+			try {
+				if (shaders != null) shaders.forEach(shader -> {
+					try {
+						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
+							if ((shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && !shader.shader().getShaderData().getDisableGameRendertype() && !shader.shader().getUseDepth()) && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
+							}
+						}
+					} catch (Exception error) {
+						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
+					}
+				});
+			} catch (Exception error) {
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
+			}
+		}));
+		Events.AfterScreenBackgroundRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
+			try {
+				if (shaders != null) shaders.forEach(shader -> {
+					try {
+						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
+							if (shader.shader().getRenderType().call().equals(Shader.RenderType.SCREEN_BACKGROUND) && !shader.shader().getUseDepth() && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
+							}
+						}
+					} catch (Exception error) {
+						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterBackgroundRender shader with id: {}:{}", id, error));
+					}
+				});
+			} catch (Exception error) {
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterBackgroundRender shader with id: {}:{}", id, error));
+			}
+		}));
+		Events.AfterPanoramaRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
+			try {
+				if (shaders != null) shaders.forEach(shader -> {
+					try {
+						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
+							if (shader.shader().getRenderType().call().equals(Shader.RenderType.PANORAMA) && !shader.shader().getUseDepth() && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
+							}
+						}
+					} catch (Exception error) {
+						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterPanoramaRender shader with id: {}:{}", id, error));
+					}
+				});
+			} catch (Exception error) {
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterPanoramaRender shader with id: {}:{}", id, error));
+			}
+		}));
 	}
 	public static Identifier getMainRegistryId() {
 		return Identifier.of(Data.getVersion().getID(), "main");

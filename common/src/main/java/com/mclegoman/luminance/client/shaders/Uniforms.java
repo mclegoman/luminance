@@ -28,7 +28,9 @@ import com.mclegoman.luminance.client.util.Accessors;
 import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
+import com.mclegoman.luminance.mixin.client.shaders.TitleScreenAccessor;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
@@ -62,6 +64,7 @@ public class Uniforms {
 		// 3. a renderType uniform could be useful?
 		try {
 			String path = Data.getVersion().getID();
+			registerSingleTree(path, "panoramaAlpha", Uniforms::getPanoramaAlpha, 0f, 1f);
 			registerSingleTree(path, "hudHidden", Uniforms::getHudHidden, 0f, 1f);
 			registerSingleTree(path, "isInGui", Uniforms::getIsInGui, 0f, 1f);
 			registerSingleTree(path, "viewDistance", Uniforms::getViewDistance, 2f, null);
@@ -160,6 +163,9 @@ public class Uniforms {
 			treeUniform.addChildren(new ElementUniform("x", 0), new ElementUniform("y", 1), new ElementUniform("z", 2), new ElementUniform("w", 3));
 		}
 		return treeUniform;
+	}
+	public static float getPanoramaAlpha(ShaderTime shaderTime) {
+		return ClientData.minecraft.currentScreen instanceof TitleScreen ? (((TitleScreenAccessor)ClientData.minecraft.currentScreen).getBackgroundAlpha()) : 1.0F;
 	}
 	public static float getHudHidden(ShaderTime shaderTime) {
 		return ClientData.minecraft.options != null ? (ClientData.minecraft.options.hudHidden ? 1.0F : 0.0F) : 0.0F;
