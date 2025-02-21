@@ -22,8 +22,4 @@ public abstract class ScreenMixin {
 	private void luminance$afterBackgroundRender(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		Execute.afterScreenBackgroundRender(((GameRendererAccessor) ClientData.minecraft.gameRenderer).getPool());
 	}
-	@Inject(method = "renderPanoramaBackground", at = @At("RETURN"))
-	private void luminance$afterPanoramaRender(DrawContext context, float delta, CallbackInfo ci) {
-		Execute.afterPanoramaRender(((GameRendererAccessor) ClientData.minecraft.gameRenderer).getPool());
-	}
 }
