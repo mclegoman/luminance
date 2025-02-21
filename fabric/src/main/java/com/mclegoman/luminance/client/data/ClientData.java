@@ -13,5 +13,7 @@ import net.minecraft.client.MinecraftClient;
 
 public class ClientData {
 	public static final MinecraftClient minecraft = MinecraftClient.getInstance();
-	public static final boolean isDevelopment = FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment() || LuminanceConfig.config.debug.value();
+	public static boolean isDevelopment() {
+		return FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment() || LuminanceConfig.config.debug.value();
+	}
 }

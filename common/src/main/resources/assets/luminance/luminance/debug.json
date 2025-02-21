@@ -2,6 +2,7 @@
   "post_effect": "luminance:debug",
   "enabled": true,
   "translatable": true,
+  "description": true,
   "disable_game_rendertype": true,
   "custom": {},
   "registries": [

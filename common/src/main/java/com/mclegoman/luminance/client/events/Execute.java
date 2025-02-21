@@ -72,6 +72,24 @@ public class Execute {
 			}
 		}));
 	}
+	public static void afterScreenBackgroundRender(ObjectAllocator allocator) {
+		Events.AfterScreenBackgroundRender.registry.forEach(((id, runnable) -> {
+			try {
+				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
+			} catch (Exception error) {
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterScreenBackgroundRender event with id: {}:{}:", id, error));
+			}
+		}));
+	}
+	public static void afterPanoramaRender(ObjectAllocator allocator) {
+		Events.AfterPanoramaRender.registry.forEach(((id, runnable) -> {
+			try {
+				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
+			} catch (Exception error) {
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterPanoramaRender event with id: {}:{}:", id, error));
+			}
+		}));
+	}
 	public static void resize(int width, int height) {
 		Events.OnResized.registry.forEach((id, runnable) -> runnable.run(width, height));
 	}

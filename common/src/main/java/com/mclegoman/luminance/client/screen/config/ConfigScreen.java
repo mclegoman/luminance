@@ -13,7 +13,6 @@ import com.mclegoman.luminance.client.debug.Debug;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.logo.LuminanceLogo;
 import com.mclegoman.luminance.client.screen.config.information.InformationScreen;
-import com.mclegoman.luminance.client.shaders.Shader;
 import com.mclegoman.luminance.client.shaders.Uniforms;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
@@ -114,16 +113,13 @@ public class ConfigScreen extends Screen {
 		}).build(), 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", true)));
 		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information"), button -> ClientData.minecraft.setScreen(new InformationScreen(ClientData.minecraft.currentScreen, false, splashText, isPride))).width(304).build(), 2);
 
-		if (ClientData.isDevelopment) {
+		if (ClientData.isDevelopment()) {
 			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShader}), button -> {
 				Debug.debugShader = !Debug.debugShader;
 				this.refresh = true;
 			}).build());
 			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Render Type: {}", false, new Object[]{Debug.debugRenderType.toString()}), button -> {
-				switch (Debug.debugRenderType) {
-					case GAME -> Debug.debugRenderType = Shader.RenderType.WORLD;
-					case WORLD -> Debug.debugRenderType = Shader.RenderType.GAME;
-				}
+				Debug.cycleDebugRenderType();
 				this.refresh = true;
 			}).build());
 		}

@@ -44,7 +44,7 @@ public class Shaders {
                 if (shaders != null) shaders.forEach(shader -> {
                     try {
                         if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-                            if (((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth())) && (!shader.shader().getUseDepth() || CompatHelper.isIrisShadersEnabled())) && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+                            if (((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth()))) && (!shader.shader().getUseDepth() || CompatHelper.isIrisShadersEnabled())) && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
                                 renderUsingAllocator(id, shader, framebuffer, objectAllocator);
                             }
                         }
@@ -62,7 +62,7 @@ public class Shaders {
                 if (shaders != null) shaders.forEach(shader -> {
                     try {
                         if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-                            if (((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth()) && (shader.shader().getUseDepth() && !CompatHelper.isIrisShadersEnabled())) || ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+                            if (((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth()))) && (shader.shader().getUseDepth() && !CompatHelper.isIrisShadersEnabled())) || ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
                                 renderUsingFramebufferSet(id, shader, builder, textureWidth, textureHeight, framebufferSet);
                             }
                         }
@@ -75,22 +75,56 @@ public class Shaders {
             }
         }));
 		Events.AfterGameRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
-            try {
-                if (shaders != null) shaders.forEach(shader -> {
-                    try {
-                        if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-                            if ((shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && !shader.shader().getShaderData().getDisableGameRendertype() && !shader.shader().getUseDepth()) && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
-                                renderUsingAllocator(id, shader, framebuffer, objectAllocator);
-                            }
-                        }
-                    } catch (Exception error) {
-                        Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
-                    }
-                });
-            } catch (Exception error) {
-                Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
-            }
-        }));
+			try {
+				if (shaders != null) shaders.forEach(shader -> {
+					try {
+						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
+							if ((shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && !shader.shader().getShaderData().getDisableGameRendertype() && !shader.shader().getUseDepth()) && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
+							}
+						}
+					} catch (Exception error) {
+						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
+					}
+				});
+			} catch (Exception error) {
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
+			}
+		}));
+		Events.AfterScreenBackgroundRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
+			try {
+				if (shaders != null) shaders.forEach(shader -> {
+					try {
+						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
+							if (shader.shader().getRenderType().call().equals(Shader.RenderType.SCREEN_BACKGROUND) && !shader.shader().getUseDepth() && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
+							}
+						}
+					} catch (Exception error) {
+						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterBackgroundRender shader with id: {}:{}", id, error));
+					}
+				});
+			} catch (Exception error) {
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterBackgroundRender shader with id: {}:{}", id, error));
+			}
+		}));
+		Events.AfterPanoramaRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
+			try {
+				if (shaders != null) shaders.forEach(shader -> {
+					try {
+						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
+							if (shader.shader().getRenderType().call().equals(Shader.RenderType.PANORAMA) && !shader.shader().getUseDepth() && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
+							}
+						}
+					} catch (Exception error) {
+						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterPanoramaRender shader with id: {}:{}", id, error));
+					}
+				});
+			} catch (Exception error) {
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterPanoramaRender shader with id: {}:{}", id, error));
+			}
+		}));
 	}
 	public static Identifier getMainRegistryId() {
 		return Identifier.of(Data.getVersion().getID(), "main");
@@ -208,7 +242,7 @@ public class Shaders {
 	}
 	public static Text getShaderName(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
 		ShaderRegistryEntry shader = get(registry, shaderIndex);
-		if (shader != null) return Translation.getShaderTranslation(shader.getID(), shader.getTranslatable(), shouldShowNamespace);
+		if (shader != null) return Translation.getShaderText(shader.getID(), false, shader.getTranslatable(), shouldShowNamespace);
 		return Translation.getErrorTranslation(Data.getVersion().getID());
 	}
 	public static Text getShaderName(int shaderIndex) {
@@ -216,6 +250,20 @@ public class Shaders {
 	}
 	public static Text getShaderName(Identifier registry, int shaderIndex) {
 		return getShaderName(registry, shaderIndex, true);
+	}
+	public static Text getShaderDescription(int shaderIndex, boolean shouldShowNamespace) {
+		return getShaderDescription(getMainRegistryId(), shaderIndex, shouldShowNamespace);
+	}
+	public static Text getShaderDescription(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
+		ShaderRegistryEntry shader = get(registry, shaderIndex);
+		if (shader != null) return Translation.getShaderText(shader.getID(), true, shader.getTranslatable(), shouldShowNamespace);
+		return Translation.getErrorTranslation(Data.getVersion().getID());
+	}
+	public static Text getShaderDescription(int shaderIndex) {
+		return getShaderDescription(getMainRegistryId(), shaderIndex);
+	}
+	public static Text getShaderDescription(Identifier registry, int shaderIndex) {
+		return getShaderDescription(registry, shaderIndex, true);
 	}
 	@Nullable
 	public static Identifier guessPostShader(String id) {
@@ -285,7 +333,7 @@ public class Shaders {
 	}
 	protected static void applyDebugShader() {
 		try {
-			if (ClientData.isDevelopment) {
+			if (ClientData.isDevelopment()) {
 				Events.ShaderRender.register(Identifier.of(Data.getVersion().getID(), "debug"), new ArrayList<>());
 				Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(get(Identifier.of("luminance", "debug"), Identifier.of("luminance", "debug")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
 			}

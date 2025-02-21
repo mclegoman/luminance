@@ -1,6 +1,6 @@
 {
-	"shader.minecraft.box_blur": "Blur",
-	"shader.minecraft.creeper": "Creeper",
-	"shader.minecraft.invert": "Invert",
-	"shader.minecraft.spider": "Spider"
+	"gui.luminance.shader.minecraft.box_blur": "Box Blur",
+	"gui.luminance.shader.minecraft.creeper": "Creeper",
+	"gui.luminance.shader.minecraft.invert": "Invert",
+	"gui.luminance.shader.minecraft.spider": "Spider"
 }

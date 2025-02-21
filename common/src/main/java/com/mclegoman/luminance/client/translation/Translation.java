@@ -100,17 +100,11 @@ public class Translation {
 	public static MutableText getErrorTranslation(String namespace) {
 		return getConfigTranslation(namespace, "error", new Formatting[]{Formatting.RED, Formatting.BOLD});
 	}
-	public static MutableText getShaderTranslation(Identifier id, boolean canBeTranslated, boolean shouldShowNamespace, Formatting[] formattings) {
-		return getText(canBeTranslated ? "name." + id.getNamespace() + "." + id.getPath() : (shouldShowNamespace ? id.getNamespace() + ":" : "") + id.getPath(), canBeTranslated, formattings);
+	public static MutableText getShaderText(Identifier shaderId, boolean description, boolean translatable, boolean shouldShowNamespace, Formatting[] formattings) {
+		return translatable ? getTranslation(com.mclegoman.luminance.common.data.Data.getVersion().getID(), getString("shader.{}.{}{}", shaderId.getNamespace(), shaderId.getPath(), (description ? ".description" : "")), formattings) : getText(description ? data(shouldShowNamespace ? shaderId.toString() : shaderId.getPath(), false) : data("", false), formattings);
 	}
-	public static MutableText getShaderTranslation(Identifier id, boolean canBeTranslated, boolean shouldShowNamespace) {
-		return getText(canBeTranslated ? "shader." + id.getNamespace() + "." + id.getPath() : (shouldShowNamespace ? id.getNamespace() + ":" : "") + id.getPath(), canBeTranslated);
-	}
-	public static MutableText getShaderTranslation(Identifier id, boolean canBeTranslated, Formatting[] formattings) {
-		return getShaderTranslation(id, canBeTranslated, true, formattings);
-	}
-	public static MutableText getShaderTranslation(Identifier id, boolean canBeTranslated) {
-		return getShaderTranslation(id, canBeTranslated, true);
+	public static MutableText getShaderText(Identifier shaderId, boolean description, boolean translatable, boolean shouldShowNamespace) {
+		return getShaderText(shaderId, description, translatable, shouldShowNamespace, new Formatting[]{});
 	}
 	public static MutableText getTranslation(String type, String namespace, String key, Object[] variables, Formatting[] formattings) {
 		return getText(type + "." + namespace + "." + key, true, variables, formattings);

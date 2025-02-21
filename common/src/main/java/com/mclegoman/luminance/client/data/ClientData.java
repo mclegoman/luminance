@@ -12,5 +12,10 @@ import net.minecraft.client.MinecraftClient;
 
 public class ClientData {
 	public static final MinecraftClient minecraft = MinecraftClient.getInstance();
-	public static final boolean isDevelopment = LuminanceConfig.config.debug.value();
+	public static boolean isDevelopment() {
+		return LuminanceConfig.config.debug.value();
+	}
+	static {
+		LuminanceConfig.init();
+	}
 }

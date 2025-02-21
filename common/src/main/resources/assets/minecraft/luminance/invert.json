@@ -2,11 +2,9 @@
   "post_effect": "minecraft:invert",
   "enabled": true,
   "translatable": true,
+  "description": false,
   "disable_game_rendertype": false,
   "custom": {
-    "perspective": {
-      "entity_links": []
-    },
     "souper_secret_settings": {
       "groups": [ "edible", "filter" ]
     }

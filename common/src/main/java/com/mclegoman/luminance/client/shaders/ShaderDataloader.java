@@ -42,8 +42,8 @@ public class ShaderDataloader extends JsonDataLoader {
 			}
 		});
 	}
-	private ShaderRegistryEntry getShaderData(Identifier id, boolean translatable, boolean disableGameRendertype, JsonObject custom) {
-		return ShaderRegistryEntry.builder(id).translatable(translatable).disableGameRendertype(disableGameRendertype).custom(custom).build();
+	private ShaderRegistryEntry getShaderData(Identifier id, boolean translatable, boolean description, boolean disableGameRendertype, JsonObject custom) {
+		return ShaderRegistryEntry.builder(id).translatable(translatable).hasDescription(description).disableGameRendertype(disableGameRendertype).custom(custom).build();
 	}
 	private void add(List<Identifier> registries, ShaderRegistryEntry shaderData, ResourceManager manager) {
 		try {
@@ -84,10 +84,11 @@ public class ShaderDataloader extends JsonDataLoader {
 					Identifier post_effect = IdentifierHelper.identifierFromString(JsonHelper.getString(reader, "post_effect", identifier.getNamespace() + ":" + identifier.getPath()));
 					boolean enabled = JsonHelper.getBoolean(reader, "enabled", true);
 					boolean translatable = JsonHelper.getBoolean(reader, "translatable", false);
+					boolean description = JsonHelper.getBoolean(reader, "description", false);
 					boolean disableGameRenderType = JsonHelper.hasBoolean(reader, "disable_screen_mode") ? JsonHelper.getBoolean(reader, "disable_screen_mode") : JsonHelper.getBoolean(reader, "disable_game_rendertype", false);
 					JsonObject customData = JsonHelper.getObject(reader, "custom", new JsonObject());
 					JsonArray registries = JsonHelper.getArray(reader, "registries", new JsonArray());
-					ShaderRegistryEntry shaderData = getShaderData(post_effect, translatable, disableGameRenderType, customData);
+					ShaderRegistryEntry shaderData = getShaderData(post_effect, translatable, description, disableGameRenderType, customData);
 					List<Identifier> registryList = getRegistries(registries);
 					if (enabled) {
 						add(registryList, shaderData, manager);
