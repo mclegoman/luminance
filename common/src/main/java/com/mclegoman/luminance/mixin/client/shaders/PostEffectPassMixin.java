@@ -9,6 +9,7 @@ package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mclegoman.luminance.client.events.Events;
+import com.mclegoman.luminance.client.events.Execute;
 import com.mclegoman.luminance.client.shaders.Shaders;
 import com.mclegoman.luminance.client.shaders.Uniforms;
 import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
@@ -52,11 +53,11 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 	@Inject(method = "method_62257", at = @At("HEAD"))
 	private void luminance$beforeRender(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
-		Events.BeforeShaderRender.registry.forEach(((id, runnable) -> runnable.run((PostEffectPass)(Object)this)));
+		Execute.beforeShaderRender((PostEffectPass)(Object)this);
 	}
 	@Inject(method = "method_62257", at = @At("TAIL"))
 	private void luminance$afterRender(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
-		Events.AfterShaderRender.registry.forEach(((id, runnable) -> runnable.run((PostEffectPass)(Object)this)));
+		Execute.afterShaderRender((PostEffectPass)(Object)this);
 	}
 
 	@Inject(method = "method_62257", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/Framebuffer;setClearColor(FFFF)V"))

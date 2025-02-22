@@ -13,6 +13,7 @@ import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gl.PostEffectPass;
 import net.minecraft.client.gl.PostEffectProcessor;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.FrameGraphBuilder;
@@ -30,7 +31,7 @@ public class Execute {
 			try {
 				runnable.run(context, renderTickCounter);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterInGameHudRender event with id: {}:{}:", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterInGameHudRender event with id: {}: {}", id, error));
 			}
 		}));
 	}
@@ -39,7 +40,7 @@ public class Execute {
 			try {
 				runnable.run(context, renderTickCounter);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterInGameHudRender event with id: {}:{}:", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterInGameHudRender event with id: {}: {}", id, error));
 			}
 		}));
 	}
@@ -48,7 +49,7 @@ public class Execute {
 			try {
 				runnable.run();
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterGameRender event with id: {}:{}:", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterGameRender event with id: {}: {}", id, error));
 			}
 		}));
 	}
@@ -58,7 +59,7 @@ public class Execute {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterHandRender event with id: {}:{}:", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterHandRender event with id: {}: {}", id, error));
 			}
 		}));
 		RenderSystem.depthMask(true);
@@ -68,7 +69,7 @@ public class Execute {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterGameRender event with id: {}:{}:", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterGameRender event with id: {}: {}", id, error));
 			}
 		}));
 	}
@@ -77,7 +78,7 @@ public class Execute {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterScreenBackgroundRender event with id: {}:{}:", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterScreenBackgroundRender event with id: {}: {}", id, error));
 			}
 		}));
 	}
@@ -86,7 +87,7 @@ public class Execute {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterPanoramaRender event with id: {}:{}:", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterPanoramaRender event with id: {}: {}", id, error));
 			}
 		}));
 	}
@@ -98,7 +99,7 @@ public class Execute {
 			try {
 				runnable.run();
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute BeforeWorldRender event with id: {}:{}:", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute BeforeWorldRender event with id: {}: {}", id, error));
 			}
 		}));
 	}
@@ -112,7 +113,7 @@ public class Execute {
 			try {
 				runnable.run(frameGraphBuilder, ClientData.minecraft.getFramebuffer().textureWidth, ClientData.minecraft.getFramebuffer().textureHeight, framebufferSet);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterWeatherRender event with id: {}:{}:", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterWeatherRender event with id: {}: {}", id, error));
 			}
 		}));
 		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.of(Data.getVersion().getID(), "cleanup_shader_render"), () -> RenderSystem.depthMask(true));
@@ -122,7 +123,25 @@ public class Execute {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterWorldRender event with id: {}:{}:", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterWorldRender event with id: {}: {}", id, error));
+			}
+		}));
+	}
+	public static void beforeShaderRender(PostEffectPass postEffectPass) {
+		Events.BeforeShaderRender.registry.forEach(((id, runnable) -> {
+			try {
+				runnable.run(postEffectPass);
+			} catch (Exception error) {
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute BeforeShaderRender event with id: {}: {}", id, error));
+			}
+		}));
+	}
+	public static void afterShaderRender(PostEffectPass postEffectPass) {
+		Events.AfterShaderRender.registry.forEach(((id, runnable) -> {
+			try {
+				runnable.run(postEffectPass);
+			} catch (Exception error) {
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterShaderRender event with id: {}: {}", id, error));
 			}
 		}));
 	}
