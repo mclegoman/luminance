@@ -48,11 +48,14 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     @Shadow public abstract void render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet);
 
     @Shadow @Final private Map<Identifier, PostEffectPipeline.Targets> internalTargets;
-    @Unique private Map<Identifier, List<PostEffectPass>> luminance$customPasses;
+    @Shadow @Final private Set<Identifier> externalTargets;
 
+    @Unique private Map<Identifier, List<PostEffectPass>> luminance$customPasses;
     @Unique @Nullable private Identifier luminance$currentCustomPasses;
 
     @Unique private Object luminance$persistentBufferSource;
+
+    @Unique private boolean luminance$isEditable;
 
     @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/FrameGraphBuilder;createResourceHandle(Ljava/lang/String;Lnet/minecraft/client/util/ClosableFactory;)Lnet/minecraft/client/util/Handle;"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V", index = 1)
     private ClosableFactory<Framebuffer> replaceFramebufferFactory(ClosableFactory<Framebuffer> factory, @Local Map.Entry<Identifier, PostEffectPipeline.Targets> target) {
@@ -69,6 +72,12 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     private void setForceVisit(List<PostEffectPass> passes, Map<Identifier, PostEffectPipeline.Targets> internalTargets, Set<Identifier> externalTargets, CallbackInfo ci) {
         passes.forEach((pass) -> luminance$trySetForceVisit(pass, internalTargets));
         luminance$persistentBufferSource = this;
+
+        // allowing a setEditable from the interface would be unsafe
+        try {
+            passes.addAll(Collections.emptyList());
+            luminance$isEditable = true;
+        } catch (UnsupportedOperationException ignored) {}
     }
 
     @Unique private static void luminance$trySetForceVisit(PostEffectPass postEffectPass, Map<Identifier, PostEffectPipeline.Targets> internalTargets) {
@@ -199,5 +208,31 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     @Override
     public void luminance$setPersistentBufferSource(@Nullable Object source) {
         luminance$persistentBufferSource = source == null ? this : source;
+    }
+
+    @Override
+    public boolean luminance$isEditable() {
+        return luminance$isEditable;
+    }
+
+    @Override
+    public PostEffectProcessor luminance$createEditable() {
+        PostEffectProcessor editable = PostEffectProcessorInvoker.init(luminance$copyPasses(passes), internalTargets, externalTargets);
+        PostEffectProcessorInterface editableInterface = (PostEffectProcessorInterface)editable;
+
+        HashMap<Identifier, List<PostEffectPass>> customPasses = new HashMap<>(luminance$customPasses);
+        customPasses.replaceAll((identifier, passes) -> luminance$copyPasses(passes));
+        editableInterface.luminance$setCustomPasses(customPasses);
+
+        if (luminance$persistentBufferSource != this) {
+            editableInterface.luminance$setPersistentBufferSource(luminance$persistentBufferSource);
+        }
+        return editable;
+    }
+
+    @Unique private List<PostEffectPass> luminance$copyPasses(List<PostEffectPass> passes) {
+        List<PostEffectPass> newPasses = new ArrayList<>(passes);
+        newPasses.replaceAll((pass) -> ((PostEffectPassInterface)pass).luminance$copy());
+        return newPasses;
     }
 }

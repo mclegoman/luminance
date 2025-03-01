@@ -38,6 +38,11 @@ public class LuminanceUniformOverride implements UniformOverride {
         return values;
     }
 
+    @Override
+    public UniformOverride copy() {
+        return new LuminanceUniformOverride(getStrings());
+    }
+
     protected void updateValues(UniformConfig config, ShaderTime shaderTime) {
         OverrideConfig overrideConfig = new OverrideConfig(config);
         for (int i = 0; i < values.size(); i++) {

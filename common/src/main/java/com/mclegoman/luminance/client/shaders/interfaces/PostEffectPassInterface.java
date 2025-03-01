@@ -9,6 +9,7 @@ package com.mclegoman.luminance.client.shaders.interfaces;
 
 import com.mclegoman.luminance.client.shaders.overrides.UniformOverride;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
+import net.minecraft.client.gl.PostEffectPass;
 import net.minecraft.client.gl.PostEffectPipeline;
 import net.minecraft.util.Identifier;
 
@@ -33,9 +34,11 @@ public interface PostEffectPassInterface {
 
     void luminance$setForceVisit(boolean to);
 
-    Object luminance$putCustomData(Identifier identifier, Object object);
+    CustomPassData luminance$putCustomData(Identifier identifier, CustomPassData data);
 
-    Optional<Object> luminance$getCustomData(Identifier identifier);
+    Optional<CustomPassData> luminance$getCustomData(Identifier identifier);
 
     boolean luminance$usesDepth();
+
+    PostEffectPass luminance$copy();
 }

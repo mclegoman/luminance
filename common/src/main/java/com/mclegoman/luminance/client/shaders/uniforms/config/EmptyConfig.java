@@ -30,4 +30,9 @@ public class EmptyConfig implements UniformConfig {
     public Optional<Number> getNumber(String name, int index) {
         return Optional.empty();
     }
+
+    @Override
+    public UniformConfig copy() {
+        return INSTANCE;
+    }
 }

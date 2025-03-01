@@ -14,4 +14,6 @@ import java.util.List;
 
 public interface UniformOverride {
     List<Float> getOverride(UniformConfig config, ShaderTime shaderTime);
+
+    UniformOverride copy();
 }

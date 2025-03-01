@@ -47,6 +47,13 @@ public class MapConfig implements UniformConfig {
         return Optional.empty();
     }
 
+    @Override
+    public UniformConfig copy() {
+        MapConfig mapConfig = new MapConfig(List.of());
+        config.forEach((name, objects) -> mapConfig.config.put(name, new ArrayList<>(objects)));
+        return mapConfig;
+    }
+
     public void mergeWithConfig(UniformConfig newConfig) {
         if (newConfig == null) return;
 

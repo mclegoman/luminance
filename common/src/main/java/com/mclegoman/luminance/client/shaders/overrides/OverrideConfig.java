@@ -56,4 +56,9 @@ public class OverrideConfig implements UniformConfig {
     public Optional<Number> getNumber(String name, int index) {
         return uniformConfig.getNumber(preprocessName(name), index);
     }
+
+    @Override
+    public UniformConfig copy() {
+        return new OverrideConfig(uniformConfig.copy());
+    }
 }

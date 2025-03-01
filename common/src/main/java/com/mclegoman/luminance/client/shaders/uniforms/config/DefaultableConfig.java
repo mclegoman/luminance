@@ -47,4 +47,9 @@ public class DefaultableConfig implements UniformConfig {
         }
         return number;
     }
+
+    @Override
+    public UniformConfig copy() {
+        return new DefaultableConfig(uniformConfig.copy(), defaultConfig.copy());
+    }
 }

@@ -11,6 +11,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.shaders.Shaders;
 import com.mclegoman.luminance.client.shaders.Uniforms;
+import com.mclegoman.luminance.client.shaders.interfaces.CustomPassData;
 import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.ShaderProgramInterface;
@@ -46,9 +47,10 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 	@Shadow @Final private Identifier outputTargetId;
 	@Shadow @Final private List<PostEffectPass.Sampler> samplers;
+
 	@Unique private final Map<String, UniformOverride> luminance$uniformOverrides = new HashMap<>();
 	@Unique private final Map<String, UniformConfig> luminance$uniformConfigs = new HashMap<>();
-	@Unique private final Map<Identifier, Object> luminance$customData = new HashMap<>();
+	@Unique private final Map<Identifier, CustomPassData> luminance$customData = new HashMap<>();
 
 	@Inject(method = "method_62257", at = @At("HEAD"))
 	private void luminance$beforeRender(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
@@ -191,12 +193,12 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	}
 
 	@Override
-	public Object luminance$putCustomData(Identifier identifier, Object object) {
-		return luminance$customData.put(identifier, object);
+	public CustomPassData luminance$putCustomData(Identifier identifier, CustomPassData data) {
+		return luminance$customData.put(identifier, data);
 	}
 
 	@Override
-	public Optional<Object> luminance$getCustomData(Identifier identifier) {
+	public Optional<CustomPassData> luminance$getCustomData(Identifier identifier) {
 		return Optional.ofNullable(luminance$customData.get(identifier));
 	}
 
@@ -208,5 +210,17 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public PostEffectPass luminance$copy() {
+		PostEffectPass pass = new PostEffectPass(id, program, outputTargetId, uniforms);
+		PostEffectPassInterface passInterface = (PostEffectPassInterface)pass;
+
+		luminance$uniformOverrides.forEach((uniform, override) -> passInterface.luminance$addUniformOverride(uniform, override.copy()));
+		passInterface.luminance$getUniformConfigs().replaceAll((uniform, config) -> config.copy());
+		luminance$customData.forEach((identifier, data) -> passInterface.luminance$putCustomData(identifier, data.copy()));
+
+		return pass;
 	}
 }

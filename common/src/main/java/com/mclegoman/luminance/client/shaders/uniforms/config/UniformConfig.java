@@ -18,4 +18,5 @@ public interface UniformConfig {
     @Nullable
     List<Object> getObjects(String name);
     Optional<Number> getNumber(String name, int index);
+    UniformConfig copy();
 }
