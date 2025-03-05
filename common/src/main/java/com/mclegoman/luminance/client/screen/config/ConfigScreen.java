@@ -30,17 +30,21 @@ import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public class ConfigScreen extends Screen {
+	private boolean invis;
 	private final Screen parentScreen;
 	private final GridWidget grid;
 	private boolean refresh;
 	private boolean shouldClose;
 	private boolean saveConfig;
-	private boolean shouldRenderSplashText;
 	private Translation.Data splashText;
+	private boolean shouldRenderSplashText;
 	private final boolean isPride;
 	private TextFieldWidget debugShaderRegistry;
 	private TextFieldWidget debugShader;
 	public ConfigScreen(Screen parent, boolean refresh, boolean saveConfig, Translation.Data splashText, boolean isPride) {
+		this(parent, refresh, saveConfig, splashText, isPride, false);
+	}
+	public ConfigScreen(Screen parent, boolean refresh, boolean saveConfig, Translation.Data splashText, boolean isPride, boolean invis) {
 		super(Text.literal(""));
 		this.grid = new GridWidget();
 		this.parentScreen = parent;
@@ -51,6 +55,7 @@ public class ConfigScreen extends Screen {
 			this.shouldRenderSplashText = true;
 		}
 		this.isPride = isPride;
+		this.invis = invis;
 	}
 	public ConfigScreen(Screen parent, boolean refresh, Translation.Data splashText, boolean isPride) {
 		this(parent, refresh, false, splashText, isPride);
@@ -71,7 +76,9 @@ public class ConfigScreen extends Screen {
 		try {
 			grid.getMainPositioner().alignHorizontalCenter().margin(0);
 			GridWidget.Adder gridAdder = grid.createAdder(1);
-			gridAdder.add(new LuminanceLogo.Widget(shouldRenderSplashText, splashText, isPride));
+			LuminanceLogo.Widget logo = new LuminanceLogo.Widget(shouldRenderSplashText, splashText, isPride);
+			logo.visible = !this.invis;
+			gridAdder.add(logo);
 			gridAdder.add(createConfig());
 			gridAdder.add(new EmptyWidget(4, 4));
 			gridAdder.add(createFooter());
@@ -98,7 +105,7 @@ public class ConfigScreen extends Screen {
 		try {
 			if (this.refresh) {
 				updateShader();
-				ClientData.minecraft.setScreen(new ConfigScreen(parentScreen, false, this.saveConfig, this.splashText, this.isPride));
+				ClientData.minecraft.setScreen(new ConfigScreen(parentScreen, false, this.saveConfig, this.splashText, this.isPride, this.invis));
 			}
 			if (this.shouldClose) {
 				updateShader();
@@ -124,12 +131,16 @@ public class ConfigScreen extends Screen {
 				saveConfig = true;
 			}
 		}, 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha", new Object[]{Translation.getConfigTranslation(Data.getVersion().getID(), "keybinding", new Object[]{Keybindings.adjustAlpha.getBoundKeyLocalizedText()}, new Formatting[]{Formatting.RED, Formatting.BOLD})}, true)));
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", LuminanceConfig.config.showAlphaLevelOverlay.value())}), (button) -> {
+		ButtonWidget overlay = ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", LuminanceConfig.config.showAlphaLevelOverlay.value())}), (button) -> {
 			LuminanceConfig.config.showAlphaLevelOverlay.setValue(!LuminanceConfig.config.showAlphaLevelOverlay.value(), false);
 			this.saveConfig = true;
 			this.refresh = true;
-		}).build(), 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", true)));
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information"), button -> ClientData.minecraft.setScreen(new InformationScreen(ClientData.minecraft.currentScreen, false, splashText, isPride))).width(304).build(), 2);
+		}).build();
+		overlay.visible = !this.invis;
+		gridAdder.add(overlay, 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", true)));
+		ButtonWidget information = ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information"), button -> ClientData.minecraft.setScreen(new InformationScreen(ClientData.minecraft.currentScreen, false, splashText, isPride))).width(304).build();
+		information.visible = !this.invis;
+		gridAdder.add(information, 2);
 
 		if (ClientData.isDevelopment()) {
 			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShaderEnabled}), button -> {
@@ -154,12 +165,16 @@ public class ConfigScreen extends Screen {
 		GridWidget grid = new GridWidget();
 		grid.getMainPositioner().alignHorizontalCenter().margin(2);
 		GridWidget.Adder gridAdder = grid.createAdder(2);
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "reset"), (button) -> {
+		ButtonWidget reset = ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "reset"), (button) -> {
 			LuminanceConfigHelper.reset(LuminanceConfig.config, false);
 			this.saveConfig = true;
 			this.refresh = true;
-		}).build());
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "back"), (button) -> this.shouldClose = true).build());
+		}).build();
+		reset.visible = !this.invis;
+		gridAdder.add(reset);
+		ButtonWidget back = ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "back"), (button) -> this.shouldClose = true).build();
+		back.visible = !this.invis;
+		gridAdder.add(back);
 		return grid;
 	}
 	public void initTabNavigation() {
@@ -173,11 +188,25 @@ public class ConfigScreen extends Screen {
 	}
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (ClientData.isDevelopment() && keyCode == GLFW.GLFW_KEY_F1) {
+			this.invis = !this.invis;
+			this.refresh = true;
+		}
+		if (ClientData.isDevelopment() && (this.debugShaderRegistry.isActive() || this.debugShader.isActive()) && (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER)) updateShader();
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE) this.shouldClose = true;
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
+		if (ClientData.isDevelopment()) context.drawTextWithShadow(this.textRenderer, "Press F1 to toggle config screen rendering.", 2, 2, 0xFFFFFF);
+	}
+	@Override
+	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+		if (!invis) super.renderBackground(context, mouseX, mouseY, delta);
+	}
+	@Override
+	public boolean shouldPause() {
+		return !ClientData.isDevelopment() && super.shouldPause();
 	}
 }
