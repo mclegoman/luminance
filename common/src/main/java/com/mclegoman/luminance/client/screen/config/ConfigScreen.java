@@ -83,12 +83,14 @@ public class ConfigScreen extends Screen {
 		}
 	}
 	private void updateShader() {
-		if (this.debugShader != null) {
-			try {
-				Shaders.setDebugShader((this.debugShaderRegistry != null && !Identifier.of(this.debugShaderRegistry.getText()).getPath().equalsIgnoreCase("")) ? Identifier.of(this.debugShaderRegistry.getText()) : Shaders.getMainRegistryId(), !Identifier.of(this.debugShader.getText()).getPath().equalsIgnoreCase("") ? Identifier.of(this.debugShader.getText()) : Identifier.of("box_blur"));
-			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to update debug shader: {}", error));
-				Shaders.setDebugShader(Shaders.getMainRegistryId(), Identifier.of("box_blur"));
+		if (ClientData.isDevelopment()) {
+			if (this.debugShader != null) {
+				try {
+					Debug.setDebugShader((this.debugShaderRegistry != null && !Identifier.of(this.debugShaderRegistry.getText()).getPath().equalsIgnoreCase("")) ? Identifier.of(this.debugShaderRegistry.getText()) : Shaders.getMainRegistryId(), !Identifier.of(this.debugShader.getText()).getPath().equalsIgnoreCase("") ? Identifier.of(this.debugShader.getText()) : Identifier.of("box_blur"));
+				} catch (Exception error) {
+					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to update debug shader: {}", error));
+					Debug.setDebugShader(Shaders.getMainRegistryId(), Identifier.of("box_blur"));
+				}
 			}
 		}
 	}

@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mclegoman.luminance.client.debug.Debug;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.client.util.JsonResourceReloader;
@@ -133,6 +134,6 @@ public class ShaderReloader extends JsonResourceReloader {
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to apply shaders dataloader: {}", error));
 		}
-		Shaders.applyDebugShader();
+		Debug.applyDebugShader();
 	}
 }

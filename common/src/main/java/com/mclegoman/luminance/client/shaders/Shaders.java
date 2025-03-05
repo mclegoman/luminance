@@ -9,7 +9,6 @@ package com.mclegoman.luminance.client.shaders;
 
 import com.google.gson.JsonObject;
 import com.mclegoman.luminance.client.data.ClientData;
-import com.mclegoman.luminance.client.debug.Debug;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.events.Runnables;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
@@ -330,29 +329,5 @@ public class Shaders {
 	}
 	public static boolean isValidIndex(Identifier registry, int index) {
 		return index <= getShaderAmount(registry) && index >= 0;
-	}
-	protected static void applyDebugShader() {
-		if (ClientData.isDevelopment()) {
-			Events.ShaderRender.register(getDebugId(), new ArrayList<>());
-			Events.ShaderRender.modify(getDebugId(), List.of(new Shader.Data(getDebugId(0), new Shader(get(Debug.debugShader.getFirst(), Debug.debugShader.getSecond()), () -> Debug.debugRenderType, () -> Debug.debugShaderEnabled))));
-		}
-	}
-	public static void setDebugShader(Identifier registry, Identifier shader) {
-		try {
-			Debug.debugShader.setFirst(registry);
-			Debug.debugShader.setSecond(shader);
-			applyDebugShader();
-		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set debug shader: {}", error));
-			Debug.debugShader.setFirst(Shaders.getMainRegistryId());
-			Debug.debugShader.setSecond(Identifier.of("box_blur"));
-			applyDebugShader();
-		}
-	}
-	public static Identifier getDebugId() {
-		return Identifier.of(Data.getVersion().getID(), "debug");
-	}
-	public static Identifier getDebugId(int index) {
-		return Identifier.of(Data.getVersion().getID() + "_debug", String.valueOf(index));
 	}
 }
