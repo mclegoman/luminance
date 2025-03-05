@@ -334,7 +334,7 @@ public class Shaders {
 	protected static void applyDebugShader() {
 		if (ClientData.isDevelopment()) {
 			Events.ShaderRender.register(getDebugId(), new ArrayList<>());
-			Events.ShaderRender.modify(getDebugId(), List.of(new Shader.Data(getDebugId(), new Shader(get(Debug.debugShader.getFirst(), Debug.debugShader.getSecond()), () -> Debug.debugRenderType, () -> Debug.debugShaderEnabled))));
+			Events.ShaderRender.modify(getDebugId(), List.of(new Shader.Data(getDebugId(0), new Shader(get(Debug.debugShader.getFirst(), Debug.debugShader.getSecond()), () -> Debug.debugRenderType, () -> Debug.debugShaderEnabled))));
 		}
 	}
 	public static void setDebugShader(Identifier registry, Identifier shader) {
@@ -351,5 +351,8 @@ public class Shaders {
 	}
 	public static Identifier getDebugId() {
 		return Identifier.of(Data.getVersion().getID(), "debug");
+	}
+	public static Identifier getDebugId(int index) {
+		return Identifier.of(Data.getVersion().getID() + "_debug", String.valueOf(index));
 	}
 }

@@ -8,7 +8,7 @@
 package com.mclegoman.luminance.client.debug;
 
 import com.mclegoman.luminance.client.shaders.Shader;
-import com.mclegoman.luminance.common.data.Data;
+import com.mclegoman.luminance.client.shaders.Shaders;
 import com.mclegoman.luminance.common.util.Couple;
 import net.minecraft.util.Identifier;
 
@@ -25,7 +25,7 @@ public class Debug {
 		}
 	}
 	static {
-		debugShader = new Couple<>(Identifier.of(Data.getVersion().getID(), "debug"), Identifier.of(Data.getVersion().getID(), "debug"));
+		debugShader = new Couple<>(Shaders.getMainRegistryId(), Identifier.of("box_blur"));
 		debugShaderEnabled = false;
 		debugRenderType = Shader.RenderType.WORLD;
 	}
