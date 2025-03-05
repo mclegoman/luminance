@@ -331,24 +331,23 @@ public class Shaders {
 	public static boolean isValidIndex(Identifier registry, int index) {
 		return index <= getShaderAmount(registry) && index >= 0;
 	}
-	public static void applyDebugShader() {
-		try {
-			setDebugShader();
-		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to apply debug shader: {}", error));
-			try {
-				Debug.debugShader.setFirst(Shaders.getMainRegistryId());
-				Debug.debugShader.setSecond(Identifier.of("box_blur"));
-				setDebugShader();
-			} catch (Exception error2) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to reset debug shader: {}", error2));
-			}
-		}
+	protected static void applyDebugShader() {
+		applyDebugShader(Debug.debugShader.getFirst(), Debug.debugShader.getSecond());
 	}
-	private static void setDebugShader() {
+	protected static void applyDebugShader(Identifier registry, Identifier shader) {
 		if (ClientData.isDevelopment()) {
 			Events.ShaderRender.register(getDebugId(), new ArrayList<>());
-			Events.ShaderRender.modify(getDebugId(), List.of(new Shader.Data(getDebugId(), new Shader(get(Debug.debugShader.getFirst(), Debug.debugShader.getSecond()), () -> Debug.debugRenderType, () -> Debug.debugShaderEnabled))));
+			Events.ShaderRender.modify(getDebugId(), List.of(new Shader.Data(getDebugId(), new Shader(get(registry, shader), () -> Debug.debugRenderType, () -> Debug.debugShaderEnabled))));
+		}
+	}
+	public static void setDebugShader(Identifier registry, Identifier shader) {
+		try {
+			applyDebugShader(registry, shader);
+		} catch (Exception error) {
+			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set debug shader: {}", error));
+			Debug.debugShader.setFirst(Shaders.getMainRegistryId());
+			Debug.debugShader.setSecond(Identifier.of("box_blur"));
+			applyDebugShader();
 		}
 	}
 	public static Identifier getDebugId() {

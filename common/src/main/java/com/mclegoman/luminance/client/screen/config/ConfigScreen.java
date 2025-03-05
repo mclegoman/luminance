@@ -84,9 +84,12 @@ public class ConfigScreen extends Screen {
 	}
 	private void updateShader() {
 		if (this.debugShader != null) {
-			Debug.debugShader.setFirst((this.debugShaderRegistry != null && !Identifier.of(this.debugShaderRegistry.getText()).getPath().equalsIgnoreCase("")) ? Identifier.of(this.debugShaderRegistry.getText()) : Shaders.getMainRegistryId());
-			Debug.debugShader.setSecond(!Identifier.of(this.debugShader.getText()).getPath().equalsIgnoreCase("") ? Identifier.of(this.debugShader.getText()) : Identifier.of("box_blur"));
-			Shaders.applyDebugShader();
+			try {
+				Shaders.setDebugShader((this.debugShaderRegistry != null && !Identifier.of(this.debugShaderRegistry.getText()).getPath().equalsIgnoreCase("")) ? Identifier.of(this.debugShaderRegistry.getText()) : Shaders.getMainRegistryId(), !Identifier.of(this.debugShader.getText()).getPath().equalsIgnoreCase("") ? Identifier.of(this.debugShader.getText()) : Identifier.of("box_blur"));
+			} catch (Exception error) {
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to update debug shader: {}", error));
+				Shaders.setDebugShader(Shaders.getMainRegistryId(), Identifier.of("box_blur"));
+			}
 		}
 	}
 	public void tick() {
