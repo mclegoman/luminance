@@ -1,7 +1,8 @@
 {
 	"gui.luminance.shader.luminance.crt" : "CRT",
 	"gui.luminance.shader.luminance.gentoo" : "Gentoo",
-	"gui.luminance.shader.luminance.golden" : "Golden",
+	"gui.luminance.shader.luminance.golden_blobs2" : "Golden Blobs",
+	"gui.luminance.shader.luminance.blue_blobs2" : "Blue Blobs",
 	"gui.luminance.shader.luminance.grayscale" : "Grayscale",
 	"gui.luminance.shader.luminance.mirror" : "Mirror",
 	"gui.luminance.shader.luminance.outlined" : "Outlined",

@@ -24,16 +24,16 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class JsonDataLoader extends SinglePreparationResourceReloader<Map<Identifier, JsonElement>> {
+public abstract class JsonResourceReloader extends SinglePreparationResourceReloader<Map<Identifier, JsonElement>> {
 	private final Gson gson;
-	private final String dataType;
-	public JsonDataLoader(Gson gson, String dataType) {
+	private final String resourceLocation;
+	public JsonResourceReloader(Gson gson, String resourceLocation) {
 		this.gson = gson;
-		this.dataType = dataType;
+		this.resourceLocation = resourceLocation;
 	}
 	protected Map<Identifier, JsonElement> prepare(ResourceManager resourceManager, Profiler profiler) {
 		Map<Identifier, JsonElement> map = new HashMap<>();
-		load(resourceManager, this.dataType, this.gson, map);
+		load(resourceManager, this.resourceLocation, this.gson, map);
 		return map;
 	}
 	public static void load(ResourceManager manager, String dataType, Gson gson, Map<Identifier, JsonElement> results) {

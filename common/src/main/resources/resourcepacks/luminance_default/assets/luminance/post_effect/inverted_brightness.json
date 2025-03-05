@@ -1,0 +1,65 @@
+{
+    "targets": {
+        "shift": {},
+        "merge": {},
+        "swap": {}
+    },
+    "passes": [
+        {
+            "program": "minecraft:post/invert",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                }
+            ],
+            "output": "shift",
+            "uniforms": [
+                {
+                    "name": "InverseAmount",
+                    "values": [ 1.0 ]
+                }
+            ]
+        },
+        {
+            "program": "luminance:post/hue_shift",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "shift"
+                }
+            ],
+            "output": "merge",
+            "uniforms": [
+                {
+                    "name": "Amount",
+                    "values": [ 0.5, 0.5, 0.5 ]
+                }
+            ]
+        },
+        {
+            "program": "luminance:post/merge",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "merge"
+                },
+                {
+                    "sampler_name": "Merge",
+                    "target": "minecraft:main"
+                }
+            ],
+            "output": "swap"
+        },
+        {
+            "program": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "swap"
+                }
+            ],
+            "output": "minecraft:main"
+        }
+    ]
+}

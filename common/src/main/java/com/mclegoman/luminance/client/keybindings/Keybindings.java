@@ -45,7 +45,7 @@ public class Keybindings {
 			ClientData.minecraft.setScreen(new ConfigScreen(ClientData.minecraft.currentScreen, false, DateHelper.isPride()));
 		}
 		if (ClientData.isDevelopment()) {
-			if (toggle_debug_shader != null && toggle_debug_shader.wasPressed()) Debug.debugShader = !Debug.debugShader;
+			if (toggle_debug_shader != null && toggle_debug_shader.wasPressed()) Debug.debugShaderEnabled = !Debug.debugShaderEnabled;
 			if (cycle_debug_render_type != null && cycle_debug_render_type.wasPressed()) Debug.cycleDebugRenderType();
 		}
 	}

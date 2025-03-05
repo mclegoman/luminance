@@ -13,7 +13,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.client.util.JsonDataLoader;
+import com.mclegoman.luminance.client.util.JsonResourceReloader;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.IdentifierHelper;
 import com.mclegoman.luminance.common.util.LogType;
@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ShaderDataloader extends JsonDataLoader {
+public class ShaderReloader extends JsonResourceReloader {
 	protected static boolean isReloading;
 	public static final String resourceLocation = "luminance";
-	public ShaderDataloader() {
+	public ShaderReloader() {
 		super(new Gson(), resourceLocation);
 	}
 	private void reset() {

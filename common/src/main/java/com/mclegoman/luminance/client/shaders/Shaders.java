@@ -36,7 +36,7 @@ import java.util.concurrent.Callable;
 public class Shaders {
 	protected static final Map<Identifier, List<ShaderRegistryEntry>> registries = new HashMap<>();
 	public static void init() {
-		Events.ClientResourceReload.register(Identifier.of(Data.getVersion().getID(), "shaders"), new ShaderDataloader());
+		Events.ClientResourceReload.register(Identifier.of(Data.getVersion().getID(), "shaders"), new ShaderReloader());
 		Uniforms.init();
 		Events.BeforeGameRender.register(Identifier.of(Data.getVersion().getID(), "update"), Uniforms::update);
 		Events.AfterHandRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
@@ -331,14 +331,27 @@ public class Shaders {
 	public static boolean isValidIndex(Identifier registry, int index) {
 		return index <= getShaderAmount(registry) && index >= 0;
 	}
-	protected static void applyDebugShader() {
+	public static void applyDebugShader() {
 		try {
-			if (ClientData.isDevelopment()) {
-				Events.ShaderRender.register(Identifier.of(Data.getVersion().getID(), "debug"), new ArrayList<>());
-				Events.ShaderRender.modify(Identifier.of(Data.getVersion().getID(), "debug"), List.of(new Shader.Data(Identifier.of(Data.getVersion().getID(), "debug"), new Shader(get(Identifier.of("luminance", "debug"), Identifier.of("luminance", "debug")), () -> Debug.debugRenderType, () -> Debug.debugShader))));
-			}
+			setDebugShader();
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to apply debug shader: {}", error));
+			try {
+				Debug.debugShader.setFirst(Shaders.getMainRegistryId());
+				Debug.debugShader.setSecond(Identifier.of("box_blur"));
+				setDebugShader();
+			} catch (Exception error2) {
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to reset debug shader: {}", error2));
+			}
 		}
+	}
+	private static void setDebugShader() {
+		if (ClientData.isDevelopment()) {
+			Events.ShaderRender.register(getDebugId(), new ArrayList<>());
+			Events.ShaderRender.modify(getDebugId(), List.of(new Shader.Data(getDebugId(), new Shader(get(Debug.debugShader.getFirst(), Debug.debugShader.getSecond()), () -> Debug.debugRenderType, () -> Debug.debugShaderEnabled))));
+		}
+	}
+	public static Identifier getDebugId() {
+		return Identifier.of(Data.getVersion().getID(), "debug");
 	}
 }

@@ -8,9 +8,13 @@
 package com.mclegoman.luminance.client.debug;
 
 import com.mclegoman.luminance.client.shaders.Shader;
+import com.mclegoman.luminance.common.data.Data;
+import com.mclegoman.luminance.common.util.Couple;
+import net.minecraft.util.Identifier;
 
 public class Debug {
-	public static boolean debugShader;
+	public static Couple<Identifier, Identifier> debugShader;
+	public static boolean debugShaderEnabled;
 	public static Shader.RenderType debugRenderType;
 	public static void cycleDebugRenderType() {
 		switch (Debug.debugRenderType) {
@@ -21,7 +25,8 @@ public class Debug {
 		}
 	}
 	static {
-		debugShader = false;
+		debugShader = new Couple<>(Identifier.of(Data.getVersion().getID(), "debug"), Identifier.of(Data.getVersion().getID(), "debug"));
+		debugShaderEnabled = false;
 		debugRenderType = Shader.RenderType.WORLD;
 	}
 }

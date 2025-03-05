@@ -13,6 +13,7 @@ import com.mclegoman.luminance.client.debug.Debug;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.logo.LuminanceLogo;
 import com.mclegoman.luminance.client.screen.config.information.InformationScreen;
+import com.mclegoman.luminance.client.shaders.Shaders;
 import com.mclegoman.luminance.client.shaders.Uniforms;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
@@ -25,6 +26,7 @@ import net.minecraft.client.gui.widget.*;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public class ConfigScreen extends Screen {
@@ -36,6 +38,8 @@ public class ConfigScreen extends Screen {
 	private boolean shouldRenderSplashText;
 	private Translation.Data splashText;
 	private final boolean isPride;
+	private TextFieldWidget debugShaderRegistry;
+	private TextFieldWidget debugShader;
 	public ConfigScreen(Screen parent, boolean refresh, boolean saveConfig, Translation.Data splashText, boolean isPride) {
 		super(Text.literal(""));
 		this.grid = new GridWidget();
@@ -78,12 +82,21 @@ public class ConfigScreen extends Screen {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to initialize config screen: {}", error));
 		}
 	}
+	private void updateShader() {
+		if (this.debugShader != null) {
+			Debug.debugShader.setFirst((this.debugShaderRegistry != null && !Identifier.of(this.debugShaderRegistry.getText()).getPath().equalsIgnoreCase("")) ? Identifier.of(this.debugShaderRegistry.getText()) : Shaders.getMainRegistryId());
+			Debug.debugShader.setSecond(!Identifier.of(this.debugShader.getText()).getPath().equalsIgnoreCase("") ? Identifier.of(this.debugShader.getText()) : Identifier.of("box_blur"));
+			Shaders.applyDebugShader();
+		}
+	}
 	public void tick() {
 		try {
 			if (this.refresh) {
 				ClientData.minecraft.setScreen(new ConfigScreen(parentScreen, false, this.saveConfig, this.splashText, this.isPride));
+				updateShader();
 			}
 			if (this.shouldClose) {
+				updateShader();
 				if (this.saveConfig) LuminanceConfig.config.save();
 				ClientData.minecraft.setScreen(parentScreen);
 			}
@@ -114,14 +127,20 @@ public class ConfigScreen extends Screen {
 		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information"), button -> ClientData.minecraft.setScreen(new InformationScreen(ClientData.minecraft.currentScreen, false, splashText, isPride))).width(304).build(), 2);
 
 		if (ClientData.isDevelopment()) {
-			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShader}), button -> {
-				Debug.debugShader = !Debug.debugShader;
+			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShaderEnabled}), button -> {
+				Debug.debugShaderEnabled = !Debug.debugShaderEnabled;
 				this.refresh = true;
 			}).build());
 			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Render Type: {}", false, new Object[]{Debug.debugRenderType.toString()}), button -> {
 				Debug.cycleDebugRenderType();
 				this.refresh = true;
 			}).build());
+			debugShaderRegistry = new TextFieldWidget(this.textRenderer, 148, 20, Text.literal(Debug.debugShader.getFirst().toString()));
+			debugShaderRegistry.setText(Debug.debugShader.getFirst().toString());
+			gridAdder.add(debugShaderRegistry);
+			debugShader = new TextFieldWidget(this.textRenderer, 148, 20, Text.literal(Debug.debugShader.getSecond().toString()));
+			debugShader.setText(Debug.debugShader.getSecond().toString());
+			gridAdder.add(debugShader);
 		}
 
 		return grid;

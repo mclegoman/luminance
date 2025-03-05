@@ -1,5 +1,5 @@
 {
-  "post_effect": "luminance:golden",
+  "post_effect": "luminance:golden_blobs2",
   "enabled": true,
   "translatable": true,
   "description": false,
