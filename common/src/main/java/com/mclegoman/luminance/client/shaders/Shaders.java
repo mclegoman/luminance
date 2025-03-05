@@ -332,17 +332,16 @@ public class Shaders {
 		return index <= getShaderAmount(registry) && index >= 0;
 	}
 	protected static void applyDebugShader() {
-		applyDebugShader(Debug.debugShader.getFirst(), Debug.debugShader.getSecond());
-	}
-	protected static void applyDebugShader(Identifier registry, Identifier shader) {
 		if (ClientData.isDevelopment()) {
 			Events.ShaderRender.register(getDebugId(), new ArrayList<>());
-			Events.ShaderRender.modify(getDebugId(), List.of(new Shader.Data(getDebugId(), new Shader(get(registry, shader), () -> Debug.debugRenderType, () -> Debug.debugShaderEnabled))));
+			Events.ShaderRender.modify(getDebugId(), List.of(new Shader.Data(getDebugId(), new Shader(get(Debug.debugShader.getFirst(), Debug.debugShader.getSecond()), () -> Debug.debugRenderType, () -> Debug.debugShaderEnabled))));
 		}
 	}
 	public static void setDebugShader(Identifier registry, Identifier shader) {
 		try {
-			applyDebugShader(registry, shader);
+			Debug.debugShader.setFirst(registry);
+			Debug.debugShader.setSecond(shader);
+			applyDebugShader();
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set debug shader: {}", error));
 			Debug.debugShader.setFirst(Shaders.getMainRegistryId());
