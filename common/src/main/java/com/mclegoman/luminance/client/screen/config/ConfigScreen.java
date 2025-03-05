@@ -73,6 +73,7 @@ public class ConfigScreen extends Screen {
 		this(parent, false, false, null, isPride);
 	}
 	public void init() {
+		super.init();
 		try {
 			grid.getMainPositioner().alignHorizontalCenter().margin(0);
 			GridWidget.Adder gridAdder = grid.createAdder(1);
