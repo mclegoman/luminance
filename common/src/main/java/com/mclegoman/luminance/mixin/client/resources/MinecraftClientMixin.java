@@ -25,4 +25,9 @@ public abstract class MinecraftClientMixin {
 	private void luminance$clientInit(RunArgs runArgs, CallbackInfo ci) {
 		Execute.registerClientResourceReloaders(resourceManager);
 	}
+
+	@Inject(method = "onFinishedLoading", at = @At("HEAD"))
+	private void luminance$finishedLoading(CallbackInfo ci) {
+		Execute.afterClientResourceReload();
+	}
 }

@@ -39,7 +39,8 @@ public class Events {
 
 	public static class Registry<T> extends GenericRegistry<Identifier, T> {}
 
-	public static final Registry<ResourceReloader> ClientResourceReload = new Registry<>();
+	public static final Registry<ResourceReloader> ClientResourceReloaders = new Registry<>();
+	public static final Registry<Runnable> AfterClientResourceReload = new Registry<>();
 
 	public static final Registry<Runnable> OnShaderDataReset = new Registry<>();
 	public static final Registry<Runnables.ShaderData> OnShaderDataRegistered = new Registry<>();

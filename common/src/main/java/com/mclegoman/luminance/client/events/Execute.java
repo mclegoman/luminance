@@ -24,7 +24,10 @@ import net.minecraft.util.Identifier;
 
 public class Execute {
 	public static void registerClientResourceReloaders(ReloadableResourceManagerImpl resourceManager) {
-		Events.ClientResourceReload.registry.forEach((id, resourceReloader) -> resourceManager.registerReloader(resourceReloader));
+		Events.ClientResourceReloaders.registry.forEach((id, resourceReloader) -> resourceManager.registerReloader(resourceReloader));
+	}
+	public  static void afterClientResourceReload() {
+		Events.AfterClientResourceReload.registry.forEach((id, runnable) -> runnable.run());
 	}
 	public static void beforeInGameHudRender(DrawContext context, RenderTickCounter renderTickCounter) {
 		Events.BeforeInGameHudRender.registry.forEach(((id, runnable) -> {

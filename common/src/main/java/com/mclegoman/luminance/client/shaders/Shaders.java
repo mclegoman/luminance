@@ -35,7 +35,7 @@ import java.util.concurrent.Callable;
 public class Shaders {
 	protected static final Map<Identifier, List<ShaderRegistryEntry>> registries = new HashMap<>();
 	public static void init() {
-		Events.ClientResourceReload.register(Identifier.of(Data.getVersion().getID(), "shaders"), new ShaderReloader());
+		Events.ClientResourceReloaders.register(Identifier.of(Data.getVersion().getID(), "shaders"), new ShaderReloader());
 		Uniforms.init();
 		Events.BeforeGameRender.register(Identifier.of(Data.getVersion().getID(), "update"), Uniforms::update);
 		Events.AfterHandRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
