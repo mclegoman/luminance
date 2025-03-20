@@ -14,9 +14,11 @@ import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 
 public class DeltaUniform extends ChildUniform {
     protected UniformValue delta;
+    protected final boolean loop;
 
-    public DeltaUniform() {
+    public DeltaUniform(boolean loop) {
         super("delta");
+        this.loop = loop;
     }
 
     @Override
@@ -35,7 +37,12 @@ public class DeltaUniform extends ChildUniform {
     @Override
     public void calculateCache(UniformConfig config, ShaderTime shaderTime) {
         assert parent != null;
-        delta.subtract(parent.getCache(config, shaderTime));
+        UniformValue uniformValue = parent.getCache(config, shaderTime);
+        if (loop) {
+            delta.loopDelta(uniformValue, getMin().orElse(null), getMax().orElse(null));
+        } else {
+            delta.delta(uniformValue);
+        }
     }
 
     @Override

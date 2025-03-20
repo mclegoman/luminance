@@ -70,13 +70,13 @@ public class Uniforms {
 			registerSingleTree(path, "viewDistance", Uniforms::getViewDistance, 2f, null);
 			registerSingleTree(path, "fov", Uniforms::getFov, 0f, 360f);
 			registerSingleTree(path, "fps", Uniforms::getFps, 0f, null);
-			registerStandardTree(path, "graphicsMode", Uniforms::getGraphicsMode, 0f, 2f, 1, EmptyConfig.INSTANCE);
-			registerStandardTree(path, "eye", Uniforms::getEye, null, null, 3, null);
-			registerStandardTree(path, "eye_fract", Uniforms::getEyeFract, 0f, 1f, 3, null);
-			registerStandardTree(path, "pos", Uniforms::getPos, null, null, 3, null);
-			registerStandardTree(path, "pos_fract", Uniforms::getPosFract, 0f, 1f, 3, null);
+			registerStandardTree(path, "graphicsMode", Uniforms::getGraphicsMode, 0f, 2f, 1, EmptyConfig.INSTANCE, false);
+			registerStandardTree(path, "eye", Uniforms::getEye, null, null, 3, null, false);
+			registerStandardTree(path, "eye_fract", Uniforms::getEyeFract, 0f, 1f, 3, null, true);
+			registerStandardTree(path, "pos", Uniforms::getPos, null, null, 3, null, false);
+			registerStandardTree(path, "pos_fract", Uniforms::getPosFract, 0f, 1f, 3, null,  true);
 			registerSingleTree(path, "pitch", Uniforms::getPitch, -90f, 90f);
-			registerSingleTree(path, "yaw", Uniforms::getYaw, -180f, 180f);
+			registerStandardTree(path, "yaw", Uniforms::getYaw, -180f, 180f, 1, null, true);
 			registerSingleTree(path, "velocity", Uniforms::getVelocity, 0f, null);
 			// currentHealth's max would be maxHealth, however, that would require min/max to be callable.
 			registerSingleTree(path, "currentHealth", Uniforms::getCurrentHealth, 0f, null);
@@ -113,19 +113,20 @@ public class Uniforms {
 			registerSingleTree(path, "sunAngle", Uniforms::getSunAngle, 0f ,1f);
 			registerSingleTree(path, "isDay", Uniforms::getIsDay, 0f, 1f);
 			registerSingleTree(path, "starBrightness", Uniforms::getStarBrightness, 0f, 1f);
-			registerStandardTree(path, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("period", List.of(1.0f)))));
-			registerStandardTree(path, "random", Uniforms::getRandom, 0f, 1f, 1, EmptyConfig.INSTANCE);
+			registerStandardTree(path, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("period", List.of(1.0f)))), false);
+			registerStandardTree(path, "random", Uniforms::getRandom, 0f, 1f, 1, EmptyConfig.INSTANCE, false);
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
 		}
 	}
 	public static void registerSingleTree(String path, String name, Callables.SingleUniformCalculation callable, @Nullable Float min, @Nullable Float max) {
-		registerStandardTree(path, name, callable.convert(), min, max, 1, null);
+		registerStandardTree(path, name, callable.convert(), min, max, 1, null, false);
 	}
-	public static void registerStandardTree(String path, String name, Callables.UniformCalculation callable, @Nullable Float min, @Nullable Float max, int length, @Nullable UniformConfig uniformConfig) {
+
+	public static void registerStandardTree(String path, String name, Callables.UniformCalculation callable, @Nullable Float min, @Nullable Float max, int length, @Nullable UniformConfig uniformConfig, boolean loop) {
 		RootUniform uniform = new RootUniform(name, callable, length, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length), uniformConfig);
 		if (!uniform.useConfig) {
-			addStandardChildren(uniform, length);
+			addStandardChildren(uniform, length, loop);
 		} else {
 			addElementChildren(uniform, length);
 		}
@@ -139,13 +140,13 @@ public class Uniforms {
 			registerTree(name, child);
 		}
 	}
-	public static TreeUniform addStandardChildren(TreeUniform treeUniform, int length) {
+	public static TreeUniform addStandardChildren(TreeUniform treeUniform, int length, boolean loop) {
 		addElementChildren(
 				treeUniform.addChildren(
-						addElementChildren(new DeltaUniform(), length),
+						addElementChildren(new DeltaUniform(loop), length),
 						addElementChildren(new PrevUniform(), length),
-						addElementChildren(new SmoothUniform().addChildren(
-								addElementChildren(new DeltaUniform(), length),
+						addElementChildren(new SmoothUniform(loop).addChildren(
+								addElementChildren(new DeltaUniform(loop), length),
 								addElementChildren(new PrevUniform(), length)),
 								length
 						)
@@ -223,8 +224,12 @@ public class Uniforms {
 	public static float getPitch(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getPitch(shaderTime.getTickDelta()) % 360.0F : 0.0F;
 	}
-	public static float getYaw(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? MathHelper.floorMod(ClientData.minecraft.player.getYaw(shaderTime.getTickDelta())+180f,360.0F)-180f : 0.0F;
+	public static void getYaw(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		if (ClientData.minecraft.player != null) {
+			uniformValue.set(0, MathHelper.floorMod(ClientData.minecraft.player.getYaw(shaderTime.getTickDelta())+180f,360.0F)-180f);
+		} else {
+			uniformValue.set(0, 0);
+		}
 	}
 	public static float getCurrentHealth(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getHealth() : 20.0F;

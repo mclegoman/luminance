@@ -81,6 +81,10 @@ public class UniformValue {
         elementwise((a,b) -> a-b, other);
     }
 
+    public void delta(UniformValue other) {
+        elementwise((a,b) -> b-a, other);
+    }
+
     public void elementwise(BiFunction<Float, Float, Float> function, UniformValue other) {
         assert lengthEqual(other);
         for (int i = 0; i < values.size(); i++) {
@@ -90,5 +94,37 @@ public class UniformValue {
 
     public boolean lengthEqual(UniformValue other) {
         return other.values.size() == values.size();
+    }
+
+    public void loopLerp(UniformValue other, float t, @Nullable UniformValue min, @Nullable UniformValue max) {
+        if (min == null || max == null) {
+            lerp(other, t);
+            return;
+        }
+
+        for (int i = 0; i < values.size(); i++) {
+            float value = values.get(i);
+            float minValue = min.values.get(i);
+            float maxValue = max.values.get(i);
+            float range = maxValue - minValue;
+
+            float lerp = value + t * wrapDelta(other.values.get(i) - value, range);
+            values.set(i, lerp > maxValue ? lerp - range : (lerp < minValue ? lerp + range : lerp));
+        }
+    }
+
+    public void loopDelta(UniformValue other, @Nullable UniformValue min, @Nullable UniformValue max) {
+        if (min == null || max == null) {
+            delta(other);
+            return;
+        }
+
+        for (int i = 0; i < values.size(); i++) {
+            values.set(i, wrapDelta(other.values.get(i) - values.get(i), max.values.get(i) - min.values.get(i)));
+        }
+    }
+
+    private float wrapDelta(float delta, float range) {
+        return MathHelper.abs(delta) < range/2 ? delta : (delta > 0 ? delta - range : delta + range);
     }
 }

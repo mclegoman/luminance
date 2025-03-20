@@ -14,9 +14,11 @@ import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 
 public class SmoothUniform extends ChildUniform {
     protected UniformValue smooth;
+    protected final boolean loop;
 
-    public SmoothUniform() {
+    public SmoothUniform(boolean loop) {
         super("smooth");
+        this.loop = loop;
     }
 
     @Override
@@ -35,8 +37,11 @@ public class SmoothUniform extends ChildUniform {
     public void calculateCache(UniformConfig config, ShaderTime shaderTime) {
         assert parent != null;
         UniformValue uniformValue = parent.getCache(config, shaderTime);
-        smooth = uniformValue.copyTo(smooth);
-        smooth.lerp(uniformValue, shaderTime.getDeltaTime());
+        if (loop) {
+            smooth.loopLerp(uniformValue, shaderTime.getDeltaTime(), getMin().orElse(null), getMax().orElse(null));
+        } else {
+            smooth.lerp(uniformValue, shaderTime.getDeltaTime());
+        }
     }
 
     @Override
