@@ -153,9 +153,11 @@ public class ConfigScreen extends Screen {
 				this.refresh = true;
 			}).build());
 			debugShaderRegistry = new TextFieldWidget(this.textRenderer, 148, 20, Text.literal(Debug.debugShader.getFirst().toString()));
+			debugShaderRegistry.setMaxLength(Integer.MAX_VALUE);
 			debugShaderRegistry.setText(Debug.debugShader.getFirst().toString());
 			gridAdder.add(debugShaderRegistry);
 			debugShader = new TextFieldWidget(this.textRenderer, 148, 20, Text.literal(Debug.debugShader.getSecond().toString()));
+			debugShader.setMaxLength(Integer.MAX_VALUE);
 			debugShader.setText(Debug.debugShader.getSecond().toString());
 			gridAdder.add(debugShader);
 		}

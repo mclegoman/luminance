@@ -241,7 +241,7 @@ public class Shaders {
 	}
 	public static Text getShaderName(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
 		ShaderRegistryEntry shader = get(registry, shaderIndex);
-		if (shader != null) return Translation.getShaderText(shader.getID(), false, shader.getTranslatable(), shouldShowNamespace);
+		if (shader != null) return Translation.getShaderText(shader.getID(), shouldShowNamespace);
 		return Translation.getErrorTranslation(Data.getVersion().getID());
 	}
 	public static Text getShaderName(int shaderIndex) {
@@ -255,7 +255,7 @@ public class Shaders {
 	}
 	public static Text getShaderDescription(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
 		ShaderRegistryEntry shader = get(registry, shaderIndex);
-		if (shader != null) return Translation.getShaderText(shader.getID(), true, shader.getTranslatable(), shouldShowNamespace);
+		if (shader != null) return Translation.getShaderText(shader.getID(), shouldShowNamespace);
 		return Translation.getErrorTranslation(Data.getVersion().getID());
 	}
 	public static Text getShaderDescription(int shaderIndex) {

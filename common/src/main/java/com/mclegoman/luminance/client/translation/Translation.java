@@ -100,12 +100,6 @@ public class Translation {
 	public static MutableText getErrorTranslation(String namespace) {
 		return getConfigTranslation(namespace, "error", new Formatting[]{Formatting.RED, Formatting.BOLD});
 	}
-	public static MutableText getShaderText(Identifier shaderId, boolean description, boolean translatable, boolean shouldShowNamespace, Formatting[] formattings) {
-		return translatable ? getTranslation(com.mclegoman.luminance.common.data.Data.getVersion().getID(), getString("shader.{}.{}{}", shaderId.getNamespace(), shaderId.getPath(), (description ? ".description" : "")), formattings) : getText(description ? data(shouldShowNamespace ? shaderId.toString() : shaderId.getPath(), false) : data("", false), formattings);
-	}
-	public static MutableText getShaderText(Identifier shaderId, boolean description, boolean translatable, boolean shouldShowNamespace) {
-		return getShaderText(shaderId, description, translatable, shouldShowNamespace, new Formatting[]{});
-	}
 	public static MutableText getTranslation(String type, String namespace, String key, Object[] variables, Formatting[] formattings) {
 		return getText(type + "." + namespace + "." + key, true, variables, formattings);
 	}
@@ -129,6 +123,20 @@ public class Translation {
 	}
 	public static MutableText getItemTranslation(String namespace, String key) {
 		return getTranslation("item", namespace, key);
+	}
+	public static MutableText getShaderText(Identifier shaderId, boolean shouldShowNamespace, boolean description, Formatting[] formattings) {
+		MutableText text = Text.translatableWithFallback(getString("gui.{}.shader.{}.{}{}", com.mclegoman.luminance.common.data.Data.getVersion().getID(), shaderId.getNamespace(), shaderId.getPath(), (description ? ".description" : "")), description ? null : getString((shouldShowNamespace ? shaderId.getNamespace() : "") + shaderId.getPath()));
+		if (formattings != null) text.formatted(formattings);
+		return text;
+	}
+	public static MutableText getShaderText(Identifier shaderId, boolean shouldShowNamespace, Formatting[] formattings) {
+		return getShaderText(shaderId, shouldShowNamespace, false, formattings);
+	}
+	public static MutableText getShaderText(Identifier shaderId, boolean shouldShowNamespace, boolean description) {
+		return getShaderText(shaderId, shouldShowNamespace, description, null);
+	}
+	public static MutableText getShaderText(Identifier shaderId, boolean shouldShowNamespace) {
+		return getShaderText(shaderId, shouldShowNamespace, null);
 	}
 	public static Data data(String key, boolean translatable) {
 		return new Data(key, translatable);
