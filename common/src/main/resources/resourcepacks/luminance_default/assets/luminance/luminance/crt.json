@@ -1,8 +1,6 @@
 {
   "post_effect": "luminance:crt",
   "enabled": true,
-  "translatable": true,
-  "description": false,
   "disable_game_rendertype": true,
   "custom": {
     "souper_secret_settings": {

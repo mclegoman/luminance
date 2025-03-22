@@ -1,8 +1,6 @@
 {
   "post_effect": "luminance:gentoo",
   "enabled": true,
-  "translatable": true,
-  "description": false,
   "disable_game_rendertype": false,
   "custom": {
     "souper_secret_settings": {
