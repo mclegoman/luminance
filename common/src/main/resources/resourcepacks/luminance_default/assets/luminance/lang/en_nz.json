@@ -19,5 +19,6 @@
 	"gui.luminance.shader.luminance.health_overlay": "Health Overlay",
 	"gui.luminance.shader.luminance.dos": "DOS",
 	"gui.luminance.shader.luminance.saturate": "Saturated",
-	"gui.luminance.shader.luminance.sepia": "Sepia"
+	"gui.luminance.shader.luminance.sepia": "Sepia",
+	"gui.luminance.shader.luminance.inverted_colors": "Inverted Colours"
 }
