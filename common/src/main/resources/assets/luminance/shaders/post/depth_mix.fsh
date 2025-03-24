@@ -15,10 +15,22 @@ uniform float luminance_viewDistance;
 
 void main() {
     vec4 inputColor = texture(InSampler, texCoord);
-    vec4 mixColor = texture(MixSampler, texCoord);
+    vec3 mixColor = texture(MixSampler, texCoord).rgb;
+
+    float depth = clamp(1.0 - (1.0 - texture(InDepthSampler, texCoord).r) * ((luminance_viewDistance * 16) * 0.64), 0.0, 1.0);
 
     vec3 outputColor = inputColor.rgb;
-    float depth = min(max(1.0 - (1.0 - texture(InDepthSampler, texCoord).r) * ((luminance_viewDistance * 16) * 0.64), 0.0), 1.0);
-    if (depth > Amount.x) outputColor = mix(inputColor.rgb, mixColor.rgb, smoothstep(Amount.x, Amount.y, depth));
+    vec2 amount;
+    if (Amount.x < Amount.y) {
+        amount = Amount;
+    } else {
+        amount = Amount.yx;
+        inputColor.rgb = mixColor;
+        mixColor = outputColor;
+        outputColor = inputColor.rgb;
+    }
+
+    if (depth > amount.x) outputColor = mix(inputColor.rgb, mixColor, smoothstep(amount.x, amount.y, depth));
+
     fragColor = vec4(outputColor, inputColor.a);
 }
