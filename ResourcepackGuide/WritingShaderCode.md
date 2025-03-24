@@ -584,4 +584,4 @@ TODO
 
 #
 
-You can download the resourcepack made in this guide for reference [Here](https://github.com/mclegoman/luminance/ResourcepackGuide/TutorialShader.zip)
+You can download the resourcepack made in this guide for reference [Here](https://github.com/mclegoman/luminance/blob/development-1.21/ResourcepackGuide/TutorialShader.zip)

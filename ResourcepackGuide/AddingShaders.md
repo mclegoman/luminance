@@ -812,6 +812,6 @@ We could also implement the luminance:post/merge thing that other shaders have r
 
 We've already looked a little at the program files, but how do we make them? and what do they actually do? well, for that we need to learn how to [Write Shader Code](WritingShaderCode.md) - However a key takeaway here is that you can get a lot of mileage out of misusing existing shaders!
 
-You can download the resourcepack made in this guide for reference [Here](https://github.com/mclegoman/luminance/ResourcepackGuide/TutorialShader.zip)
+You can download the resourcepack made in this guide for reference [Here](https://github.com/mclegoman/luminance/blob/development-1.21/ResourcepackGuide/TutorialShader.zip)
 
 TODO: adding translation files

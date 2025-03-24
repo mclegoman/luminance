@@ -94,7 +94,7 @@ assets/tutorial_shader/luminance/test.json
 
 Now that your resourcepack is set up to work with luminance, you can [Add Shaders](AddingShaders.md).
 
-You can download the resourcepack made in this guide for reference [Here](https://github.com/mclegoman/luminance/ResourcepackGuide/TutorialShader.zip)
+You can download the resourcepack made in this guide for reference [Here](https://github.com/mclegoman/luminance/blob/development-1.21/ResourcepackGuide/TutorialShader.zip)
 
 # Entity Links
 
