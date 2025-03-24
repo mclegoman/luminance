@@ -1,11 +1,22 @@
 {
     "targets": {
         "0": {},
-        "1": {}
+        "1": {},
+        "2": {}
     },
     "passes": [
         {
             "program": "luminance:post/mirror",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                }
+            ],
+            "output": "0"
+        },
+        {
+            "program": "luminance:post/depth_mix",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -15,30 +26,34 @@
                     "sampler_name": "InDepth",
                     "target": "minecraft:main",
                     "use_depth_buffer": true
+                },
+                {
+                    "sampler_name": "Mix",
+                    "target": "0"
                 }
             ],
-            "output": "0"
+            "output": "1"
         },
         {
             "program": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "0"
+                    "target": "1"
                 },
                 {
                     "sampler_name": "Merge",
                     "target": "minecraft:main"
                 }
             ],
-            "output": "1"
+            "output": "2"
         },
         {
             "program": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "1"
+                    "target": "2"
                 }
             ],
             "output": "minecraft:main"
