@@ -20,5 +20,6 @@
 	"gui.luminance.shader.luminance.dos": "SOp",
 	"gui.luminance.shader.luminance.saturate": "pǝʇɐɹnʇɐS",
 	"gui.luminance.shader.luminance.sepia": "ɐᴉdǝS",
-	"gui.luminance.shader.luminance.inverted_colors": "sɹoloƆ pǝʇɹǝʌuI"
+	"gui.luminance.shader.luminance.inverted_colors": "sɹoloƆ pǝʇɹǝʌuI",
+	"gui.luminance.shader.luminance.inverted_brightness": "ssǝuʇɥƃᴉɹq pǝʇɹǝʌuI"
 }
