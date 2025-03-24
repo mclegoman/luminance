@@ -41,7 +41,7 @@
 
 	"dannytaylor.donate": "Donate",
 
-	"gui.luminance.shader.luminance.gaussian": "gaussian",
+	"gui.luminance.shader.luminance.gaussian": "Gaussian",
 
 	"gui.luminance.keybindings.keybinding.toggle_debug_shader": "[DEBUG] Toggle Shader",
 	"gui.luminance.keybindings.keybinding.cycle_debug_render_type": "[DEBUG] Cycle Render Type"
