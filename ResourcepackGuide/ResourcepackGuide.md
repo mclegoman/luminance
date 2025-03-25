@@ -15,3 +15,9 @@ There is a discord server called [shaderLABS](https://discord.gg/RpzWN9S) for va
 The guide will use Souper Secret Settings specifically to demonstrate how features work, since it exposes a lot of the structure of existing shaders
 
 This guide is written by [Nettakrim](https://bsky.app/profile/nettakrim.netal.co.uk), if there are any problems, let me know!
+
+# Guides for mods using Luminance
+
+Souper Secret Settings has a few specific features, see [its page](Soup.md) for a guide.
+
+As does Perspective, although its guide has not yet been written.

@@ -16,7 +16,7 @@ TutorialShader
 └── pack.png
 ```
 
-`tutorial_shader/` is the resourcepacks namespace, this can be whatever you want.
+`tutorial_shader/` is the resourcepacks namespace as per usual, this can of course be whatever you want, this is the namespace all added shaders will be under.
 
 the `luminance/` folder within it is where all the data luminance needs to know what shader is what goes.
 
@@ -95,7 +95,3 @@ assets/tutorial_shader/luminance/test.json
 Now that your resourcepack is set up to work with luminance, you can [Add Shaders](AddingShaders.md).
 
 You can download the resourcepack made in this guide for reference [Here](https://github.com/mclegoman/luminance/blob/development-1.21/ResourcepackGuide/TutorialShader.zip)
-
-# Entity Links
-
-TODO
