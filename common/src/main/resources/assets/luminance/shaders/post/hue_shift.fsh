@@ -7,9 +7,10 @@ uniform sampler2D InSampler;
 uniform vec3 Amount;
 
 vec3 shift(vec3 color, vec3 shift) {
-    vec3 proj = vec3(0.55735) * dot(vec3(0.55735), color);
+    const vec3 v = vec3(0.55735, 0.55735, 0.55735);
+    vec3 proj = v * dot(v, color);
     vec3 rem = color - proj;
-    vec3 rot = cross(vec3(0.55735), rem);
+    vec3 rot = cross(v, rem);
     return clamp(rem * cos(shift * 6.2832) + rot * sin(shift * 6.2832) + proj, 0.0, 1.0);
 }
 
