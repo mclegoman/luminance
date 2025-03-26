@@ -21,6 +21,7 @@ Perspective's `Textured Entity` system allows for specific entities to have shad
 >  
 > Perspective uses it's `ShaderPack` system to layer several shaders together in a stack.  
 > You won't need to worry about this for this tutorial since luminance shaders are automatically added as stacks of one.  
+>  
 > For more info, check out [Perspective Wiki/Shader-Packs](https://github.com/mclegoman/perspective/wiki/Shader-Packs).  
 
 Like the `luminance/` folder, the `textured_entity/` folder goes in the namespaced folder, this contains all of Perspective's textured entities.  
@@ -45,9 +46,10 @@ assets/tutorial_shader/textured_entity/example.json [1]
 }
 ```
 > [!NOTE]  
-> Leaving the `texture` blank in the `overrides` keeps the default texture, overrides can differ for each entity.  
-> Since we're not changing the texture, we don't need to add an egg to the item group.  
-> All luminance shaders in the `luminance:main` shader registry are added to the `perspective:main` shader pack registry.  
+> - Leaving the `texture` blank in the `overrides` keeps the default texture, overrides can differ for each entity.  
+> - Since we're not changing the texture, we don't need to add an egg to the item group.  
+> - All luminance shaders in the `luminance:main` shader registry are added to the `perspective:main` shader pack registry.  
+>  
 > For more info, check out [Perspective Wiki/Textured-Entity](https://github.com/mclegoman/perspective/wiki/Textured-Entity), and [Perspective Wiki/Shader-Packs](https://github.com/mclegoman/perspective/wiki/Shader-Packs).  
 
 `minecraft:phosphor` will now be rendered when spectating a `minecraft:zombie` without a named textured entity.  
