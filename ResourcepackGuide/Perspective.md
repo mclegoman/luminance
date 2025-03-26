@@ -7,7 +7,7 @@ TutorialShader
 ├── assets
 │   └── tutorial_shader
 │       └── textured_entity
-│               └── *example_zombie.json* [1]
+│               └── *example.json* [1]
 ├── pack.mcmeta
 └── pack.png
 ```
