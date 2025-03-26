@@ -37,4 +37,30 @@ If the resulting name is the same as an entities id, then it will be applied whe
 
 For instance `assets/minecraft/souper_secret_settings/layers/pig.json` for `minecraft:pig`
 
-This has a [priority of 100](perspective.md#spectator-shaders)
+This has a [priority of 100](Perspective.md#spectator-shaders)
+
+## Soup Groups
+
+In the `luminance/` [jsons](PackSetup.md#luminancejson), the custom data can be used to add shaders to groups
+
+```json
+"custom": {
+    "souper_secret_settings": {
+        "groups": [ <...> ]
+    }
+}
+```
+
+The groups used by soup are (sorted roughly by how objectively they are defined):
+
+- `"edible"`: shaders that can be randomly chosen when eating soup, these shouldnt be overly laggy (as in `soup:sorting`) or disruptive (as in `soup:stereogram`)
+- `"depth"`: any shader that uses depth
+- `"persistent"`: shaders that keep data across frames
+- `"animated"`: shaders that use luminance_time
+- `"filter"`: shaders where calculations are entirely per-pixel, with no interaction between them
+- `"warp"`: shaders that modify what uv is used to get a pixel, with minimal changes to the color itself
+- `"dither"`: shaders that have a dithering effect
+- `"outline"`: shaders that have an outlining effect
+- `"blur"`: shaders that in some way reduce detail in the image
+- `"bloom"`: shaders that have a bloom-like effect, making some parts of the image brighter and spread
+- `"retro"`: shaders that have a "retro" vibe
