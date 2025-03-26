@@ -10,7 +10,7 @@ package com.mclegoman.luminance.client.shaders;
 import net.minecraft.entity.Entity;
 
 public interface PriorityShaderManager {
-	int getPriority();
+	int getPriority(Entity entity);
 	void set(Entity entity);
 	void clear();
 }
