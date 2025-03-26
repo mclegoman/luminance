@@ -20,4 +20,4 @@ This guide is written by [Nettakrim](https://bsky.app/profile/nettakrim.netal.co
 
 Souper Secret Settings has a few specific features, see [its page](Soup.md) for a guide.
 
-As does Perspective, although its guide has not yet been written.
+As does Perspective, see [it's page](Perspective.md) for a guide.
