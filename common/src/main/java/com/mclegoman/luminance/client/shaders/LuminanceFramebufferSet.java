@@ -1,3 +1,10 @@
+/*
+    Luminance
+    Contributor(s): Nettakrim
+    Github: https://github.com/mclegoman/luminance
+    Licence: GNU LGPLv3
+*/
+
 package com.mclegoman.luminance.client.shaders;
 
 import com.mclegoman.luminance.common.data.Data;
