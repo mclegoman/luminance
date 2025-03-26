@@ -37,7 +37,7 @@ If the resulting name is the same as an entities id, then it will be applied whe
 
 For instance `assets/minecraft/souper_secret_settings/layers/pig.json` for `minecraft:pig`
 
-This has a [priority of 100](Perspective.md#spectator-shaders)
+This has a [priority of 100](Perspective.md#spectator-shaders), and will even work for `minecraft:player` (note that if you just want a default shader for yourself, you can save to the `default` layer)
 
 ## Soup Groups
 
