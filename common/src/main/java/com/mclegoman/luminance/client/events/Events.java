@@ -8,6 +8,7 @@
 package com.mclegoman.luminance.client.events;
 
 import com.mclegoman.luminance.client.shaders.Shader;
+import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
@@ -59,6 +60,8 @@ public class Events {
 	public static final Registry<Runnables.GameRender> AfterPanoramaRender = new Registry<>();
 
 	public static final Registry<Runnables.OnResized> OnResized = new Registry<>();
+
+	public static final Registry<SpectatorHandler> SpectatorHandlers = new Registry<>();
 
 	public static final Registry<Runnables.Shader> BeforeShaderRender = new Registry<>();
 	public static final Registry<Runnables.Shader> AfterShaderRender = new Registry<>();

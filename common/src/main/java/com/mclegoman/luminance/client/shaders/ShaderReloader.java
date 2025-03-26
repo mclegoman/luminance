@@ -34,6 +34,7 @@ public class ShaderReloader extends JsonResourceReloader {
 		super(new Gson(), resourceLocation);
 	}
 	private void reset() {
+		SpectatorHandler.clearActive();
 		Shaders.registries.clear();
 		Events.OnShaderDataReset.registry.forEach((id, runnable) -> {
 			try {

@@ -8,6 +8,7 @@
 package com.mclegoman.luminance.client.events;
 
 import com.mclegoman.luminance.client.data.ClientData;
+import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
@@ -19,15 +20,32 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.ObjectAllocator;
+import net.minecraft.entity.Entity;
 import net.minecraft.resource.ReloadableResourceManagerImpl;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 public class Execute {
 	public static void registerClientResourceReloaders(ReloadableResourceManagerImpl resourceManager) {
 		Events.ClientResourceReloaders.registry.forEach((id, resourceReloader) -> resourceManager.registerReloader(resourceReloader));
 	}
-	public  static void afterClientResourceReload() {
+	public static void afterClientResourceReload() {
 		Events.AfterClientResourceReload.registry.forEach((id, runnable) -> runnable.run());
+		if (ClientData.minecraft.cameraEntity != null) {
+			SpectatorHandler.onSpectate(ClientData.minecraft.cameraEntity, SpectatorHandler.Mode.FIRST);
+		}
+	}
+	public static void onCameraEntitySet(@NotNull Entity entity) {
+		SpectatorHandler.onSpectate(entity, SpectatorHandler.Mode.FIRST);
+	}
+	public static void onJoinWorld() {
+		ClientData.minecraft.send(() -> {
+            assert ClientData.minecraft.player != null;
+            SpectatorHandler.onSpectate(ClientData.minecraft.player, SpectatorHandler.Mode.FIRST);
+		});
+	}
+	public static void onDisconnect() {
+		SpectatorHandler.clearActive();
 	}
 	public static void beforeInGameHudRender(DrawContext context, RenderTickCounter renderTickCounter) {
 		Events.BeforeInGameHudRender.registry.forEach(((id, runnable) -> {

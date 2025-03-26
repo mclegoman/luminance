@@ -25,4 +25,12 @@ public class Callables {
 			return (config, shaderTime, uniformValue) -> uniformValue.set(0, call(shaderTime));
 		}
 	}
+
+	public interface PriorityHandler<T> {
+		int getPriority(T t);
+
+		void apply(T t);
+
+		void clear();
+	}
 }
