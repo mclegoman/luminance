@@ -12,7 +12,7 @@ TutorialShader
 └── pack.png
 ```
 
-## Spectator Shaders  
+## Spectator Shaders
 Perspective's `Textured Entity` system allows for specific entities to have shaders render when spectating the entity.  
 
 > [!NOTE]  
