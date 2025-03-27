@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.client.events;
 
+import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
@@ -32,16 +33,16 @@ public class Execute {
 	public static void afterClientResourceReload() {
 		Events.AfterClientResourceReload.registry.forEach((id, runnable) -> runnable.run());
 		if (ClientData.minecraft.cameraEntity != null) {
-			SpectatorHandler.onSpectate(ClientData.minecraft.cameraEntity, SpectatorHandler.Mode.FIRST);
+			SpectatorHandler.onSpectate(ClientData.minecraft.cameraEntity, LuminanceConfig.config.spectatorPriorityMode.value().getMode());
 		}
 	}
 	public static void onCameraEntitySet(@NotNull Entity entity) {
-		SpectatorHandler.onSpectate(entity, SpectatorHandler.Mode.FIRST);
+		SpectatorHandler.onSpectate(entity, LuminanceConfig.config.spectatorPriorityMode.value().getMode());
 	}
 	public static void onJoinWorld() {
 		ClientData.minecraft.send(() -> {
             assert ClientData.minecraft.player != null;
-            SpectatorHandler.onSpectate(ClientData.minecraft.player, SpectatorHandler.Mode.FIRST);
+            SpectatorHandler.onSpectate(ClientData.minecraft.player, LuminanceConfig.config.spectatorPriorityMode.value().getMode());
 		});
 	}
 	public static void onDisconnect() {

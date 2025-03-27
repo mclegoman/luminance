@@ -21,6 +21,11 @@
 	"gui.luminance.config.alpha.show_overlay": "Show Percentage: %s",
 	"gui.luminance.config.alpha.show_overlay.hover": "Shows the percentage when adjusting shader strength using the keybinding.",
 
+	"gui.luminance.config.spectator_priority_mode": "Spectator Priority: %s",
+	"gui.luminance.config.spectator_priority_mode.first.hover": "Only the first spectator shader instance of the highest priority will be rendered.",
+	"gui.luminance.config.spectator_priority_mode.equal.hover": "All spectator shader instances of the highest priority will be rendered.",
+	"gui.luminance.config.spectator_priority_mode.all.hover": "All spectator shader instances will be rendered.",
+
 	"gui.luminance.config.information": "Information",
 
 	"gui.luminance.config.information.documentation": "Documentation",

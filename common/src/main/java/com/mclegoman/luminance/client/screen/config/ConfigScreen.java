@@ -8,12 +8,14 @@
 package com.mclegoman.luminance.client.screen.config;
 
 import com.mclegoman.luminance.client.config.LuminanceConfig;
+import com.mclegoman.luminance.client.config.value.SpectatorPriorityModeValue;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.debug.Debug;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.logo.LuminanceLogo;
 import com.mclegoman.luminance.client.screen.config.information.InformationScreen;
 import com.mclegoman.luminance.client.shaders.Shaders;
+import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.client.shaders.Uniforms;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
@@ -139,9 +141,21 @@ public class ConfigScreen extends Screen {
 		}).build();
 		overlay.visible = !this.invis;
 		gridAdder.add(overlay, 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", true)));
-		ButtonWidget information = ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information"), button -> ClientData.minecraft.setScreen(new InformationScreen(ClientData.minecraft.currentScreen, false, splashText, isPride))).width(304).build();
+
+		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode", new Object[]{LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation()}), button -> {
+			LuminanceConfig.config.spectatorPriorityMode.setValue(SpectatorPriorityModeValue.of(switch (LuminanceConfig.config.spectatorPriorityMode.value().getMode()) {
+				case FIRST -> SpectatorHandler.Mode.EQUAL;
+				case EQUAL -> SpectatorHandler.Mode.ALL;
+				case ALL -> SpectatorHandler.Mode.FIRST;
+			}), false);
+			if (ClientData.minecraft.cameraEntity != null) SpectatorHandler.onSpectate(ClientData.minecraft.cameraEntity, LuminanceConfig.config.spectatorPriorityMode.value().getMode());
+			this.saveConfig = true;
+			this.refresh = true;
+		}).tooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode." + LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation().toLowerCase(), true))).build());
+
+		ButtonWidget information = ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information"), button -> ClientData.minecraft.setScreen(new InformationScreen(ClientData.minecraft.currentScreen, false, splashText, isPride))).build();
 		information.visible = !this.invis;
-		gridAdder.add(information, 2);
+		gridAdder.add(information);
 
 		if (ClientData.isDevelopment()) {
 			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShaderEnabled}), button -> {

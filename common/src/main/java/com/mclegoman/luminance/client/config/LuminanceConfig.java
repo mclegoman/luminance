@@ -7,6 +7,8 @@
 
 package com.mclegoman.luminance.client.config;
 
+import com.mclegoman.luminance.client.config.value.SpectatorPriorityModeValue;
+import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.config.LuminanceConfigHelper;
 import org.quiltmc.config.api.ReflectiveConfig;
 import org.quiltmc.config.api.annotations.Comment;
@@ -24,6 +26,12 @@ public class LuminanceConfig extends ReflectiveConfig {
 	@Comment("Sets whether the % is shown in MessageOverlay when adjusting alpha using the keybinding.")
 	@SerializedName("show_alpha_level_overlay")
 	public final TrackedValue<Boolean> showAlphaLevelOverlay = this.value(false);
+
+	@Comment("")
+	@SerializedName("spectator_priority_mode")
+	public final TrackedValue<SpectatorPriorityModeValue> spectatorPriorityMode = this.value(SpectatorPriorityModeValue.of(SpectatorHandler.Mode.FIRST));
+
+
 	@Comment("Forces Luminance into thinking it's in the development environment.")
 	@SerializedName("debug")
 	public final TrackedValue<Boolean> debug = this.value(false);
