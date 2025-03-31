@@ -18,7 +18,7 @@
     "LGPL-3.0-or-later"
   ],
   "icon": "assets/luminance/icons/icon.png",
-  "environment": "client",
+  "environment": "*",
   "entrypoints": {
     "luminance_client": [
       "com.mclegoman.luminance.modloader.client.LuminanceFabricLoader"
