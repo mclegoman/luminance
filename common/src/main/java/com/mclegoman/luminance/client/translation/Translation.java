@@ -125,7 +125,7 @@ public class Translation {
 		return getTranslation("item", namespace, key);
 	}
 	public static MutableText getShaderText(Identifier shaderId, boolean shouldShowNamespace, boolean description, Formatting[] formattings) {
-		MutableText text = Text.translatableWithFallback(getString("gui.{}.shader.{}.{}{}", com.mclegoman.luminance.common.data.Data.getVersion().getID(), shaderId.getNamespace(), shaderId.getPath(), (description ? ".description" : "")), description ? null : getString((shouldShowNamespace ? shaderId.getNamespace() : "") + shaderId.getPath()));
+		MutableText text = Text.translatableWithFallback(getString("gui.{}.shader.{}.{}{}", com.mclegoman.luminance.common.data.Data.getVersion().getID(), shaderId.getNamespace(), shaderId.getPath(), (description ? ".description" : "")), description ? "" : getString((shouldShowNamespace ? shaderId.getNamespace() : "") + shaderId.getPath()));
 		if (formattings != null) text.formatted(formattings);
 		return text;
 	}
