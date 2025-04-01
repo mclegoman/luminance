@@ -17,8 +17,8 @@ public interface FramePassInterface {
     int luminance$getId();
 
     static void createForcedPass(FrameGraphBuilder frameGraphBuilder, Identifier name, Runnable renderer) {
-        RenderPass renderPass = frameGraphBuilder.createPass(name.toString());
-        ((FramePassInterface)renderPass).luminance$setForceVisit(true);
-        renderPass.setRenderer(renderer);
+        RenderPass framePass = frameGraphBuilder.createPass(name.toString());
+        ((FramePassInterface)framePass).luminance$setForceVisit(true);
+        framePass.setRenderer(renderer);
     }
 }
