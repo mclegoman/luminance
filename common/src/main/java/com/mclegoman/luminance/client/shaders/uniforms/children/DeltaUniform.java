@@ -39,7 +39,7 @@ public class DeltaUniform extends ChildUniform {
         assert parent != null;
         UniformValue uniformValue = parent.getCache(config, shaderTime);
         if (loop) {
-            delta.loopDelta(uniformValue, getMin().orElse(null), getMax().orElse(null));
+            delta.loopDelta(uniformValue, parent.getMin(config, shaderTime).orElse(null), parent.getMax(config, shaderTime).orElse(null));
         } else {
             delta.delta(uniformValue);
         }

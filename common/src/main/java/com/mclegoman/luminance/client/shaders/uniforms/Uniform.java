@@ -9,6 +9,7 @@ package com.mclegoman.luminance.client.shaders.uniforms;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -19,8 +20,9 @@ public interface Uniform {
 	void tick();
 	void update(ShaderTime shaderTime);
 
-	Optional<UniformValue> getMin();
-	Optional<UniformValue> getMax();
+	Optional<UniformValue> getMin(@Nullable UniformConfig config, @Nullable ShaderTime shaderTime);
+	Optional<UniformValue> getMax(@Nullable UniformConfig config, @Nullable ShaderTime shaderTime);
+	boolean rangeCanChange();
 
 	UniformConfig getDefaultConfig();
 }

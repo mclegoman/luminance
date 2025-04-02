@@ -10,15 +10,24 @@ package com.mclegoman.luminance.client.shaders.overrides;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
-import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
-import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
+import com.mclegoman.luminance.client.shaders.uniforms.config.*;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class UniformSource implements OverrideSource {
     protected final String name;
 
     @Nullable
     protected Uniform uniform = null;
+
+    protected UniformConfig configTemplate;
 
     public UniformSource(String name) {
         this.name = name;
@@ -28,7 +37,18 @@ public class UniformSource implements OverrideSource {
     public Float get(UniformConfig config, ShaderTime shaderTime) {
         Uniform uniform = getUniform();
         if (uniform == null) return null;
-        return uniform.get(config, shaderTime).values.getFirst();
+
+        Float f = uniform.get(config, shaderTime).values.getFirst();
+        if (f == null) return null;
+
+        List<Object> range = config.getObjects("range");
+        if (range == null || range.size() < 2) {
+            return f;
+        }
+
+        Float min = uniform.getMin(config, shaderTime).map(value -> value.values.getFirst()).orElse(null);
+        Float max = uniform.getMax(config, shaderTime).map(value -> value.values.getFirst()).orElse(null);
+        return remapRange(remap01(f, min, max), min, max, range.get(0), range.get(1));
     }
 
     @Override
@@ -40,14 +60,46 @@ public class UniformSource implements OverrideSource {
     public UniformConfig getTemplateConfig() {
         Uniform uniform = getUniform();
         if (uniform == null) return EmptyConfig.INSTANCE;
-        return uniform.getDefaultConfig();
+        return new DefaultableConfig(uniform.getDefaultConfig(), configTemplate);
     }
 
     public Uniform getUniform() {
         if (uniform == null) {
             uniform = Events.ShaderUniform.registry.get(name);
+
+            configTemplate = nullRange;
+            if (uniform != null && !uniform.rangeCanChange()) {
+                Optional<UniformValue> min = uniform.getMin(null, null);
+                Optional<UniformValue> max = uniform.getMax(null, null);
+                if (min.isPresent() && max.isPresent()) {
+                    ArrayList<Object> objects = new ArrayList<>(2);
+                    objects.add(min.get().values.getFirst());
+                    objects.add(max.get().values.getFirst());
+                    configTemplate = new MapConfig(List.of(new ConfigData("range", objects)));
+                } else {
+                    configTemplate = new MapConfig(List.of(new ConfigData("range", List.of(0.0f, 1.0f))));
+                }
+            }
         }
 
         return uniform;
     }
+
+    @Nullable @Contract("_, null, _ -> param1; _, _, null -> param1; null, _, _ -> null; !null, _, _ -> !null;")
+    public static Float remap01(@Nullable Float f, @Nullable Float min, @Nullable Float max) {
+        if (f == null || min == null || max == null) {
+            return f;
+        }
+
+        return (f - min) / (max - min);
+    }
+
+    @NotNull
+    public static Float remapRange(@NotNull Float f, @Nullable Float min, @Nullable Float max, @Nullable Object rangeMin, @Nullable Object rangeMax) {
+        float a = rangeMin == null ? (min == null ? 0 : min) : ((Number)rangeMin).floatValue();
+        float b = rangeMax == null ? (max == null ? 1 : max) : ((Number)rangeMax).floatValue();
+        return a + (b - a) * f;
+    }
+
+    private static final UniformConfig nullRange = new MapConfig(List.of(new ConfigData("range", new ArrayList<>(Collections.nCopies(2, null)))));
 }

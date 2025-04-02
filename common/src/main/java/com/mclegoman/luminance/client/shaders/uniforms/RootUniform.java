@@ -18,8 +18,9 @@ import java.util.Optional;
 
 public class RootUniform extends TreeUniform {
 	protected final Callables.UniformCalculation callable;
-	@Nullable private final UniformValue min;
-	@Nullable private final UniformValue max;
+	private final UniformValueSupplier min;
+	private final UniformValueSupplier max;
+	private final boolean rangeCanChange;
 	private final UniformConfig defaultConfig;
 
 	protected UniformValue value;
@@ -27,8 +28,20 @@ public class RootUniform extends TreeUniform {
 	public RootUniform(String name, Callables.UniformCalculation callable, int length, @Nullable UniformValue min, @Nullable UniformValue max, @Nullable UniformConfig defaultConfig) {
 		super(name, defaultConfig != null);
 		this.callable = callable;
-		this.min = min;
-		this.max = max;
+		this.min = UniformValueSupplier.convert(min);
+		this.max = UniformValueSupplier.convert(max);
+		rangeCanChange = false;
+		this.defaultConfig = defaultConfig == null ? EmptyConfig.INSTANCE : defaultConfig;
+
+		this.value = new UniformValue(length);
+	}
+
+	public RootUniform(String name, Callables.UniformCalculation callable, int length, Callables.UniformCalculation min, Callables.UniformCalculation max, @Nullable UniformConfig defaultConfig) {
+		super(name, defaultConfig != null);
+		this.callable = callable;
+		this.min = UniformValueSupplier.convert(min, length);
+		this.max = UniformValueSupplier.convert(max, length);
+		rangeCanChange = true;
 		this.defaultConfig = defaultConfig == null ? EmptyConfig.INSTANCE : defaultConfig;
 
 		this.value = new UniformValue(length);
@@ -47,7 +60,7 @@ public class RootUniform extends TreeUniform {
 	@Override
 	public void calculateCache(UniformConfig config, ShaderTime shaderTime) {
 		this.callable.call(new DefaultableConfig(config, getDefaultConfig()), shaderTime, value);
-		clampToRange();
+		clampToRange(config, shaderTime);
 	}
 
 	@Override
@@ -55,23 +68,51 @@ public class RootUniform extends TreeUniform {
 		return this.value;
 	}
 
-	protected void clampToRange() {
-		getMin().ifPresent(value::max);
-		getMax().ifPresent(value::min);
+	protected void clampToRange(UniformConfig config, ShaderTime shaderTime) {
+		getMin(config, shaderTime).ifPresent(value::max);
+		getMax(config, shaderTime).ifPresent(value::min);
 	}
 
 	@Override
-	public Optional<UniformValue> getMin() {
-		return Optional.ofNullable(min);
+	public Optional<UniformValue> getMin(@Nullable UniformConfig config,@Nullable ShaderTime shaderTime) {
+		if (rangeCanChange && (config == null || shaderTime == null)) {
+			return Optional.empty();
+		}
+		return min.call(config, shaderTime);
 	}
 
 	@Override
-	public Optional<UniformValue> getMax() {
-		return Optional.ofNullable(max);
+	public Optional<UniformValue> getMax(@Nullable UniformConfig config,@Nullable ShaderTime shaderTime) {
+		if (rangeCanChange && (config == null || shaderTime == null)) {
+			return Optional.empty();
+		}
+		return max.call(config, shaderTime);
+	}
+
+	@Override
+	public boolean rangeCanChange() {
+		return rangeCanChange;
 	}
 
 	@Override
 	public UniformConfig getDefaultConfig() {
 		return defaultConfig;
+	}
+
+	@FunctionalInterface
+	protected interface UniformValueSupplier {
+		Optional<UniformValue> call(UniformConfig config, ShaderTime shaderTime);
+
+		static UniformValueSupplier convert(Callables.UniformCalculation calculation, int length) {
+			UniformValue uniformValue = new UniformValue(length);
+			return (config, time) -> {
+				calculation.call(config, time, uniformValue);
+				return Optional.of(uniformValue);
+			};
+		}
+
+		static UniformValueSupplier convert(@Nullable UniformValue value) {
+			return (config, time) -> Optional.ofNullable(value);
+		}
 	}
 }

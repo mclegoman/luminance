@@ -57,11 +57,7 @@ public class Uniforms {
 		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.update(shaderTime));
 	}
 	public static void init() {
-		// 1. Something that could be nice would be the ability to reverse the value.
-		// when the value is at their max, it would return their min, and vice versa.
-		// for example; currentHealth would return 0, when at full health, and when at no health would return maxHeath.
-		// 2. A useful global config option could be a multiplier.
-		// 3. a renderType uniform could be useful?
+		// a renderType uniform could be useful?
 		try {
 			String path = Data.getVersion().getID();
 			registerSingleTree(path, "panoramaAlpha", Uniforms::getPanoramaAlpha, 0f, 1f);
@@ -78,16 +74,16 @@ public class Uniforms {
 			registerSingleTree(path, "pitch", Uniforms::getPitch, -90f, 90f);
 			registerStandardTree(path, "yaw", Uniforms::getYaw, -180f, 180f, 1, null, true);
 			registerSingleTree(path, "velocity", Uniforms::getVelocity, 0f, null);
-			// currentHealth's max would be maxHealth, however, that would require min/max to be callable.
-			registerSingleTree(path, "currentHealth", Uniforms::getCurrentHealth, 0f, null);
+			registerRangedTree(path, "currentHealth", ((Callables.SingleUniformCalculation)Uniforms::getCurrentHealth).convert(), (a, b, c) -> c.set(0, 0f), (a, b, c) -> c.set(0, getMaxHealth(b)), 1, null, false);
 			registerSingleTree(path, "maxHealth", Uniforms::getMaxHealth, 0f, null);
-			// currentAbsorption's max would be maxAbsorption, however, that would require min/max to be callable.
-			registerSingleTree(path, "currentAbsorption", Uniforms::getCurrentAbsorption, 0f, null);
+			registerRangedTree(path, "currentAbsorption", ((Callables.SingleUniformCalculation)Uniforms::getCurrentAbsorption).convert(), (a, b, c) -> c.set(0, 0f), (a, b, c) -> c.set(0, getMaxAbsorption(b)), 1, null, false);
 			registerSingleTree(path, "maxAbsorption", Uniforms::getMaxAbsorption, 0f, null);
 			// currentHurtTime's max would be maxHurtTime, however, that would require min/max to be callable.
 			registerSingleTree(path, "currentHurtTime", Uniforms::getCurrentHurtTime, 0f, null);
 			registerSingleTree(path, "maxHurtTime", Uniforms::getMaxHurtTime, 0f, null);
 			// currentAir's max would be maxAir, however, that would require min/max to be callable.
+			// NOTE: i, Nettakrim, am not sure if maxAir even changes, or why the default if player is null is 10 instead of 300, or what max air even is, and therefore have not implemented it with the callable range
+			//       i do have a bit more of an idea of what maxHurtTime is, but i dont think it changes either? TODO: investigation
 			registerSingleTree(path, "currentAir", Uniforms::getCurrentAir, 0f, null);
 			registerSingleTree(path, "maxAir", Uniforms::getMaxAir, 0f, null);
 			registerSingleTree(path, "isAlive", Uniforms::getIsAlive, 0f, 1f);
@@ -122,6 +118,16 @@ public class Uniforms {
 	public static void registerSingleTree(String path, String name, Callables.SingleUniformCalculation callable, @Nullable Float min, @Nullable Float max) {
 		registerStandardTree(path, name, callable.convert(), min, max, 1, null, false);
 	}
+	public static void registerRangedTree(String path, String name, Callables.UniformCalculation callable, Callables.UniformCalculation min, Callables.UniformCalculation max, int length, @Nullable UniformConfig uniformConfig, boolean loop) {
+		RootUniform uniform = new RootUniform(name, callable, length, min, max, uniformConfig);
+		if (!uniform.useConfig) {
+			addStandardChildren(uniform, length, loop);
+		} else {
+			addElementChildren(uniform, length);
+		}
+		registerTree(path, uniform);
+	}
+
 
 	public static void registerStandardTree(String path, String name, Callables.UniformCalculation callable, @Nullable Float min, @Nullable Float max, int length, @Nullable UniformConfig uniformConfig, boolean loop) {
 		RootUniform uniform = new RootUniform(name, callable, length, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length), uniformConfig);
@@ -132,6 +138,7 @@ public class Uniforms {
 		}
 		registerTree(path, uniform);
 	}
+
 	public static void registerTree(String path, TreeUniform treeUniform) {
 		String name = path+"_"+treeUniform.name;
 		treeUniform.onRegister(name);

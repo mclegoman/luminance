@@ -489,7 +489,7 @@ This can be done in the post effect json like this:
   "values": [],
   "override": [ "6.0", "luminance_time", "1.0", "1.0" ],
   "config": [
-    {"name": "1_soup_range", "values": [ 4.0, 5.0 ]},
+    {"name": "1_range", "values": [ 4.0, 5.0 ]},
     {"name": "1_period", "values": [ 1.0 ]}
   ]
 }
@@ -501,7 +501,7 @@ When the values are being overridden, you do still need to have a `"values"` fie
 
 The `"config"` field has a list of uniform config values, which determines how the uniforms are turning into the actual numbers. the names are prefixed with the index of the value being overriden, so 0_ for configuring the first override value, 1_ for the second etc
 - `"luminance_time"` has a config value called `period` for how often it loops
-- if you're using souper secret settings, all uniforms have a `soup_range` config (just called `range` in the ui)
+- most if not all uniforms have a `range` config (TODO: explain this?)
 
 If a shader's uniform name is already the name of a dynamic uniform (like it is in luminace:post/merge), it can be configured the same way with a prefix of 0_:
 ```json
@@ -733,7 +733,7 @@ assets/tutorial_shader/shaders/post/example.json
           "values": [ 6.0, 4.0, 1.0, 1.0 ],
           "override": [ "6.0", "luminance_time", "1.0", "1.0" ],
           "config": [
-            {"name": "1_soup_range", "values": [ 4.0, 5.0 ]},
+            {"name": "1_range", "values": [ 4.0, 5.0 ]},
             {"name": "1_period", "values": [ 1.0 ]}
           ]
         }

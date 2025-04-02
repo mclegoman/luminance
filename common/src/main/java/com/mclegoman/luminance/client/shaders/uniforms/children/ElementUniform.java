@@ -11,6 +11,7 @@ import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -51,14 +52,14 @@ public class ElementUniform extends ChildUniform {
     }
 
     @Override
-    public Optional<UniformValue> getMin() {
+    public Optional<UniformValue> getMin(@Nullable UniformConfig config,@Nullable ShaderTime shaderTime) {
         assert parent != null;
-        return parent.getMin().map(min -> UniformValue.fromFloat(min.values.get(index), 1));
+        return parent.getMin(config, shaderTime).map(min -> UniformValue.fromFloat(min.values.get(index), 1));
     }
 
     @Override
-    public Optional<UniformValue> getMax() {
+    public Optional<UniformValue> getMax(@Nullable UniformConfig config,@Nullable ShaderTime shaderTime) {
         assert parent != null;
-        return parent.getMax().map(max -> UniformValue.fromFloat(max.values.get(index), 1));
+        return parent.getMax(config, shaderTime).map(max -> UniformValue.fromFloat(max.values.get(index), 1));
     }
 }
