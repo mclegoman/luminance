@@ -25,19 +25,21 @@ import java.util.function.Function;
 @Mixin(PostEffectPipeline.Targets.class)
 public interface PostEffectPipelineTargetMixin {
     @WrapOperation(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Codec;either(Lcom/mojang/serialization/Codec;Lcom/mojang/serialization/Codec;)Lcom/mojang/serialization/Codec;", remap = false))
-    private static <F, S> Codec<Either<F, S>> wrapCreatePersistent(Codec<F> first, Codec<S> second, Operation<Codec<Either<F, S>>> original) {
-        return original.call(luminance$codecBuilderPersistent(first), luminance$codecBuilderPersistent(second));
+    private static <F, S> Codec<Either<F, S>> wrapCreateTarget(Codec<F> first, Codec<S> second, Operation<Codec<Either<F, S>>> original) {
+        return original.call(luminance$codecBuilderTarget(first), luminance$codecBuilderTarget(second));
     }
 
     @Unique
-    private static <F> Codec<F> luminance$codecBuilderPersistent(Codec<F> original) {
+    private static <F> Codec<F> luminance$codecBuilderTarget(Codec<F> original) {
         return RecordCodecBuilder.create(instance ->
                 instance.group(
                         MapCodec.assumeMapUnsafe(original).forGetter(Function.identity()),
-                        Codec.BOOL.lenientOptionalFieldOf("persistent").forGetter(((target) -> Optional.of(((PipelineTargetInterface)target).luminance$getPersistent())))
+                        Codec.BOOL.lenientOptionalFieldOf("persistent").forGetter((target) -> Optional.of(((PipelineTargetInterface)target).luminance$getPersistent())),
+                        PipelineTargetInterface.DynamicSize.CODEC.lenientOptionalFieldOf("dynamic_size").forGetter((target) -> Optional.ofNullable(((PipelineTargetInterface)target).luminance$getDynamicSize()))
                 )
-                .apply(instance, (target, persistent) -> {
+                .apply(instance, (target, persistent, dynamicSize) -> {
                     ((PipelineTargetInterface)target).luminance$setPersistent(persistent.orElse(false));
+                    ((PipelineTargetInterface)target).luminance$setDynamicSize(dynamicSize.orElse(null));
                     return target;
                 })
         );

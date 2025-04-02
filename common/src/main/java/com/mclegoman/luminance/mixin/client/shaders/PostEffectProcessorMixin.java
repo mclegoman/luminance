@@ -60,11 +60,18 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/FrameGraphBuilder;createResourceHandle(Ljava/lang/String;Lnet/minecraft/client/util/ClosableFactory;)Lnet/minecraft/client/util/Handle;"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V", index = 1)
     private ClosableFactory<Framebuffer> replaceFramebufferFactory(ClosableFactory<Framebuffer> factory, @Local Map.Entry<Identifier, PostEffectPipeline.Targets> target) {
         PostEffectPipeline.Targets targets = target.getValue();
-        if (!((PipelineTargetInterface)(Object)targets).luminance$getPersistent()) {
+        PipelineTargetInterface targetInterface = (PipelineTargetInterface)(Object)targets;
+        SimpleFramebufferFactory simpleFramebufferFactory = (SimpleFramebufferFactory)factory;
+        PipelineTargetInterface.DynamicSize dynamicSize = targetInterface.luminance$getDynamicSize();
+
+        if (dynamicSize != null) {
+            factory = new SimpleFramebufferFactory(dynamicSize.width().run(simpleFramebufferFactory.width(), simpleFramebufferFactory.height()), dynamicSize.height().run(simpleFramebufferFactory.width(), simpleFramebufferFactory.height()), simpleFramebufferFactory.useDepth());
+        }
+
+        if (!targetInterface.luminance$getPersistent()) {
             return factory;
         }
 
-        SimpleFramebufferFactory simpleFramebufferFactory = (SimpleFramebufferFactory)factory;
         return new PersistentFramebufferFactory(simpleFramebufferFactory, luminance$persistentBufferSource, target.getKey());
     }
 

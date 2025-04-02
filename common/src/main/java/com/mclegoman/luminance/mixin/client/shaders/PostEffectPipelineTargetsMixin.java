@@ -26,4 +26,17 @@ public class PostEffectPipelineTargetsMixin implements PipelineTargetInterface {
     public void luminance$setPersistent(boolean persistent) {
         this.luminance$persistent = persistent;
     }
+
+    @Unique
+    private DynamicSize luminance$dynamicSize;
+
+    @Override
+    public DynamicSize luminance$getDynamicSize() {
+        return luminance$dynamicSize;
+    }
+
+    @Override
+    public void luminance$setDynamicSize(DynamicSize dynamicSize) {
+        this.luminance$dynamicSize = dynamicSize;
+    }
 }
