@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.mixin.client.resources;
 
+import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.events.Execute;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import net.minecraft.client.MinecraftClient;
@@ -41,7 +42,7 @@ public abstract class MinecraftClientMixin {
 	@Inject(at = @At("TAIL"), method = "setCameraEntity")
 	void onCameraEntitySet(Entity entity, CallbackInfo ci) {
 		Execute.onCameraEntitySet(entity);
-		if (!SpectatorHandler.activeHandlers.isEmpty()) {
+		if (!SpectatorHandler.activeHandlers.isEmpty() && LuminanceConfig.config.spectatorPriorityMode.value().getMode() != SpectatorHandler.Mode.ALL) {
 			gameRenderer.onCameraEntitySet(null);
 		}
 	}
