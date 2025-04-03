@@ -56,7 +56,7 @@ The files in the `luminance/` folder look like this:
 
 `"registries"` is what lists of shaders the shader will show up in
 - `"luminance:main"`: default value if the field is missing, this is where soup and perspective look to get the list of shaders that can be used
-- `"souper_secret_settings:modifiers"`: used by soup for its modifier system, the separate registry means they cant be used as regular shaders (which is good as they wouldnt work)
+- `"souper_secret_settings:modifiers"`: used by soup for its [modifier system](Soup.md#modifiers), the separate registry means they cant be used as regular shaders (which is good, as they wouldn't work)
 
 `"custom"` is where any mod specific data is stored
 - soup uses this to categorise shaders with the `"groups"` list, by default adding shaders to the `"edible"` category, meaning they can be chosen when eating soup, but since some soup shaders are particularly disruptive or laggy, not everything is `"edible"`, [see soup's page for more info](Soup.md#soup-groups)

@@ -64,3 +64,94 @@ The groups used by soup are (sorted roughly by how objectively they are defined)
 - `"blur"`: shaders that in some way reduce detail in the image
 - `"bloom"`: shaders that have a bloom-like effect, making some parts of the image brighter and spread
 - `"retro"`: shaders that have a "retro" vibe
+
+## Modifiers
+
+Soup can have shaders that run at the start and end of each layer, or between shaders within the layer.
+
+This can be used for a few fun effects, for an example i'll use `soup:mix`, which mixes the original image from before the layer is rendered, with the one afterwards.
+
+To make a shader get treated as a modifier, it can be added to the `souper_secret_settings:modifiers` shader [registry](PackSetup.md#optional-fields), like this:
+
+```json
+assets/soup/luminance/mix.json
+
+{
+  "post_effect": "soup:mix",
+  "enabled": true,
+  "disable_game_rendertype": true,
+  "registries": [
+    "souper_secret_settings:modifiers" <- this is important!
+  ],
+  "custom": {}
+}
+```
+
+Then, instead of the usual `"passes": [...]` list in the [post_effect](AddingShaders.md#passes) json, there is a `"custom_passes": {...}` set, which itself contains lists of passes:
+
+```json
+assets/soup/post_effect/mix.json
+
+{
+    "targets": {
+        "0": {},
+        "base": {"persistent": true}
+    },
+    "custom_passes": {
+        "souper_secret_settings:before_layer_render": [
+            {
+                "program": "minecraft:post/blit",
+                "inputs": [
+                    {
+                        "sampler_name": "In",
+                        "target": "minecraft:main"
+                    }
+                ],
+                "output": "base"
+            }
+        ],
+        "souper_secret_settings:after_layer_render": [
+            {
+                "program": "soup:post/mix",
+                "inputs": [
+                    {
+                        "sampler_name": "In",
+                        "target": "base"
+                    },
+                    {
+                        "sampler_name": "Base",
+                        "target": "minecraft:main"
+                    }
+                ],
+                "output": "0"
+            },
+            {
+                "program": "minecraft:post/blit",
+                "inputs": [
+                    {
+                        "sampler_name": "In",
+                        "target": "0"
+                    }
+                ],
+                "output": "minecraft:main"
+            }
+        ]
+    }
+}
+```
+
+Here there is one pass before the layer is rendered that puts `"minecraft:main"` on a persistent target called `"base"`
+
+Then, after the layer is rendered, `"base"` is mixed with `"minecraft:main"` and puts on `"0"` (this is after layer render, so `"minecraft:main"` now contains the altered image), then there's another pass in the same list to put it back onto `"minecraft:main"`
+
+The `"base"` target needs to be [persistent](AddingShaders.md#targets), or it won't get carried across the different lists
+
+The pass lists you can use are:
+- `"souper_secret_settings:before_layer_render"`
+- `"souper_secret_settings:after_layer_render"`
+- `"souper_secret_settings:before_shader_render"`
+- `"souper_secret_settings:after_shader_render"`
+
+There are also some [dynamic uniforms](AddingShaders.md#dynamic-uniforms) that can help with making fun effects:
+- `soup_shader_index` - index of the shader being rendered (or about to be rendered in the case of `before_shader_render`)
+- `soup_layer_size` - size of the layer currently being rendered
