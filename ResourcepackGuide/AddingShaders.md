@@ -113,7 +113,35 @@ the {} after the name is where settings can be put, which isnt used here, but co
 
 `"width"` and `"height"` just determine the size of the target in pixels, by default the width and height will be the same as the screen's resolution
 
+### Luminance Specific target stuff
+
 `"persistent"` is unique to Luminance and forces the target to be kept across frames, which will otherwise only happen under [specific circumstances](https://discord.com/channels/237199950235041794/823191668064911410/1325873027266646038) (link to shaderLABS discord)
+
+Luminance also allows for the width and height to be set based on a calculation, like this:
+
+```json
+"targets": {
+    "0": {
+        "dynamic_size": {
+            "width": "w2"          = width x 2
+            "height": "w1 h1 -10"  = width + height - 10
+        }
+    },
+    "1": {
+        "dynamic_size": {
+            "width": "+10"         = 10
+            "height": "h0.5 +0.5"  = (height / 2) + 0.5
+        }
+    }
+}
+```
+
+The calculation ultimately ends up as `a + (b x width) + (c x height)`, which is then rounded *down*, and limited to be atleast 1. To get the three values, it looks for sections starting with `+`, `-`, `w`, and `h`, then interprets whatever is after it as a number. (To round to nearest add `0.5`, to round up add `0.999`)
+- spaces are optional, and numbers can start with / to automatically count as 1/their value. This means `w/2-5` is the same as `w0.5 -5`
+ - multiple of the same section get added together, so `"+10 w/2 w0.1 +0.5"` is the same as `"+10.5 w0.6"`
+ - if a `w` or `h` doesnt have a number, its counted as 1, so `"w+5"` is the same as `"w1 +5"` 
+- if the value is *just* a number its interpreted as an addition, so `"5"` is the same as `"+5"`
+- if for whatever reason you need to multiply by a negative number, use `~` instead of `-`, eg `"w~2 h/~2"` for `(width x -2) + (height x -0.5)`
 
 ## Passes
 

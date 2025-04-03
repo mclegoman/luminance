@@ -144,7 +144,7 @@ Here there is one pass before the layer is rendered that puts `"minecraft:main"`
 
 Then, after the layer is rendered, `"base"` is mixed with `"minecraft:main"` and puts on `"0"` (this is after layer render, so `"minecraft:main"` now contains the altered image), then there's another pass in the same list to put it back onto `"minecraft:main"`
 
-The `"base"` target needs to be [persistent](AddingShaders.md#targets), or it won't get carried across the different lists
+The `"base"` target needs to be [persistent](AddingShaders.md#luminance-specific-target-stuff), or it won't get carried across the different lists
 
 The pass lists you can use are:
 - `"souper_secret_settings:before_layer_render"`
