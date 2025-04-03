@@ -52,4 +52,6 @@ assets/tutorial_shader/textured_entity/example.json [1]
 >  
 > For more info, check out [Perspective Wiki/Textured-Entity](https://github.com/mclegoman/perspective/wiki/Textured-Entity), and [Perspective Wiki/Shader-Packs](https://github.com/mclegoman/perspective/wiki/Shader-Packs).  
 
-`minecraft:phosphor` will now be rendered when spectating a `minecraft:zombie` without a named textured entity.  
+`minecraft:phosphor` will now be rendered when spectating a `minecraft:zombie` without a named textured entity.
+
+TODO: explain priorities (note that vanilla has an effective priority *below* 0, which is a funny property to have since anything below 0 is theoretically disabled)
