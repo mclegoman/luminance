@@ -23,13 +23,11 @@ import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 public class Shaders {
@@ -188,18 +186,24 @@ public class Shaders {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" using allocator, shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
 		}
 	}
+	@Nullable
 	public static ShaderRegistryEntry get(int shaderIndex) {
 		return get(getMainRegistryId(), shaderIndex);
 	}
+	@Nullable
 	public static ShaderRegistryEntry get(Identifier registry, int shaderIndex) {
 		return isValidIndex(registry, shaderIndex) ? getRegistry(registry).get(shaderIndex) : null;
 	}
+	@Nullable
 	public static ShaderRegistryEntry get(Identifier shaderId) {
 		return get(getMainRegistryId(), shaderId);
 	}
+	@Nullable
 	public static ShaderRegistryEntry get(Identifier registry, Identifier shaderId) {
-		int index = getShaderIndex(registry, shaderId);
-		return isValidIndex(registry, index) ? get(registry, index) : null;
+		for (ShaderRegistryEntry entry : getRegistry(registry)) {
+			if (entry.getID().equals(shaderId)) return entry;
+		}
+		return null;
 	}
 	public static Shader get(ShaderRegistryEntry shaderData, Callable<Shader.RenderType> renderType, Callable<Boolean> shouldRender) {
 		return new Shader(shaderData, renderType, shouldRender);
@@ -264,19 +268,25 @@ public class Shaders {
 	public static Text getShaderDescription(Identifier registry, int shaderIndex) {
 		return getShaderDescription(registry, shaderIndex, true);
 	}
-	@Nullable
-	public static Identifier guessPostShader(String id) {
+	public static Optional<ShaderRegistryEntry> guessPostShader(@NotNull String id) {
 		return guessPostShader(getMainRegistryId(), id);
 	}
-	@Nullable
-	public static Identifier guessPostShader(Identifier registry, String id) {
+	public static Optional<ShaderRegistryEntry> guessPostShader(@NotNull Identifier registry, @NotNull String id) {
 		// If the shader registry contains at least one shader with the name, the first detected instance will be used.
-		if (!id.contains(":")) {
-			for (ShaderRegistryEntry entry : getRegistry(registry)) {
-				if (entry.getID().getPath().equalsIgnoreCase(id)) return entry.getID();
+		if (id.contains(":")) {
+			ShaderRegistryEntry entry = get(registry, Identifier.tryParse(id));
+			if (entry != null) {
+				return Optional.of(entry);
 			}
 		}
-		return Identifier.tryParse(id);
+
+		for (ShaderRegistryEntry entry : getRegistry(registry)) {
+			if (entry.getID().getPath().equalsIgnoreCase(id)) {
+				return Optional.of(entry);
+			}
+		}
+
+		return Optional.empty();
 	}
 	@Nullable
 	public static Uniform getUniform(ShaderProgram program, Identifier id) {
