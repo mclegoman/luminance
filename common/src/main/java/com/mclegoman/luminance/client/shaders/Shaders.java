@@ -278,10 +278,13 @@ public class Shaders {
 			if (entry != null) {
 				return Optional.of(entry);
 			}
+			id = id.substring(id.indexOf(':')+1);
 		}
 
+		id = id.toLowerCase(Locale.ROOT);
+
 		for (ShaderRegistryEntry entry : getRegistry(registry)) {
-			if (entry.getID().getPath().equalsIgnoreCase(id)) {
+			if (entry.getID().getPath().equals(id)) {
 				return Optional.of(entry);
 			}
 		}
