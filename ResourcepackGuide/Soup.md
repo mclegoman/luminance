@@ -85,7 +85,7 @@ assets/tutorial_shader/souper_secret_settings/groups/luminance_main/depthless.js
 {"entries":["+all","-random_depth"]}
 ```
 
-Like with layers, its easiest to make these in game, however there isnt a way to copy them to your clipboard, so you have to find them in `.minecraft/config/souper_secret_settings/groups/...`
+Like with layers, its easiest to make these in game, however there isnt a way to copy them to your clipboard, so you have to find them in `.minecraft/config/souper_secret_settings/groups/...` then move them to your resourcepack
 
 The `luminance_main/` folder is the name of the [registry](PackSetup.md#optional-fields) with its `:` replaced with `_`, so to make a group for modifiers, put it in `souper_secret_settings_modifiers/`
 
