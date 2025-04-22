@@ -273,15 +273,21 @@ public class Shaders {
 	}
 	public static Optional<ShaderRegistryEntry> guessPostShader(@NotNull Identifier registry, @NotNull String id) {
 		// If the shader registry contains at least one shader with the name, the first detected instance will be used.
+		id = id.toLowerCase(Locale.ROOT);
+
 		if (id.contains(":")) {
-			ShaderRegistryEntry entry = get(registry, Identifier.tryParse(id));
+			Identifier identifier = Identifier.tryParse(id);
+			if (identifier == null) {
+				return Optional.empty();
+			}
+
+			ShaderRegistryEntry entry = get(registry, identifier);
 			if (entry != null) {
 				return Optional.of(entry);
 			}
-			id = id.substring(id.indexOf(':')+1);
-		}
 
-		id = id.toLowerCase(Locale.ROOT);
+			id = identifier.getPath();
+		}
 
 		for (ShaderRegistryEntry entry : getRegistry(registry)) {
 			if (entry.getID().getPath().equals(id)) {
