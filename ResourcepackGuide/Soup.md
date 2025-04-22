@@ -22,7 +22,7 @@ This could be used for fun effects with [Client Execution](https://modrinth.com/
 The files just have the layer's data, like this:
 
 ```json
-assets/tutorial_shader/souper_secret_settings/example.json [1]
+assets/tutorial_shader/souper_secret_settings/layers/example.json [1]
 
 {"shaders":[{"id":"soup:xor"},{"id":"minecraft:phosphor"},{"id":"soup:xor"}],"modifiers":[{"id":"soup:noise"}]}
 ```
@@ -64,6 +64,30 @@ The groups used by soup are (sorted roughly by how objectively they are defined)
 - `"blur"`: shaders that in some way reduce detail in the image
 - `"bloom"`: shaders that have a bloom-like effect, making some parts of the image brighter and spread
 - `"retro"`: shaders that have a "retro" vibe
+
+You can add new groups by either adding them to the "groups" list, or by adding files in `assets/<namespace>/souper_secret_settings/groups/<registry>/<name>.json`, like this:
+
+```
+TutorialShader
+├── assets
+│   └── tutorial_shader
+│       └── souper_secret_settings
+│           └── groups
+│               └── luminance_main
+│                   └── *depthless.json* [2]
+├── pack.mcmeta
+└── pack.png
+```
+
+```json
+assets/tutorial_shader/souper_secret_settings/groups/luminance_main/depthless.json [2]
+
+{"entries":["+all","-random_depth"]}
+```
+
+Like with layers, its easiest to make these in game, however there isnt a way to copy them to your clipboard, so you have to find them in `.minecraft/config/souper_secret_settings/groups/...`
+
+The `luminance_main/` folder is the name of the [registry](PackSetup.md#optional-fields) with its `:` replaced with `_`, so to make a group for modifiers, put it in `souper_secret_settings_modifiers/`
 
 ## Modifiers
 
