@@ -28,6 +28,19 @@ public class PostEffectPipelineTargetsMixin implements PipelineTargetInterface {
     }
 
     @Unique
+    Integer luminance$clearColor;
+
+    @Override
+    public Integer luminance$getClearColor() {
+        return luminance$clearColor;
+    }
+
+    @Override
+    public void luminance$setClearColor(Integer clearColor) {
+        luminance$clearColor = clearColor;
+    }
+
+    @Unique
     private DynamicSize luminance$dynamicSize;
 
     @Override

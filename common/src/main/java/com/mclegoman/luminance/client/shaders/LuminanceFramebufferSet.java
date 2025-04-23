@@ -41,7 +41,7 @@ public class LuminanceFramebufferSet implements PostEffectProcessor.FramebufferS
 
     public LuminanceFramebufferSet(FrameGraphBuilder builder, Framebuffer mainFramebuffer, @Nullable Set<Identifier> useDefaultFor) {
         this.mainFramebuffer = builder.createObjectNode("main", mainFramebuffer);
-        PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(new SimpleFramebufferFactory(mainFramebuffer.textureWidth, mainFramebuffer.textureHeight, mainFramebuffer.useDepthAttachment), null, Identifier.of(Data.getVersion().getID(), "default"));
+        PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(new SimpleFramebufferFactory(mainFramebuffer.textureWidth, mainFramebuffer.textureHeight, mainFramebuffer.useDepthAttachment), null, Identifier.of(Data.getVersion().getID(), "default"), 0);
         this.defaultFramebuffer = builder.createResourceHandle("luminance:default", persistentFramebufferFactory);
         this.useDefaultFor = useDefaultFor;
     }
@@ -56,7 +56,7 @@ public class LuminanceFramebufferSet implements PostEffectProcessor.FramebufferS
         if (defaultFramebufferSet.translucentFramebuffer != null) {
             return defaultFramebufferSet;
         }
-        PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(factory, null, Identifier.of(Data.getVersion().getID(), "fabulous"));
+        PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(factory, null, Identifier.of(Data.getVersion().getID(), "fabulous"), 0);
         return new LuminanceFramebufferSet(defaultFramebufferSet.mainFramebuffer, frameGraphBuilder.createResourceHandle("luminance:default", persistentFramebufferFactory), fabulous);
     }
 

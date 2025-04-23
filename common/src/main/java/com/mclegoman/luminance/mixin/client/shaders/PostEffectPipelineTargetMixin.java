@@ -15,6 +15,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.gl.PostEffectPipeline;
+import net.minecraft.util.dynamic.Codecs;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,12 +35,14 @@ public interface PostEffectPipelineTargetMixin {
         return RecordCodecBuilder.create(instance ->
                 instance.group(
                         MapCodec.assumeMapUnsafe(original).forGetter(Function.identity()),
-                        Codec.BOOL.lenientOptionalFieldOf("persistent").forGetter((target) -> Optional.of(((PipelineTargetInterface)target).luminance$getPersistent())),
-                        PipelineTargetInterface.DynamicSize.CODEC.lenientOptionalFieldOf("dynamic_size").forGetter((target) -> Optional.ofNullable(((PipelineTargetInterface)target).luminance$getDynamicSize()))
+                        Codec.BOOL.lenientOptionalFieldOf("persistent").forGetter(target -> Optional.of(((PipelineTargetInterface)target).luminance$getPersistent())),
+                        PipelineTargetInterface.DynamicSize.CODEC.lenientOptionalFieldOf("dynamic_size").forGetter(target -> Optional.ofNullable(((PipelineTargetInterface)target).luminance$getDynamicSize())),
+                        Codecs.ARGB.lenientOptionalFieldOf("clear_color").forGetter(target -> Optional.ofNullable(((PipelineTargetInterface)target).luminance$getClearColor()))
                 )
-                .apply(instance, (target, persistent, dynamicSize) -> {
+                .apply(instance, (target, persistent, dynamicSize, clearColor) -> {
                     ((PipelineTargetInterface)target).luminance$setPersistent(persistent.orElse(false));
                     ((PipelineTargetInterface)target).luminance$setDynamicSize(dynamicSize.orElse(null));
+                    ((PipelineTargetInterface)target).luminance$setClearColor(clearColor.orElse(null));
                     return target;
                 })
         );

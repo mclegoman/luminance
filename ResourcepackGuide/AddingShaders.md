@@ -105,7 +105,8 @@ the {} after the name is where settings can be put, which isnt used here, but co
       "height": 16
     },
     "1": {
-      "peristent": true
+      "persistent": true,
+      "clear_color": [1,0,0,0]
     }
 }
 
@@ -113,9 +114,11 @@ the {} after the name is where settings can be put, which isnt used here, but co
 
 `"width"` and `"height"` just determine the size of the target in pixels, by default the width and height will be the same as the screen's resolution
 
-### Luminance Specific target stuff
+`"persistent"` forces the target to be kept across frames, which will otherwise only happen under [specific circumstances](https://discord.com/channels/237199950235041794/823191668064911410/1325873027266646038) (link to shaderLABS discord) 
 
-`"persistent"` is unique to Luminance and forces the target to be kept across frames, which will otherwise only happen under [specific circumstances](https://discord.com/channels/237199950235041794/823191668064911410/1325873027266646038) (link to shaderLABS discord)
+`"clear_color"` is the default color of the target, it can either be an integer ARGB value, or a float array [R, G, B, A]. this and `"persistent"` were added in [25w16a](https://www.minecraft.net/en-us/article/minecraft-snapshot-25w16a), luminance backports them
+
+### Luminance Specific target stuff
 
 Luminance also allows for the width and height to be set based on a calculation, like this:
 

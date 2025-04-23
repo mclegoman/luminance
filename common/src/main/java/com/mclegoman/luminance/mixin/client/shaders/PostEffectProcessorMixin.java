@@ -65,14 +65,18 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
         PipelineTargetInterface.DynamicSize dynamicSize = targetInterface.luminance$getDynamicSize();
 
         if (dynamicSize != null) {
-            factory = new SimpleFramebufferFactory(dynamicSize.width().run(simpleFramebufferFactory.width(), simpleFramebufferFactory.height()), dynamicSize.height().run(simpleFramebufferFactory.width(), simpleFramebufferFactory.height()), simpleFramebufferFactory.useDepth());
+            simpleFramebufferFactory = new SimpleFramebufferFactory(dynamicSize.width().run(simpleFramebufferFactory.width(), simpleFramebufferFactory.height()), dynamicSize.height().run(simpleFramebufferFactory.width(), simpleFramebufferFactory.height()), simpleFramebufferFactory.useDepth());
         }
 
-        if (!targetInterface.luminance$getPersistent()) {
-            return factory;
+        // create persistent buffer if clear color isnt default
+        // this is a *slight* change in behaviour since pre 25w16a the default color for targets is white
+        Integer clearColor = targetInterface.luminance$getClearColor();
+
+        if (!targetInterface.luminance$getPersistent() && clearColor == null) {
+            return simpleFramebufferFactory;
         }
 
-        return new PersistentFramebufferFactory(simpleFramebufferFactory, luminance$persistentBufferSource, target.getKey());
+        return new PersistentFramebufferFactory(simpleFramebufferFactory, luminance$persistentBufferSource, target.getKey(), clearColor == null ? 0 : clearColor);
     }
 
     @Inject(at = @At("RETURN"), method = "<init>")

@@ -16,6 +16,10 @@ public interface PipelineTargetInterface {
     boolean luminance$getPersistent();
     void luminance$setPersistent(boolean persistent);
 
+    Integer luminance$getClearColor();
+    void luminance$setClearColor(Integer clearColor);
+
+
     @Nullable
     PipelineTargetInterface.DynamicSize luminance$getDynamicSize();
     void luminance$setDynamicSize(DynamicSize dynamicSize);
