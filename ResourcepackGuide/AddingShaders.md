@@ -532,7 +532,7 @@ When the values are being overridden, you do still need to have a `"values"` fie
 
 The `"config"` field has a list of uniform config values, which determines how the uniforms are turning into the actual numbers. the names are prefixed with the index of the value being overriden, so 0_ for configuring the first override value, 1_ for the second etc
 - `"luminance_time"` has a config value called `period` for how often it loops
-- most if not all uniforms have a `range` config (TODO: explain this?)
+- most if not all uniforms have a `range` config, which remaps the range of the uniform, in this case from `0-1` to `4-5`, there are quite a few subtleties with how this works, for which I've made a [dedicated page](Range.md)
 
 If a shader's uniform name is already the name of a dynamic uniform (like it is in luminace:post/merge), it can be configured the same way with a prefix of 0_:
 ```json
