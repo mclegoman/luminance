@@ -841,10 +841,20 @@ v and ^ show what targets each program uses, pointing to the relevant program fr
 
 Now just to give it a better name than "example", im thinking "simulation" since the harsh colors, the way it picks up on outlines, and the slight blinking makes it look a bit like the world is a simulation that is breaking down, this is easy enough to do as I just need to change the `"post_effect"` field in the luminance/ json (and rename the file), and then rename the file in tutorial_shader/post_effect/ to match
 
+I'll also add translation files for it so that it's name displays nicer in some parts of the gui, however this is optional (it will fallback to being called its id, which in this case is `tutorial_shader:simulation`). The description is even more optional, and will fallback to not having one.
+```json
+assets/tutorial_shader/lang/en_us.json
+
+{
+  "gui.luminance.shader.tutorial_shader.simulation": "Simulation",
+  "gui.luminance.shader.tutorial_shader.simulation.description": "Makes it look like the world is a (breaking) simulation!",
+              namespace ^               ^ post_effect/ name
+}
+```
+
+
 We could also implement the luminance:post/merge thing that other shaders have relatively easily, but i wont do that here as its not important (it would just replace the final `... -> minecraft:post/blit` with `... -> luminance:post/merge -> minecraft:post/blit`)
 
 We've already looked a little at the program files, but how do we make them? and what do they actually do? well, for that we need to learn how to [Write Shader Code](WritingShaderCode.md) - However a key takeaway here is that you can get a lot of mileage out of misusing existing shaders!
 
 You can download the resourcepack made in this guide for reference [Here](https://github.com/mclegoman/luminance/blob/development-1.21/ResourcepackGuide/TutorialShader.zip)
-
-TODO: adding translation files
