@@ -1,6 +1,6 @@
 # Range Config
 
-This is specifically to explain `range` configs for uniform overrides, see [Adding Shaders](AddingShaders.md#dynamic-uniforms) for an overview of uniform config works
+This is specifically to explain `range` configs for uniform overrides, see [Adding Shaders](AddingShaders.md#dynamic-uniforms) for an overview on how uniform config works
 
 ```json
 (example of how to use range for reference)
@@ -14,7 +14,7 @@ This is specifically to explain `range` configs for uniform overrides, see [Addi
 
 whatever addition/multiplication you do to the `[ 0, 1 ]` will apply to the value, so if you want a uniform to be double what it usually is, it would be `[ 0, 2 ]`, or if you wanted it to be 2 less than it usually is, `[ -2, -1 ]` and half that would be `[ -1, -0.5 ]`
 
-<br>
+## Remapping Logic
 
 for most uniforms, the first value in the `range` list is the value that will be used when the uniform is `0`, and the second when its `1`, using the average of the two at `0.5`, and so on
 
@@ -24,10 +24,41 @@ this does not happen if a uniform has an unbounded range (for instance `luminanc
 
 the [equation](https://en.wikipedia.org/wiki/Linear_interpolation#Programming_language_support) used for a range `[ a, b ]` is `a + ((b - a) x value)`, where the value is either directly from the uniform, or was first remapped to `0-1` if it could be
 
-<br>
+## Changes to Ranges
 
 `luminance_currentHealth` actually *doesnt* have a range `0-20`, it has a range `0-maxHealth`, which can change. this means if youre using a range `[ 0, 1 ]`, then the health value that `1` represents *could* be something other than 20
 
 if you want to use the current min or max value, you can use `null` in the config, so a `range` of `[ null, null ]` would be the same as having no `range` (this is what the default value of `range` is!)
 
 you can mix these, like `[ 10, null ]`, i'm not entirely sure what situation that would be useful in, but its nice to have the option
+
+## Overrides Only
+
+as per the note in [Adding Shaders](AddingShaders.md#dynamic-uniforms), the `range` config is defined by the code in charge of the `"override"`, not the uniforms themselves (like `period` for `"luminance_time"` is), this means you can only use `range` if its part of an override, like this:
+
+```json
+will work:
+{
+  "name": "luminance_time",
+  "values": [],
+  "override": [ "luminance_time" ]
+  "config": [
+    {
+      "name": "0_range",
+      "values": [ 1, -1 ]
+    }
+  ]
+}
+
+wont work:
+{
+  "name": "luminance_time",
+  "values": [ 1.0 ],
+  "config": [
+    {
+      "name": "0_range",
+      "values": [ 1, -1 ]
+    }
+  ]
+}
+```
