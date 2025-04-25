@@ -425,7 +425,7 @@ Yeah! that's looking better!, now, what if instead of the difference being based
 
 ## Setting up Another Sampler
 
-first lets add our new sampler to the shader file
+First lets add our new sampler to the shader file
 ```c#
 assets/tutorial_shader/shaders/post/example_fragment.fsh [4]
 --------------------------------------------------------
@@ -438,7 +438,7 @@ in vec2 texCoord;
 ...
 ```
 
-then the program file
+Then the program file
 
 ```json
 assets/tutorial_shader/shaders/program/example_program.json
@@ -450,7 +450,7 @@ assets/tutorial_shader/shaders/program/example_program.json
 ...
 ```
 
-then reference it in the post file!
+Then reference it in the post file!
 
 ```json
 assets/tutorial_shader/post_effect/example_post.json [2]
@@ -515,7 +515,7 @@ This is because the depth buffer only exists on the red channel, so to get the d
 
 While this fixes the color, the brightness is still way too low for further away objects, that's because the depth buffer uses a weird scale which is something along the lines of 0.0 = in your face, 1.0 = really far away - this can be useful, but often you want it measured in blocks instead
 
-thankfully, someone else has already encountered this problem, so ill just use their function (**I do not remember where I found this, if someone knows let me know :P**)
+Thankfully, someone else has already encountered this problem, so ill just use their function (**I do not remember where I found this, if someone knows let me know :3**)
 
 ```c#
 float near = 0.1;
@@ -582,6 +582,6 @@ This creates an interesting fade out of color into geometry only - in fact that'
 
 TODO
 
-#
+<br>
 
 You can download the resourcepack made in this guide for reference [Here](https://github.com/mclegoman/luminance/blob/development-1.21/ResourcepackGuide/TutorialShader.zip)

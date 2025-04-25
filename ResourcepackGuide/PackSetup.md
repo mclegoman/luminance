@@ -18,11 +18,11 @@ TutorialShader
 
 `tutorial_shader/` is the resourcepacks namespace as per usual, this can of course be whatever you want, this is the namespace all added shaders will be under.
 
-the `luminance/` folder within it is where all the data luminance needs to know what shader is what goes.
+The `luminance/` folder within it is where all the data luminance needs to know what shader is what goes.
 
-the `post_effect/` folder is where the shaders are actually defined, this works the same as vanilla.
+The `post_effect/` folder is where the shaders are actually defined, this works the same as vanilla.
 
-as does the `shaders/` folder, which is where the all code for the shaders is stored.
+As does the `shaders/` folder, which is where the all code for the shaders is stored.
 
 # luminance/<...>.json
 
@@ -63,7 +63,7 @@ The files in the `luminance/` folder look like this:
 
 ## Changing Shaders
 
-although the `"post_effect"` field is where it gets the id from, you need to match the file location a shader uses in order for `"enabled": false` to reliably disable a shader
+Although the `"post_effect"` field is where it gets the id from, you need to match the file location a shader uses in order for `"enabled": false` to reliably disable a shader
 
 ```json
 assets/tutorial_shader/luminance/test.json - might work, at random
@@ -74,7 +74,7 @@ assets/minecraft/luminance/sobel.json - will work (as long as the resourcepack i
 }
 ```
 
-likewise the behaviour of adding a shader to a [Soup Group](Soup.md#soup-groups) depends on if the file path is matched:
+Likewise the behaviour of adding a shader to a [Soup Group](Soup.md#soup-groups) depends on if the file path is matched:
 
 ```json
 assets/tutorial_shader/luminance/test.json - adds to list

@@ -31,7 +31,7 @@ It's very useful to be able to reference existing shaders, some of these can be 
 
 # Post Shaders
 
-for a fun base to work off of, im going to copy `assets/minecraft/shaders/post/sobel.json` [from Luminance](https://github.com/mclegoman/luminance/blob/development-1.21/common/src/main/resources/resourcepacks/super_secret_settings/assets/minecraft/post_effect/sobel.json) as it looks cool, this means I have this file:
+For a fun base to work off of, im going to copy `assets/minecraft/shaders/post/sobel.json` [from Luminance](https://github.com/mclegoman/luminance/blob/development-1.21/common/src/main/resources/resourcepacks/super_secret_settings/assets/minecraft/post_effect/sobel.json) as it looks cool, this means I have this file:
 
 ```json
 assets/tutorial_shader/shaders/post/example.json
@@ -97,7 +97,7 @@ Generally minecraft's shaders follow the standard where if there's only one targ
 }
 ```
 
-the {} after the name is where settings can be put, which isnt used here, but could look something like:
+The {} after the name is where settings can be put, which isnt used here, but could look something like:
 ```json
 "targets": {
     "0": {
@@ -403,11 +403,11 @@ This is how the program file defines what uniforms it has
 
 The `"name"` is what we use to change them back in our render pass
 
-the `"values"` are what its set to by default, which can give us an idea of what a reasonable input for the uniform is
+The `"values"` are what its set to by default, which can give us an idea of what a reasonable input for the uniform is
 
-the `"type"` is what type of number is in the `"values"` list - "float" means it's a floating point number, which is a number with a decimal point like 1.0, -0.5, 0.123 etc. You may also see "int", which is an integer, meaning its whole numbers only, like 0, 42, -1 etc
+The `"type"` is what type of number is in the `"values"` list - "float" means it's a floating point number, which is a number with a decimal point like 1.0, -0.5, 0.123 etc. You may also see "int", which is an integer, meaning its whole numbers only, like 0, 42, -1 etc
 
-the `"count"` is how many of that number is in the `"values"` list
+The `"count"` is how many of that number is in the `"values"` list
 - a count of 2 often means the uniform represents a vector (position or offset in 2d space [usually either in pixels or as a fraction of the screen])
 - a count of 3 often means the uniform represents a color represented as [r, g, b], where [1, 1, 1] is white and [0, 0, 0] is black
 
@@ -464,7 +464,7 @@ assets/tutorial_shader/post_effect/example.json
 }
 ```
 
-it will blur the sobel slightly horizontally, creating 6-7 pixel wide lines
+It will blur the sobel slightly horizontally, creating 6-7 pixel wide lines
 
 ![](box_blur.png)
 
@@ -642,7 +642,7 @@ The overall strucutre here isnt actually that much more complicated than last ti
 - Phoshpor combines main with the `previous` target, and that output is put onto `previous`.
 - Then the original image and the phosphor output target have the usual luminance:post/merge -> blit
 
-we can figure out that `previous` is intented to go across frames by the fact that its read from before writing to... and by the fact that at the top it has `"persistent": true`.
+We can figure out that `previous` is intented to go across frames by the fact that its read from before writing to... and by the fact that at the top it has `"persistent": true`.
 
 ## Multiple Inputs
 
@@ -671,7 +671,7 @@ We've already seen the `"uniforms"` bit of this earlier, but heres the whole pro
 
 The `"vertex"` and `"fragment"` fields are what code the gpu is actually running, which resolves to the same `assets/<namespace>/shaders/post/<id>.<type>` for a given `<namespace>:post/<id>` as the program files, with the <type> for vertex being .vsh, and fragment .fsh
 
-more information on this in [The Next Section](WritingShaderCode.md) (note that fragment shader is usually the important one, and that the vertex shader is *usually* `minecraft:post/sobel`, which doesnt actually have much to do with the sobel shader)
+More information on this in [The Next Section](WritingShaderCode.md) (note that fragment shader is usually the important one, and that the vertex shader is *usually* `minecraft:post/sobel`, which doesnt actually have much to do with the sobel shader)
 
 The actually important part here is the "samplers" section, which shows two samplers `"InSampler"` and `"PrevSampler"`, these are the names we saw earlier back in the post_effect
 
@@ -725,7 +725,7 @@ Ok this doesn't look too complicated - looking just at the main() function at th
 - PrevTexel involves the PrevSampler - so it probably means Previous Texel
 - fragColor is set to something involving CurrTexel and PrevTexel
 
-Lets try reverse engineer what this does:
+Let's try reverse engineer what this does:
 - Just before the main function, we see `out vec4 fragColor;`, so fragColor is probably the color which is outputted
 - PrevTexel and CurrTexel are both used with a .rgb - so they're definitely colours
 - The color on the screen obviously varies from pixel to pixel, which means PrevTexel and CurrTexel need to be varying too, so texture(Sampler, texCoord) probably means "get the color at this Coordinate" - we see `in vec2 texCoord;` so it's presumably an input to the function in some way - "Texture Coordinate" seems like a reasonable expansion of texCoord
