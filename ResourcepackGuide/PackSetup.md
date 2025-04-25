@@ -47,7 +47,7 @@ The files in the `luminance/` folder look like this:
 - the name of the file itself can be called anything, but it should usually be named the id for consistency (so in this case `sobel`)
 - the value in the `"post_effect"` field is what the shader will be referred to with
 
-`"enabled"` is whether the shader is enabled, this seems to not work??? TODO
+`"enabled"` is whether the shader is enabled, see [below](#changing-shaders) for details
 
 `"disable_game_rendertype"` is whether the shader should be allowed to be rendered after ui (false), or if it can only be rendered before (true). This is done when the shader uses depth (since depth doesnt work properly after ui), or when the shader disruptive enough to make ui unreadable.
 - soup does not adhere to this, instead having a button that toggles rendering between game and world
