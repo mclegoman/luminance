@@ -63,20 +63,22 @@ The files in the `luminance/` folder look like this:
 
 ## Changing Shaders
 
-because the `"post_effect"` field is the only thing that matters, doing this should disable sobel, however this currently doesnt work TODO
+although the `"post_effect"` field is where it gets the id from, you need to match the file location a shader uses in order for `"enabled": false` to reliably disable a shader
 
 ```json
-assets/tutorial_shader/luminance/test.json
+assets/tutorial_shader/luminance/test.json - might work, at random
+assets/minecraft/luminance/sobel.json - will work (as long as the resourcepack is higher priority)
 {
   "post_effect": "minecraft:sobel",
   "enabled": false
 }
 ```
 
-doing this adds the sobel shader to a new group called `"test"`, allowing it to be chosen at random in soup, this should also remove it from edible, but it doesnt seem to, i think this is also a bug TODO
+likewise the behaviour of adding a shader to a [Soup Group](Soup.md#soup-groups) depends on if the file path is matched:
 
 ```json
-assets/tutorial_shader/luminance/test.json
+assets/tutorial_shader/luminance/test.json - adds to list
+assets/minecraft/luminance/sobel.json - replaces the list, so sobel gets removed from "edible"
 {
   "post_effect": "minecraft:sobel",
   "custom": {

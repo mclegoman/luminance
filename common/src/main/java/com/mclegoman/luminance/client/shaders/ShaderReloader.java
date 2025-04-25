@@ -51,8 +51,6 @@ public class ShaderReloader extends JsonResourceReloader {
 		try {
 			manager.getResourceOrThrow(shaderData.getPostEffect(true));
 			boolean alreadyRegistered = false;
-			// If the registries are empty, we add the default registry.
-			if (registries.isEmpty()) registries.add(Identifier.of(Data.getVersion().getID(), "main"));
 			for (Identifier registry : registries) {
 				for (ShaderRegistryEntry data : Shaders.getRegistry(registry)) {
 					if (data.getID().equals(shaderData.getID())) {
@@ -89,7 +87,11 @@ public class ShaderReloader extends JsonResourceReloader {
 					JsonObject customData = JsonHelper.getObject(reader, "custom", new JsonObject());
 					JsonArray registries = JsonHelper.getArray(reader, "registries", new JsonArray());
 					ShaderRegistryEntry shaderData = getShaderData(post_effect, disableGameRenderType, customData);
+
 					List<Identifier> registryList = getRegistries(registries);
+					// If the registries are empty, we add the default registry.
+					if (registries.isEmpty()) registryList.add(Identifier.of(Data.getVersion().getID(), "main"));
+
 					if (enabled) {
 						add(registryList, shaderData, manager);
 						Events.OnShaderDataRegistered.registry.forEach((id, runnable) -> {
