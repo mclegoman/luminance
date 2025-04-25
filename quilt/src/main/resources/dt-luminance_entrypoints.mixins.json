@@ -2,6 +2,7 @@
 	"required": true,
 	"package": "com.mclegoman.luminance.mixin.entrypoint",
 	"compatibilityLevel": "JAVA_21",
+	"plugin": "com.mclegoman.luminance.mixin.EntrypointMixinPlugin",
 	"client": [
 		"client.MinecraftClientMixin"
 	],

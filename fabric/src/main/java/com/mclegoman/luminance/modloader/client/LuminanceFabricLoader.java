@@ -7,13 +7,13 @@
 
 package com.mclegoman.luminance.modloader.client;
 
-import com.mclegoman.luminance.api.entrypoint.LuminanceInit;
 import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.util.Tick;
+import net.fabricmc.api.ClientModInitializer;
 
-public class LuminanceFabricLoader implements LuminanceInit {
-    public void init(String modId) {
+public class LuminanceFabricLoader implements ClientModInitializer {
+    public void onInitializeClient() {
         Tick.init();
-        LuminanceClient.init(modId);
+        LuminanceClient.init();
     }
 }

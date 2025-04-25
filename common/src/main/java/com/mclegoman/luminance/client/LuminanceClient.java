@@ -19,7 +19,7 @@ import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 
 public class LuminanceClient {
-	public static void init(String modId) {
+	public static void init() {
 		try {
 			Data.getVersion().sendToLog(LogType.INFO, Translation.getString("Initializing {}:client", Data.getVersion().getName()));
 			LuminanceConfig.init();

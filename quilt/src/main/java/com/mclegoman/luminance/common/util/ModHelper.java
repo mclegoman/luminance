@@ -5,7 +5,7 @@
     Licence: GNU LGPLv3
 */
 
-package com.mclegoman.luminance.api.mod;
+package com.mclegoman.luminance.common.util;
 
 import org.quiltmc.loader.api.ModContributor;
 import org.quiltmc.loader.api.ModLicense;

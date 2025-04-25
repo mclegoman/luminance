@@ -7,8 +7,6 @@
 
 package com.mclegoman.luminance.common.util;
 
-import com.mclegoman.luminance.api.mod.ModContainer;
-import com.mclegoman.luminance.api.mod.ModHelper;
 import com.mclegoman.luminance.client.translation.Translation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,10 +49,10 @@ public class Version implements Comparable<Version> {
 	public static Version create(String name, String id, int major, int minor, int patch, ReleaseType type, int build) {
 		return new Version(name, id, major, minor, patch, type, build, false, false, "");
 	}
-	public static Version parse(com.mclegoman.luminance.api.mod.ModContainer.ModMetadata metadata) {
+	public static Version parse(ModContainer.ModMetadata metadata) {
 		return parse(metadata, "");
 	}
-	public static Version parse(com.mclegoman.luminance.api.mod.ModContainer.ModMetadata metadata, String modrinthId) {
+	public static Version parse(ModContainer.ModMetadata metadata, String modrinthId) {
 		String version = metadata.rawVersion();
 		String[] versionData = version.split("-");
 		String[] versionVer = versionData[0].split("\\.");

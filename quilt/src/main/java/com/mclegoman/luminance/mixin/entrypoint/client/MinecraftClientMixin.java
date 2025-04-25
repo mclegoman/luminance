@@ -7,12 +7,11 @@
 
 package com.mclegoman.luminance.mixin.entrypoint.client;
 
-import com.mclegoman.luminance.api.entrypoint.LuminanceEntrypoint;
-import com.mclegoman.luminance.api.entrypoint.LuminanceEntrypointKeys;
-import com.mclegoman.luminance.api.entrypoint.LuminanceInit;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
+import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 import org.quiltmc.loader.api.minecraft.ClientOnly;
+import org.quiltmc.qsl.base.api.client.ClientModInitializer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,6 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MinecraftClientMixin {
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;<init>(Lnet/minecraft/client/MinecraftClient;Ljava/io/File;)V"))
 	private void luminance$clientInit(RunArgs runArgs, CallbackInfo ci) {
-		LuminanceEntrypoint.init(LuminanceEntrypointKeys.clientInitKey, LuminanceInit.class, LuminanceInit::init);
+		EntrypointUtil.invoke(ClientModInitializer.key, ClientModInitializer.class, ClientModInitializer::onInitializeClient);
 	}
 }

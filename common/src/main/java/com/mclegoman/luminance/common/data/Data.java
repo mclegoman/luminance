@@ -7,10 +7,10 @@
 
 package com.mclegoman.luminance.common.data;
 
-import com.mclegoman.luminance.api.mod.ModContainer;
-import com.mclegoman.luminance.api.mod.ModHelper;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.util.LogType;
+import com.mclegoman.luminance.common.util.ModContainer;
+import com.mclegoman.luminance.common.util.ModHelper;
 import com.mclegoman.luminance.common.util.Version;
 import org.apache.commons.lang3.StringUtils;
 

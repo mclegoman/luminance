@@ -20,7 +20,7 @@
   "icon": "assets/luminance/icons/icon.png",
   "environment": "*",
   "entrypoints": {
-    "luminance_client": [
+    "client": [
       "com.mclegoman.luminance.modloader.client.LuminanceFabricLoader"
     ],
     "modmenu": [
@@ -28,7 +28,6 @@
     ]
   },
   "mixins": [
-    "dt-luminance_entrypoints.mixins.json",
     "dt-luminance_fabric.mixins.json",
     "dt-luminance_common.mixins.json"
   ],

@@ -7,10 +7,9 @@
 
 package com.mclegoman.luminance.mixin.entrypoint;
 
-import com.mclegoman.luminance.api.entrypoint.LuminanceEntrypoint;
-import com.mclegoman.luminance.api.entrypoint.LuminanceEntrypointKeys;
-import com.mclegoman.luminance.api.entrypoint.LuminanceInit;
 import net.minecraft.registry.Registries;
+import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
+import org.quiltmc.qsl.base.api.ModInitializer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,6 +20,6 @@ public abstract class RegistriesMixin {
 	@Inject(method = "bootstrap", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/Registries;freezeRegistries()V"))
 	private static void luminance$onInitialize(CallbackInfo ci) {
 		BootstrapAccessor.luminance$invokeSetOutputStreams();
-		LuminanceEntrypoint.init(LuminanceEntrypointKeys.commonInitKey, LuminanceInit.class, LuminanceInit::init);
+		EntrypointUtil.invoke(ModInitializer.key, ModInitializer.class, ModInitializer::onInitialize);
 	}
 }

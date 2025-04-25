@@ -5,7 +5,7 @@
     Licence: GNU LGPLv3
 */
 
-package com.mclegoman.luminance.api.mod;
+package com.mclegoman.luminance.common.util;
 
 import java.util.Collection;
 

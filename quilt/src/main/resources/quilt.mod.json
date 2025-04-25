@@ -18,7 +18,7 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "luminance_client": [
+      "client_init": [
         "com.mclegoman.luminance.modloader.client.LuminanceQuiltLoader"
       ]
     },
