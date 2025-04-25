@@ -60,6 +60,7 @@ public class Uniforms {
 		// a renderType uniform could be useful?
 		try {
 			String path = Data.getVersion().getID();
+
 			registerSingleTree(path, "panoramaAlpha", Uniforms::getPanoramaAlpha, 0f, 1f);
 			registerSingleTree(path, "hudHidden", Uniforms::getHudHidden, 0f, 1f);
 			registerSingleTree(path, "isInGui", Uniforms::getIsInGui, 0f, 1f);
@@ -74,17 +75,13 @@ public class Uniforms {
 			registerSingleTree(path, "pitch", Uniforms::getPitch, -90f, 90f);
 			registerStandardTree(path, "yaw", Uniforms::getYaw, -180f, 180f, 1, null, true);
 			registerSingleTree(path, "velocity", Uniforms::getVelocity, 0f, null);
-			registerRangedTree(path, "currentHealth", ((Callables.SingleUniformCalculation)Uniforms::getCurrentHealth).convert(), (a, b, c) -> c.set(0, 0f), (a, b, c) -> c.set(0, getMaxHealth(b)), 1, null, false);
+			registerRangedTree(path, "currentHealth", Uniforms::getCurrentHealth, Uniforms::getZero, (a, b, c) -> c.set(0, getMaxHealth(b)), 1, null, false);
 			registerSingleTree(path, "maxHealth", Uniforms::getMaxHealth, 0f, null);
-			registerRangedTree(path, "currentAbsorption", ((Callables.SingleUniformCalculation)Uniforms::getCurrentAbsorption).convert(), (a, b, c) -> c.set(0, 0f), (a, b, c) -> c.set(0, getMaxAbsorption(b)), 1, null, false);
+			registerRangedTree(path, "currentAbsorption", Uniforms::getCurrentAbsorption, Uniforms::getZero, (a, b, c) -> c.set(0, getMaxAbsorption(b)), 1, null, false);
 			registerSingleTree(path, "maxAbsorption", Uniforms::getMaxAbsorption, 0f, null);
-			// currentHurtTime's max would be maxHurtTime, however, that would require min/max to be callable.
-			registerSingleTree(path, "currentHurtTime", Uniforms::getCurrentHurtTime, 0f, null);
+			registerRangedTree(path, "currentHurtTime", Uniforms::getCurrentHurtTime, Uniforms::getZero, (a, b, c) -> c.set(0, getMaxHurtTime(b)), 1, null, false);
 			registerSingleTree(path, "maxHurtTime", Uniforms::getMaxHurtTime, 0f, null);
-			// currentAir's max would be maxAir, however, that would require min/max to be callable.
-			// NOTE: i, Nettakrim, am not sure if maxAir even changes, or why the default if player is null is 10 instead of 300, or what max air even is, and therefore have not implemented it with the callable range
-			//       i do have a bit more of an idea of what maxHurtTime is, but i dont think it changes either? TODO: investigation
-			registerSingleTree(path, "currentAir", Uniforms::getCurrentAir, 0f, null);
+			registerRangedTree(path, "currentAir", Uniforms::getCurrentAir, Uniforms::getZero, (a, b, c) -> c.set(0, getMaxAir(b)), 1, null, false);
 			registerSingleTree(path, "maxAir", Uniforms::getMaxAir, 0f, null);
 			registerSingleTree(path, "isAlive", Uniforms::getIsAlive, 0f, 1f);
 			registerSingleTree(path, "isDead", Uniforms::getIsDead, 0f, 1f);
@@ -238,29 +235,29 @@ public class Uniforms {
 			uniformValue.set(0, 0);
 		}
 	}
-	public static float getCurrentHealth(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getHealth() : 20.0F;
+	public static void getCurrentHealth(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		uniformValue.set(0, ClientData.minecraft.player != null ? ClientData.minecraft.player.getHealth() : 20.0F);
 	}
 	public static float getMaxHealth(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getMaxHealth() : 20.0F;
 	}
-	public static float getCurrentAbsorption(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getAbsorptionAmount() : 0.0F;
+	public static void getCurrentAbsorption(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		uniformValue.set(0, ClientData.minecraft.player != null ? ClientData.minecraft.player.getAbsorptionAmount() : 0.0F);
 	}
 	public static float getMaxAbsorption(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getMaxAbsorption() : 0.0F;
 	}
-	public static float getCurrentHurtTime(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? ClientData.minecraft.player.hurtTime : 0.0F;
+	public static void getCurrentHurtTime(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		uniformValue.set(0, ClientData.minecraft.player != null ? ClientData.minecraft.player.hurtTime : 0.0F);
 	}
 	public static float getMaxHurtTime(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.maxHurtTime : 10.0F;
 	}
-	public static float getCurrentAir(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getAir() : 10.0F;
+	public static void getCurrentAir(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		uniformValue.set(0, ClientData.minecraft.player != null ? ClientData.minecraft.player.getAir() : 300.0F);
 	}
 	public static float getMaxAir(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getMaxAir() : 10.0F;
+		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getMaxAir() : 300.0F;
 	}
 	public static float getIsAlive(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.isAlive() ? 1.0F : 0.0F) : 0.0F;
@@ -371,5 +368,8 @@ public class Uniforms {
 	}
 	public static void getRandom(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		uniformValue.set(0, Accessors.getGameRenderer().getRandom().nextFloat());
+	}
+	public static void getZero(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		uniformValue.set(0, 0F);
 	}
 }
