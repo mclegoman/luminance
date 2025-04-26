@@ -20,6 +20,6 @@ public abstract class RegistriesMixin {
 	@Inject(method = "bootstrap", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/Registries;freezeRegistries()V"))
 	private static void luminance$onInitialize(CallbackInfo ci) {
 		BootstrapAccessor.luminance$invokeSetOutputStreams();
-		EntrypointUtil.invoke(ModInitializer.key, ModInitializer.class, ModInitializer::onInitialize);
+		EntrypointUtil.invoke(ModInitializer.ENTRYPOINT_KEY, ModInitializer.class, ModInitializer::onInitialize);
 	}
 }

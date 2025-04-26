@@ -21,6 +21,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MainMixin {
 	@Inject(method = "main", at = @At(value = "INVOKE", target = "Ljava/io/File;<init>(Ljava/lang/String;)V", ordinal = 0), remap = false)
 	private static void onInit(String[] strings, CallbackInfo ci) {
-		EntrypointUtil.invoke(DedicatedServerModInitializer.key, DedicatedServerModInitializer.class, DedicatedServerModInitializer::onInitializeServer);
+		EntrypointUtil.invoke(DedicatedServerModInitializer.ENTRYPOINT_KEY, DedicatedServerModInitializer.class, DedicatedServerModInitializer::onInitializeServer);
 	}
 }

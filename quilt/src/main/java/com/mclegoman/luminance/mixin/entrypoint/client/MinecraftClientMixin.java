@@ -22,6 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MinecraftClientMixin {
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;<init>(Lnet/minecraft/client/MinecraftClient;Ljava/io/File;)V"))
 	private void luminance$clientInit(RunArgs runArgs, CallbackInfo ci) {
-		EntrypointUtil.invoke(ClientModInitializer.key, ClientModInitializer.class, ClientModInitializer::onInitializeClient);
+		EntrypointUtil.invoke(ClientModInitializer.ENTRYPOINT_KEY, ClientModInitializer.class, ClientModInitializer::onInitializeClient);
 	}
 }

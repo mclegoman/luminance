@@ -1,8 +1,7 @@
 /*
-    Luminance
-    Contributor(s): dannytaylor
-    Github: https://github.com/mclegoman/Luminance
-    Licence: GNU LGPLv3
+    quilt_base/entrypoint
+    Github: https://github.com/QuiltMC/quilt-standard-libraries
+    Licence: Apache License 2.0
 */
 
 package org.quiltmc.qsl.base.api.server;
@@ -10,6 +9,6 @@ package org.quiltmc.qsl.base.api.server;
 import org.quiltmc.loader.api.ModContainer;
 
 public interface DedicatedServerModInitializer {
-	String key = "server_init";
+	String ENTRYPOINT_KEY = "server_init";
 	void onInitializeServer(ModContainer modContainer);
 }
