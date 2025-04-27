@@ -14,6 +14,7 @@ import com.mclegoman.luminance.common.util.ModHelper;
 import com.mclegoman.luminance.common.util.Version;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collections;
 import java.util.Optional;
 
 public class Data {
@@ -21,11 +22,9 @@ public class Data {
 	public static Version getVersion() {
 		if (version == null) {
 			Optional<ModContainer> modContainer = ModHelper.getModContainer("luminance");
-			modContainer.ifPresent(container -> version = Version.parse(container.metadata(), "EBTw0O1c"));
+			version = Version.parse(modContainer.isPresent() ? modContainer.get().metadata() : new ModContainer.ModMetadata("luminance", "0.0.0-release.0", "Luminance", "metadata could not be found!", Collections.emptyList(), Collections.emptyList()), "EBTw0O1c");
 		}
-		if (version != null) return version;
-		else throw new NullPointerException("luminance version couldn't be obtained!");
-		// If you end up seeing this error in dev env, try reloading your gradle.
+		return version;
 	}
 	public static boolean isModInstalled(String modId) {
 		try {
