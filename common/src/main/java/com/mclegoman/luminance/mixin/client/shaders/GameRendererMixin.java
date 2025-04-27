@@ -27,6 +27,7 @@ public abstract class GameRendererMixin {
 	}
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/Framebuffer;beginWrite(Z)V"))
 	private void luminance$afterHandRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
+		//TODO: this is more accurately described as after vanilla post process
 		Execute.afterHandRender(this.pool);
 	}
 	@Inject(method = "render", at = @At("TAIL"))
