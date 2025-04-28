@@ -6,9 +6,9 @@ out vec4 fragColor;
 uniform vec2 OutSize;
 
 uniform sampler2D InSampler;
-
-out float gl_FragDepth;
+uniform sampler2D HandSampler;
 
 void main() {
-    gl_FragDepth = texture2D(InSampler, texCoord).r;
+    // set depth to 0 if its part of the hand - this matches iris's behaviour
+    gl_FragDepth = texture2D(HandSampler, texCoord).r == 1.0 ? texture2D(InSampler, texCoord).r : 0;
 }

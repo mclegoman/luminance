@@ -26,7 +26,6 @@ import net.minecraft.resource.ReloadableResourceManagerImpl;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL30;
 
 public class Execute {
 	public static void registerClientResourceReloaders(ReloadableResourceManagerImpl resourceManager) {
@@ -200,21 +199,21 @@ public class Execute {
 
 		try {
 			Framebuffer framebuffer = ClientData.minecraft.getFramebuffer();
+			framebuffer.beginWrite(true);
 
 			ShaderProgram shaderProgram = ClientData.minecraft.getShaderLoader().getProgramToLoad(new ShaderProgramKey(Identifier.of(Data.getVersion().getID(), "depth_fix"), VertexFormats.POSITION, Defines.EMPTY));
 			shaderProgram.addSamplerTexture("InSampler", worldDepth.getDepthAttachment());
+			shaderProgram.addSamplerTexture("HandSampler", framebuffer.getDepthAttachment());
 			shaderProgram.getUniformOrDefault("InSize").set((float)framebuffer.textureWidth, (float)framebuffer.textureHeight);
 			shaderProgram.getUniformOrDefault("OutSize").set((float)framebuffer.textureWidth, (float)framebuffer.textureHeight);
 			RenderSystem.setShader(shaderProgram);
 
-			RenderSystem.depthFunc(515);
-			//RenderSystem.depthFunc(GL30.GL_ALWAYS);
+			RenderSystem.depthFunc(519);
 			RenderSystem.enableDepthTest();
 			RenderSystem.depthMask(true);
 
 			Matrix4f projectionMatrix = (new Matrix4f()).setOrtho(0.0F, (float)framebuffer.textureWidth, 0.0F, (float)framebuffer.textureHeight, 0.1F, 1000.0F);
 
-			framebuffer.beginWrite(true);
 			RenderSystem.backupProjectionMatrix();
 			RenderSystem.setProjectionMatrix(projectionMatrix, ProjectionType.ORTHOGRAPHIC);
 			BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
@@ -225,16 +224,7 @@ public class Execute {
 			BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 			RenderSystem.restoreProjectionMatrix();
 
-
-
-			//RenderSystem.enableDepthTest();
-			//RenderSystem.depthFunc(515);
-			//RenderSystem.depthMask(true);
-
 			framebuffer.endWrite();
-
-			//ClientData.minecraft.getFramebuffer().copyDepthFrom(framebuffer);
-			//allocator.release(framebufferFactory, framebuffer);
 		} catch (Exception e) {
 			Data.getVersion().sendToLog(LogType.INFO, "Error Fixing Depth: "+e.getMessage());
 		}
