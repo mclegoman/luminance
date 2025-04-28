@@ -23,6 +23,4 @@ public interface GameRendererAccessor {
 	Pool getPool();
 	@Accessor("random")
 	Random getRandom();
-	@Accessor("renderHand")
-	boolean getRenderingHand();
 }
