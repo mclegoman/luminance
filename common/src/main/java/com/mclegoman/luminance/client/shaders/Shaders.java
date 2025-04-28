@@ -14,7 +14,6 @@ import com.mclegoman.luminance.client.events.Runnables;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.client.util.CompatHelper;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.client.gl.*;
@@ -37,13 +36,17 @@ public class Shaders {
 		Uniforms.init();
 		Events.BeforeGameRender.register(Identifier.of(Data.getVersion().getID(), "update"), Uniforms::update);
 		Events.AfterHandRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
-            try {
+            if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+				return;
+			}
+
+			try {
                 if (shaders != null) shaders.forEach(shader -> {
                     try {
                         if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-                            //if (((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth()))) && (!shader.shader().getUseDepth() || CompatHelper.isIrisShadersEnabled())) && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
-                                renderUsingAllocator(id, shader, framebuffer, objectAllocator);
-                            //}
+                            if ((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth())))) {
+                            	renderUsingAllocator(id, shader, framebuffer, objectAllocator);
+                            }
                         }
                     } catch (Exception error) {
                         Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterHandRender shader with id: {}:{}", id, error));
@@ -53,30 +56,16 @@ public class Shaders {
                 Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterHandRender shader with id: {}:{}", id, error));
             }
         }));
-		// This renders the shader in the world if it has depth. We really should try to render the hand in-depth, but this works for now.
-		Events.AfterWeatherRender.register(Identifier.of(Data.getVersion().getID(), "main"), (builder, textureWidth, textureHeight, framebufferSet) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
-            try {
-                if (shaders != null) shaders.forEach(shader -> {
-                    try {
-                        if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-                            //if (((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth()))) && (shader.shader().getUseDepth() && !CompatHelper.isIrisShadersEnabled())) || ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
-                            //    renderUsingFramebufferSet(id, shader, builder, textureWidth, textureHeight, framebufferSet);
-                            //}
-                        }
-                    } catch (Exception error) {
-                        Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterWeatherRender shader with id: {}:{}", id, error));
-                    }
-                });
-            } catch (Exception error) {
-                Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterWeatherRender shader with id: {}:{}", id, error));
-            }
-        }));
 		Events.AfterGameRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
+			if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+				return;
+			}
+
 			try {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
 						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if ((shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && !shader.shader().getShaderData().getDisableGameRendertype() && !shader.shader().getUseDepth()) && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+							if (shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && !shader.shader().getShaderData().getDisableGameRendertype() && !shader.shader().getUseDepth()) {
 								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
 							}
 						}
@@ -89,11 +78,15 @@ public class Shaders {
 			}
 		}));
 		Events.AfterScreenBackgroundRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
+			if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+				return;
+			}
+
 			try {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
 						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(Shader.RenderType.SCREEN_BACKGROUND) && !shader.shader().getUseDepth() && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+							if (shader.shader().getRenderType().call().equals(Shader.RenderType.SCREEN_BACKGROUND) && !shader.shader().getUseDepth()) {
 								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
 							}
 						}
@@ -106,11 +99,15 @@ public class Shaders {
 			}
 		}));
 		Events.AfterPanoramaRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
+			if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+				return;
+			}
+
 			try {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
 						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(Shader.RenderType.PANORAMA) && !shader.shader().getUseDepth() && !ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
+							if (shader.shader().getRenderType().call().equals(Shader.RenderType.PANORAMA) && !shader.shader().getUseDepth()) {
 								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
 							}
 						}
