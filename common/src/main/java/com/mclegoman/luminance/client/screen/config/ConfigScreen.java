@@ -96,7 +96,9 @@ public class ConfigScreen extends Screen {
 		if (ClientData.isDevelopment()) {
 			if (this.debugShader != null) {
 				try {
-					Debug.setDebugShader((this.debugShaderRegistry != null && !Identifier.of(this.debugShaderRegistry.getText()).getPath().equalsIgnoreCase("")) ? Identifier.of(this.debugShaderRegistry.getText()) : Shaders.getMainRegistryId(), !Identifier.of(this.debugShader.getText()).getPath().equalsIgnoreCase("") ? Identifier.of(this.debugShader.getText()) : Identifier.of("box_blur"));
+					Identifier shaderRegistry = (this.debugShaderRegistry != null && !Identifier.of(this.debugShaderRegistry.getText()).getPath().equalsIgnoreCase("")) ? Identifier.of(this.debugShaderRegistry.getText()) : Shaders.getMainRegistryId();
+					Identifier shaderId = !Identifier.of(this.debugShader.getText()).getPath().equalsIgnoreCase("") ? Identifier.of(this.debugShader.getText()) : Identifier.of("box_blur");
+					Shaders.guessPostShader(shaderRegistry, shaderId.toString()).ifPresentOrElse((postShader) -> Debug.setDebugShader(shaderRegistry, postShader.getID()), () -> Debug.setDebugShader(shaderRegistry, shaderId));
 				} catch (Exception error) {
 					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to update debug shader: {}", error));
 					Debug.setDebugShader(Shaders.getMainRegistryId(), Identifier.of("box_blur"));
