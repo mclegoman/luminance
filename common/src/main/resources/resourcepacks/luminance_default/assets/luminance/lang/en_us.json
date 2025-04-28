@@ -1,4 +1,5 @@
 {
+	"gui.luminance.shader.luminance.aa" : "Anti-alias",
 	"gui.luminance.shader.luminance.crt" : "CRT",
 	"gui.luminance.shader.luminance.gentoo" : "Gentoo",
 	"gui.luminance.shader.luminance.golden_blobs2" : "Golden Blobs",
