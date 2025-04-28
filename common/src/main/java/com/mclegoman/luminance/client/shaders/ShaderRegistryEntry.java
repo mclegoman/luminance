@@ -12,11 +12,11 @@ import net.minecraft.util.Identifier;
 
 public class ShaderRegistryEntry {
 	private final Identifier id;
-	private final boolean disableGameRendertype;
+	private final boolean disableUiRenderType;
 	private final JsonObject custom;
-	private ShaderRegistryEntry(Identifier id, boolean disableGameRendertype, JsonObject custom) {
+	private ShaderRegistryEntry(Identifier id, boolean disableUiRenderType, JsonObject custom) {
 		this.id = id;
-		this.disableGameRendertype = disableGameRendertype;
+		this.disableUiRenderType = disableUiRenderType;
 		this.custom = custom;
 	}
 	public static Builder builder(Identifier id) {
@@ -24,15 +24,15 @@ public class ShaderRegistryEntry {
 	}
 	public static class Builder {
 		private final Identifier id;
-		private boolean disableGameRendertype;
+		private boolean disableUiRenderType;
 		private JsonObject custom;
 		private Builder(Identifier id) {
 			this.id = id;
-			this.disableGameRendertype = false;
+			this.disableUiRenderType = false;
 			this.custom = new JsonObject();
 		}
-		public Builder disableGameRendertype(boolean disableGameRendertype) {
-			this.disableGameRendertype = disableGameRendertype;
+		public Builder disableUiRenderType(boolean disableUiRenderType) {
+			this.disableUiRenderType = disableUiRenderType;
 			return this;
 		}
 		public Builder custom(JsonObject custom) {
@@ -40,7 +40,7 @@ public class ShaderRegistryEntry {
 			return this;
 		}
 		public ShaderRegistryEntry build() {
-			return new ShaderRegistryEntry(this.id, this.disableGameRendertype, this.custom);
+			return new ShaderRegistryEntry(this.id, this.disableUiRenderType, this.custom);
 		}
 	}
 	public Identifier getID() {
@@ -49,8 +49,8 @@ public class ShaderRegistryEntry {
 	public Identifier getPostEffect(boolean full) {
 		return Shaders.getPostShader(this.id, full);
 	}
-	public boolean getDisableGameRendertype() {
-		return this.disableGameRendertype;
+	public boolean getDisableUiRenderType() {
+		return this.disableUiRenderType;
 	}
 	public JsonObject getCustom() {
 		return this.custom;

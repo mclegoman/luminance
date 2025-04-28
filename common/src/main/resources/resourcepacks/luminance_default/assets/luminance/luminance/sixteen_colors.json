@@ -1,7 +1,7 @@
 {
   "post_effect": "luminance:sixteen_colors",
   "enabled": true,
-  "disable_game_rendertype": false,
+  "disable_ui_rendertype": false,
   "custom": {
     "souper_secret_settings": {
       "groups": [ "edible", "filter", "retro" ]

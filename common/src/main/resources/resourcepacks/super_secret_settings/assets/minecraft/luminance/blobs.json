@@ -1,7 +1,7 @@
 {
   "post_effect": "minecraft:blobs",
   "enabled": true,
-  "disable_game_rendertype": true,
+  "disable_ui_rendertype": true,
   "custom": {
     "souper_secret_settings": {
       "groups": [ "edible", "blur" ]

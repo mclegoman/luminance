@@ -39,11 +39,13 @@ public class Shaders {
             if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
 				return;
 			}
+			// Renders shaders using the WORLD render type.
+			// Shaders that are set to render using the UI render type, but are
 			try {
                 if (shaders != null) shaders.forEach(shader -> {
                     try {
                         if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-                            if ((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getRenderType().call().equals(Shader.RenderType.UI) && (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth())))) {
+                            if ((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getRenderType().call().equals(Shader.RenderType.UI) && (shader.shader().getShaderData().getDisableUiRenderType() || shader.shader().getUseDepth())))) {
                             	renderUsingAllocator(id, shader, framebuffer, objectAllocator);
                             }
                         }
@@ -59,12 +61,12 @@ public class Shaders {
 			if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
 				return;
 			}
-
+			// Renders shaders using the UI render type.
 			try {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
 						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(Shader.RenderType.UI) && !shader.shader().getShaderData().getDisableGameRendertype() && !shader.shader().getUseDepth()) {
+							if (shader.shader().getRenderType().call().equals(Shader.RenderType.UI) && !shader.shader().getShaderData().getDisableUiRenderType() && !shader.shader().getUseDepth()) {
 								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
 							}
 						}
@@ -80,7 +82,7 @@ public class Shaders {
 			if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
 				return;
 			}
-
+			// Renders shaders using the UI_BACKGROUND render type.
 			try {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
@@ -101,7 +103,7 @@ public class Shaders {
 			if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
 				return;
 			}
-
+			// Renders shaders using the PANORAMA render type.
 			try {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {

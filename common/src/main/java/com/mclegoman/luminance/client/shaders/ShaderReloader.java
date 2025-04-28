@@ -44,8 +44,8 @@ public class ShaderReloader extends JsonResourceReloader {
 			}
 		});
 	}
-	private ShaderRegistryEntry getShaderData(Identifier id, boolean disableGameRendertype, JsonObject custom) {
-		return ShaderRegistryEntry.builder(id).disableGameRendertype(disableGameRendertype).custom(custom).build();
+	private ShaderRegistryEntry getShaderData(Identifier id, boolean disableUiRenderType, JsonObject custom) {
+		return ShaderRegistryEntry.builder(id).disableUiRenderType(disableUiRenderType).custom(custom).build();
 	}
 	private void add(List<Identifier> registries, ShaderRegistryEntry shaderData, ResourceManager manager) {
 		try {
@@ -83,10 +83,16 @@ public class ShaderReloader extends JsonResourceReloader {
 					JsonObject reader = jsonElement.getAsJsonObject();
 					Identifier post_effect = IdentifierHelper.identifierFromString(JsonHelper.getString(reader, "post_effect", identifier.getNamespace() + ":" + identifier.getPath()));
 					boolean enabled = JsonHelper.getBoolean(reader, "enabled", true);
-					boolean disableGameRenderType = JsonHelper.hasBoolean(reader, "disable_screen_mode") ? JsonHelper.getBoolean(reader, "disable_screen_mode") : JsonHelper.getBoolean(reader, "disable_game_rendertype", false);
+					// "disable_ui_rendertype" used to be called "disable_game_rendertype", and before that when this was part of Perspective "disable_screen_mode".
+					// We check for all of these in the order of "disable_ui_rendertype", "disable_game_rendertype", "disable_screen_mode".
+					// When creating a new luminance shader, it's recommended to use "disable_ui_rendertype".
+					boolean disableUiRenderType = JsonHelper.getBoolean(reader, "disable_ui_rendertype",
+							JsonHelper.getBoolean(reader, "disable_game_rendertype",
+									JsonHelper.getBoolean(reader, "disable_screen_mode",
+											false)));
 					JsonObject customData = JsonHelper.getObject(reader, "custom", new JsonObject());
 					JsonArray registries = JsonHelper.getArray(reader, "registries", new JsonArray());
-					ShaderRegistryEntry shaderData = getShaderData(post_effect, disableGameRenderType, customData);
+					ShaderRegistryEntry shaderData = getShaderData(post_effect, disableUiRenderType, customData);
 
 					List<Identifier> registryList = getRegistries(registries);
 					// If the registries are empty, we add the default registry.
