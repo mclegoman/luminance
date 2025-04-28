@@ -62,9 +62,8 @@ public abstract class WorldRendererMixin {
 	}
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderLateDebug(Lnet/minecraft/client/render/FrameGraphBuilder;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/client/render/Fog;)V", shift = At.Shift.AFTER))
-	private void luminance$afterRenderWeather(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
-		//TODO: this is more accurately described as after fabulous
-		Execute.afterWeatherRender(frameGraphBuilder, LuminanceFramebufferSet.addFabulousIfAbsent(framebufferSet, frameGraphBuilder, factory.get()));
+	private void luminance$afterRenderFabulous(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("factory") LocalRef<SimpleFramebufferFactory> factory) {
+		Execute.afterFabulousRender(frameGraphBuilder, LuminanceFramebufferSet.addFabulousIfAbsent(framebufferSet, frameGraphBuilder, factory.get()));
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))

@@ -91,8 +91,8 @@ public class Shader {
 	}
 	public enum RenderType {
 		WORLD(0),
-		GAME(1),
-		SCREEN_BACKGROUND(2),
+		UI(1),
+		UI_BACKGROUND(2),
 		PANORAMA(3);
 		private final int id;
 		RenderType(int id) {

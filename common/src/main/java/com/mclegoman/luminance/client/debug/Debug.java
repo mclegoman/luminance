@@ -26,10 +26,10 @@ public class Debug {
 	public static Shader.RenderType debugRenderType;
 	public static void cycleDebugRenderType() {
 		switch (Debug.debugRenderType) {
-			case GAME -> Debug.debugRenderType = Shader.RenderType.WORLD;
-			case WORLD -> Debug.debugRenderType = Shader.RenderType.SCREEN_BACKGROUND;
-			case SCREEN_BACKGROUND -> Debug.debugRenderType = Shader.RenderType.PANORAMA;
-			case PANORAMA -> Debug.debugRenderType = Shader.RenderType.GAME;
+			case UI -> Debug.debugRenderType = Shader.RenderType.WORLD;
+			case WORLD -> Debug.debugRenderType = Shader.RenderType.UI_BACKGROUND;
+			case UI_BACKGROUND -> Debug.debugRenderType = Shader.RenderType.PANORAMA;
+			case PANORAMA -> Debug.debugRenderType = Shader.RenderType.UI;
 		}
 	}
 	public static void applyDebugShader() {

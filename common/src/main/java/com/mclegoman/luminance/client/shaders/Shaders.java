@@ -35,16 +35,15 @@ public class Shaders {
 		Events.ClientResourceReloaders.register(Identifier.of(Data.getVersion().getID(), "shaders"), new ShaderReloader());
 		Uniforms.init();
 		Events.BeforeGameRender.register(Identifier.of(Data.getVersion().getID(), "update"), Uniforms::update);
-		Events.AfterHandRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
+		Events.AfterVanillaPostEffectRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
             if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
 				return;
 			}
-
 			try {
                 if (shaders != null) shaders.forEach(shader -> {
                     try {
                         if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-                            if ((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth())))) {
+                            if ((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getRenderType().call().equals(Shader.RenderType.UI) && (shader.shader().getShaderData().getDisableGameRendertype() || shader.shader().getUseDepth())))) {
                             	renderUsingAllocator(id, shader, framebuffer, objectAllocator);
                             }
                         }
@@ -56,7 +55,7 @@ public class Shaders {
                 Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterHandRender shader with id: {}:{}", id, error));
             }
         }));
-		Events.AfterGameRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
+		Events.AfterUiRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
 			if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
 				return;
 			}
@@ -65,7 +64,7 @@ public class Shaders {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
 						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(Shader.RenderType.GAME) && !shader.shader().getShaderData().getDisableGameRendertype() && !shader.shader().getUseDepth()) {
+							if (shader.shader().getRenderType().call().equals(Shader.RenderType.UI) && !shader.shader().getShaderData().getDisableGameRendertype() && !shader.shader().getUseDepth()) {
 								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
 							}
 						}
@@ -77,7 +76,7 @@ public class Shaders {
 				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
 			}
 		}));
-		Events.AfterScreenBackgroundRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
+		Events.AfterUiBackgroundRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
 			if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
 				return;
 			}
@@ -86,7 +85,7 @@ public class Shaders {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
 						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(Shader.RenderType.SCREEN_BACKGROUND) && !shader.shader().getUseDepth()) {
+							if (shader.shader().getRenderType().call().equals(Shader.RenderType.UI_BACKGROUND) && !shader.shader().getUseDepth()) {
 								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
 							}
 						}

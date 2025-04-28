@@ -27,12 +27,11 @@ public abstract class GameRendererMixin {
 	}
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/Framebuffer;beginWrite(Z)V"))
 	private void luminance$afterHandRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
-		//TODO: this is more accurately described as after vanilla post process
-		Execute.afterHandRender(this.pool);
+		Execute.afterVanillaPostEffectRender(this.pool);
 	}
 	@Inject(method = "render", at = @At("TAIL"))
-	private void luminance$afterGameRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
-		Execute.afterGameRender(this.pool);
+	private void luminance$afterUiRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
+		Execute.afterUiRender(this.pool);
 	}
 	@Inject(method = "onResized", at = @At(value = "TAIL"))
 	private void luminance$onResized(int width, int height, CallbackInfo ci) {

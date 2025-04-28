@@ -51,12 +51,12 @@ public class Events {
 	public static final Registry<Runnables.InGameHudRender> BeforeInGameHudRender = new Registry<>();
 	public static final Registry<Runnables.InGameHudRender> AfterInGameHudRender = new Registry<>();
 	public static final Registry<Runnable> BeforeWorldRender = new Registry<>();
-	public static final Registry<Runnables.WorldRender> AfterWeatherRender = new Registry<>();
+	public static final Registry<Runnables.WorldRender> AfterFabulousRender = new Registry<>();
 	public static final Registry<Runnables.GameRender> AfterWorldRender = new Registry<>();
-	public static final Registry<Runnables.GameRender> AfterHandRender = new Registry<>();
+	public static final Registry<Runnables.GameRender> AfterVanillaPostEffectRender = new Registry<>();
 	public static final Registry<Runnable> BeforeGameRender = new Registry<>();
-	public static final Registry<Runnables.GameRender> AfterGameRender = new Registry<>();
-	public static final Registry<Runnables.GameRender> AfterScreenBackgroundRender = new Registry<>();
+	public static final Registry<Runnables.GameRender> AfterUiRender = new Registry<>();
+	public static final Registry<Runnables.GameRender> AfterUiBackgroundRender = new Registry<>();
 	public static final Registry<Runnables.GameRender> AfterPanoramaRender = new Registry<>();
 
 	public static final Registry<Runnables.OnResized> OnResized = new Registry<>();

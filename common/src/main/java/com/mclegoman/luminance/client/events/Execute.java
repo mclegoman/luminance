@@ -76,21 +76,21 @@ public class Execute {
 			}
 		}));
 	}
-	public static void afterHandRender(ObjectAllocator allocator) {
+	public static void afterVanillaPostEffectRender(ObjectAllocator allocator) {
 		mergeDepth(allocator);
 
 		RenderSystem.depthMask(false);
-		Events.AfterHandRender.registry.forEach(((id, runnable) -> {
+		Events.AfterVanillaPostEffectRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterHandRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute VanillaPostEffect event with id: {}: {}", id, error));
 			}
 		}));
 		RenderSystem.depthMask(true);
 	}
-	public static void afterGameRender(ObjectAllocator allocator) {
-		Events.AfterGameRender.registry.forEach(((id, runnable) -> {
+	public static void afterUiRender(ObjectAllocator allocator) {
+		Events.AfterUiRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
@@ -99,7 +99,7 @@ public class Execute {
 		}));
 	}
 	public static void afterScreenBackgroundRender(ObjectAllocator allocator) {
-		Events.AfterScreenBackgroundRender.registry.forEach(((id, runnable) -> {
+		Events.AfterUiBackgroundRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
@@ -128,17 +128,17 @@ public class Execute {
 			}
 		}));
 	}
-	public static void afterWeatherRender(FrameGraphBuilder frameGraphBuilder, PostEffectProcessor.FramebufferSet framebufferSet) {
-		if (Events.AfterWeatherRender.registry.isEmpty()) {
+	public static void afterFabulousRender(FrameGraphBuilder frameGraphBuilder, PostEffectProcessor.FramebufferSet framebufferSet) {
+		if (Events.AfterFabulousRender.registry.isEmpty()) {
 			return;
 		}
 
 		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.of(Data.getVersion().getID(), "prepare_shader_render"), () -> RenderSystem.depthMask(false));
-		Events.AfterWeatherRender.registry.forEach(((id, runnable) -> {
+		Events.AfterFabulousRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(frameGraphBuilder, ClientData.minecraft.getFramebuffer().textureWidth, ClientData.minecraft.getFramebuffer().textureHeight, framebufferSet);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterWeatherRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterFabulousRender event with id: {}: {}", id, error));
 			}
 		}));
 		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.of(Data.getVersion().getID(), "cleanup_shader_render"), () -> RenderSystem.depthMask(true));
