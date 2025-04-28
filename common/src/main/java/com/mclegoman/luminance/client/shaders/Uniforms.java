@@ -322,14 +322,17 @@ public class Uniforms {
 	}
 	public static boolean updatingAlpha = false;
 	public static boolean updatingAlpha() {
-		boolean value = Keybindings.adjustAlpha.isPressed();
-		if (value) {
-			if (!updatingAlpha) {
-				prevAlpha = getRawAlpha();
+		if (Keybindings.adjustAlpha != null) {
+			boolean value = Keybindings.adjustAlpha.isPressed();
+			if (value) {
+				if (!updatingAlpha) {
+					prevAlpha = getRawAlpha();
+				}
+				updatingAlpha = true;
 			}
-			updatingAlpha = true;
+			return value;
 		}
-		return value;
+		return false;
 	}
 	public static float getPerspective(ShaderTime shaderTime) {
 		if (ClientData.minecraft.options != null) {
