@@ -7,8 +7,8 @@ uniform vec2 OutSize;
 
 uniform sampler2D InSampler;
 
-void main() {
-    fragColor = vec4(1.0, texCoord.x, texCoord.y, 1.0);
+out float gl_FragDepth;
 
-    gl_FragDepth = fract(texCoord.x*10)*100*texCoord.y;//texture2D(InSampler, texCoord).r;
+void main() {
+    gl_FragDepth = texture2D(InSampler, texCoord).r;
 }

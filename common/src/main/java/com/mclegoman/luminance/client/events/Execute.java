@@ -15,10 +15,8 @@ import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.client.util.CompatHelper;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import com.mclegoman.luminance.mixin.client.shaders.GameRendererAccessor;
 import com.mojang.blaze3d.systems.ProjectionType;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.*;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
@@ -203,24 +201,22 @@ public class Execute {
 		try {
 			Framebuffer framebuffer = ClientData.minecraft.getFramebuffer();
 
-			//Framebuffer framebuffer = allocator.acquire(framebufferFactory);
-			//framebuffer.clear();
-
 			ShaderProgram shaderProgram = ClientData.minecraft.getShaderLoader().getProgramToLoad(new ShaderProgramKey(Identifier.of(Data.getVersion().getID(), "depth_fix"), VertexFormats.POSITION, Defines.EMPTY));
-			//shaderProgram.addSamplerTexture("InSampler", worldDepth.getDepthAttachment());
+			shaderProgram.addSamplerTexture("InSampler", worldDepth.getDepthAttachment());
 			shaderProgram.getUniformOrDefault("InSize").set((float)framebuffer.textureWidth, (float)framebuffer.textureHeight);
 			shaderProgram.getUniformOrDefault("OutSize").set((float)framebuffer.textureWidth, (float)framebuffer.textureHeight);
 			RenderSystem.setShader(shaderProgram);
 
-			framebuffer.beginWrite(false);
-			//RenderSystem.depthFunc(515);
-			RenderSystem.disableDepthTest();
+			RenderSystem.depthFunc(515);
 			//RenderSystem.depthFunc(GL30.GL_ALWAYS);
-			//RenderSystem.depthMask(false);
-			//RenderSystem.depthMask(true);
+			RenderSystem.enableDepthTest();
+			RenderSystem.depthMask(true);
 
+			Matrix4f projectionMatrix = (new Matrix4f()).setOrtho(0.0F, (float)framebuffer.textureWidth, 0.0F, (float)framebuffer.textureHeight, 0.1F, 1000.0F);
+
+			framebuffer.beginWrite(true);
 			RenderSystem.backupProjectionMatrix();
-			RenderSystem.setProjectionMatrix((new Matrix4f()).setOrtho(0.0F, (float)framebuffer.textureWidth, 0.0F, (float)framebuffer.textureHeight, 0.1F, 1000.0F), ProjectionType.ORTHOGRAPHIC);
+			RenderSystem.setProjectionMatrix(projectionMatrix, ProjectionType.ORTHOGRAPHIC);
 			BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
 			bufferBuilder.vertex(0.0F, 0.0F, 500.0F);
 			bufferBuilder.vertex((float)framebuffer.textureWidth, 0.0F, 500.0F);
@@ -229,7 +225,9 @@ public class Execute {
 			BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 			RenderSystem.restoreProjectionMatrix();
 
-			RenderSystem.enableDepthTest();
+
+
+			//RenderSystem.enableDepthTest();
 			//RenderSystem.depthFunc(515);
 			//RenderSystem.depthMask(true);
 
