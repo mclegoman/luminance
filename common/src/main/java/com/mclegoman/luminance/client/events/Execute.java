@@ -12,19 +12,20 @@ import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
 import com.mclegoman.luminance.client.translation.Translation;
+import com.mclegoman.luminance.client.util.CompatHelper;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
+import com.mojang.blaze3d.systems.ProjectionType;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gl.PostEffectPass;
-import net.minecraft.client.gl.PostEffectProcessor;
+import net.minecraft.client.gl.*;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.FrameGraphBuilder;
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.entity.Entity;
 import net.minecraft.resource.ReloadableResourceManagerImpl;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
 
 public class Execute {
 	public static void registerClientResourceReloaders(ReloadableResourceManagerImpl resourceManager) {
@@ -41,8 +42,8 @@ public class Execute {
 	}
 	public static void onJoinWorld() {
 		ClientData.minecraft.send(() -> {
-            assert ClientData.minecraft.player != null;
-            SpectatorHandler.onSpectate(ClientData.minecraft.player, LuminanceConfig.config.spectatorPriorityMode.value().getMode());
+			assert ClientData.minecraft.player != null;
+			SpectatorHandler.onSpectate(ClientData.minecraft.player, LuminanceConfig.config.spectatorPriorityMode.value().getMode());
 		});
 	}
 	public static void onDisconnect() {
@@ -76,6 +77,8 @@ public class Execute {
 		}));
 	}
 	public static void afterHandRender(ObjectAllocator allocator) {
+		mergeDepth(allocator);
+
 		RenderSystem.depthMask(false);
 		Events.AfterHandRender.registry.forEach(((id, runnable) -> {
 			try {
@@ -148,6 +151,8 @@ public class Execute {
 				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterWorldRender event with id: {}: {}", id, error));
 			}
 		}));
+
+		copyDepth(allocator);
 	}
 	public static void beforeShaderRender(PostEffectPass postEffectPass) {
 		Events.BeforeShaderRender.registry.forEach(((id, runnable) -> {
@@ -166,5 +171,71 @@ public class Execute {
 				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterShaderRender event with id: {}: {}", id, error));
 			}
 		}));
+	}
+
+	private static SimpleFramebufferFactory framebufferFactory;
+	private static Framebuffer worldDepth;
+
+	private static void copyDepth(ObjectAllocator allocator) {
+		cleanupDepth(allocator);
+
+		if (CompatHelper.isIrisShadersEnabled()) {
+			return;
+		}
+
+		Framebuffer framebuffer = ClientData.minecraft.getFramebuffer();
+
+		framebufferFactory = new SimpleFramebufferFactory(framebuffer.textureWidth, framebuffer.textureHeight, true);
+		worldDepth = allocator.acquire(framebufferFactory);
+		worldDepth.copyDepthFrom(framebuffer);
+
+		framebuffer.beginWrite(false);
+	}
+
+	private static void mergeDepth(ObjectAllocator allocator) {
+		if (CompatHelper.isIrisShadersEnabled()) {
+			return;
+		}
+
+		try {
+			Framebuffer framebuffer = ClientData.minecraft.getFramebuffer();
+			framebuffer.beginWrite(true);
+
+			ShaderProgram shaderProgram = ClientData.minecraft.getShaderLoader().getProgramToLoad(new ShaderProgramKey(Identifier.of(Data.getVersion().getID(), "depth_fix"), VertexFormats.POSITION, Defines.EMPTY));
+			shaderProgram.addSamplerTexture("InSampler", worldDepth.getDepthAttachment());
+			shaderProgram.addSamplerTexture("HandSampler", framebuffer.getDepthAttachment());
+			shaderProgram.getUniformOrDefault("InSize").set((float)framebuffer.textureWidth, (float)framebuffer.textureHeight);
+			shaderProgram.getUniformOrDefault("OutSize").set((float)framebuffer.textureWidth, (float)framebuffer.textureHeight);
+			RenderSystem.setShader(shaderProgram);
+
+			RenderSystem.depthFunc(519);
+			RenderSystem.enableDepthTest();
+			RenderSystem.depthMask(true);
+
+			Matrix4f projectionMatrix = (new Matrix4f()).setOrtho(0.0F, (float)framebuffer.textureWidth, 0.0F, (float)framebuffer.textureHeight, 0.1F, 1000.0F);
+
+			RenderSystem.backupProjectionMatrix();
+			RenderSystem.setProjectionMatrix(projectionMatrix, ProjectionType.ORTHOGRAPHIC);
+			BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+			bufferBuilder.vertex(0.0F, 0.0F, 500.0F);
+			bufferBuilder.vertex((float)framebuffer.textureWidth, 0.0F, 500.0F);
+			bufferBuilder.vertex((float)framebuffer.textureWidth, (float)framebuffer.textureHeight, 500.0F);
+			bufferBuilder.vertex(0.0F, (float)framebuffer.textureHeight, 500.0F);
+			BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+			RenderSystem.restoreProjectionMatrix();
+
+			framebuffer.endWrite();
+		} catch (Exception e) {
+			Data.getVersion().sendToLog(LogType.INFO, "Error Fixing Depth: "+e.getMessage());
+		}
+
+		cleanupDepth(allocator);
+	}
+
+	private static void cleanupDepth(ObjectAllocator allocator) {
+		if (worldDepth != null) {
+			allocator.release(framebufferFactory, worldDepth);
+			worldDepth = null;
+		}
 	}
 }
