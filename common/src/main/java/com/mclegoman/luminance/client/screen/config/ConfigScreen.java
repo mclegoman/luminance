@@ -96,10 +96,34 @@ public class ConfigScreen extends Screen {
 		if (ClientData.isDevelopment()) {
 			if (this.debugShader != null) {
 				try {
-					Debug.setDebugShader((this.debugShaderRegistry != null && !Identifier.of(this.debugShaderRegistry.getText()).getPath().equalsIgnoreCase("")) ? Identifier.of(this.debugShaderRegistry.getText()) : Shaders.getMainRegistryId(), !Identifier.of(this.debugShader.getText()).getPath().equalsIgnoreCase("") ? Identifier.of(this.debugShader.getText()) : Identifier.of("box_blur"));
+					Identifier shaderRegistry = (this.debugShaderRegistry != null && !Identifier.of(this.debugShaderRegistry.getText()).getPath().equalsIgnoreCase("")) ? Identifier.of(this.debugShaderRegistry.getText()) : Shaders.getMainRegistryId();
+					Identifier shaderId = !Identifier.of(this.debugShader.getText()).getPath().equalsIgnoreCase("") ? Identifier.of(this.debugShader.getText()) : Identifier.of("box_blur");
+					Shaders.guessPostShader(shaderRegistry, shaderId.toString()).ifPresentOrElse((postShader) -> Debug.setDebugShader(shaderRegistry, postShader.getID()), () -> Debug.setDebugShader(shaderRegistry, shaderId));
 				} catch (Exception error) {
 					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to update debug shader: {}", error));
 					Debug.setDebugShader(Shaders.getMainRegistryId(), Identifier.of("box_blur"));
+				}
+				try {
+					boolean registryFocused = this.debugShaderRegistry.isFocused();
+					boolean shaderFocused = this.debugShader.isFocused();
+					int registryCursor = this.debugShaderRegistry.getCursor();
+					int shaderCursor = this.debugShader.getCursor();
+					String registryText = this.debugShaderRegistry.getText();
+					String shaderText = this.debugShader.getText();
+					this.debugShaderRegistry.setText(Debug.debugShader.getFirst().toString());
+					this.debugShader.setText(Debug.debugShader.getSecond().toString());
+					if (registryFocused) {
+						this.debugShaderRegistry.setFocused(true);
+						if (this.debugShaderRegistry.getText().length() > registryText.length()) registryCursor += (this.debugShaderRegistry.getText().length() - registryText.length());
+						this.debugShaderRegistry.setCursor(registryCursor, false);
+					}
+					if (shaderFocused) {
+						this.debugShader.setFocused(true);
+						if (this.debugShader.getText().length() > shaderText.length()) shaderCursor += (this.debugShader.getText().length() - shaderText.length());
+						this.debugShader.setCursor(shaderCursor, false);
+					}
+				} catch (Exception error) {
+					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to update debug shader text field: {}", error));
 				}
 			}
 		}
