@@ -103,6 +103,16 @@ public class ConfigScreen extends Screen {
 					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to update debug shader: {}", error));
 					Debug.setDebugShader(Shaders.getMainRegistryId(), Identifier.of("box_blur"));
 				}
+				try {
+					boolean registryFocused = this.debugShaderRegistry.isFocused();
+					boolean shaderFocused = this.debugShader.isFocused();
+					this.debugShaderRegistry.setText(Debug.debugShader.getFirst().toString());
+					this.debugShader.setText(Debug.debugShader.getSecond().toString());
+					this.debugShaderRegistry.setFocused(registryFocused);
+					this.debugShader.setFocused(shaderFocused);
+				} catch (Exception error) {
+					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to update debug shader text field: {}", error));
+				}
 			}
 		}
 	}
