@@ -106,10 +106,22 @@ public class ConfigScreen extends Screen {
 				try {
 					boolean registryFocused = this.debugShaderRegistry.isFocused();
 					boolean shaderFocused = this.debugShader.isFocused();
+					int registryCursor = this.debugShaderRegistry.getCursor();
+					int shaderCursor = this.debugShader.getCursor();
+					String registryText = this.debugShaderRegistry.getText();
+					String shaderText = this.debugShader.getText();
 					this.debugShaderRegistry.setText(Debug.debugShader.getFirst().toString());
 					this.debugShader.setText(Debug.debugShader.getSecond().toString());
-					this.debugShaderRegistry.setFocused(registryFocused);
-					this.debugShader.setFocused(shaderFocused);
+					if (registryFocused) {
+						this.debugShaderRegistry.setFocused(true);
+						if (!registryText.equals(this.debugShaderRegistry.getText())) registryCursor += (this.debugShaderRegistry.getText().length() - registryText.length());
+						this.debugShaderRegistry.setCursor(registryCursor, false);
+					}
+					if (shaderFocused) {
+						this.debugShader.setFocused(true);
+						if (!shaderText.equals(this.debugShader.getText())) shaderCursor += (this.debugShader.getText().length() - shaderText.length());
+						this.debugShader.setCursor(shaderCursor, false);
+					}
 				} catch (Exception error) {
 					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to update debug shader text field: {}", error));
 				}
