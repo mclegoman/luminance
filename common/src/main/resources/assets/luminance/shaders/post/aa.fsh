@@ -8,21 +8,23 @@ in vec2 oneTexel;
 out vec4 fragColor;
 
 uniform vec3 ColorDiff;
-uniform vec2 SampleDistance;
+uniform vec4 SampleDistance;
 uniform vec4 Weights;
 uniform float Bias;
 
 void main() {
-    vec2 texel = oneTexel*SampleDistance;
-    vec3 tl = texture(InSampler, texCoord + vec2(-texel.x, -texel.y)).xyz;
-    vec3 tc = texture(InSampler, texCoord + vec2(0.0,      -texel.y)).xyz;
-    vec3 tr = texture(InSampler, texCoord + vec2( texel.x, -texel.y)).xyz;
-    vec3 ml = texture(InSampler, texCoord + vec2(-texel.x,  0.0    )).xyz;
-    vec3 mc = texture(InSampler, texCoord + vec2(0.0,       0.0    )).xyz;
-    vec3 mr = texture(InSampler, texCoord + vec2( texel.x,  0.0    )).xyz;
-    vec3 bl = texture(InSampler, texCoord + vec2(-texel.x,  texel.y)).xyz;
-    vec3 bc = texture(InSampler, texCoord + vec2( 0.0,      texel.y)).xyz;
-    vec3 br = texture(InSampler, texCoord + vec2( texel.x,  texel.y)).xyz;
+    vec2 aTexel = oneTexel*SampleDistance.xy;
+    vec2 bTexel = oneTexel*SampleDistance.z;
+    vec2 cTexel = oneTexel*SampleDistance.w;
+    vec3 tl = texture(InSampler, texCoord + vec2(-bTexel.x, -bTexel.y)).xyz;
+    vec3 tc = texture(InSampler, texCoord + vec2(0.0,       -aTexel.y)).xyz;
+    vec3 tr = texture(InSampler, texCoord + vec2( cTexel.x, -cTexel.y)).xyz;
+    vec3 ml = texture(InSampler, texCoord + vec2(-aTexel.x,  0.0    )).xyz;
+    vec3 mc = texture(InSampler, texCoord + vec2(0.0,        0.0    )).xyz;
+    vec3 mr = texture(InSampler, texCoord + vec2( aTexel.x,  0.0    )).xyz;
+    vec3 bl = texture(InSampler, texCoord + vec2(-cTexel.x,  cTexel.y)).xyz;
+    vec3 bc = texture(InSampler, texCoord + vec2( 0.0,       aTexel.y)).xyz;
+    vec3 br = texture(InSampler, texCoord + vec2( bTexel.x,  bTexel.y)).xyz;
 
     float bias = 1.0/Bias;
     float di1Dist = dot(abs(tl - br), ColorDiff) + bias;
