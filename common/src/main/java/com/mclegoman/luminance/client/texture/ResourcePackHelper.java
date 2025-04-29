@@ -7,7 +7,7 @@
 
 package com.mclegoman.luminance.client.texture;
 
-import net.fabricmc.loader.api.ModContainer;
+import com.mclegoman.luminance.common.util.ModContainer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 

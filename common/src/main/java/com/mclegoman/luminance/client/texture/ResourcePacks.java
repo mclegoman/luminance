@@ -9,8 +9,7 @@ package com.mclegoman.luminance.client.texture;
 
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
+import com.mclegoman.luminance.common.util.ModContainer;
 import net.minecraft.util.Identifier;
 
 import java.util.Optional;
@@ -26,7 +25,7 @@ public class ResourcePacks {
 	 * You only need to include the licence in your comment if it is not GNU LGPLv3.
 	 */
 	public static void init() {
-		Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(Data.getVersion().getID());
+		Optional<ModContainer> modContainer = Data.getVersion().getModContainer();
 		if (modContainer.isPresent()) {
 			/*
 	            Super Secret Settings

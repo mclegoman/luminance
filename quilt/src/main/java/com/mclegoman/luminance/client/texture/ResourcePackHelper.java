@@ -10,9 +10,10 @@ package com.mclegoman.luminance.client.texture;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
+import com.mclegoman.luminance.common.util.ModContainer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
-import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -25,7 +26,8 @@ public class ResourcePackHelper {
 				case enabledDefault -> ResourcePackActivationType.DEFAULT_ENABLED;
 			};
 			Data.getVersion().sendToLog(LogType.INFO, Translation.getString("Registering resource pack: {}", id.getPath()));
-			ResourceManagerHelper.registerBuiltinResourcePack(id, container, text, resourcePackActivationType);
+			// TODO: (Low Priority) Create our own resource loader.
+			FabricLoaderImpl.INSTANCE.getModContainer(container.metadata().id()).ifPresent(modContainer -> ResourceManagerHelper.registerBuiltinResourcePack(id, modContainer, text, resourcePackActivationType));
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to register resource pack: {}", error));
 		}
