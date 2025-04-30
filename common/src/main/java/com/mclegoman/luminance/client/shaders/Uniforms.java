@@ -77,6 +77,7 @@ public class Uniforms {
 			registerStandardTree(path, "cam_fract", Uniforms::getCameraFract, 0f, 1f, 3, EmptyConfig.INSTANCE,  true);
 			registerSingleTree(path, "pitch", Uniforms::getPitch, -90f, 90f);
 			registerStandardTree(path, "yaw", Uniforms::getYaw, -180f, 180f, 1, null, true);
+			registerStandardTree(path, "clipping", Uniforms::getClippingPlanes, 0f, null, 2, null, false);
 			registerSingleTree(path, "velocity", Uniforms::getVelocity, 0f, null);
 			registerRangedTree(path, "currentHealth", Uniforms::getCurrentHealth, Uniforms::getZero, (a, b, c) -> c.set(0, getMaxHealth(b)), 1, null, false);
 			registerSingleTree(path, "maxHealth", Uniforms::getMaxHealth, 0f, null);
@@ -239,10 +240,15 @@ public class Uniforms {
 			uniformValue.set(new Vec3d(0, 0, 0));
 		}
 	}
-
 	private static Vec3d fract(Vec3d pos) {
 		return new Vec3d(MathHelper.fractionalPart(pos.x), MathHelper.fractionalPart(pos.y), MathHelper.fractionalPart(pos.z));
 	}
+
+	public static void getClippingPlanes(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		uniformValue.set(0, 0.05f);
+		uniformValue.set(1, ClientData.minecraft.gameRenderer.getFarPlaneDistance());
+	}
+
 	public static float getPitch(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getPitch(shaderTime.getTickDelta()) % 360.0F : 0.0F;
 	}

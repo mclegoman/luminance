@@ -515,8 +515,7 @@ This is because the depth buffer only exists on the red channel, so to get the d
 
 While this fixes the color, the brightness is still way too low for further away objects, that's because the depth buffer uses a weird scale which is something along the lines of 0.0 = in your face, 1.0 = really far away - this can be useful, but often you want it measured in blocks instead
 
-Thankfully, someone else has already encountered this problem, so ill just use their function (**I do not remember where I found this, if someone knows let me know :3**)
-
+To fix this you just need to do some funky maths to make it linear, like so:
 ```c#
 float near = 0.1;
 float far = 1000.0;
@@ -537,7 +536,6 @@ void main(){
 
     fragColor = vec4(col.rgb, 1.0);
 }
-
 ```
 
 We just wrap each `texture(...).r` with the `LinearizeDepth(...)` function defined above `main()`, and now the values are measured in blocks!
@@ -577,6 +575,42 @@ The key part here is the rounding function `floor(col*steps)/steps`, which limit
 The steps value is calculated with a function that gets smaller the further away it is, so while close objects get a lot of values to use, the further away it gets the less color precision there is - and then ive also added another uniform to control how quickly this happens
 
 This creates an interesting fade out of color into geometry only - in fact that'll be what I call it, so now just to rename all the files to "geometry_fade"
+
+### Using a Dynamic Uniform
+
+The `LinearizeDepth()` function used there is actually slightly inaccurate - minecraft changes its far plane based on render distance
+
+To account for this, luminance has a [dynamic uniform](AddingShaders.md) for the clipping planes!
+
+Using a dynamic uniform is simple - you add it the same as usual, but you call it whatever the dynamic uniforms name is (which you can figure out using soup's gui)
+
+The uniform for the clipping planes is called `luminance_clipping`, so it looks like this:
+
+```json
+{ "name": "luminance_clipping", "type": "float", "count": 2, "values": [ 0.05, 750 ]}
+```
+
+```glsl
+uniform vec2 luminance_clipping;
+
+float near = luminance_clipping.x*2;
+float far = luminance_clipping.y*2;
+float LinearizeDepth(float depth) {
+    float z = depth * 2.0 - 1.0;
+    return (near * far) / (far + near - z * (far - near));
+}
+
+// which can be simplified to this:
+uniform vec2 luminance_clipping;
+
+float LinearizeDepth(float depth) {
+    return (luminance_clipping.x*luminance_clipping.y) / (depth * (luminance_clipping.x - luminance_clipping.y) + luminance_clipping.y);
+}
+```
+
+Note that `luminance_clipping` has two values, so a `vec2` is used, most uniforms only have one value so would just use `float`
+
+You can turn any multi-value uniform into a single value if needed, for instance if you only want the y part of `luminance_pos`, you can do `uniform float luminance_pos_y` - this is also useful when doing [overrides](AddingShaders.md#dynamic-uniforms)
 
 ## Vertex Shaders
 
