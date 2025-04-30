@@ -38,9 +38,9 @@ public class SmoothUniform extends ChildUniform {
         assert parent != null;
         UniformValue uniformValue = parent.getCache(config, shaderTime);
         if (loop) {
-            smooth.loopLerp(uniformValue, shaderTime.getDeltaTime(), getMin(config, shaderTime).orElse(null), getMax(config, shaderTime).orElse(null));
+            smooth.loopLerp(uniformValue, shaderTime.getExpDeltaTime(ShaderTime.defaultSpeed), getMin(config, shaderTime).orElse(null), getMax(config, shaderTime).orElse(null));
         } else {
-            smooth.lerp(uniformValue, shaderTime.getDeltaTime());
+            smooth.lerp(uniformValue, shaderTime.getExpDeltaTime(ShaderTime.defaultSpeed));
         }
     }
 

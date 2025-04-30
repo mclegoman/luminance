@@ -17,6 +17,9 @@ public class ShaderTime {
 
     private float elapsedTime;
 
+    public static final float defaultSpeed = 1f;
+    private float expDelta;
+
     public void update(float tickDelta) {
         this.tickDelta = tickDelta;
         deltaTime = ((tickDelta < prevTickDelta ? 1 : 0) + tickDelta-prevTickDelta);
@@ -24,6 +27,8 @@ public class ShaderTime {
 
         elapsedTime += deltaTime/24000f;
         if (elapsedTime > 1) elapsedTime -= 1;
+
+        expDelta = (float)(1-Math.exp(-defaultSpeed*deltaTime));
     }
 
     public float getTickDelta() {
@@ -32,6 +37,15 @@ public class ShaderTime {
 
     public float getDeltaTime() {
         return deltaTime;
+    }
+
+    // factor for proper lerp smoothing, as per https://www.youtube.com/watch?v=LSNQuFEDOyQ
+    // speed of 1 is "slow", speed of 25 is "fast"
+    public float getExpDeltaTime(float speed) {
+        if (speed == defaultSpeed) {
+            return expDelta;
+        }
+        return (float)(1-Math.exp(-speed*deltaTime));
     }
 
     public float getModuloTime(float modulo) {
