@@ -28,6 +28,7 @@ import com.mclegoman.luminance.client.util.Accessors;
 import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
+import com.mclegoman.luminance.mixin.client.shaders.GameRendererAccessor;
 import com.mclegoman.luminance.mixin.client.shaders.TitleScreenAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -72,6 +73,8 @@ public class Uniforms {
 			registerStandardTree(path, "eye_fract", Uniforms::getEyeFract, 0f, 1f, 3, null, true);
 			registerStandardTree(path, "pos", Uniforms::getPos, null, null, 3, null, false);
 			registerStandardTree(path, "pos_fract", Uniforms::getPosFract, 0f, 1f, 3, null,  true);
+			registerStandardTree(path, "cam", Uniforms::getCamera, null, null, 3, EmptyConfig.INSTANCE, false);
+			registerStandardTree(path, "cam_fract", Uniforms::getCameraFract, 0f, 1f, 3, EmptyConfig.INSTANCE,  true);
 			registerSingleTree(path, "pitch", Uniforms::getPitch, -90f, 90f);
 			registerStandardTree(path, "yaw", Uniforms::getYaw, -180f, 180f, 1, null, true);
 			registerSingleTree(path, "velocity", Uniforms::getVelocity, 0f, null);
@@ -222,6 +225,21 @@ public class Uniforms {
 			uniformValue.set(new Vec3d(0, 0, 0));
 		}
 	}
+	public static void getCamera(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		if (ClientData.minecraft.player != null) {
+			uniformValue.set(((GameRendererAccessor)ClientData.minecraft.gameRenderer).getCamera().getPos());
+		} else {
+			uniformValue.set(new Vec3d(0, 64, 0));
+		}
+	}
+	public static void getCameraFract(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		if (ClientData.minecraft.player != null) {
+			uniformValue.set(fract(((GameRendererAccessor)ClientData.minecraft.gameRenderer).getCamera().getPos()));
+		} else {
+			uniformValue.set(new Vec3d(0, 0, 0));
+		}
+	}
+
 	private static Vec3d fract(Vec3d pos) {
 		return new Vec3d(MathHelper.fractionalPart(pos.x), MathHelper.fractionalPart(pos.y), MathHelper.fractionalPart(pos.z));
 	}
