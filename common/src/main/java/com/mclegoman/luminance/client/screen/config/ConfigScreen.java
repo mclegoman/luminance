@@ -147,17 +147,8 @@ public class ConfigScreen extends Screen {
 		GridWidget grid = new GridWidget();
 		grid.getMainPositioner().alignHorizontalCenter().margin(2);
 		GridWidget.Adder gridAdder = grid.createAdder(2);
-		gridAdder.add(new SliderWidget(gridAdder.getGridWidget().getX(), gridAdder.getGridWidget().getY(), 150, 20, Translation.getConfigTranslation(Data.getVersion().getID(), "alpha", new Object[]{Text.literal(Uniforms.getRawAlpha() + "%")}, false), Uniforms.getRawAlpha() / 100.0F) {
-			@Override
-			protected void updateMessage() {
-				setMessage(Translation.getConfigTranslation(Data.getVersion().getID(),  "alpha", new Object[]{Text.literal(Uniforms.getRawAlpha() + "%")}, false));
-			}
-			@Override
-			protected void applyValue() {
-				LuminanceConfig.config.alphaLevel.setValue((int) ((value) * 100), false);
-				saveConfig = true;
-			}
-		}, 1).setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha", new Object[]{Translation.getConfigTranslation(Data.getVersion().getID(), "keybinding", new Object[]{Keybindings.adjustAlpha.getBoundKeyLocalizedText()}, new Formatting[]{Formatting.RED, Formatting.BOLD})}, true)));
+		gridAdder.add(new AlphaSlider(gridAdder.getGridWidget().getX(), gridAdder.getGridWidget().getY(), 150, 20, Translation.getConfigTranslation(Data.getVersion().getID(), "alpha", new Object[]{Text.literal(Uniforms.getRawAlpha() + "%")}, false), Uniforms.getRawAlpha() / 100.0F, () -> saveConfig = true), 1)
+				.setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha", new Object[]{Translation.getConfigTranslation(Data.getVersion().getID(), "keybinding", new Object[]{Keybindings.adjustAlpha.getBoundKeyLocalizedText()}, new Formatting[]{Formatting.RED, Formatting.BOLD})}, true)));
 		ButtonWidget overlay = ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", LuminanceConfig.config.showAlphaLevelOverlay.value())}), (button) -> {
 			LuminanceConfig.config.showAlphaLevelOverlay.setValue(!LuminanceConfig.config.showAlphaLevelOverlay.value(), false);
 			this.saveConfig = true;
@@ -249,5 +240,24 @@ public class ConfigScreen extends Screen {
 	@Override
 	public boolean shouldPause() {
 		return !ClientData.isDevelopment() && super.shouldPause();
+	}
+
+	public static class AlphaSlider extends SliderWidget {
+		private final Runnable onChange;
+
+		public AlphaSlider(int x, int y, int width, int height, Text text, double value, Runnable onChange) {
+			super(x, y, width, height, text, value);
+			this.onChange = onChange;
+		}
+
+		@Override
+		protected void updateMessage() {
+			setMessage(Translation.getConfigTranslation(Data.getVersion().getID(),  "alpha", new Object[]{Text.literal(Uniforms.getRawAlpha() + "%")}, false));
+		}
+		@Override
+		protected void applyValue() {
+			LuminanceConfig.config.alphaLevel.setValue((int) ((value) * 100), false);
+			onChange.run();
+		}
 	}
 }
