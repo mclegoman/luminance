@@ -47,8 +47,8 @@ include(modImplementation "maven.modrinth:luminance:${project.luminance}")
    1. Replace 1.0.0-rc.1+1.21.4-fabric with the latest version of Luminance!  
       1. This can be found on the version page on [Modrinth](https://modrinth.com/mod/luminance).  
 ```
-luminance = 1.0.0-rc.1+1.21.4-fabric
-#luminance = 1.0.0-rc.1+1.21.4-quilt
+luminance = 1.0.0-release.1+1.21.4-fabric
+#luminance = 1.0.0-release.1+1.21.4-quilt
 ```
 4. Reload gradle and you're ready to use Luminance!
 
