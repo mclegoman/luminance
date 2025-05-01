@@ -33,7 +33,6 @@ The files in the `luminance/` folder look like this:
   "post_effect": "<namespace:id>",
   "enabled": true,
   "disable_game_rendertype": <...>,
-  
   "registries": [ ... ],
   "custom": {
     "souper_secret_settings": {
@@ -44,15 +43,15 @@ The files in the `luminance/` folder look like this:
 ```
 
 `"post_effect"` is what file in the `post_effect/` folder the shader is using, for instance `"minecraft:sobel"` would point to `minecraft/post_effect/sobel.json`.
-- the name of the file itself can be called anything, but it should usually be named the id for consistency (so in this case `sobel`)
-- the value in the `"post_effect"` field is what the shader will be referred to with
+- the name of the file itself can be anything (the value in `"post_effect"` is what the shader will be referred to as by luminance)
+- but it should usually be named the id for consistency (so in this case `sobel`)
+- if the field is missing, the filename and namespace of the file is used (so `assets/*minecraft*/luminance/*sobel*.json` will have a default `"post_effect"` of `minecaft:sobel`)
 
-`"enabled"` is whether the shader is enabled, see [below](#changing-shaders) for details
+`"enabled"` is whether the shader is enabled, see [below](#changing-shaders) for details, by default it is `true`
 
 `"disable_game_rendertype"` is whether the shader should be allowed to be rendered after ui (false), or if it can only be rendered before (true). This is done when the shader uses depth (since depth doesnt work properly after ui), or when the shader disruptive enough to make ui unreadable.
 - soup does not adhere to this, instead having a button that toggles rendering between game and world
-
-## Optional fields
+- by default this is `false`
 
 `"registries"` is what lists of shaders the shader will show up in
 - `"luminance:main"`: default value if the field is missing, this is where soup and perspective look to get the list of shaders that can be used
