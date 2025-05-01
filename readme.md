@@ -1,6 +1,8 @@
-![](./assets/logo/luminance.png)
+![Luminance](https://raw.githubusercontent.com/mclegoman/luminance/refs/heads/development-1.21/assets/logo/luminance.png)
 ## About
-Luminance is a library mod that helps with shader rendering, and contains helper classes, and event hooks to help other mods with game rendering.  
+Luminance is a library mod that is primarily designed to help other mods with shaders.
+
+**As a user, you should only need to install this if a mod requires it.**  
 
 # Features  
 - **Adds Dynamic Shader Uniforms**
@@ -8,7 +10,6 @@ Luminance is a library mod that helps with shader rendering, and contains helper
   - Luminance comes with a bunch of these by default, but you can add your own too!
 - **Adds shaders that have been used in previous minecraft versions.**
   - _Requires [Perspective](https://modrinth.com/mod/mclegoman-perspective) or [Souper Secret Settings](https://modrinth.com/mod/souper-secret-settings)._
-- **Compatibility**  
   - Luminance takes care of rendering shaders, so you don't have to!  
   - You can check if Iris Shaders are enabled using Luminance.  
     - This means you don't have to have Iris added to your development environment!  
@@ -43,26 +44,19 @@ exclusiveContent {
 include(modImplementation "maven.modrinth:luminance:${project.luminance}")
 ```
 3. Add the following line to your gradle.properties:  
-   1. Replace 1.0.0-alpha.3.+1.20.5 with the latest version of Luminance!  
+   1. Replace 1.0.0-rc.1+1.21.4-fabric with the latest version of Luminance!  
       1. This can be found on the version page on [Modrinth](https://modrinth.com/mod/luminance).  
 ```
-luminance = 1.0.0-alpha.3+1.20.5
+luminance = 1.0.0-rc.1+1.21.4-fabric
+#luminance = 1.0.0-rc.1+1.21.4-quilt
 ```
 4. Reload gradle and you're ready to use Luminance!
 
-## Plans  
-- [x] Shader registration through resource packs.  
-- [ ] Shader rendering.  
-- [x] Dynamic Shader Uniforms  
-- [ ] Fabric, Quilt, and NeoForge support.
-  - [x] Fabric  
-  - [ ] Quilt (Native)  
-  - [ ] NeoForge  
-
 ## Also check out  
-[Our Modrinth Page](https://modrinth.com/mod/luminance)  
-[Perspective](https://modrinth.com/mod/mclegoman-perspective) by MCLegoMan  
+[Our GitHub Page](https://github.com/mclegoman/Luminance)  
+[Perspective](https://modrinth.com/mod/mclegoman-perspective) by dannytaylor  
 [Souper Secret Settings](https://modrinth.com/mod/souper-secret-settings) by Nettakrim  
+[Luminance Mod Collection](https://modrinth.com/collection/VB5x1hBs)  
 
 #
 Licensed under LGPL-3.0-or-later.
