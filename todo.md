@@ -1,8 +1,12 @@
-# Luminance Todo  
-- Fix Hand Renderer  
+# Luminance Todo
 - Library Documentation/JavaDocs  
 - NeoForge Support (Low Priority)  
   - Make it so we don't need Fabric API  
     - Resource Loader (NeoForge has an implementation for this, creating our own would only be required for fabric/quilt, though with qsl not being updated this still would be nice, however a low priority)  
     - Keybindings  
     - Tick  
+- Fix dev-env, add merging jar support.
+  - [ ] Update gradle to allow for `:fabric` and `:quilt` (and eventually `:neoforge`) subprojects to import `:common` as a dependency.  
+  - [ ] Update `:common` classes that get overriden by the mod-loaders, to instead use Runnables/Callables, which the subprojects provide.
+  - [ ] Update mod-loader specific projects to use said runables/callables.
+  - [ ] Add mergeJars gradle task.

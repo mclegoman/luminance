@@ -12,5 +12,6 @@ bin/
 .classpath
 .project
 run/
+runs/
 .env
 libs/
