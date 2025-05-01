@@ -24,7 +24,7 @@ uniform vec3 OutlinePow;
 uniform float OutlineColorMultiplier;
 uniform float Silhouette;
 uniform vec3 SilhouetteColor;
-uniform float luminance_viewDistance;
+uniform float Distance;
 uniform float luminance_alpha_smooth;
 
 //vec4 color_layers[6];
@@ -73,7 +73,9 @@ vec4 outline( vec4 color, sampler2D DepthSampler ) {
     }
 
     vec4 outputColor = vec4(mix(color.rgb, pow((pow(outlineColor, OutlinePow) * OutlineColorMultiplier) + Transparency, vec3(2.0)), amount), color.a);
-    float depth4 = min(max(1.0 - (1.0 - depth) * ((luminance_viewDistance * 16) * 0.64), 0.0), 1.0);
+    float depth4;
+    if (Distance < 0) depth4 = min(max(1.0 - depth, 0.0), 1.0);
+    else depth4 = min(max(1.0 - (1.0 - depth) * ((Distance * 16) * 0.64), 0.0), 1.0);
     return vec4(mix(color.rgb, mix(outputColor.rgb, color.rgb, smoothstep(0.9, 0.91, depth4)), luminance_alpha_smooth), outputColor.a);
 }
 
