@@ -363,7 +363,7 @@ public class Uniforms {
 			Perspective perspective = ClientData.minecraft.options.getPerspective();
 			return perspective.equals(Perspective.THIRD_PERSON_FRONT) ? 3.0F : (perspective.equals(Perspective.THIRD_PERSON_BACK) ? 2.0F : (perspective.equals(Perspective.FIRST_PERSON) ? 1.0F : 0.0F));
 		}
-		return 1.0F;
+		return 0.0F;
 	}
 	public static float getSelectedSlot(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getInventory().selectedSlot : 0.0F;
