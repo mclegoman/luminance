@@ -10,3 +10,6 @@
   - [ ] Update `:common` classes that get overriden by the mod-loaders, to instead use Runnables/Callables, which the subprojects provide.
   - [ ] Update mod-loader specific projects to use said runables/callables.
   - [ ] Add mergeJars gradle task.
+- Update `luminance:post/outlined` shader  
+  - Each depth type having it's own Distance uniform would be nice.  
+    - For example, `In` could use `luminance_viewDistance` whilst `Clouds` could use `-1`.  
