@@ -20,6 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class TitleScreenMixin {
 	@Inject(method = "renderBackground", at = @At("RETURN"))
 	private void luminance$afterBackgroundRender(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-		Execute.afterScreenBackgroundRender(((GameRendererAccessor) ClientData.minecraft.gameRenderer).getPool());
+		Execute.afterUiBackgroundRender(((GameRendererAccessor) ClientData.minecraft.gameRenderer).getPool());
 	}
 }

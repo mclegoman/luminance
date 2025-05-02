@@ -112,6 +112,7 @@ public class Uniforms {
 			registerSingleTree(path, "starBrightness", Uniforms::getStarBrightness, 0f, 1f);
 			registerStandardTree(path, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("period", List.of(1.0f)))), false);
 			registerStandardTree(path, "random", Uniforms::getRandom, 0f, 1f, 1, EmptyConfig.INSTANCE, false);
+			registerStandardTree(path, "renderType", Uniforms::getRenderType, 0f, (float)Shader.RenderType.values().length-1, 1, EmptyConfig.INSTANCE, false);
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
 		}
@@ -395,6 +396,9 @@ public class Uniforms {
 	}
 	public static void getRandom(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		uniformValue.set(0, Accessors.getGameRenderer().getRandom().nextFloat());
+	}
+	public static void getRenderType(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		uniformValue.set(0, ShaderTime.currentRendertype.getId());
 	}
 	public static void getZero(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		uniformValue.set(0, 0F);
