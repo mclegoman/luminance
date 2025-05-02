@@ -32,7 +32,7 @@ The files in the `luminance/` folder look like this:
 {
   "post_effect": "<namespace:id>",
   "enabled": true,
-  "disable_game_rendertype": <...>,
+  "disable_ui_rendertype": <...>,
   "registries": [ ... ],
   "custom": {
     "souper_secret_settings": {
@@ -49,7 +49,7 @@ The files in the `luminance/` folder look like this:
 
 `"enabled"` is whether the shader is enabled, see [below](#changing-shaders) for details, by default it is `true`
 
-`"disable_game_rendertype"` is whether the shader should be allowed to be rendered after ui (false), or if it can only be rendered before (true). This is done when the shader uses depth (since depth doesnt work properly after ui), or when the shader disruptive enough to make ui unreadable.
+`"disable_ui_rendertype"` is whether the shader should be allowed to be rendered after ui (false), or if it can only be rendered before (true). This is done when the shader uses depth (since depth doesnt work properly after ui), or when the shader disruptive enough to make ui unreadable.
 - soup does not adhere to this, instead having a button that toggles rendering between game and world
 - by default this is `false`
 
