@@ -398,7 +398,7 @@ public class Uniforms {
 		uniformValue.set(0, Accessors.getGameRenderer().getRandom().nextFloat());
 	}
 	public static void getRenderType(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
-		uniformValue.set(0, ShaderTime.currentRendertype.getId());
+		uniformValue.set(0, ShaderTime.currentRenderType.getId());
 	}
 	public static void getZero(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		uniformValue.set(0, 0F);

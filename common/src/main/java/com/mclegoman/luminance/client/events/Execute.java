@@ -52,7 +52,7 @@ public class Execute {
 		SpectatorHandler.clearActive();
 	}
 	public static void beforeInGameHudRender(DrawContext context, RenderTickCounter renderTickCounter) {
-		ShaderTime.currentRendertype = Shader.RenderType.UI;
+		ShaderTime.currentRenderType = Shader.RenderType.UI;
 		Events.BeforeInGameHudRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(context, renderTickCounter);
@@ -71,7 +71,7 @@ public class Execute {
 		}));
 	}
 	public static void beforeGameRender() {
-		ShaderTime.currentRendertype = Shader.RenderType.WORLD;
+		ShaderTime.currentRenderType = Shader.RenderType.WORLD;
 		Events.BeforeGameRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run();
@@ -103,8 +103,8 @@ public class Execute {
 		}));
 	}
 	public static void afterUiBackgroundRender(ObjectAllocator allocator) {
-		Shader.RenderType previous = ShaderTime.currentRendertype;
-		ShaderTime.currentRendertype = Shader.RenderType.UI_BACKGROUND;
+		Shader.RenderType previous = ShaderTime.currentRenderType;
+		ShaderTime.currentRenderType = Shader.RenderType.UI_BACKGROUND;
 		Events.AfterUiBackgroundRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
@@ -113,11 +113,11 @@ public class Execute {
 			}
 		}));
 		// this and afterPanoramaRender are a special case, so resetting the RenderType it makes sense
-		ShaderTime.currentRendertype = previous;
+		ShaderTime.currentRenderType = previous;
 	}
 	public static void afterPanoramaRender(ObjectAllocator allocator) {
-		Shader.RenderType previous = ShaderTime.currentRendertype;
-		ShaderTime.currentRendertype = Shader.RenderType.PANORAMA;
+		Shader.RenderType previous = ShaderTime.currentRenderType;
+		ShaderTime.currentRenderType = Shader.RenderType.PANORAMA;
 		Events.AfterPanoramaRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
@@ -125,13 +125,13 @@ public class Execute {
 				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterPanoramaRender event with id: {}: {}", id, error));
 			}
 		}));
-		ShaderTime.currentRendertype = previous;
+		ShaderTime.currentRenderType = previous;
 	}
 	public static void resize(int width, int height) {
 		Events.OnResized.registry.forEach((id, runnable) -> runnable.run(width, height));
 	}
 	public static void beforeWorldRender() {
-		ShaderTime.currentRendertype = Shader.RenderType.WORLD;
+		ShaderTime.currentRenderType = Shader.RenderType.WORLD;
 		Events.BeforeWorldRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run();

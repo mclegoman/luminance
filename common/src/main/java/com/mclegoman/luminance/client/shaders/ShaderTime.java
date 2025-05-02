@@ -21,7 +21,7 @@ public class ShaderTime {
     private float expDelta;
 
     // current position in the rendering pipeline
-    public static Shader.RenderType currentRendertype;
+    public static Shader.RenderType currentRenderType;
 
     public void update(float tickDelta) {
         this.tickDelta = tickDelta;
