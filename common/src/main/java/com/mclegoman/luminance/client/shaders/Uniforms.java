@@ -34,14 +34,18 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Uniforms {
 	public static ShaderTime shaderTime = new ShaderTime();
@@ -96,6 +100,8 @@ public class Uniforms {
 			registerSingleTree(path, "isInvisible", Uniforms::getIsInvisible, 0f, 1f);
 			registerSingleTree(path, "isWithered", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.WITHER), 0f, 1f);
 			registerSingleTree(path, "isPoisoned", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.POISON), 0f, 1f);
+			registerStandardTree(path, "effectDuration", Uniforms::getEffectDuration, null, null, 1, new MapConfig(List.of(new ConfigData("effect", List.of("minecraft:speed")))), false);
+			registerStandardTree(path, "effectAmplifier", Uniforms::getEffectAmplifier, 0f, 255f, 1, new MapConfig(List.of(new ConfigData("effect", List.of("minecraft:speed")))), false);
 			registerSingleTree(path, "isBurning", Uniforms::getIsBurning, 0f, 1f);
 			registerSingleTree(path, "isOnGround", Uniforms::getIsOnGround, 0f, 1f);
 			registerSingleTree(path, "isOnLadder", Uniforms::getIsOnLadder, 0f, 1f);
@@ -308,6 +314,25 @@ public class Uniforms {
 	public static float getHasEffect(RegistryEntry<StatusEffect> statusEffect) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.hasStatusEffect(statusEffect) ? 1.0F : 0.0F) : 0.0F;
 	}
+	public static void getEffectDuration(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		StatusEffectInstance instance = getEffect(config);
+		uniformValue.set(0, instance == null ? 0 : instance.getDuration());
+	}
+	public static void getEffectAmplifier(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		StatusEffectInstance instance = getEffect(config);
+		uniformValue.set(0, instance == null ? 0 : instance.getAmplifier());
+	}
+	private static @Nullable StatusEffectInstance getEffect(UniformConfig config) {
+		List<Object> objects = config.getObjects("effect");
+		if (ClientData.minecraft.player != null && objects != null && !objects.isEmpty() && objects.getFirst() instanceof String id) {
+			Optional<RegistryEntry.Reference<StatusEffect>> entry = Registries.STATUS_EFFECT.getEntry(Identifier.of(id));
+			if (entry.isPresent()) {
+				return ClientData.minecraft.player.getStatusEffect(entry.get());
+			}
+		}
+		return null;
+	}
+
 	public static float getIsBurning(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.isOnFire() ? 1.0F : 0.0F) : 0.0F;
 	}
