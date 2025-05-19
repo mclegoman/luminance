@@ -1,14 +1,32 @@
 {
     "targets": {
-        "0": {}
+        "0": {},
+        "1": {},
+        "2": {}
     },
     "passes": [
+        {
+            "program": "luminance:post/color_overlay",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                }
+            ],
+            "uniforms": [
+                {
+                    "name": "Color",
+                    "values": [ 0.0, 0.0, 0.0, 1.0 ]
+                }
+            ],
+            "output": "0"
+        },
         {
             "program": "luminance:post/outlined",
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "minecraft:main"
+                    "target": "0"
                 },
                 {
                     "sampler_name": "InDepth",
@@ -61,28 +79,34 @@
                     "use_depth_buffer": true
                 }
             ],
-            "output": "0",
+            "output": "1",
             "uniforms": [
                 {
                     "name": "Transparency",
                     "values": [ 0.5 ]
-                },
-                {
-                    "name": "Silhouette",
-                    "values": [ 1.0 ]
-                },
-                {
-                    "name": "SilhouetteColor",
-                    "values": [ 0.0, 0.0, 0.0 ]
                 }
             ]
+        },
+        {
+            "program": "luminance:post/merge",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "1"
+                },
+                {
+                    "sampler_name": "Merge",
+                    "target": "minecraft:main"
+                }
+            ],
+            "output": "2"
         },
         {
             "program": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "0"
+                    "target": "2"
                 }
             ],
             "output": "minecraft:main"

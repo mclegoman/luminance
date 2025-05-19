@@ -20,6 +20,9 @@ public class ShaderTime {
     public static final float defaultSpeed = 1f;
     private float expDelta;
 
+    // current position in the rendering pipeline
+    public static Shader.RenderType currentRenderType;
+
     public void update(float tickDelta) {
         this.tickDelta = tickDelta;
         deltaTime = ((tickDelta < prevTickDelta ? 1 : 0) + tickDelta-prevTickDelta);

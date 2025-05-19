@@ -9,6 +9,8 @@ package com.mclegoman.luminance.client.events;
 
 import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.data.ClientData;
+import com.mclegoman.luminance.client.shaders.Shader;
+import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
 import com.mclegoman.luminance.client.translation.Translation;
@@ -50,6 +52,7 @@ public class Execute {
 		SpectatorHandler.clearActive();
 	}
 	public static void beforeInGameHudRender(DrawContext context, RenderTickCounter renderTickCounter) {
+		ShaderTime.currentRenderType = Shader.RenderType.UI;
 		Events.BeforeInGameHudRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(context, renderTickCounter);
@@ -68,6 +71,7 @@ public class Execute {
 		}));
 	}
 	public static void beforeGameRender() {
+		ShaderTime.currentRenderType = Shader.RenderType.WORLD;
 		Events.BeforeGameRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run();
@@ -98,7 +102,9 @@ public class Execute {
 			}
 		}));
 	}
-	public static void afterScreenBackgroundRender(ObjectAllocator allocator) {
+	public static void afterUiBackgroundRender(ObjectAllocator allocator) {
+		Shader.RenderType previous = ShaderTime.currentRenderType;
+		ShaderTime.currentRenderType = Shader.RenderType.UI_BACKGROUND;
 		Events.AfterUiBackgroundRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
@@ -106,8 +112,12 @@ public class Execute {
 				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterScreenBackgroundRender event with id: {}: {}", id, error));
 			}
 		}));
+		// this and afterPanoramaRender are a special case, so resetting the RenderType it makes sense
+		ShaderTime.currentRenderType = previous;
 	}
 	public static void afterPanoramaRender(ObjectAllocator allocator) {
+		Shader.RenderType previous = ShaderTime.currentRenderType;
+		ShaderTime.currentRenderType = Shader.RenderType.PANORAMA;
 		Events.AfterPanoramaRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
@@ -115,11 +125,13 @@ public class Execute {
 				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterPanoramaRender event with id: {}: {}", id, error));
 			}
 		}));
+		ShaderTime.currentRenderType = previous;
 	}
 	public static void resize(int width, int height) {
 		Events.OnResized.registry.forEach((id, runnable) -> runnable.run(width, height));
 	}
 	public static void beforeWorldRender() {
+		ShaderTime.currentRenderType = Shader.RenderType.WORLD;
 		Events.BeforeWorldRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run();

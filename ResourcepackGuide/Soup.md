@@ -103,7 +103,7 @@ assets/soup/luminance/mix.json
 {
   "post_effect": "soup:mix",
   "enabled": true,
-  "disable_game_rendertype": true,
+  "disable_ui_rendertype": true,
   "registries": [
     "souper_secret_settings:modifiers" <- this is important!
   ],
