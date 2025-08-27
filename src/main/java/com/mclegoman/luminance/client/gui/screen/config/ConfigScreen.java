@@ -23,6 +23,7 @@ import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
@@ -78,7 +79,10 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 					button.setMessage(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", LuminanceConfig.config.showAlphaLevelOverlay.value())}));
 					button.setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", true)));
 				}).tooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", true))).build()));
-		widgets.add(new ListWidget.ListEntry(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode", new Object[]{LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation()}), button -> {
+
+		List<ClickableWidget> widgets1 = new ArrayList<>();
+
+		widgets1.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode", new Object[]{LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation()}), button -> {
 			LuminanceConfig.config.spectatorPriorityMode.setValue(SpectatorPriorityModeValue.of(switch (LuminanceConfig.config.spectatorPriorityMode.value().getMode()) {
 				case FIRST -> SpectatorHandler.Mode.EQUAL;
 				case EQUAL -> SpectatorHandler.Mode.ALL;
@@ -89,13 +93,13 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 
 			button.setMessage(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode", new Object[]{LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation()}));
 			button.setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode." + LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation().toLowerCase(), true)));
-		}).tooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode." + LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation().toLowerCase(), true))).build()));
+		}).tooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode." + LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation().toLowerCase(), true))).build());
 
-		if (ClientData.isDevelopment()) {
-			widgets.add(new ListWidget.ListEntry(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "debug").append(getMore()), (button) -> {
-				ClientData.minecraft.setScreen(new DebugShaderScreen(getRefreshScreen(), this.isPride));
-			}).build()));
-		}
+		if (ClientData.isDevelopment()) widgets1.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "debug").append(getMore()), (button) -> {
+			ClientData.minecraft.setScreen(new DebugShaderScreen(getRefreshScreen(), this.isPride));
+		}).build());
+
+		widgets.add(new ListWidget.ListEntry(widgets1.toArray(new ClickableWidget[0])));
 
 		widgets.add(new ListWidget.ListEntry(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "reset"), (button) -> {
 			LuminanceConfigHelper.reset(LuminanceConfig.config, false);
