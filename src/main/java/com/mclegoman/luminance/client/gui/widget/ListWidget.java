@@ -44,7 +44,7 @@ public class ListWidget extends EntryListWidget<ListWidget.ListEntry> {
 	}
 
 	public int getRowWidth() {
-		return this.width - 24;
+		return this.width - 32;
 	}
 
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {

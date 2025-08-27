@@ -10,6 +10,7 @@ package com.mclegoman.luminance.client.gui.widget;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mclegoman.luminance.client.data.ClientData;
+import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.client.MinecraftClient;
@@ -50,7 +51,7 @@ public class InfoWidget extends EntryListWidget<InfoWidget.InfoEntry> {
 	}
 
 	public int getRowWidth() {
-		return this.width - 24;
+		return this.width - 32;
 	}
 
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
@@ -103,6 +104,12 @@ public class InfoWidget extends EntryListWidget<InfoWidget.InfoEntry> {
 			text.append(switch (jsonObject.has("type") ? TextType.valueOf(jsonObject.get("type").getAsString()) : TextType.literal) {
 				case literal -> Text.literal(jsonObject.get("value").getAsString());
 				case translatable -> Text.translatable(jsonObject.get("value").getAsString(), args.toArray(new Object[0]));
+				case variable -> switch (jsonObject.get("value").getAsString()) {
+					case "id" -> Text.literal(Data.getVersion().getID());
+					case "name" -> Translation.getTranslation(Data.getVersion().getID(), "name");
+					case "version" -> Text.literal(Data.getVersion().getFriendlyString());
+                    case null, default -> Text.empty();
+                };
 			});
 		}
 		return text;
@@ -114,7 +121,8 @@ public class InfoWidget extends EntryListWidget<InfoWidget.InfoEntry> {
 
 	private enum TextType implements StringIdentifiable {
 		literal("literal"),
-		translatable("translatable");
+		translatable("translatable"),
+		variable("variable");
 
 		final String id;
 		

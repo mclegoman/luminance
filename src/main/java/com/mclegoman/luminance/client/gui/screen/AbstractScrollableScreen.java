@@ -12,7 +12,9 @@ import com.mclegoman.luminance.client.logo.LuminanceLogo;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.DateHelper;
+import com.mclegoman.luminance.common.util.ReleaseType;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ThreePartsLayoutWidget;
@@ -106,5 +108,15 @@ public abstract class AbstractScrollableScreen extends Screen {
 
 	public Screen getRefreshScreen() {
 		return null;
+	}
+
+	@Override
+	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		super.render(context, mouseX, mouseY, delta);
+		renderDevNotice(context);
+	}
+
+	public void renderDevNotice(DrawContext context) {
+		if (!Data.getVersion().getType().equals(ReleaseType.RELEASE)) context.drawTextWithShadow(this.textRenderer, Translation.getTranslation(Data.getVersion().getID(), "dev", new Object[]{Data.getVersion().getFriendlyString()}), 2, this.height - 11, 0xAAAAAA);
 	}
 }
