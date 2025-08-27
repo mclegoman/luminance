@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "${modId}",
+  "version": "${version}",
+  "name": "${modName}",
+  "description": "${modDescription}",
+  "authors": [
+    "${authors}"
+  ],
+  "contributors": [
+    "${contributors}"
+  ],
+  "contact": {
+    "homepage": "${homepage}",
+    "issues": "${issues}",
+    "sources": "${sources}"
+  },
+  "license": "${license}",
+  "icon": "assets/${modId}/icons/icon.png",
+  "depends": {
+    "minecraft": ">=${mc}",
+    "fabric-api": ">=${fapi}"
+  },
+  "entrypoints": {
+    "client": [
+      "com.mclegoman.luminance.client.LuminanceClient"
+    ],
+    "modmenu": [
+      "com.mclegoman.luminance.compat.ModMenuCompat"
+    ]
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [
+        "library"
+      ]
+    }
+  },
+  "mixins": [
+    "dt-luminance.mixins.json"
+  ]
+}

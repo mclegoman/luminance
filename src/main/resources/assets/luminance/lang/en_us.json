@@ -1,0 +1,81 @@
+{
+	"gui.luminance.name": "Luminance",
+	"gui.luminance.description": "A library mod that helps other mods with shaders.",
+	"gui.luminance.licenses": "LGPL-3.0-or-later",
+	"gui.luminance.authors": "§6§lDevelopers§r",
+	"gui.luminance.authors.dannytaylor": "§fdannytaylor§r",
+	"gui.luminance.authors.nettakrim": "§fNettakrim§r",
+	"gui.luminance.attributions": "§6§lAttributions§r",
+	"gui.luminance.attributions.quilt_config": "§fQuilt Config§r",
+	"gui.luminance.attributions.quilt_config.description": "Facilitates the creation and management of config files.",
+	"gui.luminance.attributions.quilt_config.authors": "QuiltMC",
+	"gui.luminance.attributions.quilt_config.licenses": "Apache-2.0",
+	"gui.luminance.attributions.fabric_api": "§fFabric API§r",
+	"gui.luminance.attributions.fabric_api.description": "Essential hooks for modding with Fabric.",
+	"gui.luminance.attributions.fabric_api.authors": "FabricMC",
+	"gui.luminance.attributions.fabric_api.licenses": "Apache-2.0",
+	"gui.luminance.attributions.fabric_loader": "§fFabric Loader§r",
+	"gui.luminance.attributions.fabric_loader.description": "Modular, lightweight mod loader for Minecraft.",
+	"gui.luminance.attributions.fabric_loader.authors": "FabricMC",
+	"gui.luminance.attributions.fabric_loader.licenses": "Apache-2.0",
+	"gui.luminance.attributions.minecraft": "§fMinecraft§r",
+	"gui.luminance.attributions.minecraft.description": "The base game.",
+	"gui.luminance.attributions.minecraft.authors": "Mojang Studios",
+	"gui.luminance.attributions.minecraft.licenses": "Minecraft EULA",
+
+	"gui.luminance.authors.single": "Author: %s",
+	"gui.luminance.authors.multiple": "Authors: %s",
+
+	"gui.luminance.license.single": "License: %s",
+	"gui.luminance.license.multiple": "Licenses: %s",
+
+	"gui.luminance.keybindings.category.luminance": "Luminance",
+
+	"gui.luminance.keybindings.keybinding.adjust_alpha": "Adjust Alpha",
+
+	"gui.luminance.keybindings.keybinding.open_config": "Open Config",
+
+	"gui.luminance.alpha_level": "Shader Strength: %s",
+
+	"gui.luminance.resource_pack.super_secret_settings": "Super Secret Settings",
+	"gui.luminance.resource_pack.super_secret_settings.description": "Adds shaders from previous Minecraft versions",
+
+	"gui.luminance.resource_pack.luminance_default": "Luminance: Default",
+	"gui.luminance.resource_pack.luminance_default.description": "The default look of Luminance",
+
+	"gui.luminance.config.alpha": "Shader Strength: %s",
+	"gui.luminance.config.alpha.hover": "§fChanges the strength of shaders.\n§7Note: Only shaders that were developed to use this feature will work, some shaders may use this differently. \n\n%s§c§l + Scroll Wheel",
+
+	"gui.luminance.config.alpha.show_overlay": "Show Percentage: %s",
+	"gui.luminance.config.alpha.show_overlay.hover": "Shows the percentage when adjusting shader strength using the keybinding.",
+
+	"gui.luminance.config.spectator_priority_mode": "Spectator Priority: %s",
+	"gui.luminance.config.spectator_priority_mode.first.hover": "Only the first spectator shader instance of the highest priority will be rendered.",
+	"gui.luminance.config.spectator_priority_mode.equal.hover": "All spectator shader instances of the highest priority will be rendered.",
+	"gui.luminance.config.spectator_priority_mode.all.hover": "All spectator shader instances will be rendered.",
+
+	"gui.luminance.config.information": "Information",
+
+	"gui.luminance.config.information.documentation": "Documentation",
+
+	"gui.luminance.config.information.source_code": "Source Code",
+
+	"gui.luminance.config.information.report": "Report a bug",
+
+	"gui.luminance.config.keybinding": "Bound to: %s",
+
+	"gui.luminance.config.reset": "Reset to Default",
+	"gui.luminance.config.back": "Back",
+
+	"gui.luminance.variable.onff.true": "ON",
+	"gui.luminance.variable.onff.false": "OFF",
+
+	"gui.luminance.shader.luminance.gaussian": "Gaussian",
+
+	"gui.luminance.keybindings.keybinding.toggle_debug_shader": "[DEBUG] Toggle Shader",
+	"gui.luminance.keybindings.keybinding.cycle_debug_render_type": "[DEBUG] Cycle Render Type",
+
+	"gui.luminance.config.title": "%s: %s",
+	"gui.luminance.config.credits_attribution": "Credits and Attribution",
+	"gui.luminance.config.more": "..."
+}

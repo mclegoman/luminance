@@ -1,0 +1,31 @@
+[versions]
+loom = "1.10.+"
+minotaur = "2.+"
+
+mc = "1.21.4"
+fl = "0.16.14"
+yarn = "1.21.4+build.8"
+fapi = "0.119.2+1.21.4"
+quilt_config = "1.2.0"
+toml = "3.6.6"
+iris = "1.8.8+1.21.4-fabric"
+sodium = "mc1.21.4-0.6.10-fabric"
+modmenu = "13.0.3"
+
+[plugins]
+loom = { id = "fabric-loom", version.ref = "loom" }
+minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
+
+[libraries]
+mc = { group = "mojang", name = "minecraft", version.ref = "mc" }
+fl = { group = "net.fabricmc", name = "fabric-loader", version.ref = "fl" }
+yarn = { group = "net.fabricmc", name = "yarn", version.ref = "yarn" }
+fapi = { group = "net.fabricmc.fabric-api", name = "fabric-api", version.ref = "fapi" }
+quiltconfig = { group = "org.quiltmc", name = "quilt-config", version.ref = "quilt_config" }
+quiltconfigtoml = { group = "org.quiltmc.quilt-config.serializers", name = "toml", version.ref = "quilt_config" }
+quiltconfigjson = { group = "org.quiltmc.quilt-config.serializers", name = "json5", version.ref = "quilt_config" }
+nightconfigtoml = { group = "com.electronwill.night-config", name = "toml", version.ref = "toml" }
+nightconfigcore = { group = "com.electronwill.night-config", name = "core", version.ref = "toml" }
+iris = { group = "maven.modrinth", name = "iris", version.ref = "iris" }
+sodium = { group = "maven.modrinth", name = "sodium", version.ref = "sodium" }
+modmenu = { group = "com.terraformersmc", name = "modmenu", version.ref = "modmenu" }
