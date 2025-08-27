@@ -74,6 +74,8 @@
 	"gui.luminance.keybindings.keybinding.cycle_debug_render_type": "[DEBUG] Cycle Render Type",
 
 	"gui.luminance.config.title": "%s: %s",
+	"gui.luminance.config.config": "Configuration",
+	"gui.luminance.config.debug": "Debug",
 	"gui.luminance.config.information": "Information",
 	"gui.luminance.config.credits_attribution": "Credits and Attribution",
 	"gui.luminance.config.more": "..."

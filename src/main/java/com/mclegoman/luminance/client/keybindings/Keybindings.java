@@ -42,7 +42,7 @@ public class Keybindings {
 	}
 	public static void tick() {
 		if (openConfig.wasPressed()) {
-			ClientData.minecraft.setScreen(new ConfigScreen(ClientData.minecraft.currentScreen, false, DateHelper.isPride()));
+			ClientData.minecraft.setScreen(new ConfigScreen(ClientData.minecraft.currentScreen, 0, null, DateHelper.isPride()));
 		}
 		if (ClientData.isDevelopment()) {
 			if (toggle_debug_shader != null && toggle_debug_shader.wasPressed()) Debug.debugShaderEnabled = !Debug.debugShaderEnabled;

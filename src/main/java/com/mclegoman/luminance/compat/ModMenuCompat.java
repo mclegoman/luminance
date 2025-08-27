@@ -16,6 +16,6 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 public class ModMenuCompat implements ModMenuApi {
 	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory() {
-		return parent -> new ConfigScreen(ClientData.minecraft.currentScreen, false, DateHelper.isPride());
+		return parent -> new ConfigScreen(ClientData.minecraft.currentScreen, 0, null, DateHelper.isPride());
 	}
 }

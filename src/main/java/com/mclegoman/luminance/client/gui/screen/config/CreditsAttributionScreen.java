@@ -5,7 +5,7 @@
     Licence: GNU LGPLv3
 */
 
-package com.mclegoman.luminance.client.gui.screen.config.information;
+package com.mclegoman.luminance.client.gui.screen.config;
 
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.gui.screen.AbstractScrollableScreen;
