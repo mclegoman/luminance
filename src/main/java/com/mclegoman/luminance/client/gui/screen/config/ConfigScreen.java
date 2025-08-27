@@ -105,9 +105,9 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 		}).build());
 
 		widgets.add(new TextWidget(Translation.getConfigTranslation(Data.getVersion().getID(), "information"), ClientData.minecraft.textRenderer));
-		widgets.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information.source_code"), ConfirmLinkScreen.opening(this, "https://github.com/mclegoman/luminance")).width(304).build());
-		widgets.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information.report"), ConfirmLinkScreen.opening(this, "https://github.com/mclegoman/luminance/issues")).width(304).build());
-		widgets.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "credits_attribution"), button -> ClientData.minecraft.setScreen(new CreditsAttributionScreen(ClientData.minecraft.currentScreen, 0, splashText, isPride))).width(304).build());
+		widgets.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information.source_code").append(getExternal()), ConfirmLinkScreen.opening(this, "https://github.com/mclegoman/luminance")).width(304).build());
+		widgets.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information.report").append(getExternal()), ConfirmLinkScreen.opening(this, "https://github.com/mclegoman/luminance/issues")).width(304).build());
+		widgets.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "credits_attribution").append(getMore()), button -> ClientData.minecraft.setScreen(new CreditsAttributionScreen(ClientData.minecraft.currentScreen, 0, splashText, isPride))).width(304).build());
 		return widgets;
 	}
 

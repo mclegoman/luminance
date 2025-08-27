@@ -78,5 +78,6 @@
 	"gui.luminance.config.debug": "Debug",
 	"gui.luminance.config.information": "Information",
 	"gui.luminance.config.credits_attribution": "Credits and Attribution",
-	"gui.luminance.config.more": "..."
+	"gui.luminance.config.more": "...",
+	"gui.luminance.config.external": " ↗"
 }

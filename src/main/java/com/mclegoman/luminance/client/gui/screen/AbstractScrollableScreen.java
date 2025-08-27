@@ -95,6 +95,10 @@ public abstract class AbstractScrollableScreen extends Screen {
 		return Translation.getConfigTranslation(Data.getVersion().getID(), "more");
 	}
 
+	public static Text getExternal() {
+		return Translation.getConfigTranslation(Data.getVersion().getID(), "external");
+	}
+
 	public void resize(MinecraftClient client, int width, int height) {
 		super.resize(client, width, height);
 		client.setScreen(getRefreshScreen());
