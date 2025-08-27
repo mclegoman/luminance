@@ -68,7 +68,7 @@ public abstract class AbstractScrollableScreen extends Screen {
 	}
 
 	public void initFooter() {
-		this.layout.addFooter(ButtonWidget.builder(ScreenTexts.DONE, (button) -> this.close()).width(200).build());
+		this.layout.addFooter(ButtonWidget.builder(ScreenTexts.BACK, (button) -> this.close()).width(200).build());
 	}
 
 	public void close() {

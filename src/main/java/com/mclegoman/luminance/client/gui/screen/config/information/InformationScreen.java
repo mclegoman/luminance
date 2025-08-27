@@ -8,99 +8,50 @@
 package com.mclegoman.luminance.client.gui.screen.config.information;
 
 import com.mclegoman.luminance.client.data.ClientData;
-import com.mclegoman.luminance.client.logo.LuminanceLogo;
+import com.mclegoman.luminance.client.gui.screen.AbstractScrollableListScreen;
+import com.mclegoman.luminance.client.gui.widget.ListWidget;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.EmptyWidget;
-import net.minecraft.client.gui.widget.GridWidget;
-import net.minecraft.client.gui.widget.SimplePositioningWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.TextWidget;
+import org.jetbrains.annotations.Nullable;
 
-public class InformationScreen extends Screen {
-	private final Screen parentScreen;
-	private final GridWidget grid;
-	private final boolean refresh;
-	private boolean shouldClose;
-	private boolean shouldRenderSplashText;
-	private Translation.Data splashText;
-	private final boolean isPride;
-	public InformationScreen(Screen parent, boolean refresh, Translation.Data splashText, boolean isPride) {
-		super(Text.literal(""));
-		this.grid = new GridWidget();
-		this.parentScreen = parent;
-		this.refresh = refresh;
-		if (splashText != null) {
-			this.splashText = splashText;
-			this.shouldRenderSplashText = true;
-		}
-		this.isPride = isPride;
+import java.util.ArrayList;
+import java.util.List;
+
+public class InformationScreen extends AbstractScrollableListScreen {
+	public ListWidget list;
+
+	public InformationScreen(Screen parent) {
+		super(parent);
 	}
-	public void init() {
-		try {
-			grid.getMainPositioner().alignHorizontalCenter().margin(0);
-			GridWidget.Adder gridAdder = grid.createAdder(1);
-			gridAdder.add(new LuminanceLogo.Widget(shouldRenderSplashText, splashText, isPride));
-			gridAdder.add(createConfig());
-			gridAdder.add(new EmptyWidget(4, 4));
-			gridAdder.add(createFooter());
-			grid.refreshPositions();
-			grid.forEachChild(this::addDrawableChild);
-			initTabNavigation();
-		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to initialize config screen: {}", error));
-		}
+
+	public InformationScreen(Screen parent, double scrollY) {
+		super(parent, scrollY);
 	}
-	public void tick() {
-		try {
-			if (this.refresh) {
-				ClientData.minecraft.setScreen(new InformationScreen(parentScreen, false, this.splashText, this.isPride));
-			}
-			if (this.shouldClose) {
-				ClientData.minecraft.setScreen(parentScreen);
-			}
-		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to tick luminance$config screen: {}", error));
-		}
+
+	public InformationScreen(Screen parent, double scrollY, Translation.@Nullable Data splashText, boolean isPride) {
+		super("information", parent, scrollY, splashText, isPride);
 	}
-	private GridWidget createConfig() {
-		GridWidget grid = new GridWidget();
-		grid.getMainPositioner().alignHorizontalCenter().margin(2);
-		GridWidget.Adder gridAdder = grid.createAdder(1);
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information.source_code"), ConfirmLinkScreen.opening(this, "https://github.com/mclegoman/Luminance")).width(304).build());
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information.report"), ConfirmLinkScreen.opening(this, "https://github.com/mclegoman/Luminance/issues")).width(304).build());
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "credits_attribution"), button -> ClientData.minecraft.setScreen(new CreditsAttributionScreen(ClientData.minecraft.currentScreen, 0, splashText, isPride))).width(304).build());
-		return grid;
+
+	public void initBody() {
+		this.list = new ListWidget(ClientData.minecraft, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 24, getWidgets(), this.scrollY);
+		this.layout.addBody(this.list);
 	}
-	private GridWidget createFooter() {
-		GridWidget grid = new GridWidget();
-		grid.getMainPositioner().alignHorizontalCenter().margin(2);
-		GridWidget.Adder gridAdder = grid.createAdder(1);
-		gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "back"), (button) -> this.shouldClose = true).build());
-		return grid;
+
+	public List<ClickableWidget> getWidgets() {
+		List<ClickableWidget> widgets = new ArrayList<>();
+		widgets.add(new TextWidget(Translation.getConfigTranslation(Data.getVersion().getID(), "information"), ClientData.minecraft.textRenderer));
+		widgets.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information.source_code"), ConfirmLinkScreen.opening(this, "https://github.com/mclegoman/luminance")).width(304).build());
+		widgets.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information.report"), ConfirmLinkScreen.opening(this, "https://github.com/mclegoman/luminance/issues")).width(304).build());
+		widgets.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "credits_attribution"), button -> ClientData.minecraft.setScreen(new CreditsAttributionScreen(ClientData.minecraft.currentScreen, 0, splashText, isPride))).width(304).build());
+		return widgets;
 	}
-	public void initTabNavigation() {
-		SimplePositioningWidget.setPos(grid, getNavigationFocus());
-	}
-	public Text getNarratedTitle() {
-		return ScreenTexts.joinSentences();
-	}
-	public boolean shouldCloseOnEsc() {
-		return false;
-	}
-	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == GLFW.GLFW_KEY_ESCAPE) this.shouldClose = true;
-		return super.keyPressed(keyCode, scanCode, modifiers);
-	}
-	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
+
+	public Screen getRefreshScreen() {
+		return new InformationScreen(this.parent, this.list != null ? this.list.getScrollY() : scrollY, this.splashText, this.isPride);
 	}
 }
