@@ -72,10 +72,7 @@ public class DebugShaderScreen extends Screen {
 				this.refresh = true;
 			}).build());
 
-			this.registryList = new IdentifierListWidget(150, 200, 20, 20, 20, this.registryScroll >= 0 ? this.registryScroll : -1, Shaders.getRegistries(), this.selectedRegistry, (id, widget) -> {
-				this.selectedRegistry = id;
-				this.refresh = true;
-			});
+			this.registryList = new IdentifierListWidget(150, 200, 20, 20, 20, this.registryScroll >= 0 ? this.registryScroll : -1, Shaders.getRegistries(), this.selectedRegistry, (id, widget) -> {});
 
 			gridAdder.add(this.registryList);
 			IdentifierListWidget.Entry registryListSelected = this.registryList.getSelectedOrNull();
@@ -83,7 +80,11 @@ public class DebugShaderScreen extends Screen {
 			gridAdder.add(this.shaderList);
 
 			this.registryList.onSelect = (id, widget) -> {
-				this.shaderList.setScrollY(0);
+				if (this.selectedRegistry != id) {
+					this.selectedRegistry = id;
+					this.shaderList.setScrollY(0);
+					this.refresh = true;
+				}
 			};
 
 			gridAdder.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "back"), (button) -> this.shouldClose = true).width(304).build(), 2);

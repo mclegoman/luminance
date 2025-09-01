@@ -44,18 +44,13 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
     protected void renderEntry(DrawContext context, int mouseX, int mouseY, float delta, int index, int x, int y, int entryWidth, int entryHeight) {
         Entry entry = this.getEntry(index);
         entry.drawBorder(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, Objects.equals(this.getHoveredEntry(), entry), delta);
-        if (this.isSelectedEntry(index)) {
-            int i = this.isFocused() ? -1 : -8355712;
-            this.drawSelectionHighlight(context, y, entryWidth, entryHeight, i, -16777216);
-        } if (this.getHoveredEntry() != null && this.getHoveredEntry().equals(entry)) {
-            int i = this.isFocused() ? -1 : -8355712;
-            this.drawSelectionHighlight(context, y, entryWidth, entryHeight, i, -16777216);
-        }
+        if (this.isSelectedEntry(index)) this.drawSelectionHighlight(context, y, entryWidth, entryHeight, -1, -16777216);
+        if (this.getHoveredEntry() != null && this.getHoveredEntry().equals(entry)) this.drawSelectionHighlight(context, y, entryWidth, entryHeight, -8355712, -16777216);
         entry.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, Objects.equals(this.getHoveredEntry(), entry), delta);
     }
 
     public int getRowWidth() {
-        return this.width - 4 - 8;
+        return this.width - 16;
     }
 
     @Override
