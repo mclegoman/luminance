@@ -1,6 +1,7 @@
 {
 	"gui.luminance.shader.luminance.aa" : "Anti-alias",
 	"gui.luminance.shader.luminance.crt" : "CRT",
+	"gui.luminance.shader.luminance.dominant_channel" : "Dominant Channel",
 	"gui.luminance.shader.luminance.gentoo" : "Gentoo",
 	"gui.luminance.shader.luminance.golden_blobs2" : "Golden Blobs",
 	"gui.luminance.shader.luminance.blue_blobs2" : "Blue Blobs",
@@ -22,5 +23,6 @@
 	"gui.luminance.shader.luminance.saturate": "Saturated",
 	"gui.luminance.shader.luminance.sepia": "Sepia",
 	"gui.luminance.shader.luminance.inverted_colors": "Inverted Colours",
-	"gui.luminance.shader.luminance.inverted_brightness": "Inverted Brightness"
+	"gui.luminance.shader.luminance.inverted_brightness": "Inverted Brightness",
+	"gui.luminance.shader.luminance.vision": "Vision"
 }

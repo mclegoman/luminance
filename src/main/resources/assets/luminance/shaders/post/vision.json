@@ -1,0 +1,26 @@
+{
+    "vertex": "minecraft:post/sobel",
+    "fragment": "luminance:post/vision",
+    "samplers": [
+        { "name": "InSampler" }
+    ],
+    "uniforms": [
+        { "name": "ProjMat",        "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "InSize",         "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
+        { "name": "OutSize",        "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
+        { "name": "SphR",        "type": "float",     "count": 1,  "values": [ 0.25 ] },
+        { "name": "CylR",        "type": "float",     "count": 1,  "values": [ -0.25 ] },
+        { "name": "AxisR",        "type": "float",     "count": 1,  "values": [ 175.0 ] },
+        { "name": "AddNearR",        "type": "float",     "count": 1,  "values": [ 0.5 ] },
+        { "name": "AddInterR",        "type": "float",     "count": 1,  "values": [ 0.5 ] },
+        { "name": "PdR",        "type": "float",     "count": 1,  "values": [ 31.0 ] },
+        { "name": "SphL",        "type": "float",     "count": 1,  "values": [ 0.0 ] },
+        { "name": "CylL",        "type": "float",     "count": 1,  "values": [ -0.25 ] },
+        { "name": "AxisL",        "type": "float",     "count": 1,  "values": [ 5.0 ] },
+        { "name": "AddNearL",        "type": "float",     "count": 1,  "values": [ 0.5 ] },
+        { "name": "AddInterL",        "type": "float",     "count": 1,  "values": [ 0.5 ] },
+        { "name": "PdL",        "type": "float",     "count": 1,  "values": [ 32.0 ] },
+        { "name": "Mode",        "type": "float",     "count": 1,  "values": [ 3.0 ] },
+        { "name": "Reverse",        "type": "float",     "count": 1,  "values": [ 0.0 ] }
+    ]
+}

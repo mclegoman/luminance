@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.mclegoman.luminance.mixin.MixinPlugin",
   "client": [
+    "client.hud.DebugHudMixin",
     "client.hud.InGameHudMixin",
     "client.resources.MinecraftClientMixin",
     "client.shaders.FrameGraphBuilderMixin",

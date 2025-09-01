@@ -31,7 +31,7 @@ public abstract class AbstractScrollableListScreen extends AbstractScrollableScr
 		super(id, parent);
 	}
 
-	public AbstractScrollableListScreen(String id, Screen parent, double scrollY, Translation.@Nullable Data splashText, boolean isPride) {
+	public AbstractScrollableListScreen(String id, Screen parent, double scrollY, @Nullable Translation.Data splashText, boolean isPride) {
 		super(id, parent, scrollY, splashText, isPride);
 	}
 

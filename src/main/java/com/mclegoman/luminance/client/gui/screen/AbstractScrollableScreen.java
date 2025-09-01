@@ -59,7 +59,7 @@ public abstract class AbstractScrollableScreen extends Screen {
 	}
 
 	public void initHeader() {
-		LuminanceLogo.Widget logo = new LuminanceLogo.Widget(splashText != null, this.splashText, this.isPride);
+		LuminanceLogo.Widget logo = new LuminanceLogo.Widget(this.splashText != null, this.splashText, this.isPride);
 		this.layout.addHeader(logo, (positioner) -> {
 			this.layout.setHeaderHeight(logo.getHeight());
 			positioner.marginTop(11);

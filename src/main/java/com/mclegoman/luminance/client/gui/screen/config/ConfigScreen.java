@@ -44,7 +44,7 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 		super(parent, scrollY);
 	}
 
-	public ConfigScreen(Screen parent, double scrollY, Translation.@Nullable Data splashText, boolean isPride) {
+	public ConfigScreen(Screen parent, double scrollY, @Nullable Translation.Data splashText, boolean isPride) {
 		super("", parent, scrollY, splashText, isPride);
 	}
 
