@@ -87,7 +87,7 @@ public class Shaders {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
 						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(Shader.RenderType.UI_BACKGROUND) && !shader.shader().getShaderData().getDisableUiRenderType() && !shader.shader().getUseDepth()) {
+							if (shader.shader().getRenderType().call().equals(Shader.RenderType.UI_BACKGROUND) && !shader.shader().getShaderData().getDisableUiBackgroundRenderTypes() && !shader.shader().getUseDepth()) {
 								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
 							}
 						}
@@ -108,7 +108,7 @@ public class Shaders {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
 						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(Shader.RenderType.PANORAMA) && !shader.shader().getShaderData().getDisableUiRenderType() && !shader.shader().getUseDepth()) {
+							if (shader.shader().getRenderType().call().equals(Shader.RenderType.PANORAMA) && !shader.shader().getShaderData().getDisableUiBackgroundRenderTypes() && !shader.shader().getUseDepth()) {
 								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
 							}
 						}

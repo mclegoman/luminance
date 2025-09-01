@@ -44,8 +44,8 @@ public class ShaderReloader extends JsonResourceReloader {
 			}
 		});
 	}
-	private ShaderRegistryEntry getShaderData(Identifier id, boolean disableUiRenderType, JsonObject custom) {
-		return ShaderRegistryEntry.builder(id).disableUiRenderType(disableUiRenderType).custom(custom).build();
+	private ShaderRegistryEntry getShaderData(Identifier id, boolean disableUiRenderType, boolean disableUiBackgroundRenderTypes, JsonObject custom) {
+		return ShaderRegistryEntry.builder(id).disableUiRenderType(disableUiRenderType).disableUiBackgroundRenderTypes(disableUiBackgroundRenderTypes).custom(custom).build();
 	}
 	private void add(List<Identifier> registries, ShaderRegistryEntry shaderData, ResourceManager manager) {
 		try {
@@ -90,9 +90,10 @@ public class ShaderReloader extends JsonResourceReloader {
 							JsonHelper.getBoolean(reader, "disable_game_rendertype",
 									JsonHelper.getBoolean(reader, "disable_screen_mode",
 											false)));
+					boolean disableUiBackgroundRenderTypes = JsonHelper.getBoolean(reader, "disable_ui_background_rendertypes", false);
 					JsonObject customData = JsonHelper.getObject(reader, "custom", new JsonObject());
 					JsonArray registries = JsonHelper.getArray(reader, "registries", new JsonArray());
-					ShaderRegistryEntry shaderData = getShaderData(post_effect, disableUiRenderType, customData);
+					ShaderRegistryEntry shaderData = getShaderData(post_effect, disableUiRenderType, disableUiBackgroundRenderTypes, customData);
 
 					List<Identifier> registryList = getRegistries(registries);
 					// If the registries are empty, we add the default registry.
