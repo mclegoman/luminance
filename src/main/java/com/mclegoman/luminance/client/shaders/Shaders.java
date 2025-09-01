@@ -87,7 +87,7 @@ public class Shaders {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
 						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(Shader.RenderType.UI_BACKGROUND) && !shader.shader().getUseDepth()) {
+							if (shader.shader().getRenderType().call().equals(Shader.RenderType.UI_BACKGROUND) && !shader.shader().getShaderData().getDisableUiRenderType() && !shader.shader().getUseDepth()) {
 								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
 							}
 						}
@@ -108,7 +108,7 @@ public class Shaders {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
 						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(Shader.RenderType.PANORAMA) && !shader.shader().getUseDepth()) {
+							if (shader.shader().getRenderType().call().equals(Shader.RenderType.PANORAMA) && !shader.shader().getShaderData().getDisableUiRenderType() && !shader.shader().getUseDepth()) {
 								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
 							}
 						}
@@ -123,6 +123,14 @@ public class Shaders {
 	}
 	public static Identifier getMainRegistryId() {
 		return Identifier.of(Data.getVersion().getID(), "main");
+	}
+	public static List<Identifier> getRegistries() {
+		return registries.keySet().stream().toList();
+	}
+	public static List<Identifier> getShaderIds(Identifier registry) {
+		List<Identifier> entries = new ArrayList<>();
+		for (ShaderRegistryEntry entry : getRegistry(registry)) entries.add(entry.getID());
+		return entries;
 	}
 	public static List<ShaderRegistryEntry> getRegistry() {
 		return getRegistry(getMainRegistryId());
@@ -251,6 +259,9 @@ public class Shaders {
 	}
 	public static Text getShaderName(Identifier registry, int shaderIndex) {
 		return getShaderName(registry, shaderIndex, true);
+	}
+	public static Text getShaderName(Identifier registryId, Identifier shaderId) {
+		return getShaderName(registryId, getShaderIndex(registryId, shaderId));
 	}
 	public static Text getShaderDescription(int shaderIndex, boolean shouldShowNamespace) {
 		return getShaderDescription(getMainRegistryId(), shaderIndex, shouldShowNamespace);

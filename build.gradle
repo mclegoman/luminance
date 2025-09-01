@@ -112,31 +112,3 @@ modrinth {
 		optional.version "modmenu", libs.versions.modmenu.get()
 	}
 }
-
-tasks.register('runQuickPlaySingleplayer') {
-	group = 'fabric'
-	description = 'Executes runClient and loads into the Singleplayer Test World.'
-	doFirst {
-		project.extensions.extraProperties.set("runQuickPlaySingleplayer", true)
-	}
-	dependsOn('runClient')
-}
-
-tasks.register('runQuickPlayMultiplayer') {
-	group = 'fabric'
-	description = 'Executes runClient and loads into the Multiplayer Test World.'
-	doFirst {
-		project.extensions.extraProperties.set("runQuickPlayMultiplayer", true)
-	}
-	dependsOn('runClient')
-}
-
-tasks.named('runClient') {
-	doFirst {
-		if (project.hasProperty("runQuickPlaySingleplayer")) {
-			args = ['--quickPlaySingleplayer', project.findProperty("quickPlaySingleplayer") ?: "Test World"]
-		} else if (project.hasProperty("runQuickPlayMultiplayer")) {
-			args = ['--quickPlayMultiplayer', project.findProperty("quickPlayMultiplayer") ?: "localhost"]
-		}
-	}
-}

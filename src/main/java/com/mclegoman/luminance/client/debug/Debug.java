@@ -47,7 +47,7 @@ public class Debug {
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set debug shader: {}", error));
 				Debug.debugShader.setFirst(Shaders.getMainRegistryId());
-				Debug.debugShader.setSecond(Identifier.of("box_blur"));
+				Debug.debugShader.setSecond(Shaders.getShaderIds(Shaders.getMainRegistryId()).getFirst());
 				applyDebugShader();
 			}
 		}
@@ -59,7 +59,7 @@ public class Debug {
 		return Identifier.of(Data.getVersion().getID() + "_debug", String.valueOf(index));
 	}
 	static {
-		debugShader = new Couple<>(Shaders.getMainRegistryId(), Identifier.of("box_blur"));
+		debugShader = new Couple<>(Shaders.getMainRegistryId(), Shaders.getShaderIds(Shaders.getMainRegistryId()).getFirst());
 		debugShaderEnabled = false;
 		debugRenderType = Shader.RenderType.WORLD;
 	}
