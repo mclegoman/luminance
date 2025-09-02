@@ -65,6 +65,12 @@ public class UniformValue {
         }
     }
 
+    public void set(float[] value) {
+        if (values.size() == value.length) {
+            for (int i = 0; i < value.length; i++) values.set(i, value[i]);
+        }
+    }
+
     public void min(UniformValue other) {
         elementwise(Math::min, other);
     }

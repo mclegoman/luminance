@@ -5,10 +5,10 @@
 
 uniform sampler2D InSampler, InDepthSampler;
 
-uniform float SphL, CylL, AxisL, AddNearL, AddInterL, ShiftL, SphR, CylR, AxisR, AddNearR, AddInterR, ShiftR, FoveaAngle, Mode, Reverse, PI, ToRadianDenominator, SampleRange, FovealFalloff, ShiftFactor, DepthFoveaMix, RadiusScale, MinRadius, MaxRadius, CylSphBlend, FoveaCenter, InterpCutoff, Mix, BlurSigmaFactor, CylBias, CylScale, ZPlane;
+uniform float SphL, CylL, AxisL, AddNearL, AddInterL, ShiftL, SphR, CylR, AxisR, AddNearR, AddInterR, ShiftR, FoveaAngle, Mode, InvertEyeCorrection, PI, ToRadianDenominator, SampleRange, FovealFalloff, ShiftFactor, DepthFoveaMix, RadiusScale, MinRadius, MaxRadius, CylSphBlend, FoveaCenter, InterpCutoff, Mix, BlurSigmaFactor, CylBias, CylScale, ZPlane;
 
-uniform vec3 luminance_crosshair_target_smooth, luminance_cam_smooth;
-uniform float luminance_fov_smooth;
+uniform vec3 luminance_crosshair_target, luminance_cam;
+uniform float luminance_fov;
 
 in vec2 texCoord, oneTexel;
 out vec4 fragColor;
@@ -25,11 +25,11 @@ vec4 blur(vec2 uv, float sph, float cyl, float axis, float nearAdd, float interA
     vec2 pos = uv * 2.0 - 1.0;
     pos.x *= oneTexel.y / oneTexel.x;
     pos.y *= -1.0;
-    float angle = acos(clamp(dot(normalize(vec3(pos, ZPlane)), normalize(luminance_crosshair_target_smooth - luminance_cam_smooth)), -1.0, 1.0));
+    float angle = acos(clamp(dot(normalize(vec3(pos, ZPlane)), normalize(luminance_crosshair_target - luminance_cam)), -1.0, 1.0));
     float fov = toRadians(FoveaAngle);
     float weight = mix(clamp(1.0 - texture(InDepthSampler, uv).r, 0.0, 1.0), exp(-angle * angle / (2.0 * fov * fov)), DepthFoveaMix);
-    float sphRadius = getRadius(mix(-sph, sph, Reverse) + mix(interAdd * Reverse, nearAdd * Reverse, weight), weight);
-    float cylRadius = getRadius(mix(-cyl, cyl, Reverse), weight);
+    float sphRadius = getRadius(mix(-sph, sph, InvertEyeCorrection) + mix(interAdd * InvertEyeCorrection, nearAdd * InvertEyeCorrection, weight), weight);
+    float cylRadius = getRadius(mix(-cyl, cyl, InvertEyeCorrection), weight);
     int samples = max(1, int(float(int(floor(SampleRange + 0.5))) * pow(1.0 - weight, FovealFalloff)));
     vec4 sphBlur = vec4(0.0);
     float sphWeightSum = 0.0;
@@ -61,7 +61,7 @@ void main() {
     if (mode == 0.0) fragColor = colorLeft;
     else if (mode == 1.0) fragColor = colorRight;
     else if (mode == 2.0) {
-        float halfFoveaUV = FoveaAngle / luminance_fov_smooth * 0.5;
+        float halfFoveaUV = FoveaAngle / luminance_fov * 0.5;
         fragColor = mix(colorLeft, colorRight, smoothstep(FoveaCenter - halfFoveaUV, FoveaCenter + halfFoveaUV, texCoord.x));
     } else if (mode == 3.0) fragColor = texCoord.x < InterpCutoff ? colorLeft : colorRight;
     else fragColor = mix(colorLeft, colorRight, Mix);

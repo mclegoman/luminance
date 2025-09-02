@@ -20,8 +20,9 @@ void main() {
     float totalStrength = 0.0;
     for(float r = -Radius; r <= Radius; r += 1.0) {
         vec4 sampleValue = texture(InSampler, texCoord + oneTexel * r * BlurDir);
-        blurred += sampleValue * gaussian(r);
-        totalStrength += gaussian(r);
+        float strength = gaussian(r);
+        blurred += sampleValue * strength;
+        totalStrength += strength;
     }
     blurred /= totalStrength;
     fragColor = vec4(mix(texture(InSampler, texCoord).rgb, blurred.rgb, clamp((distance(texCoord, Center) * Focus), 0.0, 1.0)), 1.0);

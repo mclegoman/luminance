@@ -102,6 +102,7 @@ public class Uniforms {
 			registerSingleTree(path, "isInvisible", Uniforms::getIsInvisible, 0f, 1f);
 			registerSingleTree(path, "isWithered", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.WITHER), 0f, 1f);
 			registerSingleTree(path, "isPoisoned", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.POISON), 0f, 1f);
+			registerStandardTree(path, "isInBiome", Uniforms::getIsInBiome, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("biome", List.of("minecraft:plains")))), false);
 			registerStandardTree(path, "effectDuration", Uniforms::getEffectDuration, null, null, 1, new MapConfig(List.of(new ConfigData("effect", List.of("minecraft:speed")))), false);
 			registerStandardTree(path, "effectAmplifier", Uniforms::getEffectAmplifier, 0f, 255f, 1, new MapConfig(List.of(new ConfigData("effect", List.of("minecraft:speed")))), false);
 			registerSingleTree(path, "isBurning", Uniforms::getIsBurning, 0f, 1f);
@@ -148,7 +149,6 @@ public class Uniforms {
 		}
 		registerTree(path, uniform);
 	}
-
 	public static void registerTree(String path, TreeUniform treeUniform) {
 		String name = path+"_"+treeUniform.name;
 		treeUniform.onRegister(name);
@@ -330,6 +330,9 @@ public class Uniforms {
 	public static float getHasEffect(RegistryEntry<StatusEffect> statusEffect) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.hasStatusEffect(statusEffect) ? 1.0F : 0.0F) : 0.0F;
 	}
+	public static void getIsInBiome(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		uniformValue.set(0, getIsInBiome(config) ? 0 : 1);
+	}
 	public static void getEffectDuration(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		StatusEffectInstance instance = getEffect(config);
 		uniformValue.set(0, instance == null ? 0 : instance.getDuration());
@@ -347,6 +350,11 @@ public class Uniforms {
 			}
 		}
 		return null;
+	}
+	private static boolean getIsInBiome(UniformConfig config) {
+		List<Object> objects = config.getObjects("biome");
+		if (ClientData.minecraft.world != null && ClientData.minecraft.player != null && objects != null && !objects.isEmpty() && objects.getFirst() instanceof String id) return Identifier.of(ClientData.minecraft.world.getBiome(ClientData.minecraft.player.getBlockPos()).getIdAsString()).equals(Identifier.of(id));
+		return false;
 	}
 
 	public static float getIsBurning(ShaderTime shaderTime) {

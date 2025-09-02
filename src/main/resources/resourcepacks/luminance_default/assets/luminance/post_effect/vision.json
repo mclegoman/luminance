@@ -7,94 +7,38 @@
         {
             "program": "luminance:post/vision",
             "inputs": [
-                {
-                    "sampler_name": "In",
-                    "target": "minecraft:main"
-                },
-                {
-                    "sampler_name": "InDepth",
-                    "target": "minecraft:main",
-                    "use_depth_buffer": true
-                }
+                { "sampler_name": "In", "target": "minecraft:main" },
+                { "sampler_name": "InDepth", "target": "minecraft:main", "use_depth_buffer": true }
             ],
             "output": "merge",
             "uniforms": [
-
-                {
-                    "name": "SphL",
-                    "values": [ 0.0 ]
-                },
-                {
-                    "name": "CylL",
-                    "values": [ -0.25 ]
-                },
-                {
-                    "name": "AxisL",
-                    "values": [ 5.0 ]
-                },
-                {
-                    "name": "AddNearL",
-                    "values": [ 0.5 ]
-                },
-                {
-                    "name": "AddInterL",
-                    "values": [ 0.5 ]
-                },
-                {
-                    "name": "ShiftL",
-                    "values": [ 0.0 ]
-                },
-                {
-                    "name": "SphR",
-                    "values": [ 0.25 ]
-                },
-                {
-                    "name": "CylR",
-                    "values": [ -0.25 ]
-                },
-                {
-                    "name": "AxisR",
-                    "values": [ 175.0 ]
-                },
-                {
-                    "name": "AddNearR",
-                    "values": [ 0.5 ]
-                },
-                {
-                    "name": "AddInterR",
-                    "values": [ 0.5 ]
-                },
-                {
-                    "name": "ShiftR",
-                    "values": [ 0.0 ]
-                },
-                {
-                    "name": "Mode",
-                    "values": [ 2.0 ]
-                }
+                { "name": "SphL", "values": [ 0.0 ] },
+                { "name": "CylL", "values": [ -0.25 ] },
+                { "name": "AxisL", "values": [ 5.0 ] },
+                { "name": "AddNearL", "values": [ 0.5 ] },
+                { "name": "AddInterL", "values": [ 0.5 ] },
+                { "name": "ShiftL", "values": [ 0.0 ] },
+                { "name": "SphR", "values": [ 0.25 ] },
+                { "name": "CylR", "values": [ -0.25 ] },
+                { "name": "AxisR", "values": [ 175.0 ] },
+                { "name": "AddNearR", "values": [ 0.5 ] },
+                { "name": "AddInterR", "values": [ 0.5 ] },
+                { "name": "ShiftR", "values": [ 0.0 ] },
+                { "name": "Mode", "values": [ 2.0 ] }
             ]
         },
         {
             "program": "luminance:post/merge",
             "inputs": [
-                {
-                    "sampler_name": "In",
-                    "target": "merge"
-                },
-                {
-                    "sampler_name": "Merge",
-                    "target": "minecraft:main"
-                }
+                { "sampler_name": "In", "target": "merge"},
+                { "sampler_name": "Merge", "target": "minecraft:main" }
             ],
             "output": "swap"
         },
         {
             "program": "minecraft:post/blit",
             "inputs": [
-                {
-                    "sampler_name": "In",
-                    "target": "swap"
-                }
+                { "sampler_name": "In", "target": "swap" }
             ],
             "output": "minecraft:main"
         }
