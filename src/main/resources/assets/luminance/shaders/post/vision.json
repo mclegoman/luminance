@@ -2,7 +2,8 @@
     "vertex": "minecraft:post/sobel",
     "fragment": "luminance:post/vision",
     "samplers": [
-        { "name": "InSampler" }
+        { "name": "InSampler" },
+        { "name": "InDepthSampler" }
     ],
     "uniforms": [
         { "name": "ProjMat",        "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
@@ -21,7 +22,7 @@
         { "name": "AddInterR",        "type": "float",     "count": 1,  "values": [ 0.0 ] },
         { "name": "ShiftR",        "type": "float",     "count": 1,  "values": [ 0.0 ] },
         { "name": "FoveaAngle",        "type": "float",     "count": 1,  "values": [ 2.0 ] },
-        { "name": "Mode",        "type": "float",     "count": 1,  "values": [ 3.0 ] },
+        { "name": "Mode",        "type": "float",     "count": 1,  "values": [ 2.0 ] },
         { "name": "Reverse",        "type": "float",     "count": 1,  "values": [ 0.0 ] },
         { "name": "PI",        "type": "float",     "count": 1,  "values": [ 3.141592653589793 ] },
         { "name": "ToRadianDenominator",        "type": "float",     "count": 1,  "values": [ 180.0 ] },

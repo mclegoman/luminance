@@ -1,5 +1,8 @@
 #version 150
 
+// If you want to make a normal double vision shader, update both ShiftL and ShiftR to 31.5.
+// luminance:vision2 uses different values as these are based on my actual eyes. :p
+
 uniform sampler2D InSampler, InDepthSampler;
 
 uniform float SphL, CylL, AxisL, AddNearL, AddInterL, ShiftL, SphR, CylR, AxisR, AddNearR, AddInterR, ShiftR, FoveaAngle, Mode, Reverse, PI, ToRadianDenominator, SampleRange;
@@ -18,9 +21,7 @@ float getAngle(vec2 uv) {
     vec2 pos = uv * 2.0 - 1.0;
     pos.x *= oneTexel.y / oneTexel.x;
     pos.y *= -1.0;
-    vec3 rayDir = normalize(vec3(pos, -1.0));
-    vec3 targetDir = normalize(luminance_crosshair_target_smooth - luminance_cam_smooth);
-    return acos(clamp(dot(rayDir, targetDir), -1.0, 1.0));
+    return acos(clamp(dot(normalize(vec3(pos, -1.0)), normalize(luminance_crosshair_target_smooth - luminance_cam_smooth)), -1.0, 1.0));
 }
 
 float getWeight(vec2 uv) {
@@ -34,21 +35,16 @@ float getRadius(float value, float weight) {
 }
 
 vec4 blur(vec2 uv, float sph, float cyl, float axis, float nearAdd, float interAdd) {
-    float foveaWeight = getWeight(uv);
-    float effectiveSph = mix(-sph, sph, Reverse);
-    float effectiveCyl = mix(-cyl, cyl, Reverse);
-    float combinedAdd = mix(interAdd * Reverse, nearAdd * Reverse, foveaWeight);
+    float weight = getWeight(uv);
+    float sphRadius = getRadius(mix(-sph, sph, Reverse) + mix(interAdd * Reverse, nearAdd * Reverse, weight), weight);
+    float cylRadius = getRadius(mix(-cyl, cyl, Reverse), weight);
 
-    float sphRadius = getRadius(effectiveSph + combinedAdd, foveaWeight);
-    float cylRadius = getRadius(effectiveCyl, foveaWeight);
-
-    int maxSample = int(floor(SampleRange + 0.5));
-    int adaptiveSample = max(1, int(float(maxSample) * (1.0 - foveaWeight)));
+    int samples = max(1, int(float(int(floor(SampleRange + 0.5))) * pow(1.0 - weight, 1.5)));
 
     vec4 sphBlur = vec4(0.0);
     float sphWeightSum = 0.0;
-    for (int x = -adaptiveSample; x <= adaptiveSample; x++) {
-        for (int y = -adaptiveSample; y <= adaptiveSample; y++) {
+    for (int x = -samples; x <= samples; x++) {
+        for (int y = -samples; y <= samples; y++) {
             float sampleWeight = exp(-float(x*x + y*y) / (2.0 * sphRadius * sphRadius));
             sphBlur += texture(InSampler, uv + vec2(x, y) * oneTexel * sphRadius) * sampleWeight;
             sphWeightSum += sampleWeight;
@@ -60,8 +56,8 @@ vec4 blur(vec2 uv, float sph, float cyl, float axis, float nearAdd, float interA
     vec2 axisDir = vec2(cos(axisRad), sin(axisRad));
     vec4 cylBlur = vec4(0.0);
     float cylWeightSum = 0.0;
-    for (int k = -adaptiveSample; k <= adaptiveSample; k++) {
-        float sampleWeight = exp(-float(k*k) / (2.0 * cylRadius * cylRadius)) * (0.5 + 0.5 * foveaWeight);
+    for (int k = -samples; k <= samples; k++) {
+        float sampleWeight = exp(-float(k*k) / (2.0 * cylRadius * cylRadius)) * (0.5 + 0.5 * weight);
         cylBlur += texture(InSampler, uv + axisDir * float(k) * oneTexel * cylRadius) * sampleWeight;
         cylWeightSum += sampleWeight;
     }
