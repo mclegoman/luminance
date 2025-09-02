@@ -1,79 +1,94 @@
 #version 150
 
-uniform sampler2D InSampler;
-uniform sampler2D InDepthSampler;
+uniform sampler2D InSampler, InDepthSampler;
 
-uniform float SphR;
-uniform float CylR;
-uniform float AxisR;
-uniform float AddNearR;
-uniform float AddInterR;
-uniform float PdR;
-uniform float SphL;
-uniform float CylL;
-uniform float AxisL;
-uniform float AddNearL;
-uniform float AddInterL;
-uniform float PdL;
-uniform float Mode;
-uniform float Reverse;
+uniform float SphL, CylL, AxisL, AddNearL, AddInterL, ShiftL, SphR, CylR, AxisR, AddNearR, AddInterR, ShiftR, FoveaAngle, Mode, Reverse, PI, ToRadianDenominator, SampleRange;
 
-in vec2 texCoord;
-in vec2 oneTexel;
+uniform vec3 luminance_crosshair_target_smooth, luminance_cam_smooth;
+uniform float luminance_fov_smooth;
 
+in vec2 texCoord, oneTexel;
 out vec4 fragColor;
 
-vec4 apply(vec2 uv, float sph, float cyl, float axis, float addNear, float addInter) {
+float toRadians(float degrees) {
+    return degrees * PI / ToRadianDenominator;
+}
+
+float getAngle(vec2 uv) {
+    vec2 pos = uv * 2.0 - 1.0;
+    pos.x *= oneTexel.y / oneTexel.x;
+    pos.y *= -1.0;
+    vec3 rayDir = normalize(vec3(pos, -1.0));
+    vec3 targetDir = normalize(luminance_crosshair_target_smooth - luminance_cam_smooth);
+    return acos(clamp(dot(rayDir, targetDir), -1.0, 1.0));
+}
+
+float getWeight(vec2 uv) {
+    float angle = getAngle(uv);
+    float fov = toRadians(FoveaAngle);
+    return mix(clamp(1.0 - texture(InDepthSampler, uv).r, 0.0, 1.0), exp(-angle * angle / (2.0 * fov * fov)), 0.9);
+}
+
+float getRadius(float value, float weight) {
+    return clamp(abs(value) * (1.0 - weight) * 5.0 + 0.5, 0.5, 20.0);
+}
+
+vec4 blur(vec2 uv, float sph, float cyl, float axis, float nearAdd, float interAdd) {
+    float foveaWeight = getWeight(uv);
     float effectiveSph = mix(-sph, sph, Reverse);
     float effectiveCyl = mix(-cyl, cyl, Reverse);
-    float effectiveAddNear = addNear * Reverse;
-    float effectiveAddInter = addInter * Reverse;
+    float combinedAdd = mix(interAdd * Reverse, nearAdd * Reverse, foveaWeight);
 
-    float depth = texture(InDepthSampler, uv).r;
-    float focusFactor = clamp(1.0 - depth, 0.0, 1.0);
-    float addEffect = mix(effectiveAddInter, effectiveAddNear, focusFactor);
+    float sphRadius = getRadius(effectiveSph + combinedAdd, foveaWeight);
+    float cylRadius = getRadius(effectiveCyl, foveaWeight);
 
-    float sphRadius = max(1.0, abs(effectiveSph + addEffect) * 2.0);
+    int maxSample = int(floor(SampleRange + 0.5));
+    int adaptiveSample = max(1, int(float(maxSample) * (1.0 - foveaWeight)));
+
     vec4 sphBlur = vec4(0.0);
-    int samples = 5;
-    for(int i=-samples; i<=samples; i++) {
-        for(int j=-samples; j<=samples; j++) {
-            sphBlur += texture(InSampler, uv + vec2(i,j)*oneTexel*sphRadius);
+    float sphWeightSum = 0.0;
+    for (int x = -adaptiveSample; x <= adaptiveSample; x++) {
+        for (int y = -adaptiveSample; y <= adaptiveSample; y++) {
+            float sampleWeight = exp(-float(x*x + y*y) / (2.0 * sphRadius * sphRadius));
+            sphBlur += texture(InSampler, uv + vec2(x, y) * oneTexel * sphRadius) * sampleWeight;
+            sphWeightSum += sampleWeight;
         }
     }
-    sphBlur /= float((samples*2+1)*(samples*2+1));
+    sphBlur /= sphWeightSum;
 
-    float rad = radians(axis);
-    vec2 dir = vec2(cos(rad), sin(rad));
-    float cylRadius = max(1.0, abs(effectiveCyl) * 2.0);
+    float axisRad = toRadians(axis);
+    vec2 axisDir = vec2(cos(axisRad), sin(axisRad));
     vec4 cylBlur = vec4(0.0);
-    for(int k=-samples; k<=samples; k++) {
-        cylBlur += texture(InSampler, uv + dir*float(k)*oneTexel*cylRadius);
+    float cylWeightSum = 0.0;
+    for (int k = -adaptiveSample; k <= adaptiveSample; k++) {
+        float sampleWeight = exp(-float(k*k) / (2.0 * cylRadius * cylRadius)) * (0.5 + 0.5 * foveaWeight);
+        cylBlur += texture(InSampler, uv + axisDir * float(k) * oneTexel * cylRadius) * sampleWeight;
+        cylWeightSum += sampleWeight;
     }
-    cylBlur /= float(samples*2+1);
+    cylBlur /= cylWeightSum;
 
-    return mix(sphBlur, cylBlur, 0.5);
+    return mix(cylBlur, sphBlur, 0.6);
 }
 
 void main() {
-    vec2 uvR = texCoord + vec2(PdR * oneTexel.x / 2.0, 0.0);
-    vec2 uvL = texCoord - vec2(PdL * oneTexel.x / 2.0, 0.0);
+    vec2 uvRight = clamp(texCoord + vec2(ShiftR * oneTexel.x * 0.5, 0.0), 0.0, 1.0);
+    vec2 uvLeft  = clamp(texCoord - vec2(ShiftL * oneTexel.x * 0.5, 0.0), 0.0, 1.0);
 
-    uvR = clamp(uvR, 0.0, 1.0);
-    uvL = clamp(uvL, 0.0, 1.0);
-
-    vec4 colorR = apply(uvR, SphR, CylR, AxisR, AddNearR, AddInterR);
-    vec4 colorL = apply(uvL, SphL, CylL, AxisL, AddNearL, AddInterL);
+    vec4 colorRight = blur(uvRight, SphR, CylR, AxisR, AddNearR, AddInterR);
+    vec4 colorLeft  = blur(uvLeft,  SphL, CylL, AxisL, AddNearL, AddInterL);
 
     float mode = floor(Mode + 0.5);
+
     if (mode == 0.0) {
-        fragColor = colorL;
-    } else if(mode == 1.0) {
-        fragColor = colorR;
-    } else if(mode == 2.0) {
-        float blend = step(0.5, texCoord.x);
-        fragColor = mix(colorL, colorR, blend);
+        fragColor = colorLeft;
+    } else if (mode == 1.0) {
+        fragColor = colorRight;
+    } else if (mode == 2.0) {
+        float halfFoveaUV = FoveaAngle / luminance_fov_smooth * 0.5;
+        fragColor = mix(colorLeft, colorRight, smoothstep(0.5 - halfFoveaUV, 0.5 + halfFoveaUV, texCoord.x));
+    } else if (mode == 3.0) {
+        fragColor = texCoord.x < 0.5 ? colorLeft : colorRight;
     } else {
-        fragColor = (colorL + colorR) * 0.5;
+        fragColor = mix(colorLeft, colorRight, 0.5);
     }
 }

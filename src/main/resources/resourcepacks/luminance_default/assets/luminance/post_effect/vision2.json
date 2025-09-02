@@ -42,7 +42,7 @@
                 },
                 {
                     "name": "ShiftL",
-                    "values": [ 0.0 ]
+                    "values": [ 31.0 ]
                 },
                 {
                     "name": "SphR",
@@ -66,11 +66,11 @@
                 },
                 {
                     "name": "ShiftR",
-                    "values": [ 0.0 ]
+                    "values": [ 32.0 ]
                 },
                 {
                     "name": "Mode",
-                    "values": [ 3.0 ]
+                    "values": [ 4.0 ]
                 }
             ]
         },

@@ -2,6 +2,7 @@
 	"gui.luminance.shader.luminance.aa" : "Anti-alias",
 	"gui.luminance.shader.luminance.crt" : "CRT",
 	"gui.luminance.shader.luminance.dominant_channel" : "Dominant Channel",
+	"gui.luminance.shader.luminance.vision2": "Double Vision",
 	"gui.luminance.shader.luminance.gentoo" : "Gentoo",
 	"gui.luminance.shader.luminance.golden_blobs2" : "Golden Blobs",
 	"gui.luminance.shader.luminance.blue_blobs2" : "Blue Blobs",
