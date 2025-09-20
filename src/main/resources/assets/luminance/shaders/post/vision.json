@@ -41,8 +41,8 @@
         { "name": "CylBias", "type": "float", "count": 1, "values": [ 0.5 ] },
         { "name": "CylScale", "type": "float", "count": 1, "values": [ 0.5 ] },
         { "name": "ZPlane", "type": "float", "count": 1, "values": [ -1.0 ] },
-        { "name": "luminance_crosshair_target", "type": "float", "count": 3, "values": [ 0.0, 0.0, 0.0 ] },
-        { "name": "luminance_cam", "type": "float", "count": 3, "values": [ 0.0, 0.0, 0.0 ] },
-        { "name": "luminance_fov", "type": "float", "count": 1, "values": [ 0.0 ] }
+        { "name": "luminance_crosshair_target", "type": "float", "count": 3, "values": [ 0.0, 64.0, 0.0 ] },
+        { "name": "luminance_cam", "type": "float", "count": 3, "values": [ 0.0, 64.0, 0.0 ] },
+        { "name": "luminance_fov", "type": "float", "count": 1, "values": [ 95.0 ] }
     ]
 }

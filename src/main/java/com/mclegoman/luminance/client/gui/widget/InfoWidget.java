@@ -13,14 +13,14 @@ import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.EntryListWidget;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
+import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.StringIdentifiable;
@@ -30,6 +30,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class InfoWidget extends EntryListWidget<InfoWidget.InfoEntry> {
 	private final TextRenderer textRenderer;
@@ -112,6 +113,31 @@ public class InfoWidget extends EntryListWidget<InfoWidget.InfoEntry> {
                 };
 			});
 		}
+		Style style = Style.EMPTY;
+		if (jsonObject.has("style")) {
+			JsonObject styleObject = jsonObject.getAsJsonObject("style");
+			if (styleObject.has("color")) {
+				Optional<Pair<TextColor, JsonElement>> oPair = TextColor.CODEC.decode(JsonOps.INSTANCE, styleObject.get("color")).result();
+				if (oPair.isPresent()) style = style.withColor(oPair.get().getFirst());
+			}
+			if (styleObject.has("shadow_color")) style = style.withShadowColor(styleObject.get("shadow_color").getAsInt());
+			if (styleObject.has("bold")) style = style.withBold(styleObject.get("bold").getAsBoolean());
+			if (styleObject.has("italic")) style = style.withItalic(styleObject.get("italic").getAsBoolean());
+			if (styleObject.has("underlined")) style = style.withUnderline(styleObject.get("underlined").getAsBoolean());
+			if (styleObject.has("strikethrough")) style = style.withStrikethrough(styleObject.get("strikethrough").getAsBoolean());
+			if (styleObject.has("obfuscated")) style = style.withObfuscated(styleObject.get("obfuscated").getAsBoolean());
+			if (styleObject.has("click_event")) {
+				Optional<Pair<ClickEvent, JsonElement>> oPair = ClickEvent.CODEC.decode(JsonOps.INSTANCE, styleObject.get("click_event")).result();
+				if (oPair.isPresent()) style = style.withClickEvent(oPair.get().getFirst());
+			}
+			if (styleObject.has("hover_event")) {
+				Optional<Pair<HoverEvent, JsonElement>> oPair = HoverEvent.CODEC.decode(JsonOps.INSTANCE, styleObject.get("hover_event")).result();
+				if (oPair.isPresent()) style = style.withHoverEvent(oPair.get().getFirst());
+			}
+			if (styleObject.has("insertion")) style = style.withInsertion(styleObject.get("insertion").getAsString());
+			if (styleObject.has("font")) style = style.withFont(Identifier.of(styleObject.get("font").getAsString()));
+		}
+		text.setStyle(style);
 		return text;
 	}
 
