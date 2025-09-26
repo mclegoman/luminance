@@ -25,8 +25,8 @@ public abstract class GameRendererMixin {
 	private void luminance$beforeGameRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
 		Execute.beforeGameRender();
 	}
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/Framebuffer;beginWrite(Z)V"))
-	private void luminance$afterHandRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/fog/FogRenderer;rotate()V"))
+	private void luminance$afterVanillaPostEffect(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
 		Execute.afterVanillaPostEffectRender(this.pool);
 	}
 	@Inject(method = "render", at = @At("TAIL"))

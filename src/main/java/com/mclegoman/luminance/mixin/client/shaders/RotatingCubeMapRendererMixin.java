@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(priority = 100, value = RotatingCubeMapRenderer.class)
 public class RotatingCubeMapRendererMixin {
 	@Inject(method = "render", at = @At("RETURN"))
-	private void luminance$afterPanoramaRender(DrawContext context, int width, int height, float alpha, float tickDelta, CallbackInfo ci) {
+	private void luminance$afterPanoramaRender(DrawContext context, int width, int height, boolean rotate, CallbackInfo ci) {
 		Execute.afterPanoramaRender(((GameRendererAccessor) ClientData.minecraft.gameRenderer).getPool());
 	}
 }

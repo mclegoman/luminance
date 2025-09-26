@@ -11,6 +11,7 @@ import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.events.Events;
+import com.mclegoman.luminance.client.gui.screen.LuminanceTitleScreen;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.shaders.uniforms.RootUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.TreeUniform;
@@ -29,9 +30,7 @@ import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import com.mclegoman.luminance.mixin.client.shaders.GameRendererAccessor;
-import com.mclegoman.luminance.mixin.client.shaders.TitleScreenAccessor;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -58,7 +57,7 @@ public class Uniforms {
 		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.tick());
 	}
 	public static void update() {
-		shaderTime.update(ClientData.minecraft.getRenderTickCounter().getTickDelta(true));
+		shaderTime.update(ClientData.minecraft.getRenderTickCounter().getTickProgress(true));
 		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.update(shaderTime));
 	}
 	public static void init() {
@@ -183,7 +182,7 @@ public class Uniforms {
 		return treeUniform;
 	}
 	public static float getPanoramaAlpha(ShaderTime shaderTime) {
-		return ClientData.minecraft.currentScreen instanceof TitleScreen ? (((TitleScreenAccessor)ClientData.minecraft.currentScreen).getBackgroundAlpha()) : 1.0F;
+		return ClientData.minecraft.currentScreen instanceof LuminanceTitleScreen ? (((LuminanceTitleScreen)ClientData.minecraft.currentScreen).luminance$getBackgroundAlpha()) : 1.0F;
 	}
 	public static float getHudHidden(ShaderTime shaderTime) {
 		return ClientData.minecraft.options != null ? (ClientData.minecraft.options.hudHidden ? 1.0F : 0.0F) : 0.0F;
@@ -416,16 +415,16 @@ public class Uniforms {
 		return 0.0F;
 	}
 	public static float getSelectedSlot(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getInventory().selectedSlot : 0.0F;
+		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getInventory().getSelectedSlot() : 0.0F;
 	}
 	public static float getScore(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getScore() : 0.0F;
 	}
 	public static float getVelocity(ShaderTime shaderTime) {
 		if (ClientData.minecraft.player != null) {
-			float x = (float) (ClientData.minecraft.player.getX() - ClientData.minecraft.player.prevX);
-			float y = (float) (ClientData.minecraft.player.getY() - ClientData.minecraft.player.prevY);
-			float z = (float) (ClientData.minecraft.player.getZ() - ClientData.minecraft.player.prevZ);
+			float x = (float) (ClientData.minecraft.player.getX() - ClientData.minecraft.player.lastX);
+			float y = (float) (ClientData.minecraft.player.getY() - ClientData.minecraft.player.lastY);
+			float z = (float) (ClientData.minecraft.player.getZ() - ClientData.minecraft.player.lastZ);
 			return (float) Math.sqrt(x * x + y * y + z * z);
 		}
 		return 0.0F;
