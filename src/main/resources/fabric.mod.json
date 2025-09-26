@@ -23,10 +23,10 @@
   },
   "entrypoints": {
     "client": [
-      "com.mclegoman.luminance.client.LuminanceClient"
+      "com.mclegoman.${modId}.client.LuminanceClient"
     ],
     "modmenu": [
-      "com.mclegoman.luminance.compat.ModMenuCompat"
+      "com.mclegoman.${modId}.compat.ModMenuCompat"
     ]
   },
   "custom": {
@@ -37,6 +37,6 @@
     }
   },
   "mixins": [
-    "dt-luminance.mixins.json"
+    "dt-${modId}.mixins.json"
   ]
 }

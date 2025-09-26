@@ -9,12 +9,16 @@ package com.mclegoman.luminance.client.config;
 
 import com.mclegoman.luminance.client.config.value.SpectatorPriorityModeValue;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
-import com.mclegoman.luminance.config.LuminanceConfigHelper;
-import org.quiltmc.config.api.ReflectiveConfig;
-import org.quiltmc.config.api.annotations.Comment;
-import org.quiltmc.config.api.annotations.IntegerRange;
-import org.quiltmc.config.api.annotations.SerializedName;
-import org.quiltmc.config.api.values.TrackedValue;
+import com.mclegoman.luminance.common.data.Data;
+import com.mclegoman.luminance.config.serializers.LuminanceSerializer;
+import folk.sisby.kaleido.api.ReflectiveConfig;
+import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
+import folk.sisby.kaleido.lib.quiltconfig.api.annotations.IntegerRange;
+import folk.sisby.kaleido.lib.quiltconfig.api.annotations.SerializedName;
+import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
+import folk.sisby.kaleido.lib.quiltconfig.implementor_api.ConfigEnvironment;
+
+import java.nio.file.Paths;
 
 public class LuminanceConfig extends ReflectiveConfig {
 	// For more info on Quilt Config, see https://wiki.quiltmc.org/en/configuration/getting-started.
@@ -41,6 +45,6 @@ public class LuminanceConfig extends ReflectiveConfig {
 	}
 
 	static {
-		config = LuminanceConfigHelper.register(LuminanceConfigHelper.SerializerType.PROPERTIES, "", "luminance", LuminanceConfig.class);
+		config = create(new ConfigEnvironment(Paths.get("config"), "properties", LuminanceSerializer.propertiesInstance), "", Data.getVersion().getID(), LuminanceConfig.class);
 	}
 }

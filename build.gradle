@@ -7,13 +7,18 @@ plugins {
 }
 
 version = "$modVersion+$branchName"
-base.archivesName = project.slug
+base.archivesName = project.modId
+
+loom {
+	mods {
+		"${modId}" {
+			sourceSet("main")
+		}
+	}
+}
 
 repositories {
-	maven { url = "https://jitpack.io" }
-	maven { url = "https://maven.terraformersmc.com/releases/" }
-	mavenCentral()
-	mavenLocal()
+	maven { url 'https://maven.terraformersmc.com/releases/' }
 	exclusiveContent {
 		forRepository {
 			maven {
@@ -25,10 +30,7 @@ repositories {
 			includeGroup "maven.modrinth"
 		}
 	}
-	flatDir {
-		dirs("libs")
-	}
-	maven { url = "https://maven.quiltmc.org/repository/release/" }
+	maven { url 'https://repo.sleeping.town/' }
 }
 
 dependencies {
@@ -38,17 +40,9 @@ dependencies {
 	modImplementation libs.fl
 	modImplementation libs.fapi
 	modImplementation libs.modmenu
-	modImplementation libs.sodium
-	modImplementation libs.quiltconfig
-	modImplementation libs.quiltconfigtoml
-	modImplementation libs.quiltconfigjson
-	modImplementation libs.nightconfigtoml
-	modImplementation libs.nightconfigcore
-	include libs.quiltconfig
-	include libs.quiltconfigtoml
-	include libs.quiltconfigjson
-	include libs.nightconfigtoml
-	include libs.nightconfigcore
+	modImplementation libs.kaleido
+	include libs.kaleido
+
 	modCompileOnly libs.iris
 }
 
@@ -58,13 +52,14 @@ processResources {
 			modId         : modId,
 			modName       : modName,
 			modDescription: modDescription,
-			homepage      : "https://modrinth.com/mod/${slug}",
-			issues        : "https://github.com/${user}/${slug}/issues",
-			sources       : "https://github.com/${user}/${slug}",
+			homepage      : "https://modrinth.com/mod/${modrinth_slug}",
+			issues        : "https://github.com/${user}/${github_slug}/issues",
+			sources       : "https://github.com/${user}/${github_slug}",
 			license       : license,
 			authors       : authors.split(", ").join("\",\n    \""),
 			contributors  : contributors.split(", ").join("\",\n    \""),
 			members       : "${authors}${contributors ? ". Contributions by ${contributors}." : ""}",
+			env           : "${env}",
 			mc            : compatibleVersions.split(", ")[0],
 			fl            : libs.versions.fl.get(),
 			fapi          : libs.versions.fapi.get(),
@@ -98,7 +93,7 @@ publishing {
 
 modrinth {
 	token = "$System.env.MODRINTH_TOKEN"
-	projectId = slug
+	projectId = modrinth_slug
 	versionNumber = project.version
 	uploadFile = remapJar
 	gameVersions = compatibleVersions.split(", ").toList()
@@ -107,7 +102,6 @@ modrinth {
 	syncBodyFrom = "<!--DO NOT EDIT MANUALLY: synced from gh readme-->\n" + rootProject.file("README.md").text
 	dependencies {
 		required.version "fabric-api", libs.versions.fapi.get()
-		optional.version "sodium", libs.versions.sodium.get()
 		optional.version "iris", libs.versions.iris.get()
 		optional.version "modmenu", libs.versions.modmenu.get()
 	}

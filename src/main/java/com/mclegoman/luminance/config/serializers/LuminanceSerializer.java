@@ -7,26 +7,27 @@
 
 package com.mclegoman.luminance.config.serializers;
 
-import com.electronwill.nightconfig.core.CommentedConfig;
-import com.electronwill.nightconfig.core.InMemoryCommentedFormat;
-import com.electronwill.nightconfig.core.UnmodifiableCommentedConfig;
-import com.electronwill.nightconfig.core.io.ConfigParser;
-import com.electronwill.nightconfig.core.io.ConfigWriter;
-import com.electronwill.nightconfig.toml.TomlParser;
-import com.electronwill.nightconfig.toml.TomlWriter;
-import org.quiltmc.config.api.Config;
-import org.quiltmc.config.api.Constraint;
-import org.quiltmc.config.api.MarshallingUtils;
-import org.quiltmc.config.api.Serializer;
-import org.quiltmc.config.api.annotations.Comment;
-import org.quiltmc.config.api.values.*;
-import org.quiltmc.config.impl.util.SerializerUtils;
+import folk.sisby.kaleido.lib.nightconfig.core.CommentedConfig;
+import folk.sisby.kaleido.lib.nightconfig.core.InMemoryCommentedFormat;
+import folk.sisby.kaleido.lib.nightconfig.core.UnmodifiableCommentedConfig;
+import folk.sisby.kaleido.lib.nightconfig.core.io.ConfigParser;
+import folk.sisby.kaleido.lib.nightconfig.core.io.ConfigWriter;
+import folk.sisby.kaleido.lib.nightconfig.toml.TomlParser;
+import folk.sisby.kaleido.lib.nightconfig.toml.TomlWriter;
+import folk.sisby.kaleido.lib.quiltconfig.api.Config;
+import folk.sisby.kaleido.lib.quiltconfig.api.Constraint;
+import folk.sisby.kaleido.lib.quiltconfig.api.MarshallingUtils;
+import folk.sisby.kaleido.lib.quiltconfig.api.Serializer;
+import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
+import folk.sisby.kaleido.lib.quiltconfig.api.values.*;
+import folk.sisby.kaleido.lib.quiltconfig.impl.util.SerializerUtils;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
 public class LuminanceSerializer implements Serializer {
+	public static final LuminanceSerializer propertiesInstance = new LuminanceSerializer("properties");
 	private final ConfigParser<CommentedConfig> parser = new TomlParser();
 	private final ConfigWriter writer = new TomlWriter();
 	private final String fileExtension;
@@ -36,12 +37,12 @@ public class LuminanceSerializer implements Serializer {
 	public String getFileExtension() {
 		return fileExtension;
 	}
-	public void serialize(Config config, OutputStream output) {
-		this.writer.write(write(config, createCommentedConfig(), config.nodes()), output);
+	public void serialize(folk.sisby.kaleido.lib.quiltconfig.api.Config config, OutputStream outputStream) {
+		this.writer.write(write(config, createCommentedConfig(), config.nodes()), outputStream);
 	}
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	public void deserialize(Config config, InputStream input) {
-		CommentedConfig read = this.parser.parse(input);
+	public void deserialize(folk.sisby.kaleido.lib.quiltconfig.api.Config config, InputStream inputStream) {
+		CommentedConfig read = this.parser.parse(inputStream);
 		for (TrackedValue<?> value : config.values()) {
 			String key = SerializerUtils.getSerializedKey(config, value).toString();
 			if (read.contains(key)) ((TrackedValue) value).setValue(MarshallingUtils.coerce(read.get(key), value.getDefaultValue(), (CommentedConfig commentedConfig, MarshallingUtils.MapEntryConsumer entryConsumer) -> commentedConfig.entrySet().forEach(entry -> entryConsumer.put(entry.getKey(), entry.getValue()))), false);
