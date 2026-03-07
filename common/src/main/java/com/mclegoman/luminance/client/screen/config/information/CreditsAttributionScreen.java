@@ -17,7 +17,6 @@ import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.DateHelper;
 import com.mclegoman.luminance.common.util.LogType;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.input.KeyInput;
@@ -41,7 +40,7 @@ public class CreditsAttributionScreen extends Screen {
 	protected List<OrderedText> credits;
 	protected final List<Integer> centeredLines = new ArrayList<>();
 	protected int creditsHeight;
-	protected boolean isHoldingSpace;
+	protected int speedBoost = 0;
 	public CreditsAttributionScreen(Screen parentScreen, boolean isPride, Identifier creditsJsonId) {
 		super(NarratorManager.EMPTY);
 		this.parentScreen = parentScreen;
@@ -61,7 +60,8 @@ public class CreditsAttributionScreen extends Screen {
 		if (this.time > (this.creditsHeight + ClientData.minecraft.getWindow().getScaledHeight() + 64)) this.close();
 	}
 	protected float getSpeed() {
-		return this.time > 0 ? ((isHoldingSpace ? 4.0F : 1.0F) * (hasControlDown() ? 4.0F : 1.0F)) : 1.0F;
+		// speed up 4x for each speed boost key (ctrl, space) pressed
+		return this.time > 0 ? (1 << (speedBoost*2)) : 1.0F;
 	}
 	public void close() {
 		ClientData.minecraft.setScreen(this.parentScreen);
@@ -117,7 +117,8 @@ public class CreditsAttributionScreen extends Screen {
 	}
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
-		RenderSystem.defaultBlendFunc();
+		// TODO: is this still needed?
+		//RenderSystem.defaultBlendFunc();
 		this.time = Math.max(0.0F, this.time + (delta * this.getSpeed()));
 		context.getMatrices().pushMatrix();
 		context.getMatrices().translate(0.0F, -this.time);
@@ -146,14 +147,14 @@ public class CreditsAttributionScreen extends Screen {
 		LuminanceLogo.renderLogo(context, ClientData.minecraft.getWindow().getScaledWidth() / 2 - 128, ClientData.minecraft.getWindow().getScaledHeight() + 2, 256, 64, isPride);
 	}
 	public boolean keyPressed(KeyInput keyInput) {
-		if (keyInput.key() == GLFW.GLFW_KEY_SPACE) {
-			this.isHoldingSpace = true;
+		if (keyInput.key() == GLFW.GLFW_KEY_SPACE || keyInput.key() == GLFW.GLFW_KEY_LEFT_CONTROL) {
+			speedBoost++;
 		}
 		return super.keyPressed(keyInput);
 	}
 	public boolean keyReleased(KeyInput keyInput) {
-		if (keyInput.key() == GLFW.GLFW_KEY_SPACE) {
-			this.isHoldingSpace = false;
+		if (keyInput.key() == GLFW.GLFW_KEY_SPACE || keyInput.key() == GLFW.GLFW_KEY_LEFT_CONTROL) {
+			speedBoost--;
 		}
 		return super.keyReleased(keyInput);
 	}

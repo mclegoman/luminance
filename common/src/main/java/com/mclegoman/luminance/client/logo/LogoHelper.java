@@ -11,16 +11,15 @@ import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
 
 public class LogoHelper {
 	public static void renderDevelopmentOverlay(DrawContext context, int x, int y, int width, int height, boolean shouldRender, int xOffset, int yOffset) {
-		if (shouldRender) context.drawTexture(RenderLayer::getGuiTextured, Identifier.of(Data.getVersion().getID(), "textures/gui/logo/development.png"), x + xOffset, y + yOffset, 0.0F, 0.0F, (int) (width * 0.75F), height / 4, (int) (width * 0.75F), height / 4);
+		if (shouldRender) context.drawTexture(RenderPipelines.GUI_TEXTURED, Identifier.of(Data.getVersion().getID(), "textures/gui/logo/development.png"), x + xOffset, y + yOffset, 0.0F, 0.0F, (int) (width * 0.75F), height / 4, (int) (width * 0.75F), height / 4);
 	}
 	public static void renderDevelopmentOverlay(DrawContext context, int x, int y, int width, int height, boolean shouldRender) {
 		renderDevelopmentOverlay(context, x, y, width, height, shouldRender, 0, 0);
