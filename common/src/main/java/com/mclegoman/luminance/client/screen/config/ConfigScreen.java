@@ -25,6 +25,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -163,7 +164,7 @@ public class ConfigScreen extends Screen {
 				case EQUAL -> SpectatorHandler.Mode.ALL;
 				case ALL -> SpectatorHandler.Mode.FIRST;
 			}), false);
-			if (ClientData.minecraft.cameraEntity != null) SpectatorHandler.onSpectate(ClientData.minecraft.cameraEntity, LuminanceConfig.config.spectatorPriorityMode.value().getMode());
+			if (ClientData.minecraft.getCameraEntity() != null) SpectatorHandler.onSpectate(ClientData.minecraft.getCameraEntity(), LuminanceConfig.config.spectatorPriorityMode.value().getMode());
 			this.saveConfig = true;
 			this.refresh = true;
 		}).tooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode." + LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation().toLowerCase(), true))).build());
@@ -219,14 +220,14 @@ public class ConfigScreen extends Screen {
 		return false;
 	}
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (ClientData.isDevelopment() && keyCode == GLFW.GLFW_KEY_F1) {
+	public boolean keyPressed(KeyInput keyInput) {
+		if (ClientData.isDevelopment() && keyInput.key() == GLFW.GLFW_KEY_F1) {
 			this.invis = !this.invis;
 			this.refresh = true;
 		}
-		if (ClientData.isDevelopment() && (this.debugShaderRegistry.isActive() || this.debugShader.isActive()) && (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER)) updateShader();
-		if (keyCode == GLFW.GLFW_KEY_ESCAPE) this.shouldClose = true;
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		if (ClientData.isDevelopment() && (this.debugShaderRegistry.isActive() || this.debugShader.isActive()) && (keyInput.key()== GLFW.GLFW_KEY_ENTER || keyInput.key() == GLFW.GLFW_KEY_KP_ENTER)) updateShader();
+		if (keyInput.key() == GLFW.GLFW_KEY_ESCAPE) this.shouldClose = true;
+		return super.keyPressed(keyInput);
 	}
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {

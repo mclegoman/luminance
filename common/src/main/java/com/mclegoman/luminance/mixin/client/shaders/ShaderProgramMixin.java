@@ -18,27 +18,12 @@ import org.spongepowered.asm.mixin.Unique;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Mixin(ShaderProgram.class)
 public abstract class ShaderProgramMixin implements ShaderProgramInterface {
-    @Final
-    @Shadow
-    private List<GlUniform> uniforms;
-
     @Shadow @Nullable public abstract GlUniform getUniform(String name);
-
-    @Unique
-    private List<String> uniformNames;
-
-    @Override public List<String> luminance$getUniformNames() {
-        if (uniformNames == null) {
-            uniformNames = new ArrayList<>();
-            for (GlUniform glUniform : uniforms) {
-                uniformNames.add(glUniform.getName());
-            }
-        }
-        return uniformNames;
-    }
 
     @Override
     public List<Float> luminance$getCurrentUniformValues(String name) {

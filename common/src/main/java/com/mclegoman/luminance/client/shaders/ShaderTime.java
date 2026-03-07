@@ -10,10 +10,10 @@ package com.mclegoman.luminance.client.shaders;
 import net.minecraft.util.math.MathHelper;
 
 public class ShaderTime {
-    private float tickDelta;
+    private float tickProgress;
     private float deltaTime;
 
-    private float prevTickDelta = 0.0F;
+    private float prevTickProgress = 0.0F;
 
     private float elapsedTime;
 
@@ -23,10 +23,10 @@ public class ShaderTime {
     // current position in the rendering pipeline
     public static Shader.RenderType currentRenderType;
 
-    public void update(float tickDelta) {
-        this.tickDelta = tickDelta;
-        deltaTime = ((tickDelta < prevTickDelta ? 1 : 0) + tickDelta-prevTickDelta);
-        prevTickDelta = tickDelta;
+    public void update(float tickProgress) {
+        this.tickProgress = tickProgress;
+        deltaTime = ((tickProgress < prevTickProgress ? 1 : 0) + tickProgress-prevTickProgress);
+        prevTickProgress = tickProgress;
 
         elapsedTime += deltaTime/24000f;
         if (elapsedTime > 1) elapsedTime -= 1;
@@ -34,8 +34,8 @@ public class ShaderTime {
         expDelta = (float)(1-Math.exp(-defaultSpeed*deltaTime));
     }
 
-    public float getTickDelta() {
-        return tickDelta;
+    public float getTickProgress() {
+        return tickProgress;
     }
 
     public float getDeltaTime() {

@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(GameRenderer.class)
 public interface GameRendererAccessor {
 	@Invoker("getFov")
-	float invokeGetFov(Camera camera, float tickDelta, boolean changingFov);
+	float invokeGetFov(Camera camera, float tickProgress, boolean changingFov);
 	@Accessor("pool")
 	Pool getPool();
 	@Accessor("random")

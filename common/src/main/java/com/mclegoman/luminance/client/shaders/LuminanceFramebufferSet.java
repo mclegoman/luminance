@@ -41,7 +41,7 @@ public class LuminanceFramebufferSet implements PostEffectProcessor.FramebufferS
 
     public LuminanceFramebufferSet(FrameGraphBuilder builder, Framebuffer mainFramebuffer, @Nullable Set<Identifier> useDefaultFor) {
         this.mainFramebuffer = builder.createObjectNode("main", mainFramebuffer);
-        PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(new SimpleFramebufferFactory(mainFramebuffer.textureWidth, mainFramebuffer.textureHeight, mainFramebuffer.useDepthAttachment), null, Identifier.of(Data.getVersion().getID(), "default"), 0);
+        PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(new SimpleFramebufferFactory(mainFramebuffer.textureWidth, mainFramebuffer.textureHeight, mainFramebuffer.useDepthAttachment, 0), null, Identifier.of(Data.getVersion().getID(), "default"), 0);
         this.defaultFramebuffer = builder.createResourceHandle("luminance:default", persistentFramebufferFactory);
         this.useDefaultFor = useDefaultFor;
     }

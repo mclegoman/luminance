@@ -27,13 +27,13 @@ public class LogoHelper {
 	}
 	public static void createSplashText(DrawContext context, int width, int x, int y, TextRenderer textRenderer, Translation.Data splashText, float rotation) {
 		if (splashText != null && !ClientData.minecraft.options.getHideSplashTexts().getValue()) {
-			context.getMatrices().push();
-			context.getMatrices().translate(x + width, y, 0.0F);
-			context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rotation));
+			context.getMatrices().pushMatrix();
+			context.getMatrices().translate(x + width, y);
+			context.getMatrices().rotate(rotation);
 			float scale = (1.8F - MathHelper.abs(MathHelper.sin((float)(Util.getMeasuringTimeMs() % 1000L) / 1000.0F * ((float)Math.PI * 2)) * 0.1F)) * 100.0F / (float)(textRenderer.getWidth(Translation.getText(splashText)) + 32);
-			context.getMatrices().scale(scale, scale, scale);
+			context.getMatrices().scale(scale, scale);
 			context.drawCenteredTextWithShadow(textRenderer, Translation.getText(splashText), 0, -8, 0xFFFF00);
-			context.getMatrices().pop();
+			context.getMatrices().popMatrix();
 		}
 	}
 }

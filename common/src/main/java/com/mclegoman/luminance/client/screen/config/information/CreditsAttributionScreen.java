@@ -20,6 +20,7 @@ import com.mclegoman.luminance.common.util.LogType;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.util.NarratorManager;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
@@ -118,15 +119,15 @@ public class CreditsAttributionScreen extends Screen {
 		super.render(context, mouseX, mouseY, delta);
 		RenderSystem.defaultBlendFunc();
 		this.time = Math.max(0.0F, this.time + (delta * this.getSpeed()));
-		context.getMatrices().push();
-		context.getMatrices().translate(0.0F, -this.time, 0.0F);
+		context.getMatrices().pushMatrix();
+		context.getMatrices().translate(0.0F, -this.time);
 		renderLogo(context);
 		int height = ClientData.minecraft.getWindow().getScaledHeight() + 80;
 		for(int l = 0; l < this.credits.size(); ++l) {
 			if (l == this.credits.size() - 1) {
 				float g = height - this.time - (float)(ClientData.minecraft.getWindow().getScaledHeight() / 2 - 6);
 				if (g < 0.0F) {
-					context.getMatrices().translate(0.0F, -g, 0.0F);
+					context.getMatrices().translate(0.0F, -g);
 				}
 			}
 			if (height - this.time + 12.0F + 8.0F > 0.0F && height - this.time < (float)ClientData.minecraft.getWindow().getScaledHeight()) {
@@ -139,22 +140,22 @@ public class CreditsAttributionScreen extends Screen {
 			}
 			height += 12;
 		}
-		context.getMatrices().pop();
+		context.getMatrices().popMatrix();
 	}
 	protected void renderLogo(DrawContext context) {
 		LuminanceLogo.renderLogo(context, ClientData.minecraft.getWindow().getScaledWidth() / 2 - 128, ClientData.minecraft.getWindow().getScaledHeight() + 2, 256, 64, isPride);
 	}
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == GLFW.GLFW_KEY_SPACE) {
+	public boolean keyPressed(KeyInput keyInput) {
+		if (keyInput.key() == GLFW.GLFW_KEY_SPACE) {
 			this.isHoldingSpace = true;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(keyInput);
 	}
-	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == GLFW.GLFW_KEY_SPACE) {
+	public boolean keyReleased(KeyInput keyInput) {
+		if (keyInput.key() == GLFW.GLFW_KEY_SPACE) {
 			this.isHoldingSpace = false;
 		}
-		return super.keyReleased(keyCode, scanCode, modifiers);
+		return super.keyReleased(keyInput);
 	}
 	protected interface CreditsAttributionReader {
 		void read(Reader reader);

@@ -64,7 +64,7 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 	@Inject(method = "method_62257", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/Framebuffer;setClearColor(FFFF)V"))
 	private void luminance$setUniformValues(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
-		for (String uniformName : ((ShaderProgramInterface)program).luminance$getUniformNames()) {
+		for (String uniformName : program.getUniforms().keySet()) {
 			com.mclegoman.luminance.client.shaders.uniforms.Uniform uniform = Events.ShaderUniform.registry.get(uniformName);
 			if (uniform == null) {
 				continue;

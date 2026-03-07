@@ -19,6 +19,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.EmptyWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
@@ -95,9 +96,9 @@ public class InformationScreen extends Screen {
 		return false;
 	}
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == GLFW.GLFW_KEY_ESCAPE) this.shouldClose = true;
-		return super.keyPressed(keyCode, scanCode, modifiers);
+	public boolean keyPressed(KeyInput keyInput) {
+		if (keyInput.key() == GLFW.GLFW_KEY_ESCAPE) this.shouldClose = true;
+		return super.keyPressed(keyInput);
 	}
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {

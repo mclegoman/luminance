@@ -35,8 +35,8 @@ public class Execute {
 	}
 	public static void afterClientResourceReload() {
 		Events.AfterClientResourceReload.registry.forEach((id, runnable) -> runnable.run());
-		if (ClientData.minecraft.cameraEntity != null) {
-			SpectatorHandler.onSpectate(ClientData.minecraft.cameraEntity, LuminanceConfig.config.spectatorPriorityMode.value().getMode());
+		if (ClientData.minecraft.getCameraEntity() != null) {
+			SpectatorHandler.onSpectate(ClientData.minecraft.getCameraEntity(), LuminanceConfig.config.spectatorPriorityMode.value().getMode());
 		}
 	}
 	public static void onCameraEntitySet(@NotNull Entity entity) {

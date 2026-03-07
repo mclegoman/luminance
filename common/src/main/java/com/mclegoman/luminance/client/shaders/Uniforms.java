@@ -58,7 +58,7 @@ public class Uniforms {
 		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.tick());
 	}
 	public static void update() {
-		shaderTime.update(ClientData.minecraft.getRenderTickCounter().getTickDelta(true));
+		shaderTime.update(ClientData.minecraft.getRenderTickCounter().getTickProgress(true));
 		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.update(shaderTime));
 	}
 	public static void init() {
@@ -155,7 +155,8 @@ public class Uniforms {
 			registerTree(name, child);
 		}
 	}
-	public static TreeUniform addStandardChildren(TreeUniform treeUniform, int length, boolean loop) {
+	@SuppressWarnings("UnusedReturnValue")
+    public static TreeUniform addStandardChildren(TreeUniform treeUniform, int length, boolean loop) {
 		addElementChildren(
 				treeUniform.addChildren(
 						addElementChildren(new DeltaUniform(loop), length),
@@ -181,7 +182,10 @@ public class Uniforms {
 		return treeUniform;
 	}
 	public static float getPanoramaAlpha(ShaderTime shaderTime) {
-		return ClientData.minecraft.currentScreen instanceof TitleScreen ? (((TitleScreenAccessor)ClientData.minecraft.currentScreen).getBackgroundAlpha()) : 1.0F;
+		// TODO: update
+
+		//return ClientData.minecraft.currentScreen instanceof TitleScreen ? (((TitleScreenAccessor)ClientData.minecraft.currentScreen).getBackgroundAlpha()) : 1.0F;
+		return 1f;
 	}
 	public static float getHudHidden(ShaderTime shaderTime) {
 		return ClientData.minecraft.options != null ? (ClientData.minecraft.options.hudHidden ? 1.0F : 0.0F) : 0.0F;
@@ -193,10 +197,14 @@ public class Uniforms {
 		return ClientData.minecraft.options != null ? ClientData.minecraft.options.getViewDistance().getValue() : 12.0F;
 	}
 	public static float getFov(ShaderTime shaderTime) {
-		return Accessors.getGameRenderer() != null ? (Accessors.getGameRenderer().invokeGetFov(ClientData.minecraft.gameRenderer.getCamera(), shaderTime.getTickDelta(), true)) : (ClientData.minecraft.options != null ? MinecraftClient.getInstance().options.getFov().getValue() : 70f);
+		return Accessors.getGameRenderer() != null ? (Accessors.getGameRenderer().invokeGetFov(ClientData.minecraft.gameRenderer.getCamera(), shaderTime.getTickProgress(), true)) : (ClientData.minecraft.options != null ? MinecraftClient.getInstance().options.getFov().getValue() : 70f);
 	}
 	public static void getGraphicsMode(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
-		uniformValue.set(0, ClientData.minecraft.options.getGraphicsMode().getValue().getId());
+		// TODO: find equivalent
+		//  it seems its been changed to getPreset, with the actual options split out?
+		//  also this should probably be using a SingleTree instead of a StandardTree?
+
+		//uniformValue.set(0, ClientData.minecraft.options.getGraphicsMode().getValue().getId());
 	}
 	public static float getFps(ShaderTime shaderTime) {
 		return ClientData.minecraft.getCurrentFps();
@@ -207,42 +215,42 @@ public class Uniforms {
 	}
 	public static void getEye(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(ClientData.minecraft.player.getCameraPosVec(shaderTime.getTickDelta()));
+			uniformValue.set(ClientData.minecraft.player.getCameraPosVec(shaderTime.getTickProgress()));
 		} else {
 			uniformValue.set(new Vec3d(0, 66, 0));
 		}
 	}
 	public static void getEyeFract(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(fract(ClientData.minecraft.player.getCameraPosVec(shaderTime.getTickDelta())));
+			uniformValue.set(fract(ClientData.minecraft.player.getCameraPosVec(shaderTime.getTickProgress())));
 		} else {
 			uniformValue.set(new Vec3d(0, 66, 0));
 		}
 	}
 	public static void getPos(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(ClientData.minecraft.player.getPos());
+			uniformValue.set(ClientData.minecraft.player.getEntityPos());
 		} else {
 			uniformValue.set(new Vec3d(0, 64, 0));
 		}
 	}
 	public static void getPosFract(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(fract(ClientData.minecraft.player.getPos()));
+			uniformValue.set(fract(ClientData.minecraft.player.getEntityPos()));
 		} else {
 			uniformValue.set(new Vec3d(0, 0, 0));
 		}
 	}
 	public static void getCamera(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(((GameRendererAccessor)ClientData.minecraft.gameRenderer).getCamera().getPos());
+			uniformValue.set(((GameRendererAccessor)ClientData.minecraft.gameRenderer).getCamera().getCameraPos());
 		} else {
 			uniformValue.set(new Vec3d(0, 64, 0));
 		}
 	}
 	public static void getCameraFract(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(fract(((GameRendererAccessor)ClientData.minecraft.gameRenderer).getCamera().getPos()));
+			uniformValue.set(fract(((GameRendererAccessor)ClientData.minecraft.gameRenderer).getCamera().getCameraPos()));
 		} else {
 			uniformValue.set(new Vec3d(0, 0, 0));
 		}
@@ -257,11 +265,11 @@ public class Uniforms {
 	}
 
 	public static float getPitch(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getPitch(shaderTime.getTickDelta()) % 360.0F : 0.0F;
+		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getPitch(shaderTime.getTickProgress()) % 360.0F : 0.0F;
 	}
 	public static void getYaw(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(0, MathHelper.floorMod(ClientData.minecraft.player.getYaw(shaderTime.getTickDelta())+180f,360.0F)-180f);
+			uniformValue.set(0, MathHelper.floorMod(ClientData.minecraft.player.getYaw(shaderTime.getTickProgress())+180f,360.0F)-180f);
 		} else {
 			uniformValue.set(0, 0);
 		}
@@ -392,22 +400,23 @@ public class Uniforms {
 		return 0.0F;
 	}
 	public static float getSelectedSlot(ShaderTime shaderTime) {
-		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getInventory().selectedSlot : 0.0F;
+		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getInventory().getSelectedSlot() : 0.0F;
 	}
 	public static float getScore(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getScore() : 0.0F;
 	}
 	public static float getVelocity(ShaderTime shaderTime) {
 		if (ClientData.minecraft.player != null) {
-			float x = (float) (ClientData.minecraft.player.getX() - ClientData.minecraft.player.prevX);
-			float y = (float) (ClientData.minecraft.player.getY() - ClientData.minecraft.player.prevY);
-			float z = (float) (ClientData.minecraft.player.getZ() - ClientData.minecraft.player.prevZ);
-			return (float) Math.sqrt(x * x + y * y + z * z);
+			return (float) ClientData.minecraft.player.getVelocity().length();
 		}
 		return 0.0F;
 	}
 	public static float getSkyAngle(ShaderTime shaderTime) {
-		return ClientData.minecraft.world != null ? ClientData.minecraft.world.getSkyAngle(shaderTime.getTickDelta()) : 0.0F;
+		// TODO: update this
+		//  sky settings are now stored in WorldRenderer.worldRenderState.skyRenderState
+
+		//return ClientData.minecraft.world != null ? ClientData.minecraft.world.getSkyAngle(shaderTime.getTickProgress()) : 0.0F;
+		return 0f;
 	}
 	public static float getSunAngle(ShaderTime shaderTime) {
 		float skyAngle = getSkyAngle(shaderTime);
@@ -417,7 +426,11 @@ public class Uniforms {
 		return (getSunAngle(shaderTime) <= 0.5) ? 1.0F : 0.0F;
 	}
 	public static float getStarBrightness(ShaderTime shaderTime) {
-		return ClientData.minecraft.world != null ? ClientData.minecraft.world.getStarBrightness(shaderTime.getTickDelta()) : 0.0F;
+		// TODO: update this
+		//  sky settings are now stored in WorldRenderer.worldRenderState.skyRenderState
+
+		//return ClientData.minecraft.world != null ? ClientData.minecraft.world.getStarBrightness(shaderTime.getTickProgress()) : 0.0F;
+		return 0f;
 	}
 	public static void getRandom(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		uniformValue.set(0, Accessors.getGameRenderer().getRandom().nextFloat());

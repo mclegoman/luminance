@@ -12,7 +12,7 @@ import net.minecraft.client.gl.PostEffectPipeline;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-@Mixin({PostEffectPipeline.ScreenSized.class,PostEffectPipeline.CustomSized.class})
+@Mixin(PostEffectPipeline.Targets.class)
 public class PostEffectPipelineTargetsMixin implements PipelineTargetInterface {
     @Unique
     private boolean luminance$persistent;

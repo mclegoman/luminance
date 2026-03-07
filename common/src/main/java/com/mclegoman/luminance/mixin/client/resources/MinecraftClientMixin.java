@@ -12,7 +12,6 @@ import com.mclegoman.luminance.client.events.Execute;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
-import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -48,11 +47,11 @@ public abstract class MinecraftClientMixin {
 	}
 
 	@Inject(at = @At("TAIL"), method = "joinWorld")
-	void onJoinWorld(ClientWorld world, DownloadingTerrainScreen.WorldEntryReason worldEntryReason, CallbackInfo ci) {
+	void onJoinWorld(ClientWorld world, CallbackInfo ci) {
 		Execute.onJoinWorld();
 	}
 
-	@Inject(at = @At("HEAD"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V")
+	@Inject(at = @At("HEAD"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;ZZ)V")
 	void onDisconnect(CallbackInfo ci) {
 		Execute.onDisconnect();
 	}
