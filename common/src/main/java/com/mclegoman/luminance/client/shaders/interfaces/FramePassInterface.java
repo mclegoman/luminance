@@ -8,7 +8,7 @@
 package com.mclegoman.luminance.client.shaders.interfaces;
 
 import net.minecraft.client.render.FrameGraphBuilder;
-import net.minecraft.client.render.RenderPass;
+import net.minecraft.client.render.FramePass;
 import net.minecraft.util.Identifier;
 
 public interface FramePassInterface {
@@ -17,7 +17,7 @@ public interface FramePassInterface {
     int luminance$getId();
 
     static void createForcedPass(FrameGraphBuilder frameGraphBuilder, Identifier name, Runnable renderer) {
-        RenderPass framePass = frameGraphBuilder.createPass(name.toString());
+        FramePass framePass = frameGraphBuilder.createPass(name.toString());
         ((FramePassInterface)framePass).luminance$setForceVisit(true);
         framePass.setRenderer(renderer);
     }

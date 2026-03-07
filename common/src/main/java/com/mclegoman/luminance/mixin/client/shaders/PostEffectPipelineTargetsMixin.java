@@ -15,32 +15,6 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(PostEffectPipeline.Targets.class)
 public class PostEffectPipelineTargetsMixin implements PipelineTargetInterface {
     @Unique
-    private boolean luminance$persistent;
-
-    @Override
-    public boolean luminance$getPersistent() {
-        return luminance$persistent;
-    }
-
-    @Override
-    public void luminance$setPersistent(boolean persistent) {
-        this.luminance$persistent = persistent;
-    }
-
-    @Unique
-    Integer luminance$clearColor;
-
-    @Override
-    public Integer luminance$getClearColor() {
-        return luminance$clearColor;
-    }
-
-    @Override
-    public void luminance$setClearColor(Integer clearColor) {
-        luminance$clearColor = clearColor;
-    }
-
-    @Unique
     private DynamicSize luminance$dynamicSize;
 
     @Override

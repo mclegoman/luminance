@@ -19,6 +19,7 @@ import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineInterf
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTargetInterface;
 import net.minecraft.client.gl.*;
 import net.minecraft.client.render.FrameGraphBuilder;
+import net.minecraft.client.render.ProjectionMatrix2;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.ClosableFactory;
 import net.minecraft.util.Identifier;
@@ -29,9 +30,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Coerce;
 
 import java.util.*;
 
@@ -41,7 +40,7 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     @Shadow @Final private List<PostEffectPass> passes;
 
     @Shadow
-    private static PostEffectPass parsePass(TextureManager textureManager, ShaderLoader shaderLoader, PostEffectPipeline.Pass pass) throws ShaderLoader.LoadException {
+    private static PostEffectPass parsePass(TextureManager textureManager, PostEffectPipeline.Pass pass, Identifier id) throws ShaderLoader.LoadException {
         return null;
     }
 
@@ -53,56 +52,56 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     @Unique private Map<Identifier, List<PostEffectPass>> luminance$customPasses;
     @Unique @Nullable private Identifier luminance$currentCustomPasses;
 
-    @Unique private Object luminance$persistentBufferSource;
+    @Unique private Identifier luminance$persistentBufferSource;
 
     @Unique private boolean luminance$isEditable;
 
-    @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/FrameGraphBuilder;createResourceHandle(Ljava/lang/String;Lnet/minecraft/client/util/ClosableFactory;)Lnet/minecraft/client/util/Handle;"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V", index = 1)
+    @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/SimpleFramebufferFactory;<init>(IIZI)V"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V")
     private ClosableFactory<Framebuffer> replaceFramebufferFactory(ClosableFactory<Framebuffer> factory, @Local Map.Entry<Identifier, PostEffectPipeline.Targets> target) {
         PostEffectPipeline.Targets targets = target.getValue();
-        PipelineTargetInterface targetInterface = (PipelineTargetInterface)(Object)targets;
         SimpleFramebufferFactory simpleFramebufferFactory = (SimpleFramebufferFactory)factory;
-        PipelineTargetInterface.DynamicSize dynamicSize = targetInterface.luminance$getDynamicSize();
+        PipelineTargetInterface.DynamicSize dynamicSize = ((PipelineTargetInterface)(Object)targets).luminance$getDynamicSize();
 
         if (dynamicSize != null) {
-            simpleFramebufferFactory = new SimpleFramebufferFactory(dynamicSize.width().run(simpleFramebufferFactory.width(), simpleFramebufferFactory.height()), dynamicSize.height().run(simpleFramebufferFactory.width(), simpleFramebufferFactory.height()), simpleFramebufferFactory.useDepth());
+            return new SimpleFramebufferFactory(dynamicSize.width().run(simpleFramebufferFactory.width(), simpleFramebufferFactory.height()), dynamicSize.height().run(simpleFramebufferFactory.width(), simpleFramebufferFactory.height()), simpleFramebufferFactory.useDepth(), simpleFramebufferFactory.clearColor());
         }
+        return factory;
+    }
 
-        // create persistent buffer if clear color isnt default
-        // this is a *slight* change in behaviour since pre 25w16a the default color for targets is white
-        Integer clearColor = targetInterface.luminance$getClearColor();
-
-        if (!targetInterface.luminance$getPersistent() && clearColor == null) {
-            return simpleFramebufferFactory;
+    @ModifyReturnValue(at = @At(value = "INVOKE", target = "Ljava/util/Map$Entry;getKey()Ljava/lang/Object;"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V")
+    private @Coerce Identifier replaceIdentifier(@Coerce Identifier original, @Local Map.Entry<Identifier, PostEffectPipeline.Targets> target) {
+        if (target.getValue().persistent() && luminance$persistentBufferSource != null) {
+            return luminance$persistentBufferSource;
         }
-
-        return new PersistentFramebufferFactory(simpleFramebufferFactory, luminance$persistentBufferSource, target.getKey(), clearColor == null ? 0 : clearColor);
+        return original;
     }
 
-    @Inject(at = @At("RETURN"), method = "<init>")
-    private void setForceVisit(List<PostEffectPass> passes, Map<Identifier, PostEffectPipeline.Targets> internalTargets, Set<Identifier> externalTargets, CallbackInfo ci) {
-        passes.forEach((pass) -> luminance$trySetForceVisit(pass, internalTargets));
-        luminance$persistentBufferSource = this;
+    // TODO: setting force visit for persistent buffers probably isnt needed anymore
 
-        // allowing a setEditable from the interface would be unsafe
-        try {
-            passes.addAll(Collections.emptyList());
-            luminance$isEditable = true;
-        } catch (UnsupportedOperationException ignored) {}
-    }
+//    @Inject(at = @At("RETURN"), method = "<init>")
+//    private void setForceVisit(List<PostEffectPass> passes, Map<Identifier, PostEffectPipeline.Targets> internalTargets, Set<Identifier> externalTargets, ProjectionMatrix2 matrix, CallbackInfo ci) {
+//        passes.forEach((pass) -> luminance$trySetForceVisit(pass, internalTargets));
+//        luminance$persistentBufferSource = this.toString();
+//
+//        // allowing a setEditable from the interface would be unsafe
+//        try {
+//            passes.addAll(Collections.emptyList());
+//            luminance$isEditable = true;
+//        } catch (UnsupportedOperationException ignored) {}
+//    }
 
-    @Unique private static void luminance$trySetForceVisit(PostEffectPass postEffectPass, Map<Identifier, PostEffectPipeline.Targets> internalTargets) {
-        PostEffectPassInterface passInterface = (PostEffectPassInterface)postEffectPass;
-        PostEffectPipeline.Targets targets = internalTargets.get(passInterface.luminance$getOutputTarget());
-
-        if (targets == null) return;
-        if (!((PipelineTargetInterface)(Object)targets).luminance$getPersistent()) return;
-
-        passInterface.luminance$setForceVisit(true);
-    }
+//    @Unique private static void luminance$trySetForceVisit(PostEffectPass postEffectPass, Map<Identifier, PostEffectPipeline.Targets> internalTargets) {
+//        PostEffectPassInterface passInterface = (PostEffectPassInterface)postEffectPass;
+//        PostEffectPipeline.Targets targets = internalTargets.get(passInterface.luminance$getOutputTarget());
+//
+//        if (targets == null) return;
+//        if (!targets.persistent()) return;
+//
+//        passInterface.luminance$setForceVisit(true);
+//    }
 
     @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/PostEffectPipeline;passes()Ljava/util/List;", ordinal = 0), method = "parseEffect")
-    private static List<PostEffectPipeline.Pass> includeCustomPasses(List<PostEffectPipeline.Pass> original, PostEffectPipeline pipeline, TextureManager textureManager, ShaderLoader shaderLoader, Set<Identifier> availableExternalTargets) {
+    private static List<PostEffectPipeline.Pass> includeCustomPasses(List<PostEffectPipeline.Pass> original, PostEffectPipeline pipeline, TextureManager textureManager) {
         Optional<Map<Identifier, List<PostEffectPipeline.Pass>>> customPasses = ((PipelineInterface)(Object)pipeline).luminance$getCustomPasses();
         if (customPasses.isEmpty()) {
             return original;
@@ -114,7 +113,7 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     }
 
     @ModifyReturnValue(at = @At(value = "RETURN"), method = "parseEffect")
-    private static PostEffectProcessor setTargets(PostEffectProcessor original, PostEffectPipeline pipeline, TextureManager textureManager, ShaderLoader shaderLoader, Set<Identifier> availableExternalTargets) {
+    private static PostEffectProcessor setCustomPassTargets(PostEffectProcessor original, PostEffectPipeline pipeline, TextureManager textureManager, Set<Identifier> availableExternalTargets, Identifier id) {
         ((PipelineInterface)(Object)pipeline).luminance$getCustomPasses().ifPresentOrElse((map) -> {
             PostEffectProcessorInterface processor = (PostEffectProcessorInterface)original;
 
@@ -125,7 +124,7 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
 
                 for (PostEffectPipeline.Pass pass : entry.getValue()) {
                     try {
-                        builder.add(parsePass(textureManager, shaderLoader, pass));
+                        builder.add(parsePass(textureManager, pass, id));
                     } catch (ShaderLoader.LoadException e) {
                         throw new RuntimeException(e);
                     }
@@ -133,11 +132,14 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
 
                 List<PostEffectPass> passes = builder.build();
 
+                // TODO: this context for force visiting is different to the force visiting for persistent targets, so it may be needed!
+                //  it will be obvious, since custom passes just wont really work if they arent visited
+
                 // for some reason custom passes aren't visited properly if we just let them into the frameGraphBuilder normally
                 // so instead of only force-visiting the persistent ones, we force visit all of them
                 // this would only cause a performance penalty if there are excessive passes in a custom pass that *should* be unvisited
                 // but if someone's using a custom pass, i (Nettakrim) think they probably know what they're doing
-                passes.forEach((pass) -> ((PostEffectPassInterface)pass).luminance$setForceVisit(true));
+                //passes.forEach((pass) -> ((PostEffectPassInterface)pass).luminance$setForceVisit(true));
                 //passes.forEach((pass) -> luminance$trySetForceVisit(pass, pipeline.internalTargets()));
 
                 customPasses.put(entry.getKey(), passes);
@@ -206,19 +208,19 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
         return false;
     }
 
-    @Override
-    public boolean luminance$usesPersistentBuffers() {
-        for (PostEffectPipeline.Targets targets : internalTargets.values()) {
-            if (((PipelineTargetInterface)(Object)targets).luminance$getPersistent()) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    @Override
+//    public boolean luminance$usesPersistentBuffers() {
+//        for (PostEffectPipeline.Targets targets : internalTargets.values()) {
+//            if (((PipelineTargetInterface)(Object)targets).luminance$getPersistent()) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     @Override
-    public void luminance$setPersistentBufferSource(@Nullable Object source) {
-        luminance$persistentBufferSource = source == null ? this : source;
+    public void luminance$setPersistentBufferSource(@Nullable Identifier source) {
+        luminance$persistentBufferSource = source;
     }
 
     @Override
@@ -235,7 +237,7 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
         customPasses.replaceAll((identifier, passes) -> luminance$copyPasses(passes));
         editableInterface.luminance$setCustomPasses(customPasses);
 
-        if (luminance$persistentBufferSource != this) {
+        if (luminance$persistentBufferSource != null) {
             editableInterface.luminance$setPersistentBufferSource(luminance$persistentBufferSource);
         }
         return editable;

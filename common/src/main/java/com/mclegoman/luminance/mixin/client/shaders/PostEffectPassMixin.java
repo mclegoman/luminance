@@ -22,6 +22,7 @@ import com.mclegoman.luminance.client.shaders.overrides.UniformOverride;
 import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.gl.*;
 import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.render.RenderPass;
@@ -49,6 +50,7 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	@Shadow @Final private Identifier outputTargetId;
 	@Shadow @Final private List<PostEffectPass.Sampler> samplers;
 
+	@Shadow @Final private RenderPipeline pipeline;
 	@Unique private final Map<String, UniformOverride> luminance$uniformOverrides = new HashMap<>();
 	@Unique private final Map<String, UniformConfig> luminance$uniformConfigs = new HashMap<>();
 	@Unique private final Map<Identifier, CustomPassData> luminance$customData = new HashMap<>();
@@ -178,20 +180,20 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 		return outputTargetId;
 	}
 
-	@Unique
-	private boolean luminance$forceVisit;
-
-	@Override
-	public void luminance$setForceVisit(boolean to) {
-		luminance$forceVisit = to;
-	}
-
-	@Inject(at = @At(value = "TAIL"), method = "render")
-	private void forceVisit(FrameGraphBuilder builder, Map<Identifier, Handle<Framebuffer>> handles, Matrix4f projectionMatrix, CallbackInfo ci, @Local RenderPass renderPass) {
-		if (luminance$forceVisit) {
-			((FramePassInterface)renderPass).luminance$setForceVisit(true);
-		}
-	}
+//	@Unique
+//	private boolean luminance$forceVisit;
+//
+//	@Override
+//	public void luminance$setForceVisit(boolean to) {
+//		luminance$forceVisit = to;
+//	}
+//
+//	@Inject(at = @At(value = "TAIL"), method = "render")
+//	private void forceVisit(FrameGraphBuilder builder, Map<Identifier, Handle<Framebuffer>> handles, Matrix4f projectionMatrix, CallbackInfo ci, @Local RenderPass renderPass) {
+//		if (luminance$forceVisit) {
+//			((FramePassInterface)renderPass).luminance$setForceVisit(true);
+//		}
+//	}
 
 	@Override
 	public CustomPassData luminance$putCustomData(Identifier identifier, CustomPassData data) {

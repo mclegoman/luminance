@@ -197,7 +197,7 @@ public class Execute {
 
 		Framebuffer framebuffer = ClientData.minecraft.getFramebuffer();
 
-		framebufferFactory = new SimpleFramebufferFactory(framebuffer.textureWidth, framebuffer.textureHeight, true);
+		framebufferFactory = new SimpleFramebufferFactory(framebuffer.textureWidth, framebuffer.textureHeight, true, 0);
 		worldDepth = allocator.acquire(framebufferFactory);
 		worldDepth.copyDepthFrom(framebuffer);
 
