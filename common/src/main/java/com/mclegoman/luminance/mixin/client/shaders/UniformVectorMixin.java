@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-@Mixin(UniformValue.class)
-public class PostEffectPipelineUniformMixin implements PipelineUniformInterface {
-    @ModifyExpressionValue(method = "<clinit>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/StringIdentifiable$EnumCodec;dispatch(Ljava/util/function/Function;Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false))
+@Mixin({UniformValue.Vec2fValue.class, UniformValue.Vec3fValue.class, UniformValue.Vec4fValue.class, UniformValue.Vec3iValue.class})
+public class UniformVectorMixin implements PipelineUniformInterface {
+    @ModifyExpressionValue(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Codec;xmap(Ljava/util/function/Function;Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false))
     private static Codec<UniformValue> wrapCreateOverride(Codec<UniformValue> original) {
         return RecordCodecBuilder.create(instance ->
             instance.group(
@@ -50,7 +50,6 @@ public class PostEffectPipelineUniformMixin implements PipelineUniformInterface 
     public void luminance$setOverride(List<String> override) {
         this.luminance$override = override;
     }
-
 
     @Unique
     private List<ConfigData> luminance$config;
