@@ -9,12 +9,15 @@ package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTargetInterface;
+import com.mojang.datafixers.kinds.App;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.gl.PostEffectPipeline;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -25,26 +28,19 @@ import java.util.function.Function;
 
 @Mixin(PostEffectPipeline.Targets.class)
 public interface PostEffectPipelineTargetMixin {
-    @WrapOperation(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Codec;either(Lcom/mojang/serialization/Codec;Lcom/mojang/serialization/Codec;)Lcom/mojang/serialization/Codec;", remap = false))
-    private static <F, S> Codec<Either<F, S>> wrapCreateTarget(Codec<F> first, Codec<S> second, Operation<Codec<Either<F, S>>> original) {
-        return original.call(luminance$codecBuilderTarget(first), luminance$codecBuilderTarget(second));
+    @WrapOperation(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/RecordCodecBuilder;create(Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false))
+    private static <O> Codec<O> wrapCreateOverride(Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> builder, Operation<Codec<O>> original) {
+        return original.call(luminance$codecBuilderOverride(builder));
     }
 
     @Unique
-    private static <F> Codec<F> luminance$codecBuilderTarget(Codec<F> original) {
-        return RecordCodecBuilder.create(instance ->
-                instance.group(
-                        MapCodec.assumeMapUnsafe(original).forGetter(Function.identity()),
-                        Codec.BOOL.lenientOptionalFieldOf("persistent").forGetter(target -> Optional.of(((PipelineTargetInterface)target).luminance$getPersistent())),
-                        PipelineTargetInterface.DynamicSize.CODEC.lenientOptionalFieldOf("dynamic_size").forGetter(target -> Optional.ofNullable(((PipelineTargetInterface)target).luminance$getDynamicSize())),
-                        Codecs.ARGB.lenientOptionalFieldOf("clear_color").forGetter(target -> Optional.ofNullable(((PipelineTargetInterface)target).luminance$getClearColor()))
-                )
-                .apply(instance, (target, persistent, dynamicSize, clearColor) -> {
-                    ((PipelineTargetInterface)target).luminance$setPersistent(persistent.orElse(false));
-                    ((PipelineTargetInterface)target).luminance$setDynamicSize(dynamicSize.orElse(null));
-                    ((PipelineTargetInterface)target).luminance$setClearColor(clearColor.orElse(null));
-                    return target;
-                })
-        );
+    private static <O> Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> luminance$codecBuilderOverride(Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> builder) {
+        return instance -> instance.group(
+                RecordCodecBuilder.mapCodec(builder).forGetter(Function.identity()),
+                PipelineTargetInterface.DynamicSize.CODEC.lenientOptionalFieldOf("dynamic_size").forGetter(target -> Optional.ofNullable(((PipelineTargetInterface)target).luminance$getDynamicSize()))
+        ).apply(instance, (target, dynamicSize) -> {
+            ((PipelineTargetInterface)target).luminance$setDynamicSize(dynamicSize.orElse(null));
+            return target;
+        });
     }
 }

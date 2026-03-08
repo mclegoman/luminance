@@ -19,7 +19,6 @@ import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineInterf
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTargetInterface;
 import net.minecraft.client.gl.*;
 import net.minecraft.client.render.FrameGraphBuilder;
-import net.minecraft.client.render.ProjectionMatrix2;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.ClosableFactory;
 import net.minecraft.util.Identifier;

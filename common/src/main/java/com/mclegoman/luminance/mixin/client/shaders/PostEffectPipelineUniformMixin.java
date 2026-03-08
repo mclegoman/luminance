@@ -7,14 +7,18 @@
 
 package com.mclegoman.luminance.mixin.client.shaders;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineUniformInterface;
 import com.mclegoman.luminance.client.shaders.uniforms.config.ConfigData;
 import com.mojang.datafixers.kinds.App;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.gl.PostEffectPipeline;
+import net.minecraft.client.gl.UniformValue;
+import net.minecraft.util.StringIdentifiable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,26 +27,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-@Mixin(PostEffectPipeline.Uniform.class)
+@Mixin(UniformValue.class)
 public class PostEffectPipelineUniformMixin implements PipelineUniformInterface {
-    @WrapOperation(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/RecordCodecBuilder;create(Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false))
-    private static <O> Codec<O> wrapCreateOverride(Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> builder, Operation<Codec<O>> original) {
-        return original.call(luminance$codecBuilderOverride(builder));
-    }
-
-    @Unique
-    private static <O> Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> luminance$codecBuilderOverride(Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> builder) {
-        return instance -> instance.group(
-                RecordCodecBuilder.mapCodec(builder).forGetter(Function.identity()),
+    @ModifyExpressionValue(method = "<clinit>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/StringIdentifiable$EnumCodec;dispatch(Ljava/util/function/Function;Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false))
+    private static Codec<UniformValue> wrapCreateOverride(Codec<UniformValue> original) {
+        return RecordCodecBuilder.create(instance ->
+            instance.group(
+                MapCodec.assumeMapUnsafe(original).forGetter(Function.identity()),
                 Codec.STRING.sizeLimitedListOf(4).lenientOptionalFieldOf("override").forGetter((uniform -> ((PipelineUniformInterface)uniform).luminance$getOverride())),
                 ConfigData.CODEC.listOf().lenientOptionalFieldOf("config").forGetter((uniform -> ((PipelineUniformInterface)uniform).luminance$getConfig()))
-        ).apply(instance, (uniform, override, config) -> {
-            override.ifPresent(strings -> ((PipelineUniformInterface) uniform).luminance$setOverride(strings));
-            config.ifPresent(list -> ((PipelineUniformInterface) uniform).luminance$setConfig(list));
-            return uniform;
-        });
+            ).apply(instance, (uniform, override, config) -> {
+                override.ifPresent(strings -> ((PipelineUniformInterface) uniform).luminance$setOverride(strings));
+                config.ifPresent(list -> ((PipelineUniformInterface) uniform).luminance$setConfig(list));
+                return uniform;
+            }));
     }
-
 
     @Unique
     private List<String> luminance$override;

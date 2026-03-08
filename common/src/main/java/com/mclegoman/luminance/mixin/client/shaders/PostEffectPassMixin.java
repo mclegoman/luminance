@@ -7,28 +7,24 @@
 
 package com.mclegoman.luminance.mixin.client.shaders;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import com.mclegoman.luminance.client.events.Events;
+import com.google.common.collect.ImmutableList;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mclegoman.luminance.client.events.Execute;
-import com.mclegoman.luminance.client.shaders.Shaders;
-import com.mclegoman.luminance.client.shaders.Uniforms;
+import com.mclegoman.luminance.client.shaders.UniformData;
 import com.mclegoman.luminance.client.shaders.interfaces.CustomPassData;
-import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
-import com.mclegoman.luminance.client.shaders.interfaces.ShaderProgramInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineUniformInterface;
 import com.mclegoman.luminance.client.shaders.overrides.LuminanceUniformOverride;
-import com.mclegoman.luminance.client.shaders.overrides.UniformOverride;
-import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
-import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
+import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.systems.RenderPass;
 import net.minecraft.client.gl.*;
-import net.minecraft.client.render.FrameGraphBuilder;
-import net.minecraft.client.render.RenderPass;
 import net.minecraft.client.util.Handle;
 import net.minecraft.util.Identifier;
-import org.joml.Matrix4f;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,90 +39,55 @@ import java.util.*;
 public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	@Shadow @Final private String id;
 
-	@Shadow @Final private ShaderProgram program;
-
-	@Shadow @Final private List<PostEffectPipeline.Uniform> uniforms;
-
 	@Shadow @Final private Identifier outputTargetId;
 	@Shadow @Final private List<PostEffectPass.Sampler> samplers;
 
-	@Shadow @Final private RenderPipeline pipeline;
-	@Unique private final Map<String, UniformOverride> luminance$uniformOverrides = new HashMap<>();
-	@Unique private final Map<String, UniformConfig> luminance$uniformConfigs = new HashMap<>();
+	@Unique private final Map<String, ImmutableList<@NotNull UniformData>> luminance$uniformOverrides = new HashMap<>();
 	@Unique private final Map<Identifier, CustomPassData> luminance$customData = new HashMap<>();
 
-	@Inject(method = "method_62257", at = @At("HEAD"))
-	private void luminance$beforeRender(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
+	@Inject(method = "method_67884", at = @At("HEAD"))
+	private void luminance$beforeRender(Handle<Framebuffer> handle, GpuBufferSlice gpuBufferSlice, Map<Identifier, Handle<Framebuffer>> map, CallbackInfo ci) {
 		Execute.beforeShaderRender((PostEffectPass)(Object)this);
 	}
-	@Inject(method = "method_62257", at = @At("TAIL"))
-	private void luminance$afterRender(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
+	@Inject(method = "method_67884", at = @At("TAIL"))
+	private void luminance$afterRender(Handle<Framebuffer> handle, GpuBufferSlice gpuBufferSlice,  Map<Identifier, Handle<Framebuffer>> map, CallbackInfo ci) {
 		Execute.afterShaderRender((PostEffectPass)(Object)this);
 	}
 
-	@Inject(method = "method_62257", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/Framebuffer;setClearColor(FFFF)V"))
-	private void luminance$setUniformValues(Handle<Framebuffer> handle, Map<Identifier, Handle<Framebuffer>> map, Matrix4f matrix4f, CallbackInfo ci) {
-		for (String uniformName : program.getUniforms().keySet()) {
-			com.mclegoman.luminance.client.shaders.uniforms.Uniform uniform = Events.ShaderUniform.registry.get(uniformName);
-			if (uniform == null) {
-				continue;
-			}
+	@WrapOperation(method = "method_67884", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderPass;setUniform(Ljava/lang/String;Lcom/mojang/blaze3d/buffers/GpuBuffer;)V", ordinal = 0))
+	private void luminance$setUniformValues(RenderPass instance, String key, GpuBuffer gpuBuffer, Operation<Void> original) {
+		for (UniformData data : luminance$uniformOverrides.get(key)) {
+			List<Float> values = data.getValues();
+			// if value is null, value need to be default, otherwise, replace it
 
-			GlUniform glUniform = program.getUniform(uniformName);
-			assert glUniform != null;
-			Shaders.set(glUniform, uniform.get(luminance$uniformConfigs.getOrDefault(uniformName, EmptyConfig.INSTANCE), Uniforms.shaderTime));
+			// it seems this will require creating a new gpu buffer? which is a little awkward. how does vanilla do its dynamic stuff?
 		}
 
-		luminance$uniformOverrides.forEach((name, override) -> {
-			GlUniform glUniform = program.getUniform(name);
-			if (glUniform == null) {
-				return;
-			}
-
-			//the double looping of the same array here is to avoid needing to call luminance$getCurrentUniformValues unless its needed
-			List<Float> values = override.getOverride(luminance$uniformConfigs.getOrDefault(name, EmptyConfig.INSTANCE), Uniforms.shaderTime);
-            for (Float value : values) {
-                if (value == null) {
-                    List<Float> current = ((ShaderProgramInterface)program).luminance$getCurrentUniformValues(name);
-					for (int i = 0; i < values.size(); i++) {
-						if (values.get(i) == null) {
-							values.set(i, current.get(i));
-						}
-					}
-                    break;
-                }
-            }
-
-			glUniform.set(values, values.size());
-		});
+		original.call(instance, key, gpuBuffer);
 	}
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void initialiseUniformData(String id, ShaderProgram program, Identifier outputTargetId, List<PostEffectPipeline.Uniform> uniforms, CallbackInfo ci) {
-		for (PostEffectPipeline.Uniform uniform : uniforms) {
-			PipelineUniformInterface data = (PipelineUniformInterface)(Object)uniform;
-			assert data != null;
+	private void initialiseUniformData(RenderPipeline pipeline, Identifier outputTargetId, Map<String, List<UniformValue>> uniforms, List<PostEffectPass.Sampler> samplers, CallbackInfo ci) {
+		uniforms.forEach((block, list) -> {
+			ImmutableList.Builder<UniformData> builder = ImmutableList.builder();
 
-			data.luminance$getOverride().ifPresent((override) -> {
-				int uniformSize = program.getUniformDefinition(uniform.name()).count();
-				int overrideSize = override.size();
+			for (UniformValue uniform : list) {
+				PipelineUniformInterface uniformInterface = (PipelineUniformInterface)uniform;
+				assert uniformInterface != null;
 
-				if (uniformSize != overrideSize) {
-					override = new ArrayList<>(override);
-					if (overrideSize < uniformSize) {
-						for (int i = overrideSize; i < uniformSize; i++) {
-							override.add(null);
-						}
-					} else {
-						override.subList(uniformSize, overrideSize).clear();
-					}
-				}
+				UniformData data = new UniformData();
 
-				luminance$uniformOverrides.put(uniform.name(), new LuminanceUniformOverride(override));
-			});
+				// TODO:
+				//  check if override size doesnt match expected from type and add nulls / truncate to match
+				//  config is intended to be uneven
+				uniformInterface.luminance$getOverride().ifPresent((override) -> data.override = new LuminanceUniformOverride(override));
+				uniformInterface.luminance$getConfig().ifPresent((config) -> data.config = new MapConfig(config));
 
-			data.luminance$getConfig().ifPresent((list) -> luminance$uniformConfigs.put(uniform.name(), new MapConfig(list)));
-		}
+				builder.add(data);
+			}
+
+			luminance$uniformOverrides.put(block, builder.build());
+		});
 	}
 
 	@Override
@@ -135,44 +96,8 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	}
 
 	@Override
-	public List<PostEffectPipeline.Uniform> luminance$getUniforms() {
-		return uniforms;
-	}
-
-	@Override
-	public UniformOverride luminance$getUniformOverride(String uniform) {
-		return luminance$uniformOverrides.get(uniform);
-	}
-
-	@Override
-	public UniformOverride luminance$addUniformOverride(String uniform, UniformOverride override) {
-		return luminance$uniformOverrides.put(uniform, override);
-	}
-
-	@Override
-	public Map<String, UniformConfig> luminance$getUniformConfigs() {
-		return luminance$uniformConfigs;
-	}
-
-	@Override
-	public UniformOverride luminance$removeUniformOverride(String uniform) {
-		// removing a uniformOverride for a uniform which is only defined in the shader program and not also the pass causes the value to be left as it was
-		// to fix this the uniform is just forcefully reset
-		luminance$resetUniform(uniform);
-
-		return luminance$uniformOverrides.remove(uniform);
-	}
-
-	@Unique
-	private void luminance$resetUniform(String uniformName) {
-		// NOTE: this sets it to the value in the shaderprogram, not the posteffectpass
-		// this should never cause an issue, since the posteffectpass uniforms are set halfway through method_62257, and used moments later, so the window of time where it can cause a desync is like 15 lines of code
-
-		GlUniform glUniform = program.getUniform(uniformName);
-		if (glUniform == null) return;
-
-		List<Float> values = Objects.requireNonNull(program.getUniformDefinition(uniformName)).values();
-		glUniform.set(values, values.size());
+	public ImmutableList<@NotNull UniformData> luminance$getUniformData(String block) {
+		return luminance$uniformOverrides.get(block);
 	}
 
 	@Override
@@ -217,13 +142,15 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 	@Override
 	public PostEffectPass luminance$copy() {
-		PostEffectPass pass = new PostEffectPass(id, program, outputTargetId, uniforms);
-		PostEffectPassInterface passInterface = (PostEffectPassInterface)pass;
-
-		luminance$uniformOverrides.forEach((uniform, override) -> passInterface.luminance$addUniformOverride(uniform, override.copy()));
-		passInterface.luminance$getUniformConfigs().replaceAll((uniform, config) -> config.copy());
-		luminance$customData.forEach((identifier, data) -> passInterface.luminance$putCustomData(identifier, data.copy()));
-
-		return pass;
+		// TODO: reimplement copying
+		return (PostEffectPass)(Object)this;
+//		PostEffectPass pass = new PostEffectPass(id, program, outputTargetId, uniforms);
+//		PostEffectPassInterface passInterface = (PostEffectPassInterface)pass;
+//
+//		luminance$uniformOverrides.forEach((uniform, override) -> passInterface.luminance$addUniformOverride(uniform, override.copy()));
+//		passInterface.luminance$getUniformConfigs().replaceAll((uniform, config) -> config.copy());
+//		luminance$customData.forEach((identifier, data) -> passInterface.luminance$putCustomData(identifier, data.copy()));
+//
+//		return pass;
 	}
 }
