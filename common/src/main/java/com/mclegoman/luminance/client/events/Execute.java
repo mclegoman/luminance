@@ -17,7 +17,6 @@ import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.client.util.CompatHelper;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gl.*;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;

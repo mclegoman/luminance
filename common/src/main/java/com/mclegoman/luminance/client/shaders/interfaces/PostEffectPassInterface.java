@@ -9,15 +9,10 @@ package com.mclegoman.luminance.client.shaders.interfaces;
 
 import com.google.common.collect.ImmutableList;
 import com.mclegoman.luminance.client.shaders.UniformData;
-import com.mclegoman.luminance.client.shaders.overrides.UniformOverride;
-import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import net.minecraft.client.gl.PostEffectPass;
-import net.minecraft.client.gl.PostEffectPipeline;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface PostEffectPassInterface {

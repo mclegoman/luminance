@@ -16,16 +16,16 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(targets = "net.minecraft.client.render.FrameGraphBuilder$FramePass")
 public class FramePassMixin implements FramePassInterface {
     @Shadow @Final int id;
-    @Unique private boolean forceVisit;
+    @Unique private boolean luminance$forceVisit;
 
     @Override
     public void luminance$setForceVisit(boolean to) {
-        forceVisit = to;
+        luminance$forceVisit = to;
     }
 
     @Override
     public boolean luminance$getForceVisit() {
-        return forceVisit;
+        return luminance$forceVisit;
     }
 
     @Override

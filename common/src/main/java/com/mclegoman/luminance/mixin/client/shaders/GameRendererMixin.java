@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(priority = 100, value = GameRenderer.class)
@@ -25,8 +26,9 @@ public abstract class GameRendererMixin {
 	private void luminance$beforeGameRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
 		Execute.beforeGameRender();
 	}
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/Framebuffer;beginWrite(Z)V"))
-	private void luminance$afterHandRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
+
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;renderWorld(Lnet/minecraft/client/render/RenderTickCounter;)V"), to = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/fog/FogRenderer;rotate()V")))
+	private void luminance$afterPostRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
 		Execute.afterVanillaPostEffectRender(this.pool);
 	}
 	@Inject(method = "render", at = @At("TAIL"))

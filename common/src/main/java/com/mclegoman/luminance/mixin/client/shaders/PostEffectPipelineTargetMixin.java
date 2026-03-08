@@ -9,16 +9,11 @@ package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTargetInterface;
 import com.mojang.datafixers.kinds.App;
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.gl.PostEffectPipeline;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.dynamic.Codecs;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;

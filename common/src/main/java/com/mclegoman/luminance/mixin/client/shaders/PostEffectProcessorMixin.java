@@ -12,13 +12,13 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mclegoman.luminance.client.shaders.PersistentFramebufferFactory;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTargetInterface;
 import net.minecraft.client.gl.*;
 import net.minecraft.client.render.FrameGraphBuilder;
+import net.minecraft.client.render.ProjectionMatrix2;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.ClosableFactory;
 import net.minecraft.util.Identifier;
@@ -48,6 +48,7 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     @Shadow @Final private Map<Identifier, PostEffectPipeline.Targets> internalTargets;
     @Shadow @Final private Set<Identifier> externalTargets;
 
+    @Shadow @Final private ProjectionMatrix2 projectionMatrix;
     @Unique private Map<Identifier, List<PostEffectPass>> luminance$customPasses;
     @Unique @Nullable private Identifier luminance$currentCustomPasses;
 
@@ -229,7 +230,7 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
 
     @Override
     public PostEffectProcessor luminance$createEditable() {
-        PostEffectProcessor editable = PostEffectProcessorInvoker.init(luminance$copyPasses(passes), internalTargets, externalTargets);
+        PostEffectProcessor editable = PostEffectProcessorInvoker.init(luminance$copyPasses(passes), internalTargets, externalTargets, projectionMatrix);
         PostEffectProcessorInterface editableInterface = (PostEffectProcessorInterface)editable;
 
         HashMap<Identifier, List<PostEffectPass>> customPasses = new HashMap<>(luminance$customPasses);

@@ -20,7 +20,6 @@
     "client.shaders.PostEffectProcessorMixin",
     "client.shaders.RotatingCubeMapRendererMixin",
     "client.shaders.ScreenMixin",
-    "client.shaders.ShaderProgramMixin",
     "client.shaders.TitleScreenAccessor",
     "client.shaders.TitleScreenMixin",
     "client.shaders.WorldRendererMixin",

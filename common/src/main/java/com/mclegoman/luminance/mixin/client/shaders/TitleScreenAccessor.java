@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(TitleScreen.class)
 public interface TitleScreenAccessor {
-	// TODO: update this (used for a luminance uniform
+	// TODO: update this (used for a luminance uniform)
 	//@Accessor("backgroundAlpha")
 	//float getBackgroundAlpha();
 }

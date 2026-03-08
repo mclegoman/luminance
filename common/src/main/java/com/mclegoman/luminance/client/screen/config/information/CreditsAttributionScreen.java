@@ -31,6 +31,7 @@ import org.lwjgl.glfw.GLFW;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CreditsAttributionScreen extends Screen {
 	protected final Screen parentScreen;
@@ -97,7 +98,7 @@ public class CreditsAttributionScreen extends Screen {
 	protected JsonArray readSection(JsonObject section) {
 		if (section != null && !section.isEmpty()) {
 			String text = JsonHelper.getString(section, "text", "");
-			if (!text.isEmpty()) this.addText(Text.literal(text).formatted(Formatting.byName(JsonHelper.getString(section, "formatting", "gray"))), JsonHelper.getBoolean(section, "centered", false));
+			if (!text.isEmpty()) this.addText(Text.literal(text).formatted(Objects.requireNonNull(Formatting.byName(JsonHelper.getString(section, "formatting", "gray")))), JsonHelper.getBoolean(section, "centered", false));
 			if (JsonHelper.getBoolean(section, "spaced", false)) addEmptyLine();
 			readSections(JsonHelper.getArray(section, "sections", new JsonArray()));
 		}

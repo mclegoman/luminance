@@ -10,6 +10,7 @@ package com.mclegoman.luminance.mixin.client.shaders;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.shaders.Uniforms;
 import net.minecraft.client.Mouse;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.client.input.Scroller;
 import org.joml.Vector2i;
 import org.spongepowered.asm.mixin.Final;
@@ -40,9 +41,9 @@ public abstract class MouseMixin {
 		}
 	}
 	@Inject(at = @At("HEAD"), method = "onMouseButton", cancellable = true)
-	private void luminance$onMouseButton(long window, int button, int action, int mods, CallbackInfo ci) {
+	private void luminance$onMouseButton(long window, MouseInput input, int action, CallbackInfo ci) {
 		if (Uniforms.updatingAlpha()) {
-			if (button == 2) {
+			if (input.button() == 2) {
 				Uniforms.resetAlpha();
 				ci.cancel();
 			}
