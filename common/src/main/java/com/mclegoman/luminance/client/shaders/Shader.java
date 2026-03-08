@@ -111,35 +111,6 @@ public class Shader {
 		setShouldRender(shouldRender);
 		setShaderData(shaderData);
 	}
-	@Nullable
-	public PostEffectPassInterface getEditablePass(@Nullable Identifier customPasses, int passIndex) {
-		if (!makeEditable()) {
-			return null;
-		}
-
-		PostEffectProcessorInterface processor = (PostEffectProcessorInterface)postProcessor;
-		List<PostEffectPass> passes = processor.luminance$getPasses(customPasses);
-		if (passes == null || passes.size() <= passIndex) {
-			com.mclegoman.luminance.common.data.Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("customPasses or passIndex are invalid"));
-			return null;
-		}
-
-		return (PostEffectPassInterface)passes.get(passIndex);
-	}
-	public boolean makeEditable() {
-		if (postProcessor == null) {
-			setPostProcessor();
-		}
-		if (postProcessor == null) {
-			return false;
-		}
-
-		PostEffectProcessorInterface processor = (PostEffectProcessorInterface)postProcessor;
-		if (!processor.luminance$isEditable()) {
-			postProcessor = processor.luminance$createEditable();
-		}
-		return true;
-	}
 	public record Data(Identifier id, Shader shader) {
 	}
 }
