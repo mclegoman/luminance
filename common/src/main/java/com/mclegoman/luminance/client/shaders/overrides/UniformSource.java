@@ -12,6 +12,7 @@ import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 import com.mclegoman.luminance.client.shaders.uniforms.config.*;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,15 +23,16 @@ import java.util.List;
 import java.util.Optional;
 
 public class UniformSource implements OverrideSource {
-    protected final String name;
+    @NotNull
+    protected final Identifier identifier;
 
     @Nullable
     protected Uniform uniform = null;
 
     protected UniformConfig configTemplate;
 
-    public UniformSource(String name) {
-        this.name = name;
+    public UniformSource(@NotNull Identifier identifier) {
+        this.identifier = identifier;
     }
 
     @Override
@@ -53,7 +55,7 @@ public class UniformSource implements OverrideSource {
 
     @Override
     public String getString() {
-        return name;
+        return identifier.toString();
     }
 
     @Override
@@ -65,7 +67,7 @@ public class UniformSource implements OverrideSource {
 
     public Uniform getUniform() {
         if (uniform == null) {
-            uniform = Events.ShaderUniform.registry.get(name);
+            uniform = Events.ShaderUniform.registry.get(identifier);
 
             configTemplate = nullRange;
             if (uniform != null && !uniform.rangeCanChange()) {

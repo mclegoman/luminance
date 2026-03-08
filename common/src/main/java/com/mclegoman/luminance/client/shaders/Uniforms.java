@@ -62,95 +62,95 @@ public class Uniforms {
 	public static void init() {
 		// a renderType uniform could be useful?
 		try {
-			String path = Data.getVersion().getID();
+			String namespace = Data.getVersion().getID();
 
-			registerSingleTree(path, "panoramaAlpha", Uniforms::getPanoramaAlpha, 0f, 1f);
-			registerSingleTree(path, "hudHidden", Uniforms::getHudHidden, 0f, 1f);
-			registerSingleTree(path, "isInGui", Uniforms::getIsInGui, 0f, 1f);
-			registerSingleTree(path, "viewDistance", Uniforms::getViewDistance, 2f, null);
-			registerSingleTree(path, "fov", Uniforms::getFov, 0f, 360f);
-			registerSingleTree(path, "fps", Uniforms::getFps, 0f, null);
-			registerStandardTree(path, "graphicsMode", Uniforms::getGraphicsMode, 0f, 2f, 1, EmptyConfig.INSTANCE, false);
-			registerStandardTree(path, "eye", Uniforms::getEye, null, null, 3, null, false);
-			registerStandardTree(path, "eye_fract", Uniforms::getEyeFract, 0f, 1f, 3, null, true);
-			registerStandardTree(path, "pos", Uniforms::getPos, null, null, 3, null, false);
-			registerStandardTree(path, "pos_fract", Uniforms::getPosFract, 0f, 1f, 3, null,  true);
-			registerStandardTree(path, "cam", Uniforms::getCamera, null, null, 3, EmptyConfig.INSTANCE, false);
-			registerStandardTree(path, "cam_fract", Uniforms::getCameraFract, 0f, 1f, 3, EmptyConfig.INSTANCE,  true);
-			registerSingleTree(path, "pitch", Uniforms::getPitch, -90f, 90f);
-			registerStandardTree(path, "yaw", Uniforms::getYaw, -180f, 180f, 1, null, true);
-			registerStandardTree(path, "clipping", Uniforms::getClippingPlanes, 0f, null, 2, null, false);
-			registerSingleTree(path, "velocity", Uniforms::getVelocity, 0f, null);
-			registerRangedTree(path, "currentHealth", Uniforms::getCurrentHealth, Uniforms::getZero, (a, b, c) -> c.set(0, getMaxHealth(b)), 1, null, false);
-			registerSingleTree(path, "maxHealth", Uniforms::getMaxHealth, 0f, null);
-			registerRangedTree(path, "currentAbsorption", Uniforms::getCurrentAbsorption, Uniforms::getZero, (a, b, c) -> c.set(0, getMaxAbsorption(b)), 1, null, false);
-			registerSingleTree(path, "maxAbsorption", Uniforms::getMaxAbsorption, 0f, null);
-			registerRangedTree(path, "currentHurtTime", Uniforms::getCurrentHurtTime, Uniforms::getZero, (a, b, c) -> c.set(0, getMaxHurtTime(b)), 1, null, false);
-			registerSingleTree(path, "maxHurtTime", Uniforms::getMaxHurtTime, 0f, null);
-			registerRangedTree(path, "currentAir", Uniforms::getCurrentAir, Uniforms::getZero, (a, b, c) -> c.set(0, getMaxAir(b)), 1, null, false);
-			registerSingleTree(path, "maxAir", Uniforms::getMaxAir, 0f, null);
-			registerSingleTree(path, "isAlive", Uniforms::getIsAlive, 0f, 1f);
-			registerSingleTree(path, "isDead", Uniforms::getIsDead, 0f, 1f);
-			registerSingleTree(path, "isSprinting", Uniforms::getIsSprinting, 0f, 1f);
-			registerSingleTree(path, "isSwimming", Uniforms::getIsSwimming, 0f, 1f);
-			registerSingleTree(path, "isSneaking", Uniforms::getIsSneaking, 0f, 1f);
-			registerSingleTree(path, "isCrawling", Uniforms::getIsCrawling, 0f, 1f);
-			registerSingleTree(path, "isInvisible", Uniforms::getIsInvisible, 0f, 1f);
-			registerSingleTree(path, "isWithered", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.WITHER), 0f, 1f);
-			registerSingleTree(path, "isPoisoned", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.POISON), 0f, 1f);
-			registerStandardTree(path, "effectDuration", Uniforms::getEffectDuration, null, null, 1, new MapConfig(List.of(new ConfigData("effect", List.of("minecraft:speed")))), false);
-			registerStandardTree(path, "effectAmplifier", Uniforms::getEffectAmplifier, 0f, 255f, 1, new MapConfig(List.of(new ConfigData("effect", List.of("minecraft:speed")))), false);
-			registerSingleTree(path, "isBurning", Uniforms::getIsBurning, 0f, 1f);
-			registerSingleTree(path, "isOnGround", Uniforms::getIsOnGround, 0f, 1f);
-			registerSingleTree(path, "isOnLadder", Uniforms::getIsOnLadder, 0f, 1f);
-			registerSingleTree(path, "isRiding", Uniforms::getIsRiding, 0f, 1f);
-			registerSingleTree(path, "hasPassengers", Uniforms::getHasPassengers, 0f, 1f);
-			registerSingleTree(path, "biomeTemperature", Uniforms::getBiomeTemperature, 0f, 1f);
-			registerSingleTree(path, "alpha", Uniforms::getAlpha, 0f, 1f);
-			registerSingleTree(path, "perspective", Uniforms::getPerspective, 0f, 3f);
-			registerSingleTree(path, "selectedSlot", Uniforms::getSelectedSlot, 0f, 8f);
-			registerSingleTree(path, "score", Uniforms::getScore, 0f, null);
-			registerSingleTree(path, "skyAngle", Uniforms::getSkyAngle, 0f, 1f);
-			registerSingleTree(path, "sunAngle", Uniforms::getSunAngle, 0f ,1f);
-			registerSingleTree(path, "isDay", Uniforms::getIsDay, 0f, 1f);
-			registerSingleTree(path, "starBrightness", Uniforms::getStarBrightness, 0f, 1f);
-			registerStandardTree(path, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("period", List.of(1.0f)))), false);
-			registerStandardTree(path, "random", Uniforms::getRandom, 0f, 1f, 1, EmptyConfig.INSTANCE, false);
-			registerStandardTree(path, "renderType", Uniforms::getRenderType, 0f, (float)Shader.RenderType.values().length-1, 1, EmptyConfig.INSTANCE, false);
+			registerSingleTree(namespace, "panoramaAlpha", Uniforms::getPanoramaAlpha, 0f, 1f);
+			registerSingleTree(namespace, "hudHidden", Uniforms::getHudHidden, 0f, 1f);
+			registerSingleTree(namespace, "isInGui", Uniforms::getIsInGui, 0f, 1f);
+			registerSingleTree(namespace, "viewDistance", Uniforms::getViewDistance, 2f, null);
+			registerSingleTree(namespace, "fov", Uniforms::getFov, 0f, 360f);
+			registerSingleTree(namespace, "fps", Uniforms::getFps, 0f, null);
+			registerStandardTree(namespace, "graphicsMode", Uniforms::getGraphicsMode, 0f, 2f, 1, EmptyConfig.INSTANCE, false);
+			registerStandardTree(namespace, "eye", Uniforms::getEye, null, null, 3, null, false);
+			registerStandardTree(namespace, "eye_fract", Uniforms::getEyeFract, 0f, 1f, 3, null, true);
+			registerStandardTree(namespace, "pos", Uniforms::getPos, null, null, 3, null, false);
+			registerStandardTree(namespace, "pos_fract", Uniforms::getPosFract, 0f, 1f, 3, null,  true);
+			registerStandardTree(namespace, "cam", Uniforms::getCamera, null, null, 3, EmptyConfig.INSTANCE, false);
+			registerStandardTree(namespace, "cam_fract", Uniforms::getCameraFract, 0f, 1f, 3, EmptyConfig.INSTANCE,  true);
+			registerSingleTree(namespace, "pitch", Uniforms::getPitch, -90f, 90f);
+			registerStandardTree(namespace, "yaw", Uniforms::getYaw, -180f, 180f, 1, null, true);
+			registerStandardTree(namespace, "clipping", Uniforms::getClippingPlanes, 0f, null, 2, null, false);
+			registerSingleTree(namespace, "velocity", Uniforms::getVelocity, 0f, null);
+			registerRangedTree(namespace, "currentHealth", Uniforms::getCurrentHealth, Uniforms::getZero, (a, b, c) -> c.set(0, getMaxHealth(b)), 1, null, false);
+			registerSingleTree(namespace, "maxHealth", Uniforms::getMaxHealth, 0f, null);
+			registerRangedTree(namespace, "currentAbsorption", Uniforms::getCurrentAbsorption, Uniforms::getZero, (a, b, c) -> c.set(0, getMaxAbsorption(b)), 1, null, false);
+			registerSingleTree(namespace, "maxAbsorption", Uniforms::getMaxAbsorption, 0f, null);
+			registerRangedTree(namespace, "currentHurtTime", Uniforms::getCurrentHurtTime, Uniforms::getZero, (a, b, c) -> c.set(0, getMaxHurtTime(b)), 1, null, false);
+			registerSingleTree(namespace, "maxHurtTime", Uniforms::getMaxHurtTime, 0f, null);
+			registerRangedTree(namespace, "currentAir", Uniforms::getCurrentAir, Uniforms::getZero, (a, b, c) -> c.set(0, getMaxAir(b)), 1, null, false);
+			registerSingleTree(namespace, "maxAir", Uniforms::getMaxAir, 0f, null);
+			registerSingleTree(namespace, "isAlive", Uniforms::getIsAlive, 0f, 1f);
+			registerSingleTree(namespace, "isDead", Uniforms::getIsDead, 0f, 1f);
+			registerSingleTree(namespace, "isSprinting", Uniforms::getIsSprinting, 0f, 1f);
+			registerSingleTree(namespace, "isSwimming", Uniforms::getIsSwimming, 0f, 1f);
+			registerSingleTree(namespace, "isSneaking", Uniforms::getIsSneaking, 0f, 1f);
+			registerSingleTree(namespace, "isCrawling", Uniforms::getIsCrawling, 0f, 1f);
+			registerSingleTree(namespace, "isInvisible", Uniforms::getIsInvisible, 0f, 1f);
+			registerSingleTree(namespace, "isWithered", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.WITHER), 0f, 1f);
+			registerSingleTree(namespace, "isPoisoned", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.POISON), 0f, 1f);
+			registerStandardTree(namespace, "effectDuration", Uniforms::getEffectDuration, null, null, 1, new MapConfig(List.of(new ConfigData("effect", List.of("minecraft:speed")))), false);
+			registerStandardTree(namespace, "effectAmplifier", Uniforms::getEffectAmplifier, 0f, 255f, 1, new MapConfig(List.of(new ConfigData("effect", List.of("minecraft:speed")))), false);
+			registerSingleTree(namespace, "isBurning", Uniforms::getIsBurning, 0f, 1f);
+			registerSingleTree(namespace, "isOnGround", Uniforms::getIsOnGround, 0f, 1f);
+			registerSingleTree(namespace, "isOnLadder", Uniforms::getIsOnLadder, 0f, 1f);
+			registerSingleTree(namespace, "isRiding", Uniforms::getIsRiding, 0f, 1f);
+			registerSingleTree(namespace, "hasPassengers", Uniforms::getHasPassengers, 0f, 1f);
+			registerSingleTree(namespace, "biomeTemperature", Uniforms::getBiomeTemperature, 0f, 1f);
+			registerSingleTree(namespace, "alpha", Uniforms::getAlpha, 0f, 1f);
+			registerSingleTree(namespace, "perspective", Uniforms::getPerspective, 0f, 3f);
+			registerSingleTree(namespace, "selectedSlot", Uniforms::getSelectedSlot, 0f, 8f);
+			registerSingleTree(namespace, "score", Uniforms::getScore, 0f, null);
+			registerSingleTree(namespace, "skyAngle", Uniforms::getSkyAngle, 0f, 1f);
+			registerSingleTree(namespace, "sunAngle", Uniforms::getSunAngle, 0f ,1f);
+			registerSingleTree(namespace, "isDay", Uniforms::getIsDay, 0f, 1f);
+			registerSingleTree(namespace, "starBrightness", Uniforms::getStarBrightness, 0f, 1f);
+			registerStandardTree(namespace, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("period", List.of(1.0f)))), false);
+			registerStandardTree(namespace, "random", Uniforms::getRandom, 0f, 1f, 1, EmptyConfig.INSTANCE, false);
+			registerStandardTree(namespace, "renderType", Uniforms::getRenderType, 0f, (float)Shader.RenderType.values().length-1, 1, EmptyConfig.INSTANCE, false);
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
 		}
 	}
-	public static void registerSingleTree(String path, String name, Callables.SingleUniformCalculation callable, @Nullable Float min, @Nullable Float max) {
-		registerStandardTree(path, name, callable.convert(), min, max, 1, null, false);
+	public static void registerSingleTree(String namespace, String path, Callables.SingleUniformCalculation callable, @Nullable Float min, @Nullable Float max) {
+		registerStandardTree(namespace, path, callable.convert(), min, max, 1, null, false);
 	}
-	public static void registerRangedTree(String path, String name, Callables.UniformCalculation callable, Callables.UniformCalculation min, Callables.UniformCalculation max, int length, @Nullable UniformConfig uniformConfig, boolean loop) {
-		RootUniform uniform = new RootUniform(name, callable, length, min, max, uniformConfig);
+	public static void registerRangedTree(String namespace, String path, Callables.UniformCalculation callable, Callables.UniformCalculation min, Callables.UniformCalculation max, int length, @Nullable UniformConfig uniformConfig, boolean loop) {
+		RootUniform uniform = new RootUniform(path, callable, length, min, max, uniformConfig);
 		if (!uniform.useConfig) {
 			addStandardChildren(uniform, length, loop);
 		} else {
 			addElementChildren(uniform, length);
 		}
-		registerTree(path, uniform);
+		registerTree(namespace, uniform);
 	}
 
 
-	public static void registerStandardTree(String path, String name, Callables.UniformCalculation callable, @Nullable Float min, @Nullable Float max, int length, @Nullable UniformConfig uniformConfig, boolean loop) {
-		RootUniform uniform = new RootUniform(name, callable, length, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length), uniformConfig);
+	public static void registerStandardTree(String namespace, String path, Callables.UniformCalculation callable, @Nullable Float min, @Nullable Float max, int length, @Nullable UniformConfig uniformConfig, boolean loop) {
+		RootUniform uniform = new RootUniform(path, callable, length, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length), uniformConfig);
 		if (!uniform.useConfig) {
 			addStandardChildren(uniform, length, loop);
 		} else {
 			addElementChildren(uniform, length);
 		}
-		registerTree(path, uniform);
+		registerTree(namespace, uniform);
 	}
 
 	public static void registerTree(String path, TreeUniform treeUniform) {
-		String name = path+"_"+treeUniform.name;
-		treeUniform.onRegister(name);
-		Events.ShaderUniform.register(name, treeUniform);
+		Identifier identifier = Identifier.of(path, treeUniform.name);
+		treeUniform.onRegister(identifier);
+		Events.ShaderUniform.register(identifier, treeUniform);
 		for (TreeUniform child : treeUniform.children) {
-			registerTree(name, child);
+			registerTree(path, child);
 		}
 	}
 	@SuppressWarnings("UnusedReturnValue")

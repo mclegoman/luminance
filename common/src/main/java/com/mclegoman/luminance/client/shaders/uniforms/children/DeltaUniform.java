@@ -11,6 +11,7 @@ import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
+import net.minecraft.util.Identifier;
 
 public class DeltaUniform extends ChildUniform {
     protected UniformValue delta;
@@ -22,8 +23,8 @@ public class DeltaUniform extends ChildUniform {
     }
 
     @Override
-    public void onRegister(String fullName) {
-        super.onRegister(fullName);
+    public void onRegister(Identifier identifier) {
+        super.onRegister(identifier);
         assert parent != null;
         delta = new UniformValue(parent.getLength());
     }

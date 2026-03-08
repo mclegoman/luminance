@@ -66,7 +66,7 @@ public class Events {
 	public static final Registry<Runnables.Shader> BeforeShaderRender = new Registry<>();
 	public static final Registry<Runnables.Shader> AfterShaderRender = new Registry<>();
 
-	public static final GenericRegistry<String, Uniform> ShaderUniform = new GenericRegistry<>();
+	public static final Registry<Uniform> ShaderUniform = new Registry<>();
 
 
 	public static class ShaderRender {
