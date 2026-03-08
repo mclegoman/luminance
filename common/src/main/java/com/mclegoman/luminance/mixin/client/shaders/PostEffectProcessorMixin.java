@@ -19,7 +19,6 @@ import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTarget
 import net.minecraft.client.gl.*;
 import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.texture.TextureManager;
-import net.minecraft.client.util.ClosableFactory;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +27,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Coerce;
 
 import java.util.*;
 
@@ -49,22 +47,22 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
 
     @Unique private Identifier luminance$persistentBufferSource;
 
-    @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/SimpleFramebufferFactory;<init>(IIZI)V"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V")
-    private ClosableFactory<Framebuffer> replaceFramebufferFactory(ClosableFactory<Framebuffer> factory, @Local Map.Entry<Identifier, PostEffectPipeline.Targets> target) {
+    @ModifyExpressionValue(at = @At(value = "NEW", target = "(IIZI)Lnet/minecraft/client/gl/SimpleFramebufferFactory;"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V")
+    private SimpleFramebufferFactory replaceFramebufferFactory(SimpleFramebufferFactory original, @Local Map.Entry<Identifier, PostEffectPipeline.Targets> target) {
         PostEffectPipeline.Targets targets = target.getValue();
-        SimpleFramebufferFactory simpleFramebufferFactory = (SimpleFramebufferFactory)factory;
         PipelineTargetInterface.DynamicSize dynamicSize = ((PipelineTargetInterface)(Object)targets).luminance$getDynamicSize();
 
         if (dynamicSize != null) {
-            return new SimpleFramebufferFactory(dynamicSize.width().run(simpleFramebufferFactory.width(), simpleFramebufferFactory.height()), dynamicSize.height().run(simpleFramebufferFactory.width(), simpleFramebufferFactory.height()), simpleFramebufferFactory.useDepth(), simpleFramebufferFactory.clearColor());
+            return new SimpleFramebufferFactory(dynamicSize.width().run(original.width(), original.height()), dynamicSize.height().run(original.width(), original.height()), original.useDepth(), original.clearColor());
         }
-        return factory;
+        return original;
     }
 
-    @ModifyReturnValue(at = @At(value = "INVOKE", target = "Ljava/util/Map$Entry;getKey()Ljava/lang/Object;"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V")
-    private @Coerce Identifier replaceIdentifier(@Coerce Identifier original, @Local Map.Entry<Identifier, PostEffectPipeline.Targets> target) {
+    @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Ljava/util/Map$Entry;getKey()Ljava/lang/Object;"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V")
+    private <K> K replacePersistentSource(K original, @Local Map.Entry<Identifier, PostEffectPipeline.Targets> target) {
         if (target.getValue().persistent() && luminance$persistentBufferSource != null) {
-            return luminance$persistentBufferSource;
+            //noinspection unchecked
+            return (K) luminance$persistentBufferSource;
         }
         return original;
     }
