@@ -12,6 +12,7 @@ import com.mclegoman.luminance.client.translation.Translation;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.util.Identifier;
 
 public class KeybindingHelper {
 	public static boolean hasKeybindingConflicts(KeyBinding... keybindings) {
@@ -27,7 +28,7 @@ public class KeybindingHelper {
 		}
 		return false;
 	}
-	public static KeyBinding getKeybinding(String namespace, KeyBinding.Category category, String key, int keyCode) {
-		return KeyBindingHelper.registerKeyBinding(new KeyBinding(Translation.getKeybindingTranslation(namespace, key), InputUtil.Type.KEYSYM, keyCode, category));
+	public static KeyBinding getKeybinding(String namespace, String category, String key, int keyCode) {
+		return KeyBindingHelper.registerKeyBinding(new KeyBinding(Translation.getKeybindingTranslation(namespace, key), InputUtil.Type.KEYSYM, keyCode, KeyBinding.Category.create(Identifier.of(namespace, category))));
 	}
 }
