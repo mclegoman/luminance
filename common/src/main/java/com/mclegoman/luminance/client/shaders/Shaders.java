@@ -295,36 +295,6 @@ public class Shaders {
 
 		return Optional.empty();
 	}
-	@Nullable
-	public static Uniform getUniform(ShaderProgram program, Identifier id) {
-		return program.getUniform(getUniformName(id));
-	}
-	public static String getUniformName(Identifier id) {
-		return id.toString();
-	}
-	public static void set(ShaderProgram program, Identifier id, float... values) {
-		try {
-			if (program != null) {
-				Uniform uniform = getUniform(program, id);
-				if (uniform != null) uniform.set(values);
-			}
-		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
-		}
-	}
-	public static void set(ShaderProgram program, Identifier id, Vector3f values) {
-		try {
-			if (program != null) {
-				Uniform uniform = getUniform(program, id);
-				if (uniform != null) uniform.set(values);
-			}
-		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set shader uniform: {}_{}: {}", id, error));
-		}
-	}
-	public static void set(GlUniform uniform, UniformValue uniformValue) {
-		uniform.set(uniformValue.values, uniformValue.values.size());
-	}
 	// This is identical to the deprecated `PostEffectProcessor.render(framebuffer, objectAllocator);` function.
 	public static void renderShaderUsingAllocator(Shader shader, Framebuffer framebuffer, ObjectAllocator objectAllocator, @Nullable Identifier customPasses) {
 		try {

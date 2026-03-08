@@ -18,7 +18,10 @@ import java.util.Optional;
 public interface PostEffectPassInterface {
     String luminance$getID();
 
+    // TODO: this should perhaps just be an array
     ImmutableList<@NotNull UniformData> luminance$getUniformData(String block);
+
+    // TODO: methods for getting uniform names
 
     Identifier luminance$getOutputTarget();
 

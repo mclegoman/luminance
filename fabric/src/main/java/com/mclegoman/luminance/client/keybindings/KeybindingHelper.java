@@ -27,7 +27,7 @@ public class KeybindingHelper {
 		}
 		return false;
 	}
-	public static KeyBinding getKeybinding(String namespace, String category, String key, int keyCode) {
-		return KeyBindingHelper.registerKeyBinding(new KeyBinding(Translation.getKeybindingTranslation(namespace, key), InputUtil.Type.KEYSYM, keyCode, Translation.getKeybindingTranslation(namespace, category, true)));
+	public static KeyBinding getKeybinding(String namespace, KeyBinding.Category category, String key, int keyCode) {
+		return KeyBindingHelper.registerKeyBinding(new KeyBinding(Translation.getKeybindingTranslation(namespace, key), InputUtil.Type.KEYSYM, keyCode, category));
 	}
 }

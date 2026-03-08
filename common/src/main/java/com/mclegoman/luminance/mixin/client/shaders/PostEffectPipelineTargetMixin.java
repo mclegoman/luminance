@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Mixin(PostEffectPipeline.Targets.class)
-public interface PostEffectPipelineTargetMixin {
+public class PostEffectPipelineTargetMixin {
     @WrapOperation(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/RecordCodecBuilder;create(Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false))
     private static <O> Codec<O> wrapCreateOverride(Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> builder, Operation<Codec<O>> original) {
         return original.call(luminance$codecBuilderOverride(builder));
