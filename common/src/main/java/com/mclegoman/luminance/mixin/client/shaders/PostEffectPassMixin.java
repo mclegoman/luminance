@@ -139,18 +139,4 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 		}
 		return false;
 	}
-
-	@Override
-	public PostEffectPass luminance$copy() {
-		// TODO: reimplement copying
-		return (PostEffectPass)(Object)this;
-//		PostEffectPass pass = new PostEffectPass(id, program, outputTargetId, uniforms);
-//		PostEffectPassInterface passInterface = (PostEffectPassInterface)pass;
-//
-//		luminance$uniformOverrides.forEach((uniform, override) -> passInterface.luminance$addUniformOverride(uniform, override.copy()));
-//		passInterface.luminance$getUniformConfigs().replaceAll((uniform, config) -> config.copy());
-//		luminance$customData.forEach((identifier, data) -> passInterface.luminance$putCustomData(identifier, data.copy()));
-//
-//		return pass;
-	}
 }

@@ -9,7 +9,6 @@ package com.mclegoman.luminance.client.shaders.interfaces;
 
 import com.google.common.collect.ImmutableList;
 import com.mclegoman.luminance.client.shaders.UniformData;
-import net.minecraft.client.gl.PostEffectPass;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,6 +31,4 @@ public interface PostEffectPassInterface {
     Optional<CustomPassData> luminance$getCustomData(Identifier identifier);
 
     boolean luminance$usesDepth();
-
-    PostEffectPass luminance$copy();
 }

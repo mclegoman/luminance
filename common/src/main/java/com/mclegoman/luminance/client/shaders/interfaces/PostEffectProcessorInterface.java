@@ -33,8 +33,4 @@ public interface PostEffectProcessorInterface {
     boolean luminance$usesPersistentBuffers();
 
     void luminance$setPersistentBufferSource(@Nullable Identifier source);
-
-    boolean luminance$isEditable();
-
-    PostEffectProcessor luminance$createEditable();
 }

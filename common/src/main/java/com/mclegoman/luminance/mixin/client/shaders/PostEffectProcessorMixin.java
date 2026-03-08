@@ -18,7 +18,6 @@ import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineInterf
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTargetInterface;
 import net.minecraft.client.gl.*;
 import net.minecraft.client.render.FrameGraphBuilder;
-import net.minecraft.client.render.ProjectionMatrix2;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.ClosableFactory;
 import net.minecraft.util.Identifier;
@@ -45,16 +44,10 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
 
     @Shadow public abstract void render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet);
 
-    @Shadow @Final private Map<Identifier, PostEffectPipeline.Targets> internalTargets;
-    @Shadow @Final private Set<Identifier> externalTargets;
-
-    @Shadow @Final private ProjectionMatrix2 projectionMatrix;
     @Unique private Map<Identifier, List<PostEffectPass>> luminance$customPasses;
     @Unique @Nullable private Identifier luminance$currentCustomPasses;
 
     @Unique private Identifier luminance$persistentBufferSource;
-
-    @Unique private boolean luminance$isEditable;
 
     @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/SimpleFramebufferFactory;<init>(IIZI)V"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V")
     private ClosableFactory<Framebuffer> replaceFramebufferFactory(ClosableFactory<Framebuffer> factory, @Local Map.Entry<Identifier, PostEffectPipeline.Targets> target) {
@@ -82,12 +75,6 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
 //    private void setForceVisit(List<PostEffectPass> passes, Map<Identifier, PostEffectPipeline.Targets> internalTargets, Set<Identifier> externalTargets, ProjectionMatrix2 matrix, CallbackInfo ci) {
 //        passes.forEach((pass) -> luminance$trySetForceVisit(pass, internalTargets));
 //        luminance$persistentBufferSource = this.toString();
-//
-//        // allowing a setEditable from the interface would be unsafe
-//        try {
-//            passes.addAll(Collections.emptyList());
-//            luminance$isEditable = true;
-//        } catch (UnsupportedOperationException ignored) {}
 //    }
 
 //    @Unique private static void luminance$trySetForceVisit(PostEffectPass postEffectPass, Map<Identifier, PostEffectPipeline.Targets> internalTargets) {
@@ -208,44 +195,8 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
         return false;
     }
 
-//    @Override
-//    public boolean luminance$usesPersistentBuffers() {
-//        for (PostEffectPipeline.Targets targets : internalTargets.values()) {
-//            if (((PipelineTargetInterface)(Object)targets).luminance$getPersistent()) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
     @Override
     public void luminance$setPersistentBufferSource(@Nullable Identifier source) {
         luminance$persistentBufferSource = source;
-    }
-
-    @Override
-    public boolean luminance$isEditable() {
-        return luminance$isEditable;
-    }
-
-    @Override
-    public PostEffectProcessor luminance$createEditable() {
-        PostEffectProcessor editable = PostEffectProcessorInvoker.init(luminance$copyPasses(passes), internalTargets, externalTargets, projectionMatrix);
-        PostEffectProcessorInterface editableInterface = (PostEffectProcessorInterface)editable;
-
-        HashMap<Identifier, List<PostEffectPass>> customPasses = new HashMap<>(luminance$customPasses);
-        customPasses.replaceAll((identifier, passes) -> luminance$copyPasses(passes));
-        editableInterface.luminance$setCustomPasses(customPasses);
-
-        if (luminance$persistentBufferSource != null) {
-            editableInterface.luminance$setPersistentBufferSource(luminance$persistentBufferSource);
-        }
-        return editable;
-    }
-
-    @Unique private List<PostEffectPass> luminance$copyPasses(List<PostEffectPass> passes) {
-        List<PostEffectPass> newPasses = new ArrayList<>(passes);
-        newPasses.replaceAll((pass) -> ((PostEffectPassInterface)pass).luminance$copy());
-        return newPasses;
     }
 }
