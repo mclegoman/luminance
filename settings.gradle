@@ -1,18 +1,14 @@
 pluginManagement {
     repositories {
-        maven { url "https://maven.quiltmc.org/repository/release" }
         maven { url "https://maven.fabricmc.net/" }
-        maven { url "https://maven.neoforged.net/releases" }
-        maven { url "https://maven.architectury.dev/" }
         gradlePluginPortal()
     }
 }
 
-if (JavaVersion.current().ordinal() + 1 < 21) {
-    throw new IllegalStateException("Please run gradle with Java 21+! Error: Currently running with Java " + String.valueOf(JavaVersion.current().ordinal() + 1) + ".")
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            from(files("libs.versions.toml"))
+        }
+    }
 }
-rootProject.name = "luminance"
-
-include 'common'
-include 'quilt'
-include 'fabric'

@@ -1,88 +1,115 @@
+//file:noinspection GroovyAssignabilityCheck
+//file:noinspection GroovyAccessibility
 plugins {
-	id 'dev.architectury.loom' version '1.13-SNAPSHOT' apply false
-	id 'architectury-plugin' version '3.4-SNAPSHOT'
-	id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
+	id "maven-publish"
+	// TODO: loom version needs to be configurable
+	alias libs.plugins.loom version '1.14-SNAPSHOT'
+	alias libs.plugins.minotaur
 }
 
-architectury {
-	minecraft = project.minecraft
-}
+version = "$modVersion+$branchName"
+base.archivesName = project.slug
 
-allprojects {
-	group = project.maven_group
-	version = project.mod_version + (project.isDirty == "true" ? "+dirty." + System.currentTimeSeconds() : "")
-}
-
-subprojects {
-	apply plugin: 'dev.architectury.loom'
-	apply plugin: 'architectury-plugin'
-	apply plugin: 'maven-publish'
-
-	base {
-		archivesName = "$rootProject.archive_name-$project.name"
+repositories {
+	maven { url = "https://jitpack.io" }
+	maven { url = "https://maven.terraformersmc.com/releases/" }
+	mavenCentral()
+	mavenLocal()
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
 	}
+	flatDir {
+		dirs("libs")
+	}
+	maven { url = "https://maven.quiltmc.org/repository/release/" }
+}
 
+dependencies {
+	minecraft libs.mc
+	mappings variantOf(libs.yarn) { classifier "v2" }
+
+	modImplementation libs.fl
+	modImplementation libs.fapi
+	modImplementation libs.modmenu
+	modImplementation libs.sodium
+	modImplementation libs.quiltconfig
+	modImplementation libs.quiltconfigtoml
+	modImplementation libs.quiltconfigjson
+	modImplementation libs.nightconfigtoml
+	modImplementation libs.nightconfigcore
+	include libs.quiltconfig
+	include libs.quiltconfigtoml
+	include libs.quiltconfigjson
+	include libs.nightconfigtoml
+	include libs.nightconfigcore
+	modCompileOnly libs.iris
+}
+
+processResources {
+	final Map<String, String> meta = [
+			version       : version,
+			modId         : modId,
+			modName       : modName,
+			modDescription: modDescription,
+			homepage      : "https://modrinth.com/mod/${slug}",
+			issues        : "https://github.com/${user}/${slug}/issues",
+			sources       : "https://github.com/${user}/${slug}",
+			license       : license,
+			authors       : authors.split(", ").join("\",\n    \""),
+			contributors  : contributors.split(", ").join("\",\n    \""),
+			members       : "${authors}${contributors ? ". Contributions by ${contributors}." : ""}",
+			mc            : compatibleVersions.split(", ")[0],
+			fl            : libs.versions.fl.get(),
+			fapi          : libs.versions.fapi.get(),
+	]
+	inputs.properties meta
+	filesMatching("*.mod.json") { expand(meta) }
+	filesMatching("META-INF/*mods.toml") { expand(meta) }
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = "UTF-8"
+	it.options.release = 21
+}
+
+java {
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+
+publishing {
 	repositories {
-		maven { url = "https://jitpack.io" }
-		maven { url = "https://maven.terraformersmc.com/releases/" }
-		mavenCentral()
-		mavenLocal()
-		exclusiveContent {
-			forRepository {
-				maven {
-					name = "Modrinth"
-					url = "https://api.modrinth.com/maven"
-				}
-			}
-			filter {
-				includeGroup "maven.modrinth"
-			}
-		}
-		flatDir {
-			dirs("../libs")
-			dirs("libs")
-		}
-		maven { url = "https://maven.quiltmc.org/repository/release/" }
 	}
-
-	loom {
-		mods {
-			"perspective" {
-				sourceSet("main")
-			}
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
 		}
 	}
+}
 
+modrinth {
+	token = "$System.env.MODRINTH_TOKEN"
+	projectId = slug
+	versionNumber = project.version
+	uploadFile = remapJar
+	gameVersions = compatibleVersions.split(", ").toList()
+	loaders = compatibleLoaders.split(", ").toList()
+	changelog = "$System.env.CHANGELOG"
+	syncBodyFrom = "<!--DO NOT EDIT MANUALLY: synced from gh readme-->\n" + rootProject.file("README.md").text
 	dependencies {
-		minecraft "net.minecraft:minecraft:$rootProject.minecraft"
-		mappings("net.fabricmc:yarn:${project.mappings}:v2")
-
-		// Compatibility
-		modCompileOnly "maven.modrinth:sodium:${project.sodium}"
-		modCompileOnly "maven.modrinth:iris:${project.iris}"
-		modCompileOnly "com.terraformersmc:modmenu:${project.modmenu}"
-	}
-
-	java {
-		withSourcesJar()
-
-		sourceCompatibility = JavaVersion.VERSION_21
-		targetCompatibility = JavaVersion.VERSION_21
-	}
-
-	tasks.withType(JavaCompile).configureEach {
-		it.options.release = 21
-	}
-
-	publishing {
-		publications {
-			mavenJava(MavenPublication) {
-				artifactId = base.archivesName.get()
-				from components.java
-			}
-		}
-
-		repositories {
-		}
+		required.version "fabric-api", libs.versions.fapi.get()
+		optional.version "sodium", libs.versions.sodium.get()
+		optional.version "iris", libs.versions.iris.get()
+		optional.version "modmenu", libs.versions.modmenu.get()
 	}
 }

@@ -1,0 +1,33 @@
+{
+  "required": true,
+  "package": "com.mclegoman.luminance.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "com.mclegoman.luminance.mixin.MixinPlugin",
+  "client": [
+    "client.hud.DebugHudMixin",
+    "client.hud.InGameHudMixin",
+    "client.resources.MinecraftClientMixin",
+    "client.shaders.FrameGraphBuilderMixin",
+    "client.shaders.FramePassMixin",
+    "client.shaders.GameRendererAccessor",
+    "client.shaders.GameRendererMixin",
+    "client.shaders.MouseMixin",
+    "client.shaders.PostEffectPassMixin",
+    "client.shaders.PostEffectPipelineMixin",
+    "client.shaders.PostEffectPipelineTargetMixin",
+    "client.shaders.PostEffectPipelineTargetsMixin",
+    "client.shaders.PostEffectProcessorMixin",
+    "client.shaders.RotatingCubeMapRendererMixin",
+    "client.shaders.ScreenMixin",
+    "client.shaders.TitleScreenAccessor",
+    "client.shaders.TitleScreenMixin",
+    "client.shaders.UniformPrimitiveMixin",
+    "client.shaders.UniformVectorMixin",
+    "client.shaders.WorldRendererMixin",
+    "compat.modmenu.FabricModMixin",
+    "compat.modmenu.ModsScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

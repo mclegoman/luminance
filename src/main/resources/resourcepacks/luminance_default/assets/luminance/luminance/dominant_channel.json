@@ -1,0 +1,9 @@
+{
+  "post_effect": "luminance:dominant_channel",
+  "enabled": true,
+  "custom": {
+    "souper_secret_settings": {
+      "groups": [ "edible" ]
+    }
+  }
+}
