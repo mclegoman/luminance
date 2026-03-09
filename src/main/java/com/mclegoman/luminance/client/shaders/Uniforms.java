@@ -11,6 +11,7 @@ import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.events.Events;
+import com.mclegoman.luminance.client.gui.screen.LuminanceTitleScreen;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.shaders.uniforms.RootUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.TreeUniform;
@@ -30,6 +31,7 @@ import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import com.mclegoman.luminance.mixin.client.shaders.GameRendererAccessor;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -181,10 +183,7 @@ public class Uniforms {
 		return treeUniform;
 	}
 	public static float getPanoramaAlpha(ShaderTime shaderTime) {
-		// TODO: update
-
-		//return ClientData.minecraft.currentScreen instanceof TitleScreen ? (((TitleScreenAccessor)ClientData.minecraft.currentScreen).getBackgroundAlpha()) : 1.0F;
-		return 1f;
+		return ClientData.minecraft.currentScreen instanceof TitleScreen ? (((LuminanceTitleScreen)ClientData.minecraft.currentScreen).luminance$getBackgroundAlpha()) : 1.0F;
 	}
 	public static float getHudHidden(ShaderTime shaderTime) {
 		return ClientData.minecraft.options != null ? (ClientData.minecraft.options.hudHidden ? 1.0F : 0.0F) : 0.0F;
@@ -414,7 +413,11 @@ public class Uniforms {
 	}
 	public static float getVelocity(ShaderTime shaderTime) {
 		if (ClientData.minecraft.player != null) {
-			return (float) ClientData.minecraft.player.getVelocity().length();
+			//should also be able to do: ClientData.minecraft.player.getVelocity().length();
+			float x = (float) (ClientData.minecraft.player.getX() - ClientData.minecraft.player.lastX);
+			float y = (float) (ClientData.minecraft.player.getY() - ClientData.minecraft.player.lastY);
+			float z = (float) (ClientData.minecraft.player.getZ() - ClientData.minecraft.player.lastZ);
+			return (float) Math.sqrt(x * x + y * y + z * z);
 		}
 		return 0.0F;
 	}
