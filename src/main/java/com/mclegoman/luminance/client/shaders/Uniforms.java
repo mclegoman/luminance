@@ -98,6 +98,7 @@ public class Uniforms {
 			registerSingleTree(namespace, "is_invisible", Uniforms::getIsInvisible, 0f, 1f);
 			registerSingleTree(namespace, "is_withered", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.WITHER), 0f, 1f);
 			registerSingleTree(namespace, "is_poisoned", (shaderTime) -> Uniforms.getHasEffect(StatusEffects.POISON), 0f, 1f);
+			registerStandardTree(namespace, "is_in_biome", Uniforms::getIsInBiome, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("biome", List.of("minecraft:plains")))), false);
 			registerStandardTree(namespace, "effect_duration", Uniforms::getEffectDuration, null, null, 1, new MapConfig(List.of(new ConfigData("effect", List.of("minecraft:speed")))), false);
 			registerStandardTree(namespace, "effect_amplifier", Uniforms::getEffectAmplifier, 0f, 255f, 1, new MapConfig(List.of(new ConfigData("effect", List.of("minecraft:speed")))), false);
 			registerSingleTree(namespace, "is_burning", Uniforms::getIsBurning, 0f, 1f);
@@ -319,6 +320,14 @@ public class Uniforms {
 	}
 	public static float getHasEffect(RegistryEntry<StatusEffect> statusEffect) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.hasStatusEffect(statusEffect) ? 1.0F : 0.0F) : 0.0F;
+	}
+	public static void getIsInBiome(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+		uniformValue.set(0, getIsInBiome(config) ? 0 : 1);
+	}
+	private static boolean getIsInBiome(UniformConfig config) {
+		List<Object> objects = config.getObjects("biome");
+		if (ClientData.minecraft.world != null && ClientData.minecraft.player != null && objects != null && !objects.isEmpty() && objects.getFirst() instanceof String id) return Identifier.of(ClientData.minecraft.world.getBiome(ClientData.minecraft.player.getBlockPos()).getIdAsString()).equals(Identifier.of(id));
+		return false;
 	}
 	public static void getEffectDuration(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		StatusEffectInstance instance = getEffect(config);
