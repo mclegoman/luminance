@@ -1,11 +1,11 @@
 {
 	"gui.luminance.name": "Luminance",
 
-	"gui.luminance.keybindings.category.luminance": "Luminance",
-
+	"key.category.luminance.luminance": "Luminance",
 	"gui.luminance.keybindings.keybinding.adjust_alpha": "Adjust Alpha",
-
 	"gui.luminance.keybindings.keybinding.open_config": "Open Config",
+	"gui.luminance.keybindings.keybinding.toggle_debug_shader": "[DEBUG] Toggle Shader",
+	"gui.luminance.keybindings.keybinding.cycle_debug_render_type": "[DEBUG] Cycle Render Type",
 
 	"gui.luminance.alpha_level": "Shader Strength: %s",
 
@@ -46,8 +46,5 @@
 
 	"dannytaylor.donate": "Donate",
 
-	"gui.luminance.shader.luminance.gaussian": "Gaussian",
-
-	"gui.luminance.keybindings.keybinding.toggle_debug_shader": "[DEBUG] Toggle Shader",
-	"gui.luminance.keybindings.keybinding.cycle_debug_render_type": "[DEBUG] Cycle Render Type"
+	"gui.luminance.shader.luminance.gaussian": "Gaussian"
 }

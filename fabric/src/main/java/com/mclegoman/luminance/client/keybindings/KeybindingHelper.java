@@ -14,6 +14,8 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
 
+import java.util.HashMap;
+
 public class KeybindingHelper {
 	public static boolean hasKeybindingConflicts(KeyBinding... keybindings) {
 		for (KeyBinding currentKey1 : keybindings) {
@@ -28,7 +30,8 @@ public class KeybindingHelper {
 		}
 		return false;
 	}
+	private static final HashMap<Identifier, KeyBinding.Category> createdCategories = new HashMap<>();
 	public static KeyBinding getKeybinding(String namespace, String category, String key, int keyCode) {
-		return KeyBindingHelper.registerKeyBinding(new KeyBinding(Translation.getKeybindingTranslation(namespace, key), InputUtil.Type.KEYSYM, keyCode, KeyBinding.Category.create(Identifier.of(namespace, category))));
+		return KeyBindingHelper.registerKeyBinding(new KeyBinding(Translation.getKeybindingTranslation(namespace, key), InputUtil.Type.KEYSYM, keyCode, createdCategories.computeIfAbsent(Identifier.of(namespace, category), KeyBinding.Category::create)));
 	}
 }
