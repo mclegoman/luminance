@@ -134,7 +134,7 @@ public class Uniforms {
 		} else {
 			addElementChildren(uniform, length);
 		}
-		registerTree(namespace, uniform);
+		registerTree(namespace, uniform, null);
 	}
 
 
@@ -145,15 +145,21 @@ public class Uniforms {
 		} else {
 			addElementChildren(uniform, length);
 		}
-		registerTree(namespace, uniform);
+		registerTree(namespace, uniform, null);
 	}
 
-	public static void registerTree(String path, TreeUniform treeUniform) {
-		Identifier identifier = Identifier.of(path, treeUniform.name);
+	public static void registerTree(String namespace, TreeUniform treeUniform, String path) {
+		if (path == null) {
+			path = treeUniform.name;
+		} else {
+			path = path+"_"+treeUniform.name;
+		}
+
+		Identifier identifier = Identifier.of(namespace, path);
 		treeUniform.onRegister(identifier);
 		Events.ShaderUniform.register(identifier, treeUniform);
 		for (TreeUniform child : treeUniform.children) {
-			registerTree(path, child);
+			registerTree(namespace, child, path);
 		}
 	}
 	@SuppressWarnings("UnusedReturnValue")
