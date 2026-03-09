@@ -29,11 +29,11 @@
 	"gui.luminance.license.single": "License: %s",
 	"gui.luminance.license.multiple": "Licenses: %s",
 
-	"gui.luminance.keybindings.category.luminance": "Luminance",
-
+	"key.category.luminance.luminance": "Luminance",
 	"gui.luminance.keybindings.keybinding.adjust_alpha": "Adjust Alpha",
-
 	"gui.luminance.keybindings.keybinding.open_config": "Open Config",
+	"gui.luminance.keybindings.keybinding.toggle_debug_shader": "[DEBUG] Toggle Shader",
+	"gui.luminance.keybindings.keybinding.cycle_debug_render_type": "[DEBUG] Cycle Render Type",
 
 	"gui.luminance.alpha_level": "Shader Strength: %s",
 
@@ -69,9 +69,6 @@
 	"gui.luminance.variable.onff.false": "OFF",
 
 	"gui.luminance.shader.luminance.gaussian": "Gaussian",
-
-	"gui.luminance.keybindings.keybinding.toggle_debug_shader": "[DEBUG] Toggle Shader",
-	"gui.luminance.keybindings.keybinding.cycle_debug_render_type": "[DEBUG] Cycle Render Type",
 
 	"gui.luminance.config.title": "%s: %s",
 	"gui.luminance.config.config": "Configuration",

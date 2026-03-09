@@ -32,6 +32,7 @@ public class KeybindingHelper {
 	}
 	private static final HashMap<Identifier, KeyBinding.Category> createdCategories = new HashMap<>();
 	public static KeyBinding getKeybinding(String namespace, String category, String key, int keyCode) {
+		// TODO: this creates the category with a default "key.category.namespace.path" - im not sure if this is avoidable. if so it should be "gui.namespace.keybindings.category.path"
 		return KeyBindingHelper.registerKeyBinding(new KeyBinding(Translation.getKeybindingTranslation(namespace, key), InputUtil.Type.KEYSYM, keyCode, createdCategories.computeIfAbsent(Identifier.of(namespace, category), KeyBinding.Category::create)));
 	}
 }
