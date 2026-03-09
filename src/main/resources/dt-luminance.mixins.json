@@ -19,10 +19,8 @@
     "client.shaders.PostEffectProcessorMixin",
     "client.shaders.RotatingCubeMapRendererMixin",
     "client.shaders.ScreenMixin",
-    "client.shaders.TitleScreenAccessor",
     "client.shaders.TitleScreenMixin",
-    "client.shaders.UniformPrimitiveMixin",
-    "client.shaders.UniformVectorMixin",
+    "client.shaders.UniformValueMixin",
     "client.shaders.WorldRendererMixin",
     "compat.modmenu.FabricModMixin",
     "compat.modmenu.ModsScreenMixin"

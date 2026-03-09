@@ -14,7 +14,7 @@ import com.mclegoman.luminance.client.events.Execute;
 import com.mclegoman.luminance.client.shaders.UniformData;
 import com.mclegoman.luminance.client.shaders.interfaces.CustomPassData;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
-import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineUniformInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
 import com.mclegoman.luminance.client.shaders.overrides.LuminanceUniformOverride;
 import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
 import com.mojang.blaze3d.buffers.GpuBuffer;
@@ -72,7 +72,7 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 			ImmutableList.Builder<UniformData> builder = ImmutableList.builder();
 
 			for (UniformValue uniform : list) {
-				PipelineUniformInterface uniformInterface = (PipelineUniformInterface)uniform;
+				UniformValueInterface uniformInterface = (UniformValueInterface)uniform;
 				assert uniformInterface != null;
 
 				UniformData data = new UniformData();
