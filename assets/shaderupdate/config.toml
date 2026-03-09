@@ -1,0 +1,35 @@
+# relative directories can be awkward to work with
+# so this sets an absolute location that all the below directories below will be relative to (if they dont contain a :)
+root_directory = "D:/minecraft mods/luminance"
+
+# (this config.toml does still need to be wherever the running directory of the script is)
+
+# directories of the post shaders that need to be updated
+post_effect_directories = [
+    "src/main/resources/assets/luminance/post_effect",
+    "src/main/resources/resourcepacks/luminance_default/assets/luminance/post_effect",
+    "src/main/resources/resourcepacks/super_secret_settings/assets/minecraft/post_effect",
+    "D:/minecraft mods/Souper Secret Settings/src/main/resources/assets/soup/post_effect",
+    "D:/minecraft mods/Souper Secret Settings/src/main/resources/resourcepacks/soup/assets/soup/post_effect"
+]
+# an ./output/ folder will appear at each of these locations
+
+# directories where all the fsh/vsh files are kept, used to transfer the shader ids and uniforms
+# a program id like "minecraft:post/blit" will search all directories matching ".../minecraft/shaders" for a ".../minecraft/shaders/post/blit.json"
+shader_directories = [
+    "assets/shaderupdate/vanilla 1.21.4/minecraft/shaders", # vanilla shaders
+    "src/main/resources/assets/minecraft/shaders", # old super secret settings
+    "src/main/resources/assets/luminance/shaders", # luminance's custom shaders
+    "D:/minecraft mods/Souper Secret Settings/src/main/resources/assets/soup/shaders"
+    # if a post effect shader uses custom programs, the directory of those shaders will need to be added here
+]
+
+# if the script runs successfully:
+# the .json files in the post_effect_directories can be replaced with the ones from their respective ./output/
+# and the .json files in the shader_directories can be removed
+
+# https://www.minecraft.net/en-us/article/minecraft-snapshot-25w16a
+update_uniforms = true
+
+# https://www.minecraft.net/en-us/article/minecraft-snapshot-25w31a
+update_vertex_shaders = true
