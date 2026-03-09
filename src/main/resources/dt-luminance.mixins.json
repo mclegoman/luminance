@@ -21,6 +21,7 @@
     "client.shaders.ScreenMixin",
     "client.shaders.TitleScreenMixin",
     "client.shaders.UniformValueMixin",
+    "client.shaders.UniformValueImplMixin",
     "client.shaders.WorldRendererMixin",
     "compat.modmenu.FabricModMixin",
     "compat.modmenu.ModsScreenMixin"
