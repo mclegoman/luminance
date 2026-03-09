@@ -22,20 +22,12 @@
                     {
                         "name": "BlurDir",
                         "type": "vec2",
-                        "value": [
-                            1.0,
-                            0.0
-                        ]
+                        "value": [ 1.0, 0.0 ]
                     },
                     {
                         "name": "Radius",
                         "type": "float",
                         "value": 15.0
-                    },
-                    {
-                        "name": "RadiusMultiplier",
-                        "type": "float",
-                        "value": 1.0
                     }
                 ]
             }
@@ -56,20 +48,12 @@
                     {
                         "name": "BlurDir",
                         "type": "vec2",
-                        "value": [
-                            0.0,
-                            1.0
-                        ]
+                        "value": [ 0.0, 1.0 ]
                     },
                     {
                         "name": "Radius",
                         "type": "float",
                         "value": 15.0
-                    },
-                    {
-                        "name": "RadiusMultiplier",
-                        "type": "float",
-                        "value": 1.0
                     }
                 ]
             }
@@ -90,20 +74,12 @@
                     {
                         "name": "BlurDir",
                         "type": "vec2",
-                        "value": [
-                            1.0,
-                            0.0
-                        ]
+                        "value": [ 1.0, 0.0 ]
                     },
                     {
                         "name": "Radius",
                         "type": "float",
                         "value": 7.0
-                    },
-                    {
-                        "name": "RadiusMultiplier",
-                        "type": "float",
-                        "value": 1.0
                     }
                 ]
             }
@@ -124,20 +100,12 @@
                     {
                         "name": "BlurDir",
                         "type": "vec2",
-                        "value": [
-                            0.0,
-                            1.0
-                        ]
+                        "value": [ 0.0, 1.0 ]
                     },
                     {
                         "name": "Radius",
                         "type": "float",
                         "value": 7.0
-                    },
-                    {
-                        "name": "RadiusMultiplier",
-                        "type": "float",
-                        "value": 1.0
                     }
                 ]
             }
@@ -157,47 +125,33 @@
             ],
             "output": "temp",
             "uniforms": {
-                "SpiderConfig": [
+                "RotScaleConfig": [
                     {
                         "name": "InScale",
                         "type": "vec2",
-                        "value": [
-                            1.25,
-                            2.0
-                        ]
+                        "value": [ 1.25, 2.0 ]
                     },
                     {
                         "name": "InOffset",
                         "type": "vec2",
-                        "value": [
-                            -0.125,
-                            -0.1
-                        ]
+                        "value": [ -0.125, -0.1 ]
                     },
                     {
                         "name": "InRotation",
                         "type": "float",
                         "value": 0.0
-                    },
+                    }
+                ],
+                "SpiderConfig": [
                     {
                         "name": "Scissor",
                         "type": "vec4",
-                        "value": [
-                            0.0,
-                            0.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 0.0, 0.0, 1.0, 1.0 ]
                     },
                     {
                         "name": "Vignette",
                         "type": "vec4",
-                        "value": [
-                            0.1,
-                            0.1,
-                            0.9,
-                            0.9
-                        ]
+                        "value": [ 0.1, 0.1, 0.9, 0.9 ]
                     }
                 ]
             }
@@ -217,47 +171,33 @@
             ],
             "output": "swap",
             "uniforms": {
-                "SpiderConfig": [
+                "RotScaleConfig": [
                     {
                         "name": "InScale",
                         "type": "vec2",
-                        "value": [
-                            2.35,
-                            4.2
-                        ]
+                        "value": [ 2.35, 4.2 ]
                     },
                     {
                         "name": "InOffset",
                         "type": "vec2",
-                        "value": [
-                            -1.1,
-                            -1.5
-                        ]
+                        "value": [ -1.1, -1.5 ]
                     },
                     {
                         "name": "InRotation",
                         "type": "float",
                         "value": -45.0
-                    },
+                    }
+                ],
+                "SpiderConfig": [
                     {
                         "name": "Scissor",
                         "type": "vec4",
-                        "value": [
-                            0.21,
-                            0.0,
-                            0.79,
-                            1.0
-                        ]
+                        "value": [ 0.21, 0.0, 0.79, 1.0 ]
                     },
                     {
                         "name": "Vignette",
                         "type": "vec4",
-                        "value": [
-                            0.31,
-                            0.1,
-                            0.69,
-                            0.9
-                        ]
+                        "value": [ 0.31, 0.1, 0.69, 0.9 ]
                     }
                 ]
             }
@@ -277,47 +217,33 @@
             ],
             "output": "temp",
             "uniforms": {
-                "SpiderConfig": [
+                "RotScaleConfig": [
                     {
                         "name": "InScale",
                         "type": "vec2",
-                        "value": [
-                            2.35,
-                            4.2
-                        ]
+                        "value": [ 2.35, 4.2 ]
                     },
                     {
                         "name": "InOffset",
                         "type": "vec2",
-                        "value": [
-                            0.45,
-                            -4.45
-                        ]
+                        "value": [ 0.45, -4.45 ]
                     },
                     {
                         "name": "InRotation",
                         "type": "float",
                         "value": 45.0
-                    },
+                    }
+                ],
+                "SpiderConfig": [
                     {
                         "name": "Scissor",
                         "type": "vec4",
-                        "value": [
-                            0.21,
-                            0.0,
-                            0.79,
-                            1.0
-                        ]
+                        "value": [ 0.21, 0.0, 0.79, 1.0 ]
                     },
                     {
                         "name": "Vignette",
                         "type": "vec4",
-                        "value": [
-                            0.31,
-                            0.1,
-                            0.69,
-                            0.9
-                        ]
+                        "value": [ 0.31, 0.1, 0.69, 0.9 ]
                     }
                 ]
             }
@@ -337,47 +263,33 @@
             ],
             "output": "swap",
             "uniforms": {
-                "SpiderConfig": [
+                "RotScaleConfig": [
                     {
                         "name": "InScale",
                         "type": "vec2",
-                        "value": [
-                            2.35,
-                            2.35
-                        ]
+                        "value": [ 2.35, 2.35 ]
                     },
                     {
                         "name": "InOffset",
                         "type": "vec2",
-                        "value": [
-                            -0.385,
-                            -1.29
-                        ]
+                        "value": [ -0.385, -1.29 ]
                     },
                     {
                         "name": "InRotation",
                         "type": "float",
                         "value": 0.0
-                    },
+                    }
+                ],
+                "SpiderConfig": [
                     {
                         "name": "Scissor",
                         "type": "vec4",
-                        "value": [
-                            0.0,
-                            0.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 0.0, 0.0, 1.0, 1.0 ]
                     },
                     {
                         "name": "Vignette",
                         "type": "vec4",
-                        "value": [
-                            0.31,
-                            0.1,
-                            0.69,
-                            0.9
-                        ]
+                        "value": [ 0.31, 0.1, 0.69, 0.9 ]
                     }
                 ]
             }
@@ -397,47 +309,33 @@
             ],
             "output": "temp",
             "uniforms": {
-                "SpiderConfig": [
+                "RotScaleConfig": [
                     {
                         "name": "InScale",
                         "type": "vec2",
-                        "value": [
-                            2.35,
-                            2.35
-                        ]
+                        "value": [ 2.35, 2.35 ]
                     },
                     {
                         "name": "InOffset",
                         "type": "vec2",
-                        "value": [
-                            -0.965,
-                            -1.29
-                        ]
+                        "value": [ -0.965, -1.29 ]
                     },
                     {
                         "name": "InRotation",
                         "type": "float",
                         "value": 0.0
-                    },
+                    }
+                ],
+                "SpiderConfig": [
                     {
                         "name": "Scissor",
                         "type": "vec4",
-                        "value": [
-                            0.0,
-                            0.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 0.0, 0.0, 1.0, 1.0 ]
                     },
                     {
                         "name": "Vignette",
                         "type": "vec4",
-                        "value": [
-                            0.31,
-                            0.1,
-                            0.69,
-                            0.9
-                        ]
+                        "value": [ 0.31, 0.1, 0.69, 0.9 ]
                     }
                 ]
             }
@@ -484,9 +382,10 @@
             "uniforms": {
                 "MergeConfig": [
                     {
-                        "name": "luminance_alpha_smooth",
+                        "name": "Alpha",
                         "type": "float",
-                        "value": 1.0
+                        "value": 1.0,
+                        "override": ["luminance:alpha_smooth"]
                     }
                 ]
             }
