@@ -61,6 +61,17 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 			// if value is null, value need to be default, otherwise, replace it
 
 			// it seems this will require creating a new gpu buffer? which is a little awkward. how does vanilla do its dynamic stuff?
+
+			// fog renderer does this:
+//			MappableRingBuffer ringBuffer = new MappableRingBuffer(() -> "Shader UBO", 130, 1);
+//
+//			GpuBuffer.MappedView mappedView = RenderSystem.getDevice().createCommandEncoder().mapBuffer(ringBuffer.getBlocking(), false, true);
+//			ByteBuffer buffer = mappedView.data();
+//			buffer.position(0);
+//			Std140Builder.intoBuffer(buffer).putFloat(0f);
+//			mappedView.close();
+//
+//			ringBuffer.close();
 		}
 
 		original.call(instance, key, gpuBuffer);
