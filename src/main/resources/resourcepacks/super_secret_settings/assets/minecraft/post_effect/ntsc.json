@@ -1,22 +1,29 @@
 {
     "targets": {
         "swap": {},
-        "previous": {"persistent": true},
+        "previous": {
+            "persistent": true
+        },
         "merge": {}
     },
     "passes": [
         {
-            "program": "minecraft:post/ntsc_encode",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/ntsc_encode",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
                 }
             ],
-            "output": "swap"
+            "output": "swap",
+            "uniforms": {
+                "NtscEncodeConfig": []
+            }
         },
         {
-            "program": "minecraft:post/ntsc_decode",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/ntsc_decode",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -27,30 +34,14 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "merge"
+            "output": "merge",
+            "uniforms": {
+                "NtscDecodeConfig": []
+            }
         },
         {
-            "program": "minecraft:post/color_convolve",
-            "inputs": [
-                {
-                    "sampler_name": "In",
-                    "target": "merge"
-                }
-            ],
-            "output": "swap"
-        },
-        {
-            "program": "minecraft:post/deconverge",
-            "inputs": [
-                {
-                    "sampler_name": "In",
-                    "target": "swap"
-                }
-            ],
-            "output": "merge"
-        },
-        {
-            "program": "minecraft:post/box_blur",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/color_convolve",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -58,19 +49,73 @@
                 }
             ],
             "output": "swap",
-            "uniforms": [
-                {
-                    "name": "BlurDir",
-                    "values": [ 1.0, 0.0 ]
-                },
-                {
-                    "name": "Radius",
-                    "values": [ 10.0 ]
-                }
-            ]
+            "uniforms": {
+                "ColorConfig": [
+                    {
+                        "name": "Gray",
+                        "type": "vec3",
+                        "value": [
+                            0.3,
+                            0.59,
+                            0.11
+                        ]
+                    },
+                    {
+                        "name": "RedMatrix",
+                        "type": "vec3",
+                        "value": [
+                            1.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "name": "GreenMatrix",
+                        "type": "vec3",
+                        "value": [
+                            0.0,
+                            1.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "name": "BlueMatrix",
+                        "type": "vec3",
+                        "value": [
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "Offset",
+                        "type": "vec3",
+                        "value": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "name": "ColorScale",
+                        "type": "vec3",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "Saturation",
+                        "type": "float",
+                        "value": 1.8
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/box_blur",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/deconverge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -78,29 +123,169 @@
                 }
             ],
             "output": "merge",
-            "uniforms": [
-                {
-                    "name": "BlurDir",
-                    "values": [ 0.0, 1.0 ]
-                },
-                {
-                    "name": "Radius",
-                    "values": [ 10.0 ]
-                }
-            ]
+            "uniforms": {
+                "DeconvergeConfig": [
+                    {
+                        "name": "ConvergeX",
+                        "type": "vec3",
+                        "value": [
+                            -4.0,
+                            0.0,
+                            2.0
+                        ]
+                    },
+                    {
+                        "name": "ConvergeY",
+                        "type": "vec3",
+                        "value": [
+                            0.0,
+                            -4.0,
+                            2.0
+                        ]
+                    },
+                    {
+                        "name": "RadialConvergeX",
+                        "type": "vec3",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "RadialConvergeY",
+                        "type": "vec3",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/scan_pincushion",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/box_blur",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "merge"
                 }
             ],
-            "output": "swap"
+            "output": "swap",
+            "uniforms": {
+                "BlurConfig": [
+                    {
+                        "name": "BlurDir",
+                        "type": "vec2",
+                        "value": [
+                            1.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "name": "Radius",
+                        "type": "float",
+                        "value": 10.0
+                    },
+                    {
+                        "name": "RadiusMultiplier",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/phosphor",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/box_blur",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "swap"
+                }
+            ],
+            "output": "merge",
+            "uniforms": {
+                "BlurConfig": [
+                    {
+                        "name": "BlurDir",
+                        "type": "vec2",
+                        "value": [
+                            0.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "Radius",
+                        "type": "float",
+                        "value": 10.0
+                    },
+                    {
+                        "name": "RadiusMultiplier",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/scan_pincushion",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "merge"
+                }
+            ],
+            "output": "swap",
+            "uniforms": {
+                "ScanPincushionConfig": [
+                    {
+                        "name": "PincushionAmount",
+                        "type": "float",
+                        "value": 0.02
+                    },
+                    {
+                        "name": "CurvatureAmount",
+                        "type": "float",
+                        "value": 0.02
+                    },
+                    {
+                        "name": "ScanlineAmount",
+                        "type": "float",
+                        "value": 0.8
+                    },
+                    {
+                        "name": "ScanlineScale",
+                        "type": "float",
+                        "value": 1.0
+                    },
+                    {
+                        "name": "Floor",
+                        "type": "vec3",
+                        "value": [
+                            0.05,
+                            0.05,
+                            0.05
+                        ]
+                    },
+                    {
+                        "name": "Power",
+                        "type": "vec3",
+                        "value": [
+                            0.8,
+                            0.8,
+                            0.8
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/phosphor",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -112,25 +297,56 @@
                 }
             ],
             "output": "merge",
-            "uniforms": [
-                {
-                    "name": "Phosphor",
-                    "values": [ 0.4, 0.4, 0.4 ]
-                }
-            ]
+            "uniforms": {
+                "PhosphorConfig": [
+                    {
+                        "name": "Phosphor",
+                        "type": "vec3",
+                        "value": [
+                            0.4,
+                            0.4,
+                            0.4
+                        ]
+                    },
+                    {
+                        "name": "Offset",
+                        "type": "vec2",
+                        "value": [
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "merge"
                 }
             ],
-            "output": "previous"
+            "output": "previous",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -141,17 +357,41 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "swap"
+            "output": "swap",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "swap"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

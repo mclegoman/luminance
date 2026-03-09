@@ -5,26 +5,99 @@
     },
     "passes": [
         {
-            "program": "luminance:post/tiltshift",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/tiltshift",
             "inputs": [
-                { "sampler_name": "In", "target": "minecraft:main" }
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                }
             ],
-            "output": "merge"
+            "output": "merge",
+            "uniforms": {
+                "TiltshiftConfig": [
+                    {
+                        "name": "BlurDir",
+                        "type": "vec2",
+                        "value": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "Radius",
+                        "type": "float",
+                        "value": 12.0
+                    },
+                    {
+                        "name": "Center",
+                        "type": "vec2",
+                        "value": [
+                            0.5,
+                            0.5
+                        ]
+                    },
+                    {
+                        "name": "Focus",
+                        "type": "float",
+                        "value": 4.0
+                    },
+                    {
+                        "name": "luminance_isInBiome",
+                        "type": "float",
+                        "value": 0.0
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
-                { "sampler_name": "In", "target": "merge" },
-                { "sampler_name": "Merge",  "target": "minecraft:main" }
+                {
+                    "sampler_name": "In",
+                    "target": "merge"
+                },
+                {
+                    "sampler_name": "Merge",
+                    "target": "minecraft:main"
+                }
             ],
-            "output": "swap"
+            "output": "swap",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
-                { "sampler_name": "In", "target": "swap" }
+                {
+                    "sampler_name": "In",
+                    "target": "swap"
+                }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

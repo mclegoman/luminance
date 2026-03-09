@@ -1,35 +1,86 @@
 {
-	"targets": {
-		"merge": {},
-		"swap": {}
-	},
-	"passes": [
-		{
-			"program": "minecraft:post/color_convolve",
+    "targets": {
+        "merge": {},
+        "swap": {}
+    },
+    "passes": [
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/color_convolve",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
                 }
             ],
-			"output": "merge",
-			"uniforms": [
-				{
-					"name": "RedMatrix",
-					"values": [ 0.975, 0.025, 0.025 ]
-				},
-				{
-					"name": "GreenMatrix",
-					"values": [ 0.0, 0.95, 0.0 ]
-				},
-				{
-					"name": "BlueMatrix",
-					"values": [ 0.025, 0.025, 0.95 ]
-				}
-			]
-		},
-		{
-			"program": "luminance:post/merge",
+            "output": "merge",
+            "uniforms": {
+                "ColorConfig": [
+                    {
+                        "name": "Gray",
+                        "type": "vec3",
+                        "value": [
+                            0.3,
+                            0.59,
+                            0.11
+                        ]
+                    },
+                    {
+                        "name": "RedMatrix",
+                        "type": "vec3",
+                        "value": [
+                            0.975,
+                            0.025,
+                            0.025
+                        ]
+                    },
+                    {
+                        "name": "GreenMatrix",
+                        "type": "vec3",
+                        "value": [
+                            0.0,
+                            0.95,
+                            0.0
+                        ]
+                    },
+                    {
+                        "name": "BlueMatrix",
+                        "type": "vec3",
+                        "value": [
+                            0.025,
+                            0.025,
+                            0.95
+                        ]
+                    },
+                    {
+                        "name": "Offset",
+                        "type": "vec3",
+                        "value": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "name": "ColorScale",
+                        "type": "vec3",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "Saturation",
+                        "type": "float",
+                        "value": 1.8
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -40,17 +91,41 @@
                     "target": "minecraft:main"
                 }
             ],
-			"output": "swap"
-		},
-		{
-			"program": "minecraft:post/blit",
+            "output": "swap",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "swap"
                 }
             ],
-			"output": "minecraft:main"
-		}
-	]
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
 }

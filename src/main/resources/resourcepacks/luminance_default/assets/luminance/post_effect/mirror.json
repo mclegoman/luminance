@@ -6,17 +6,22 @@
     },
     "passes": [
         {
-            "program": "luminance:post/mirror",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/mirror",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
                 }
             ],
-            "output": "0"
+            "output": "0",
+            "uniforms": {
+                "MirrorConfig": []
+            }
         },
         {
-            "program": "luminance:post/depth_mix",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/depth_mix",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -32,10 +37,28 @@
                     "target": "0"
                 }
             ],
-            "output": "1"
+            "output": "1",
+            "uniforms": {
+                "DepthMixConfig": [
+                    {
+                        "name": "Amount",
+                        "type": "vec2",
+                        "value": [
+                            0.9,
+                            0.91
+                        ]
+                    },
+                    {
+                        "name": "luminance_viewDistance",
+                        "type": "float",
+                        "value": 12.0
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -46,17 +69,41 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "2"
+            "output": "2",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "2"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

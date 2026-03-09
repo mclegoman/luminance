@@ -9,27 +9,79 @@
     },
     "passes": [
         {
-            "program": "minecraft:post/deconverge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/deconverge",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
                 }
             ],
-            "output": "downscale"
+            "output": "downscale",
+            "uniforms": {
+                "DeconvergeConfig": [
+                    {
+                        "name": "ConvergeX",
+                        "type": "vec3",
+                        "value": [
+                            -4.0,
+                            0.0,
+                            2.0
+                        ]
+                    },
+                    {
+                        "name": "ConvergeY",
+                        "type": "vec3",
+                        "value": [
+                            0.0,
+                            -4.0,
+                            2.0
+                        ]
+                    },
+                    {
+                        "name": "RadialConvergeX",
+                        "type": "vec3",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "RadialConvergeY",
+                        "type": "vec3",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/downscale",
+            "vertex_shader": "minecraft:post/downscale",
+            "fragment_shader": "minecraft:post/downscale",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "downscale"
                 }
             ],
-            "output": "notch"
+            "output": "notch",
+            "uniforms": {
+                "DownscaleConfig": [
+                    {
+                        "name": "Scale",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/notch",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/notch",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -43,30 +95,102 @@
                     "bilinear": false
                 }
             ],
-            "output": "downscale_2"
+            "output": "downscale_2",
+            "uniforms": {
+                "NotchConfig": [
+                    {
+                        "name": "Mix",
+                        "type": "vec3",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "Scale",
+                        "type": "float",
+                        "value": 2.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/downscale",
+            "vertex_shader": "minecraft:post/downscale",
+            "fragment_shader": "minecraft:post/downscale",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "downscale_2"
                 }
             ],
-            "output": "scan_pincushion"
+            "output": "scan_pincushion",
+            "uniforms": {
+                "DownscaleConfig": [
+                    {
+                        "name": "Scale",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/scan_pincushion",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/scan_pincushion",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "scan_pincushion"
                 }
             ],
-            "output": "merge"
+            "output": "merge",
+            "uniforms": {
+                "ScanPincushionConfig": [
+                    {
+                        "name": "PincushionAmount",
+                        "type": "float",
+                        "value": 0.02
+                    },
+                    {
+                        "name": "CurvatureAmount",
+                        "type": "float",
+                        "value": 0.02
+                    },
+                    {
+                        "name": "ScanlineAmount",
+                        "type": "float",
+                        "value": 0.8
+                    },
+                    {
+                        "name": "ScanlineScale",
+                        "type": "float",
+                        "value": 1.0
+                    },
+                    {
+                        "name": "Floor",
+                        "type": "vec3",
+                        "value": [
+                            0.05,
+                            0.05,
+                            0.05
+                        ]
+                    },
+                    {
+                        "name": "Power",
+                        "type": "vec3",
+                        "value": [
+                            0.8,
+                            0.8,
+                            0.8
+                        ]
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -77,17 +201,41 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "swap"
+            "output": "swap",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "swap"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

@@ -6,27 +6,60 @@
     },
     "passes": [
         {
-            "program": "minecraft:post/blobs2",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blobs2",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
                 }
             ],
-            "output": "0"
+            "output": "0",
+            "uniforms": {
+                "Blobs2Config": [
+                    {
+                        "name": "Radius",
+                        "type": "float",
+                        "value": 7.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/outline_watercolor",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/outline_watercolor",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "0"
                 }
             ],
-            "output": "2"
+            "output": "2",
+            "uniforms": {
+                "OutlineWatercolorConfig": [
+                    {
+                        "name": "Gray",
+                        "type": "vec3",
+                        "value": [
+                            0.3,
+                            0.59,
+                            0.11
+                        ]
+                    },
+                    {
+                        "name": "Brightness",
+                        "type": "vec2",
+                        "value": [
+                            1.0,
+                            0.0
+                        ]
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/box_blur",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/box_blur",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -34,19 +67,32 @@
                 }
             ],
             "output": "1",
-            "uniforms": [
-                {
-                    "name": "BlurDir",
-                    "values": [ 0.8, 0.0 ]
-                },
-                {
-                    "name": "Radius",
-                    "values": [ 20.0 ]
-                }
-            ]
+            "uniforms": {
+                "BlurConfig": [
+                    {
+                        "name": "BlurDir",
+                        "type": "vec2",
+                        "value": [
+                            0.8,
+                            0.0
+                        ]
+                    },
+                    {
+                        "name": "Radius",
+                        "type": "float",
+                        "value": 20.0
+                    },
+                    {
+                        "name": "RadiusMultiplier",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/box_blur",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/box_blur",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -54,19 +100,32 @@
                 }
             ],
             "output": "2",
-            "uniforms": [
-                {
-                    "name": "BlurDir",
-                    "values": [ 0.0, 0.8 ]
-                },
-                {
-                    "name": "Radius",
-                    "values": [ 20.0 ]
-                }
-            ]
+            "uniforms": {
+                "BlurConfig": [
+                    {
+                        "name": "BlurDir",
+                        "type": "vec2",
+                        "value": [
+                            0.0,
+                            0.8
+                        ]
+                    },
+                    {
+                        "name": "Radius",
+                        "type": "float",
+                        "value": 20.0
+                    },
+                    {
+                        "name": "RadiusMultiplier",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/outline_combine",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/outline_combine",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -77,10 +136,33 @@
                     "target": "2"
                 }
             ],
-            "output": "1"
+            "output": "1",
+            "uniforms": {
+                "OutlineCombineConfig": [
+                    {
+                        "name": "Base",
+                        "type": "vec3",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "Amount",
+                        "type": "vec3",
+                        "value": [
+                            0.75,
+                            0.75,
+                            0.75
+                        ]
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -91,17 +173,41 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "2"
+            "output": "2",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "2"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

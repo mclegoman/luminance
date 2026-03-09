@@ -6,23 +6,33 @@
     },
     "passes": [
         {
-            "program": "luminance:post/color_overlay",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/color_overlay",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
                 }
             ],
-            "uniforms": [
-                {
-                    "name": "Color",
-                    "values": [ 1.0, 1.0, 1.0, 1.0 ]
-                }
-            ],
+            "uniforms": {
+                "ColorOverlayConfig": [
+                    {
+                        "name": "Color",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            },
             "output": "0"
         },
         {
-            "program": "luminance:post/outlined",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/outlined",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -80,19 +90,57 @@
                 }
             ],
             "output": "1",
-            "uniforms": [
-                {
-                    "name": "Transparency",
-                    "values": [ 0.5 ]
-                },
-                {
-                    "name": "OutlineColorMultiplier",
-                    "values": [ -1.0 ]
-                }
-            ]
+            "uniforms": {
+                "OutlinedConfig": [
+                    {
+                        "name": "Transparency",
+                        "type": "float",
+                        "value": 0.5
+                    },
+                    {
+                        "name": "Thickness",
+                        "type": "float",
+                        "value": 0.0033
+                    },
+                    {
+                        "name": "Outline",
+                        "type": "float",
+                        "value": 0.0
+                    },
+                    {
+                        "name": "OutlineColor",
+                        "type": "vec3",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "OutlinePow",
+                        "type": "vec3",
+                        "value": [
+                            0.5,
+                            0.5,
+                            0.5
+                        ]
+                    },
+                    {
+                        "name": "OutlineColorMultiplier",
+                        "type": "float",
+                        "value": -1.0
+                    },
+                    {
+                        "name": "Distance",
+                        "type": "float",
+                        "value": -1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -103,17 +151,41 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "2"
+            "output": "2",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "2"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

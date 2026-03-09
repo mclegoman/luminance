@@ -5,7 +5,8 @@
     },
     "passes": [
         {
-            "program": "minecraft:post/notch",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/notch",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -19,10 +20,29 @@
                     "bilinear": false
                 }
             ],
-            "output": "merge"
+            "output": "merge",
+            "uniforms": {
+                "NotchConfig": [
+                    {
+                        "name": "Mix",
+                        "type": "vec3",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "Scale",
+                        "type": "float",
+                        "value": 2.0
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -33,17 +53,41 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "swap"
+            "output": "swap",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:swap"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

@@ -5,42 +5,256 @@
     },
     "passes": [
         {
-            "program": "luminance:post/vision",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/vision",
             "inputs": [
-                { "sampler_name": "In", "target": "minecraft:main" },
-                { "sampler_name": "InDepth", "target": "minecraft:main", "use_depth_buffer": true }
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                },
+                {
+                    "sampler_name": "InDepth",
+                    "target": "minecraft:main",
+                    "use_depth_buffer": true
+                }
             ],
             "output": "merge",
-            "uniforms": [
-                { "name": "SphL", "values": [ 0.0 ] },
-                { "name": "CylL", "values": [ -0.25 ] },
-                { "name": "AxisL", "values": [ 5.0 ] },
-                { "name": "AddNearL", "values": [ 0.5 ] },
-                { "name": "AddInterL", "values": [ 0.5 ] },
-                { "name": "ShiftL", "values": [ 31.0 ] },
-                { "name": "SphR", "values": [ 0.25 ] },
-                { "name": "CylR", "values": [ -0.25 ] },
-                { "name": "AxisR", "values": [ 175.0 ] },
-                { "name": "AddNearR", "values": [ 0.5 ] },
-                { "name": "AddInterR", "values": [ 0.5 ] },
-                { "name": "ShiftR", "values": [ 32.0 ] },
-                { "name": "Mode", "values": [ 4.0 ] }
-            ]
+            "uniforms": {
+                "VisionConfig": [
+                    {
+                        "name": "SphL",
+                        "type": "float",
+                        "value": 0.0
+                    },
+                    {
+                        "name": "CylL",
+                        "type": "float",
+                        "value": -0.25
+                    },
+                    {
+                        "name": "AxisL",
+                        "type": "float",
+                        "value": 5.0
+                    },
+                    {
+                        "name": "AddNearL",
+                        "type": "float",
+                        "value": 0.5
+                    },
+                    {
+                        "name": "AddInterL",
+                        "type": "float",
+                        "value": 0.5
+                    },
+                    {
+                        "name": "ShiftL",
+                        "type": "float",
+                        "value": 31.0
+                    },
+                    {
+                        "name": "SphR",
+                        "type": "float",
+                        "value": 0.25
+                    },
+                    {
+                        "name": "CylR",
+                        "type": "float",
+                        "value": -0.25
+                    },
+                    {
+                        "name": "AxisR",
+                        "type": "float",
+                        "value": 175.0
+                    },
+                    {
+                        "name": "AddNearR",
+                        "type": "float",
+                        "value": 0.5
+                    },
+                    {
+                        "name": "AddInterR",
+                        "type": "float",
+                        "value": 0.5
+                    },
+                    {
+                        "name": "ShiftR",
+                        "type": "float",
+                        "value": 32.0
+                    },
+                    {
+                        "name": "FoveaAngle",
+                        "type": "float",
+                        "value": 2.0
+                    },
+                    {
+                        "name": "Mode",
+                        "type": "float",
+                        "value": 4.0
+                    },
+                    {
+                        "name": "InvertEyeCorrection",
+                        "type": "float",
+                        "value": 0.0
+                    },
+                    {
+                        "name": "PI",
+                        "type": "float",
+                        "value": 3.141592653589793
+                    },
+                    {
+                        "name": "ToRadianDenominator",
+                        "type": "float",
+                        "value": 180.0
+                    },
+                    {
+                        "name": "SampleRange",
+                        "type": "float",
+                        "value": 3.0
+                    },
+                    {
+                        "name": "FovealFalloff",
+                        "type": "float",
+                        "value": 1.5
+                    },
+                    {
+                        "name": "ShiftFactor",
+                        "type": "float",
+                        "value": 0.5
+                    },
+                    {
+                        "name": "DepthFoveaMix",
+                        "type": "float",
+                        "value": 0.9
+                    },
+                    {
+                        "name": "RadiusScale",
+                        "type": "float",
+                        "value": 5.0
+                    },
+                    {
+                        "name": "MinRadius",
+                        "type": "float",
+                        "value": 0.5
+                    },
+                    {
+                        "name": "MaxRadius",
+                        "type": "float",
+                        "value": 20.0
+                    },
+                    {
+                        "name": "CylSphBlend",
+                        "type": "float",
+                        "value": 0.6
+                    },
+                    {
+                        "name": "FoveaCenter",
+                        "type": "float",
+                        "value": 0.5
+                    },
+                    {
+                        "name": "InterpCutoff",
+                        "type": "float",
+                        "value": 0.5
+                    },
+                    {
+                        "name": "Mix",
+                        "type": "float",
+                        "value": 0.5
+                    },
+                    {
+                        "name": "BlurSigmaFactor",
+                        "type": "float",
+                        "value": 2.0
+                    },
+                    {
+                        "name": "CylBias",
+                        "type": "float",
+                        "value": 0.5
+                    },
+                    {
+                        "name": "CylScale",
+                        "type": "float",
+                        "value": 0.5
+                    },
+                    {
+                        "name": "ZPlane",
+                        "type": "float",
+                        "value": -1.0
+                    },
+                    {
+                        "name": "luminance_crosshair_target",
+                        "type": "vec3",
+                        "value": [
+                            0.0,
+                            64.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "name": "luminance_cam",
+                        "type": "vec3",
+                        "value": [
+                            0.0,
+                            64.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "name": "luminance_fov",
+                        "type": "float",
+                        "value": 95.0
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
-                { "sampler_name": "In", "target": "merge"},
-                { "sampler_name": "Merge", "target": "minecraft:main" }
+                {
+                    "sampler_name": "In",
+                    "target": "merge"
+                },
+                {
+                    "sampler_name": "Merge",
+                    "target": "minecraft:main"
+                }
             ],
-            "output": "swap"
+            "output": "swap",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
-                { "sampler_name": "In", "target": "swap" }
+                {
+                    "sampler_name": "In",
+                    "target": "swap"
+                }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

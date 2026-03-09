@@ -2,11 +2,14 @@
     "targets": {
         "merge": {},
         "swap": {},
-        "previous": {"persistent": true}
+        "previous": {
+            "persistent": true
+        }
     },
     "passes": [
         {
-            "program": "minecraft:post/phosphor",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/phosphor",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -18,25 +21,56 @@
                 }
             ],
             "output": "merge",
-            "uniforms": [
-                {
-                    "name": "Phosphor",
-                    "values": [ 0.95, 0.95, 0.95 ]
-                }
-            ]
+            "uniforms": {
+                "PhosphorConfig": [
+                    {
+                        "name": "Phosphor",
+                        "type": "vec3",
+                        "value": [
+                            0.95,
+                            0.95,
+                            0.95
+                        ]
+                    },
+                    {
+                        "name": "Offset",
+                        "type": "vec2",
+                        "value": [
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "merge"
                 }
             ],
-            "output": "previous"
+            "output": "previous",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -47,17 +81,41 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "swap"
+            "output": "swap",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "swap"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

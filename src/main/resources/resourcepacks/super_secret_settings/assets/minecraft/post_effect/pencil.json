@@ -5,17 +5,42 @@
     },
     "passes": [
         {
-            "program": "minecraft:post/outline_soft",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/outline_soft",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
                 }
             ],
-            "output": "merge"
+            "output": "merge",
+            "uniforms": {
+                "OutlineSoftConfig": [
+                    {
+                        "name": "LumaRamp",
+                        "type": "float",
+                        "value": 16.0
+                    },
+                    {
+                        "name": "LumaLevel",
+                        "type": "float",
+                        "value": 4.0
+                    },
+                    {
+                        "name": "Gray",
+                        "type": "vec3",
+                        "value": [
+                            0.3,
+                            0.59,
+                            0.11
+                        ]
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -26,17 +51,41 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "swap"
+            "output": "swap",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "swap"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

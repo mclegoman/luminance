@@ -5,17 +5,63 @@
     },
     "passes": [
         {
-            "program": "luminance:post/health_overlay",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/health_overlay",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
                 }
             ],
-            "output": "merge"
+            "output": "merge",
+            "uniforms": {
+                "HealthOverlayConfig": [
+                    {
+                        "name": "luminance_currentHealth_smooth",
+                        "type": "float",
+                        "value": 20.0
+                    },
+                    {
+                        "name": "luminance_maxHealth_smooth",
+                        "type": "float",
+                        "value": 20.0
+                    },
+                    {
+                        "name": "luminance_currentAbsorption_smooth",
+                        "type": "float",
+                        "value": 0.0
+                    },
+                    {
+                        "name": "luminance_maxAbsorption_smooth",
+                        "type": "float",
+                        "value": 0.0
+                    },
+                    {
+                        "name": "luminance_currentHurtTime_smooth",
+                        "type": "float",
+                        "value": 0.0
+                    },
+                    {
+                        "name": "luminance_maxHurtTime_smooth",
+                        "type": "float",
+                        "value": 0.0
+                    },
+                    {
+                        "name": "luminance_isWithered_smooth",
+                        "type": "float",
+                        "value": 0.0
+                    },
+                    {
+                        "name": "luminance_isPoisoned_smooth",
+                        "type": "float",
+                        "value": 0.0
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -26,17 +72,41 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "swap"
+            "output": "swap",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "swap"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

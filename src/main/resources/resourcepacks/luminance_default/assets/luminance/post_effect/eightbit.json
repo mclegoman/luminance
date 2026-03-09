@@ -7,17 +7,69 @@
     },
     "passes": [
         {
-            "program": "luminance:post/nearest",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/nearest",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
                 }
             ],
-            "output": "0"
+            "output": "0",
+            "uniforms": {
+                "NearestConfig": [
+                    {
+                        "name": "Color1",
+                        "type": "vec3",
+                        "value": [
+                            0.058,
+                            0.219,
+                            0.058
+                        ]
+                    },
+                    {
+                        "name": "Color2",
+                        "type": "vec3",
+                        "value": [
+                            0.188,
+                            0.384,
+                            0.188
+                        ]
+                    },
+                    {
+                        "name": "Color3",
+                        "type": "vec3",
+                        "value": [
+                            0.545,
+                            0.674,
+                            0.058
+                        ]
+                    },
+                    {
+                        "name": "Color4",
+                        "type": "vec3",
+                        "value": [
+                            0.607,
+                            0.737,
+                            0.058
+                        ]
+                    },
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/pixelated",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/pixelated",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -25,15 +77,35 @@
                 }
             ],
             "output": "1",
-            "uniforms": [
-                {
-                    "name": "Amount",
-                    "values": [ 4.0, 4.0 ]
-                }
-            ]
+            "uniforms": {
+                "PixelatedConfig": [
+                    {
+                        "name": "Amount",
+                        "type": "vec2",
+                        "value": [
+                            4.0,
+                            4.0
+                        ]
+                    },
+                    {
+                        "name": "AmountMultiplier",
+                        "type": "float",
+                        "value": 1.0
+                    },
+                    {
+                        "name": "Offset",
+                        "type": "vec2",
+                        "value": [
+                            0.5,
+                            0.5
+                        ]
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/notch",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/notch",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -47,10 +119,29 @@
                     "bilinear": false
                 }
             ],
-            "output": "2"
+            "output": "2",
+            "uniforms": {
+                "NotchConfig": [
+                    {
+                        "name": "Mix",
+                        "type": "vec3",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "Scale",
+                        "type": "float",
+                        "value": 2.0
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -61,17 +152,41 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "3"
+            "output": "3",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "3"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

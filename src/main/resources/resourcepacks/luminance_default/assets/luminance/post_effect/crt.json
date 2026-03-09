@@ -7,27 +7,74 @@
     },
     "passes": [
         {
-            "program": "luminance:post/fisheye",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/fisheye",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
                 }
             ],
-            "output": "scanlines"
+            "output": "scanlines",
+            "uniforms": {
+                "FisheyeConfig": [
+                    {
+                        "name": "Curvature",
+                        "type": "vec2",
+                        "value": [
+                            -1.2,
+                            2.625
+                        ]
+                    },
+                    {
+                        "name": "Rotation",
+                        "type": "vec2",
+                        "value": [
+                            0.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "Scale",
+                        "type": "float",
+                        "value": 1.0
+                    },
+                    {
+                        "name": "Wrapping",
+                        "type": "float",
+                        "value": 0.0
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/scanlines",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/scanlines",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "scanlines"
                 }
             ],
-            "output": "aspect_ratio"
+            "output": "aspect_ratio",
+            "uniforms": {
+                "ScanlinesConfig": [
+                    {
+                        "name": "Amount",
+                        "type": "float",
+                        "value": 2.0
+                    },
+                    {
+                        "name": "Strength",
+                        "type": "float",
+                        "value": 0.04
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/aspect_ratio",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/aspect_ratio",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -35,19 +82,44 @@
                 }
             ],
             "output": "merge",
-            "uniforms": [
-                {
-                    "name": "AspectRatio",
-                    "values": [ 4, 3 ]
-                },
-                {
-                    "name": "BorderColor",
-                    "values": [ 0, 0, 0 ]
-                }
-            ]
+            "uniforms": {
+                "AspectRatioConfig": [
+                    {
+                        "name": "AspectRatio",
+                        "type": "vec2",
+                        "value": [
+                            4,
+                            3
+                        ]
+                    },
+                    {
+                        "name": "BorderColor",
+                        "type": "vec3",
+                        "value": [
+                            0,
+                            0,
+                            0
+                        ]
+                    },
+                    {
+                        "name": "Scale",
+                        "type": "vec2",
+                        "value": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "Squish",
+                        "type": "float",
+                        "value": 0.0
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -58,17 +130,41 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "swap"
+            "output": "swap",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "swap"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

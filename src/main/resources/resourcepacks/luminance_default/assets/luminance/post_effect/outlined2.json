@@ -5,7 +5,8 @@
     },
     "passes": [
         {
-            "program": "luminance:post/outlined",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/outlined",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -63,31 +64,57 @@
                 }
             ],
             "output": "0",
-            "uniforms": [
-                {
-                    "name": "Transparency",
-                    "values": [ 1.0 ]
-                },
-                {
-                    "name": "Thickness",
-                    "values": [ 0.002112 ]
-                },
-                {
-                    "name": "Outline",
-                    "values": [ 1.0 ]
-                },
-                {
-                    "name": "OutlineColor",
-                    "values": [ 1.0, 1.0, 1.0 ]
-                },
-                {
-                    "name": "OutlineColorMultiplier",
-                    "values": [ -1.0 ]
-                }
-            ]
+            "uniforms": {
+                "OutlinedConfig": [
+                    {
+                        "name": "Transparency",
+                        "type": "float",
+                        "value": 1.0
+                    },
+                    {
+                        "name": "Thickness",
+                        "type": "float",
+                        "value": 0.002112
+                    },
+                    {
+                        "name": "Outline",
+                        "type": "float",
+                        "value": 1.0
+                    },
+                    {
+                        "name": "OutlineColor",
+                        "type": "vec3",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "name": "OutlinePow",
+                        "type": "vec3",
+                        "value": [
+                            0.5,
+                            0.5,
+                            0.5
+                        ]
+                    },
+                    {
+                        "name": "OutlineColorMultiplier",
+                        "type": "float",
+                        "value": -1.0
+                    },
+                    {
+                        "name": "Distance",
+                        "type": "float",
+                        "value": -1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -98,17 +125,41 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "1"
+            "output": "1",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "1"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

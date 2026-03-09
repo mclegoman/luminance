@@ -5,23 +5,38 @@
     },
     "passes": [
         {
-            "program": "luminance:post/dominant_channel",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/dominant_channel",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
                 }
             ],
-            "uniforms": [
-                {
-                    "name": "Mode",
-                    "values": [ 0.0 ]
-                }
-            ],
+            "uniforms": {
+                "DominantChannelConfig": [
+                    {
+                        "name": "Mode",
+                        "type": "float",
+                        "value": 0.0
+                    },
+                    {
+                        "name": "Channels",
+                        "type": "float",
+                        "value": 1.0
+                    },
+                    {
+                        "name": "Mix",
+                        "type": "float",
+                        "value": 0.0
+                    }
+                ]
+            },
             "output": "merge"
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -32,17 +47,41 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "swap"
+            "output": "swap",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "swap"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

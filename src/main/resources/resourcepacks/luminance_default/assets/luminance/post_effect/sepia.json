@@ -5,17 +5,55 @@
     },
     "passes": [
         {
-            "program": "luminance:post/sepia",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/sepia",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
                 }
             ],
-            "output": "merge"
+            "output": "merge",
+            "uniforms": {
+                "SepiaConfig": [
+                    {
+                        "name": "SepiaR",
+                        "type": "vec3",
+                        "value": [
+                            0.393,
+                            0.769,
+                            0.189
+                        ]
+                    },
+                    {
+                        "name": "SepiaG",
+                        "type": "vec3",
+                        "value": [
+                            0.349,
+                            0.686,
+                            0.168
+                        ]
+                    },
+                    {
+                        "name": "SepiaB",
+                        "type": "vec3",
+                        "value": [
+                            0.272,
+                            0.534,
+                            0.131
+                        ]
+                    },
+                    {
+                        "name": "Intensity",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "luminance:post/merge",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -26,17 +64,41 @@
                     "target": "minecraft:main"
                 }
             ],
-            "output": "swap"
+            "output": "swap",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "luminance_alpha_smooth",
+                        "type": "float",
+                        "value": 1.0
+                    }
+                ]
+            }
         },
         {
-            "program": "minecraft:post/blit",
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "swap"
                 }
             ],
-            "output": "minecraft:main"
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }
