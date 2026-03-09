@@ -73,14 +73,27 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 			for (UniformValue uniform : list) {
 				UniformValueInterface uniformInterface = (UniformValueInterface)uniform;
-				assert uniformInterface != null;
 
 				UniformData data = new UniformData();
 
-				// TODO:
-				//  check if override size doesnt match expected from type and add nulls / truncate to match
-				//  config is intended to be uneven
-				uniformInterface.luminance$getOverride().ifPresent((override) -> data.override = new LuminanceUniformOverride(override));
+				uniformInterface.luminance$getOverride().ifPresent((override) -> {
+					int length = uniformInterface.luminance$getLength();
+					int overrideValues = override.size();
+
+					// make sure overrides are the same length as the type
+					if (overrideValues > length) {
+						override = override.subList(0, length);
+					}
+					if (overrideValues < length) {
+						// copy list so changes arent destructive (although it shouldnt matter if they were)
+						for (override = new ArrayList<>(override); overrideValues < length; overrideValues++) {
+							override.add(null);
+						}
+					}
+
+					data.override = new LuminanceUniformOverride(override);
+				});
+
 				uniformInterface.luminance$getConfig().ifPresent((config) -> data.config = new MapConfig(config));
 
 				builder.add(data);

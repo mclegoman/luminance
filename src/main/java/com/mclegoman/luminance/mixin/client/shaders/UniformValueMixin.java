@@ -10,11 +10,13 @@ package com.mclegoman.luminance.mixin.client.shaders;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
 import com.mclegoman.luminance.client.shaders.uniforms.config.ConfigData;
+import com.mojang.blaze3d.buffers.Std140SizeCalculator;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.gl.UniformValue;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -23,7 +25,9 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Mixin({UniformValue.IntValue.class, UniformValue.FloatValue.class, UniformValue.Vec2fValue.class, UniformValue.Vec3fValue.class, UniformValue.Vec4fValue.class, UniformValue.Vec3iValue.class, UniformValue.Matrix4fValue.class})
-public class UniformValueMixin implements UniformValueInterface {
+public abstract class UniformValueMixin implements UniformValueInterface {
+    @Shadow public abstract void addSize(Std140SizeCalculator calculator);
+
     // require = 0 means that the injection will be optional, meaning the same mixin file can be used for all uniform values
     @ModifyExpressionValue(require = 0, method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/PrimitiveCodec;xmap(Ljava/util/function/Function;Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false))
     private static Codec<UniformValue> wrapCreatePrimitiveOverride(Codec<UniformValue> original) {
@@ -88,5 +92,13 @@ public class UniformValueMixin implements UniformValueInterface {
     @Override
     public void luminance$setConfig(List<ConfigData> config) {
         this.luminance$config = config;
+    }
+
+    @Override
+    public int luminance$getLength() {
+        Std140SizeCalculator calculator = new Std140SizeCalculator();
+        addSize(calculator);
+        // this could break if they add a half/double uniform, but currently everything is 4 bytes per value
+        return calculator.get() / 4;
     }
 }

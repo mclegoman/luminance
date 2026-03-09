@@ -21,4 +21,6 @@ public interface UniformValueInterface {
 
     Optional<List<ConfigData>> luminance$getConfig();
     void luminance$setConfig(List<ConfigData> config);
+
+    int luminance$getLength();
 }
