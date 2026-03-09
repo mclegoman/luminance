@@ -7,6 +7,7 @@ root_directory = "D:/minecraft mods/luminance"
 # directories of the post shaders that need to be updated
 post_effect_directories = [
     "src/main/resources/assets/luminance/post_effect",
+    "src/main/resources/assets/minecraft/post_effect",
     "src/main/resources/resourcepacks/luminance_default/assets/luminance/post_effect",
     "src/main/resources/resourcepacks/super_secret_settings/assets/minecraft/post_effect",
     "D:/minecraft mods/Souper Secret Settings/src/main/resources/assets/soup/post_effect",
