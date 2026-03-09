@@ -83,15 +83,10 @@ def includeUniform(uniform):
         return False
     return True
 
-def updateShader(file, output_dir, configData):
-    print("updating "+file)
-    with open(file, 'r') as f:
-        input = json.load(f)
-    output = {}
-    output["targets"] = input.get("targets", {})
-    output["passes"] = []
+def updatePass(pass_name, input, output):
+    output[pass_name] = []
     errors = 0
-    for pass_item in input.get("passes", []):
+    for pass_item in input.get(pass_name, []):
         pass_copy = pass_item.copy()
         if "program" in pass_copy:
             programName = pass_copy.pop("program")
@@ -163,7 +158,29 @@ def updateShader(file, output_dir, configData):
                     pass_copy["vertex_shader"] = "minecraft:core/screenquad"
                 
 
-        output["passes"].append(pass_copy)
+        output[pass_name].append(pass_copy)
+        
+    if (len(output[pass_name]) == 0):
+        del output[pass_name]
+    
+
+def updateShader(file, output_dir, configData):
+    print("updating "+file)
+    with open(file, 'r') as f:
+        input = json.load(f)
+    output = {}
+    output["targets"] = input.get("targets", {})
+
+    # update main passes
+    updatePass("passes", input, output)
+
+    # update any luminance custom passes
+    customPasses = input.get("custom_passes", {})
+    if (len(customPasses) > 0):
+        output["custom_passes"] = {}
+    for customPass in customPasses:
+        updatePass(customPass, customPasses, output["custom_passes"])
+    
     output_file = os.path.join(output_dir, os.path.basename(file))
     with open(output_file, 'w') as f:
         json.dump(output, f, indent=4)
