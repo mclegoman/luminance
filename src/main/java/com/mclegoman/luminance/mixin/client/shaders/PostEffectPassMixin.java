@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mclegoman.luminance.client.events.Execute;
-import com.mclegoman.luminance.client.shaders.UniformData;
+import com.mclegoman.luminance.client.shaders.UniformInstance;
 import com.mclegoman.luminance.client.shaders.interfaces.CustomPassData;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
@@ -42,7 +42,7 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	@Shadow @Final private Identifier outputTargetId;
 	@Shadow @Final private List<PostEffectPass.Sampler> samplers;
 
-	@Unique private final Map<String, ImmutableList<@NotNull UniformData>> luminance$uniformOverrides = new HashMap<>();
+	@Unique private final Map<String, ImmutableList<@NotNull UniformInstance>> luminance$uniformOverrides = new HashMap<>();
 	@Unique private final Map<Identifier, CustomPassData> luminance$customData = new HashMap<>();
 
 	@Inject(method = "method_67884", at = @At("HEAD"))
@@ -56,8 +56,8 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 	@WrapOperation(method = "method_67884", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderPass;setUniform(Ljava/lang/String;Lcom/mojang/blaze3d/buffers/GpuBuffer;)V", ordinal = 0))
 	private void luminance$setUniformValues(RenderPass instance, String key, GpuBuffer gpuBuffer, Operation<Void> original) {
-		for (UniformData data : luminance$uniformOverrides.get(key)) {
-			List<Float> values = data.getValues();
+		for (UniformInstance uniform : luminance$uniformOverrides.get(key)) {
+			List<Float> values = uniform.getValues();
 			// if value is null, value need to be default, otherwise, replace it
 
 			// it seems this will require creating a new gpu buffer? which is a little awkward. how does vanilla do its dynamic stuff?
@@ -69,12 +69,12 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void initialiseUniformData(RenderPipeline pipeline, Identifier outputTargetId, Map<String, List<UniformValue>> uniforms, List<PostEffectPass.Sampler> samplers, CallbackInfo ci) {
 		uniforms.forEach((block, list) -> {
-			ImmutableList.Builder<UniformData> builder = ImmutableList.builder();
+			ImmutableList.Builder<UniformInstance> builder = ImmutableList.builder();
 
 			for (UniformValue uniform : list) {
 				UniformValueInterface uniformInterface = (UniformValueInterface)uniform;
 
-				UniformData data = new UniformData();
+				UniformInstance instance = new UniformInstance(uniformInterface.luminance$getName().orElse(uniform.getType().asString()));
 
 				uniformInterface.luminance$getOverride().ifPresent((override) -> {
 					int length = uniformInterface.luminance$getLength();
@@ -91,12 +91,12 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 						}
 					}
 
-					data.override = new LuminanceUniformOverride(override);
+					instance.override = new LuminanceUniformOverride(override);
 				});
 
-				uniformInterface.luminance$getConfig().ifPresent((config) -> data.config = new MapConfig(config));
+				uniformInterface.luminance$getConfig().ifPresent((config) -> instance.config = new MapConfig(config));
 
-				builder.add(data);
+				builder.add(instance);
 			}
 
 			luminance$uniformOverrides.put(block, builder.build());
@@ -109,7 +109,7 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	}
 
 	@Override
-	public ImmutableList<@NotNull UniformData> luminance$getUniformData(String block) {
+	public ImmutableList<@NotNull UniformInstance> luminance$getUniformInstances(String block) {
 		return luminance$uniformOverrides.get(block);
 	}
 
