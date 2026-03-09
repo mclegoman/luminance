@@ -4,6 +4,16 @@ import tomllib
 
 configData = {}
 
+baseVertexShaders = [
+    "minecraft:core/blit_screen",
+    "minecraft:post/blit",
+    "minecraft:post/blur",
+    "minecraft:post/invert",
+    "minecraft:post/sobel",
+    "minecraft:post/screenquad",
+    "minecraft:post/blobs"
+]
+
 def createConfig(id, dir):
     global configData
     if os.path.isfile(id + ".toml"):
@@ -107,6 +117,51 @@ def updateShader(file, output_dir, configData):
                             # the post effect uniforms used to be able to be shorter than the definition uniforms
                             for x in range(len(existing["values"])):
                                 uniform["values"][x] = existing["values"][x]
+
+            # update json for uniform blocks, works somewhat inconsistently
+            # the fragment shaders will need to be manually updated
+            if configData["update_uniforms"]:
+                name = ""
+                if (pass_copy["vertex_shader"] in baseVertexShaders):
+                    name = program["fragment"]
+                else:
+                    name = pass_copy["vertex_shader"]
+                    
+                name = list(programName[programName.index("/")+1:])
+
+                capitaliseNext = True
+                for x in range(0,len(name)):
+                    if capitaliseNext:
+                        name[x] = name[x].upper()
+                        capitaliseNext = False
+                    if name[x] == "_":
+                        capitaliseNext = True
+
+                config = ''.join(name).replace("_","")+"Config"
+
+                # it does a decent job at figuring out good names, but some are definately innacruate
+                if (config == "ColorConvolveConfig"):
+                    config = "ColorConfig"
+                if (config == "BoxBlurConfig"):
+                    config = "BlurConfig"
+                
+                pass_copy["uniforms"] = {config:pass_copy["uniforms"]}
+                
+            # update shaders removed in 25w31a
+            # note that screenquad does have slightly different functionality, requiring oneTexel to be claculated as 1.0 / InSize within the fragment
+            if configData["update_vertex_shaders"]:
+                replace = [
+                    "minecraft:core/blit_screen",
+                    "minecraft:post/blit",
+                    "minecraft:post/blur",
+                    "minecraft:post/invert",
+                    "minecraft:post/sobel",
+                    "minecraft:post/screenquad",
+                    "minecraft:post/blobs"
+                ]
+                if (pass_copy["vertex_shader"] in baseVertexShaders):
+                    pass_copy["vertex_shader"] = "minecraft:core/screenquad"
+                
 
         output["passes"].append(pass_copy)
     output_file = os.path.join(output_dir, os.path.basename(file))
