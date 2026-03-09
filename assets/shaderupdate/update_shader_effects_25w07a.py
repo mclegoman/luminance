@@ -116,6 +116,14 @@ def updatePass(pass_name, input, output):
             # update json for uniform blocks, works somewhat inconsistently
             # the fragment shaders will need to be manually updated
             if configData["update_uniforms"]:
+
+                for uniform in pass_copy["uniforms"]:
+                    # 25w16a renamed it to value, and no longer uses a list for primitives
+                    uniform["value"] = uniform["values"]
+                    del uniform["values"]
+                    if len(uniform["value"]) == 1:
+                        uniform["value"] = uniform["value"][0]
+
                 name = ""
                 if (pass_copy["vertex_shader"] in baseVertexShaders):
                     name = program["fragment"]
