@@ -56,7 +56,12 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 	@WrapOperation(method = "method_67884", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderPass;setUniform(Ljava/lang/String;Lcom/mojang/blaze3d/buffers/GpuBuffer;)V", ordinal = 0))
 	private void luminance$setUniformValues(RenderPass instance, String key, GpuBuffer gpuBuffer, Operation<Void> original) {
-		for (UniformInstance uniform : luminance$uniformOverrides.get(key)) {
+		List<UniformInstance> uniformInstances = luminance$uniformOverrides.get(key);
+		if (uniformInstances == null) {
+			return;
+		}
+
+		for (UniformInstance uniform : uniformInstances) {
 			List<Float> values = uniform.getValues();
 			// if value is null, value need to be default, otherwise, replace it
 
@@ -84,7 +89,6 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 			for (UniformValue uniform : list) {
 				UniformValueInterface uniformInterface = (UniformValueInterface)uniform;
-
 				UniformInstance instance = new UniformInstance(uniformInterface.luminance$getName().orElse(uniform.getType().asString()));
 
 				uniformInterface.luminance$getOverride().ifPresent((override) -> {

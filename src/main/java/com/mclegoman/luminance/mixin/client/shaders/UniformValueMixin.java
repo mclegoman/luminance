@@ -26,7 +26,7 @@ import java.util.function.Function;
 
 @Mixin({UniformValue.IntValue.class, UniformValue.FloatValue.class, UniformValue.Vec2fValue.class, UniformValue.Vec3fValue.class, UniformValue.Vec4fValue.class, UniformValue.Vec3iValue.class, UniformValue.Matrix4fValue.class})
 public abstract class UniformValueMixin implements UniformValueInterface {
-    @Shadow public abstract void addSize(Std140SizeCalculator calculator);
+    @Shadow(remap = false) public abstract void addSize(Std140SizeCalculator calculator);
 
     // require = 0 means that the injection will be optional, meaning the same mixin file can be used for all uniform values
     @ModifyExpressionValue(require = 0, method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/PrimitiveCodec;xmap(Ljava/util/function/Function;Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false))

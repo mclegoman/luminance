@@ -18,7 +18,7 @@ public class UniformInstance {
         this.name = name;
     }
 
-    public List<Float> getValues() {
+    public @Nullable List<Float> getValues() {
         if (override == null) {
             return null;
         }
