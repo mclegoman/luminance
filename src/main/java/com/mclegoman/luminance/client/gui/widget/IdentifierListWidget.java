@@ -9,7 +9,6 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<IdentifierListWidget.Entry> {
     public OnSelect onSelect;
@@ -28,9 +27,8 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
         }
         if (selected != null) {
             int index = identifiers.indexOf(selected);
-            if (scrollAmount < 0 && index != -1) this.setScrollY(index * 20);
-            // TODO: update
-            //this.setSelected(index);
+            if (scrollAmount < 0 && index != -1) this.setScrollY(index * itemHeight);
+            if (index != -1) this.setSelected(this.children().get(index));
         }
         if (scrollAmount >= 0) this.setScrollY(scrollAmount);
         this.setFocused(true);
@@ -42,15 +40,12 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
         if (entry != null) this.onSelect.call(entry.id, this);
     }
 
-    // TODO: update
-//    @Override
-//    protected void renderEntry(DrawContext context, int mouseX, int mouseY, float delta, int index, int x, int y, int entryWidth, int entryHeight) {
-//        Entry entry = this.getEntry(index);
-//        entry.drawBorder(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, Objects.equals(this.getHoveredEntry(), entry), delta);
-//        if (this.isSelectedEntry(index)) this.drawSelectionHighlight(context, y, entryWidth, entryHeight, -1, -16777216);
-//        if (this.getHoveredEntry() != null && this.getHoveredEntry().equals(entry)) this.drawSelectionHighlight(context, y, entryWidth, entryHeight, -8355712, -16777216);
-//        entry.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, Objects.equals(this.getHoveredEntry(), entry), delta);
-//    }
+    @Override
+    protected void renderEntry(DrawContext context, int mouseX, int mouseY, float delta, Entry entry) {
+        if (this.getHoveredEntry() != null && this.getHoveredEntry().equals(entry)) this.drawSelectionHighlight(context, entry, -8355712);
+        if (entry.equals(getSelectedOrNull())) this.drawSelectionHighlight(context, entry, -1);
+        entry.render(context, mouseX, mouseY, this.hovered, delta);
+    }
 
     public int getRowWidth() {
         return this.width - 16;
@@ -73,9 +68,8 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
         }
 
         @Override
-        public void render(DrawContext context, int y, int x, boolean hovered, float delta) {
-            // TODO: update
-            //context.drawCenteredTextWithShadow(ClientData.minecraft.textRenderer, this.label, x + rowWidth / 2, y + (rowHeight - ClientData.minecraft.textRenderer.fontHeight) / 2, 0xFFFFFF);
+        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+            context.drawCenteredTextWithShadow(ClientData.minecraft.textRenderer, this.label, this.getX() + (this.getWidth() / 2), this.getY() + (this.getHeight() - ClientData.minecraft.textRenderer.fontHeight) / 2, 0xFFFFFFFF);
         }
 
         @Override

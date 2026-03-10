@@ -49,7 +49,7 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 	}
 
 	public void initBody() {
-		this.list = new ListWidget(ClientData.minecraft, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 24, getEntries(), this.scrollY);
+		this.list = new ListWidget(ClientData.minecraft, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 20, getEntries(), this.scrollY);
 		this.layout.addBody(this.list);
 	}
 
@@ -89,8 +89,7 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 				case ALL -> SpectatorHandler.Mode.FIRST;
 			}), false);
 
-			// TODO: update
-			//if (ClientData.minecraft.cameraEntity != null) SpectatorHandler.onSpectate(ClientData.minecraft.cameraEntity, LuminanceConfig.config.spectatorPriorityMode.value().getMode());
+			if (ClientData.minecraft.getCameraEntity() != null) SpectatorHandler.onSpectate(ClientData.minecraft.getCameraEntity(), LuminanceConfig.config.spectatorPriorityMode.value().getMode());
 			this.saveConfig = true;
 
 			button.setMessage(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode", new Object[]{LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation()}));

@@ -119,4 +119,9 @@ public abstract class AbstractScrollableScreen extends Screen {
 	public void renderDevNotice(DrawContext context) {
 		if (!Data.getVersion().getType().equals(ReleaseType.RELEASE)) context.drawTextWithShadow(this.textRenderer, Translation.getTranslation(Data.getVersion().getID(), "dev", new Object[]{Data.getVersion().getFriendlyString()}), 2, this.height - 11, 0xAAAAAA);
 	}
+
+	@Override
+	public void resize(int width, int height) {
+		this.client.setScreen(getRefreshScreen());
+	}
 }

@@ -29,9 +29,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
+// This updates again in 26.1, and I've already done that in another mod so when we update I'll just copy that over rather than fixing it twice.
 public class InfoWidget extends EntryListWidget<InfoWidget.InfoEntry> {
 	private final TextRenderer textRenderer;
 
@@ -46,10 +46,9 @@ public class InfoWidget extends EntryListWidget<InfoWidget.InfoEntry> {
 		setScrollY(scrollY);
 	}
 
-	protected void renderEntry(DrawContext context, int mouseX, int mouseY, float delta, int index, int x, int y, int entryWidth, int entryHeight) {
-		// TODO: update
-		//InfoEntry entry = this.getEntry(index);
-		//entry.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, Objects.equals(this.getHoveredEntry(), entry), delta);
+	@Override
+	protected void renderEntry(DrawContext context, int mouseX, int mouseY, float delta, InfoEntry entry) {
+		entry.render(context, mouseX, mouseY, this.hovered, delta);
 	}
 
 	public int getRowWidth() {
@@ -65,8 +64,7 @@ public class InfoWidget extends EntryListWidget<InfoWidget.InfoEntry> {
 			this.text = text;
 		}
 		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			// TODO: update
-			//context.drawTextWithShadow(textRenderer, this.text, x, y, 0xFFAAAAAA);
+			context.drawTextWithShadow(textRenderer, this.text, getX(), getY(), 0xFFAAAAAA);
 		}
 	}
 
