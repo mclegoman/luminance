@@ -40,8 +40,8 @@ public class ListWidget extends EntryListWidget<ListWidget.ListEntry> {
 		return rowMap;
 	}
 
-	public ListWidget(MinecraftClient client, int width, int height, int y, int lineHeight, List<ListEntry> entries, double scrollY) {
-		super(client, width, height, y, lineHeight);
+	public ListWidget(MinecraftClient client, int width, int height, int y, int itemHeight, List<ListEntry> entries, double scrollY) {
+		super(client, width, height, y, itemHeight);
 		for (ListEntry entry : entries) addEntry(entry);
 		setScrollY(scrollY);
 	}
@@ -51,11 +51,6 @@ public class ListWidget extends EntryListWidget<ListWidget.ListEntry> {
 	}
 
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-	}
-
-	protected void renderEntry(DrawContext context, int mouseX, int mouseY, float delta) {
-		// TODO: update
-		//entry.render(context, mouseX, mouseY, Objects.equals(this.getHoveredEntry(), entry), delta);
 	}
 
 	public static class ListEntry extends Entry<ListEntry> {
@@ -74,16 +69,15 @@ public class ListWidget extends EntryListWidget<ListWidget.ListEntry> {
 
 		@Override
 		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			// TODO: update
-//			int totalSpacing = (this.widgets.length - 1) * this.spacing;
-//			int widgetWidth = (entryWidth - totalSpacing) / this.widgets.length;
-//			int currentX = x;
-//			for (ClickableWidget widget : this.widgets) {
-//				widget.setDimensions(widgetWidth, entryHeight);
-//				widget.setPosition(currentX, y);
-//				widget.render(context, mouseX, mouseY, ClientData.minecraft.getRenderTickCounter().getTickProgress(true));
-//				currentX += widgetWidth + this.spacing;
-//			}
+			int totalSpacing = (this.widgets.length - 1) * this.spacing;
+			int widgetWidth = (this.getWidth() - totalSpacing) / this.widgets.length;
+			int currentX = this.getX();
+			for (ClickableWidget widget : this.widgets) {
+				widget.setDimensions(widgetWidth, this.getHeight());
+				widget.setPosition(currentX, this.getY());
+				widget.render(context, mouseX, mouseY, ClientData.minecraft.getRenderTickCounter().getTickProgress(true));
+				currentX += widgetWidth + this.spacing;
+			}
 		}
 
 		@Override
@@ -136,22 +130,21 @@ public class ListWidget extends EntryListWidget<ListWidget.ListEntry> {
 		}
 
 		@Override
-		public boolean keyPressed(KeyInput keyInput) {
-			for (ClickableWidget widget : widgets) if (widget.keyPressed(keyInput)) return true;
+		public boolean keyPressed(KeyInput input) {
+			for (ClickableWidget widget : widgets) if (widget.keyPressed(input)) return true;
 			return false;
 		}
 
 		@Override
-		public boolean keyReleased(KeyInput keyInput) {
-			for (ClickableWidget widget : widgets) if (widget.keyReleased(keyInput)) return true;
+		public boolean keyReleased(KeyInput input) {
+			for (ClickableWidget widget : widgets) if (widget.keyReleased(input)) return true;
 			return false;
 		}
 
 		@Override
-		public boolean charTyped(CharInput charInput) {
-			for (ClickableWidget widget : widgets) if (widget.charTyped(charInput)) return true;
+		public boolean charTyped(CharInput input) {
+			for (ClickableWidget widget : widgets) if (widget.charTyped(input)) return true;
 			return false;
 		}
 	}
 }
-

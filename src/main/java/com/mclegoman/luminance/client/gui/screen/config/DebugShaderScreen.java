@@ -16,7 +16,6 @@ import com.mclegoman.luminance.client.shaders.Shaders;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
@@ -66,11 +65,11 @@ public class DebugShaderScreen extends Screen {
 			GridWidget.Adder gridAdder = grid.createAdder(2);
 			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShaderEnabled}), button -> {
 				Debug.debugShaderEnabled = !Debug.debugShaderEnabled;
-				this.refresh = true;
+				button.setMessage(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShaderEnabled}));
 			}).build());
 			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Render Type: {}", false, new Object[]{Debug.debugRenderType.toString()}), button -> {
 				Debug.cycleDebugRenderType();
-				this.refresh = true;
+				button.setMessage(Translation.getText("Debug Render Type: {}", false, new Object[]{Debug.debugRenderType.toString()}));
 			}).build());
 
 			this.registryList = new IdentifierListWidget(150, 200, 20, 20, 20, this.registryScroll >= 0 ? this.registryScroll : -1, Shaders.getRegistries(), this.selectedRegistry, (id, widget) -> {});
@@ -84,7 +83,6 @@ public class DebugShaderScreen extends Screen {
 				if (this.selectedRegistry != id) {
 					this.selectedRegistry = id;
 					this.shaderList.setScrollY(0);
-					this.refresh = true;
 				}
 			};
 
@@ -142,9 +140,8 @@ public class DebugShaderScreen extends Screen {
 	protected void applyBlur() {
 	}
 
-	// TODO: update
-//	@Override
-//	public void resize(MinecraftClient client, int width, int height) {
-//		this.refresh = true;
-//	}
+	@Override
+	public void resize(int width, int height) {
+		this.refresh = true;
+	}
 }

@@ -36,7 +36,7 @@ public abstract class AbstractScrollableListScreen extends AbstractScrollableScr
 	}
 
 	public void initBody() {
-		this.list = new ListWidget(ClientData.minecraft, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 24, getEntries(), this.scrollY);
+		this.list = new ListWidget(ClientData.minecraft, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 20, getEntries(), this.scrollY);
 		this.layout.addBody(this.list);
 	}
 
