@@ -32,24 +32,19 @@
                         "value": 20.0
                     },
                     {
-                        "name": "RadiusMultiplier",
-                        "type": "float",
-                        "value": 1.0
-                    },
-                    {
                         "name": "Deviation",
                         "type": "float",
                         "value": 0.333
                     },
                     {
-                        "name": "Wrapping",
-                        "type": "float",
-                        "value": 0.0
-                    },
-                    {
                         "name": "Min",
                         "type": "float",
                         "value": 1.0
+                    },
+                    {
+                        "name": "Wrapping",
+                        "type": "float",
+                        "value": 0.0
                     }
                 ]
             }
@@ -81,24 +76,19 @@
                         "value": 20.0
                     },
                     {
-                        "name": "RadiusMultiplier",
-                        "type": "float",
-                        "value": 1.0
-                    },
-                    {
                         "name": "Deviation",
                         "type": "float",
                         "value": 0.333
                     },
                     {
-                        "name": "Wrapping",
-                        "type": "float",
-                        "value": 0.0
-                    },
-                    {
                         "name": "Min",
                         "type": "float",
                         "value": 1.0
+                    },
+                    {
+                        "name": "Wrapping",
+                        "type": "float",
+                        "value": 0.0
                     }
                 ]
             }

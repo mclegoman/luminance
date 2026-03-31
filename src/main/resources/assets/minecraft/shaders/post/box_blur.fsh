@@ -1,12 +1,20 @@
-#version 150
+#version 330
+
+#moj_import <minecraft:globals.glsl>
 
 uniform sampler2D InSampler;
 
-in vec2 texCoord;
-in vec2 sampleStep;
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
 
-uniform float Radius;
-uniform float RadiusMultiplier;
+layout(std140) uniform BlurConfig {
+    vec2 BlurDir;
+    float Radius;
+};
+
+in vec2 texCoord;
 
 out vec4 fragColor;
 
@@ -14,8 +22,11 @@ out vec4 fragColor;
 // Instead of sampling each pixel position with a step of 1 we sample between pixels with a step of 2.
 // In the end we sample the last pixel with a half weight, since the amount of pixels to sample is always odd (actualRadius * 2 + 1).
 void main() {
+    vec2 oneTexel = 1.0 / InSize;
+    vec2 sampleStep = oneTexel * BlurDir;
+
     vec3 blurred = vec3(0.0);
-    float actualRadius = round(Radius * RadiusMultiplier);
+    float actualRadius = Radius >= 0.5 ? round(Radius) : float(MenuBlurRadius);
     for (float a = -actualRadius + 0.5; a <= actualRadius; a += 2.0) {
         blurred += texture(InSampler, texCoord + sampleStep * a).rgb;
     }
@@ -31,8 +42,11 @@ void main() {
     // But that isnt really ideal either, so as much as I (Nettakrim) dont like touching anything vanilla, this is perhaps the best solution
     // My theory for why the alpha does this is that the lower bit of the sky renders with an alpha of 0, and then normally a later pass puts everything to 1
 
+    //vec2 oneTexel = 1.0 / InSize;
+    //vec2 sampleStep = oneTexel * BlurDir;
+    //
     //vec4 blurred = vec4(0.0);
-    //float actualRadius = round(Radius * RadiusMultiplier);
+    //float actualRadius = Radius >= 0.5 ? round(Radius) : float(MenuBlurRadius);
     //for (float a = -actualRadius + 0.5; a <= actualRadius; a += 2.0) {
     //    blurred += texture(InSampler, texCoord + sampleStep * a);
     //}
