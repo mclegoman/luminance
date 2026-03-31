@@ -7,10 +7,13 @@
 
 package com.mclegoman.luminance.mixin.client.shaders;
 
+import com.google.common.collect.ImmutableList;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
 import com.mclegoman.luminance.client.shaders.uniforms.config.ConfigData;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
 import net.minecraft.client.gl.UniformValue;
+import org.jetbrains.annotations.NotNull;
+import org.joml.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -67,5 +70,45 @@ public abstract class UniformValueImplMixin implements UniformValueInterface {
         addSize(calculator);
         // this could break if they add a half/double uniform, but currently everything is 4 bytes per value
         return calculator.get() / 4;
+    }
+
+    @SuppressWarnings("DataFlowIssue")
+    @Override
+    public @NotNull List<Number> luminance$getValue() {
+        switch ((Object)this) {
+            case UniformValue.IntValue value -> {
+                return ImmutableList.of(value.value());
+            }
+            case UniformValue.FloatValue value -> {
+                return ImmutableList.of(value.value());
+            }
+            case UniformValue.Vec2fValue value -> {
+                Vector2fc vec = value.value();
+                return ImmutableList.of(vec.x(), vec.y());
+            }
+            case UniformValue.Vec3fValue value -> {
+                Vector3fc vec = value.value();
+                return ImmutableList.of(vec.x(), vec.y(), vec.z());
+            }
+            case UniformValue.Vec4fValue value -> {
+                Vector4fc vec = value.value();
+                return ImmutableList.of(vec.x(), vec.y(), vec.z(), vec.w());
+            }
+            case UniformValue.Vec3iValue value -> {
+                Vector3ic vec = value.value();
+                return ImmutableList.of(vec.x(), vec.y(), vec.z());
+            }
+            case UniformValue.Matrix4fValue value -> {
+                Matrix4fc mat = value.value();
+                ImmutableList.Builder<Number> builder = ImmutableList.builder();
+                for (float f : mat.get(new float[16])) {
+                    builder.add(f);
+                }
+                return builder.build();
+            }
+            default -> {
+                return ImmutableList.of();
+            }
+        }
     }
 }

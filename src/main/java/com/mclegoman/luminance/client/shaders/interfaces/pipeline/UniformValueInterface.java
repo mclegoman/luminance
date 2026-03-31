@@ -23,4 +23,5 @@ public interface UniformValueInterface {
     void luminance$setConfig(List<ConfigData> config);
 
     int luminance$getLength();
+    List<Number> luminance$getValue();
 }

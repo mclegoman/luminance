@@ -11,20 +11,17 @@ import com.google.common.collect.ImmutableList;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mclegoman.luminance.client.events.Execute;
+import com.mclegoman.luminance.client.shaders.LuminanceUniformBuffer;
 import com.mclegoman.luminance.client.shaders.UniformInstance;
 import com.mclegoman.luminance.client.shaders.interfaces.CustomPassData;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
 import com.mclegoman.luminance.client.shaders.overrides.LuminanceUniformOverride;
 import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderPass;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gl.*;
 import net.minecraft.client.util.Handle;
 import net.minecraft.util.Identifier;
@@ -37,7 +34,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.nio.ByteBuffer;
 import java.util.*;
 
 @Mixin(priority = 100, value = PostEffectPass.class)
@@ -47,8 +43,11 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	@Shadow @Final private Identifier outputTargetId;
 	@Shadow @Final private List<PostEffectPass.Sampler> samplers;
 
+	@Shadow @Final private Map<String, GpuBuffer> uniformBuffers;
 	@Unique private final Map<String, ImmutableList<@NotNull UniformInstance>> luminance$uniformOverrides = new HashMap<>();
 	@Unique private final Map<Identifier, CustomPassData> luminance$customData = new HashMap<>();
+
+	@Unique private final Map<String, LuminanceUniformBuffer> overrideBuffers = new HashMap<>();
 
 	@Inject(method = "method_67884", at = @At("HEAD"))
 	private void luminance$beforeRender(Handle<Framebuffer> handle, GpuBufferSlice gpuBufferSlice, Map<Identifier, Handle<Framebuffer>> map, CallbackInfo ci) {
@@ -59,47 +58,29 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 		Execute.afterShaderRender((PostEffectPass)(Object)this);
 	}
 
-	@WrapOperation(method = "method_67884", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderPass;setUniform(Ljava/lang/String;Lcom/mojang/blaze3d/buffers/GpuBuffer;)V", ordinal = 1))
-	private void luminance$setUniformValues(RenderPass instance, String key, GpuBuffer gpuBuffer, Operation<Void> original) {
-		List<UniformInstance> uniformInstances = luminance$uniformOverrides.get(key);
-		assert uniformInstances != null;
-
-		for (UniformInstance uniform : uniformInstances) {
-			List<Float> values = uniform.getValues();
-
-			if (values == null) {
-				continue;
-			}
-
-			Float first = values.getFirst();
-			if (first == null) {
-				return;
-			}
-
-			Data.getVersion().sendToLog(LogType.INFO, key +" "+ first);
-
-			// TODO: if value is null, value need to be default, otherwise, replace it
-			//GpuBuffer.MappedView mappedView = RenderSystem.getDevice().createCommandEncoder().mapBuffer(ringBuffer.getBlocking(), false, true);
-			//ByteBuffer buffer = mappedView.data();
-			//buffer.position(0);
-			//Std140Builder.intoBuffer(buffer).putFloat(values.getFirst());
-			//mappedView.close();
+	@Inject(method = "method_67884", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;createRenderPass(Ljava/util/function/Supplier;Lcom/mojang/blaze3d/textures/GpuTextureView;Ljava/util/OptionalInt;Lcom/mojang/blaze3d/textures/GpuTextureView;Ljava/util/OptionalDouble;)Lcom/mojang/blaze3d/systems/RenderPass;"))
+	private void luminance$updateBuffers(Handle<Framebuffer> handle, GpuBufferSlice gpuBufferSlice, Map<Identifier, Handle<Framebuffer>> map, CallbackInfo ci) {
+		for (String block : uniformBuffers.keySet()) {
+			List<UniformInstance> uniformInstances = luminance$uniformOverrides.get(block);
+			assert uniformInstances != null;
+			overrideBuffers.get(block).updateBuffer(uniformInstances);
 		}
+	}
 
-		original.call(instance, key, gpuBuffer);
+	@WrapOperation(method = "method_67884", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderPass;setUniform(Ljava/lang/String;Lcom/mojang/blaze3d/buffers/GpuBuffer;)V", ordinal = 1))
+	private void luminance$replaceBuffers(RenderPass instance, String block, GpuBuffer gpuBuffer, Operation<Void> original) {
+		original.call(instance, block, overrideBuffers.get(block).replaceBuffer(gpuBuffer));
 	}
 
 	@Inject(method = "close", at = @At("HEAD"))
 	private void clearData(CallbackInfo ci) {
-		//ringBuffer.close();
+		for (LuminanceUniformBuffer luminanceUniformBuffer : overrideBuffers.values()) {
+			luminanceUniformBuffer.close();
+		}
 	}
-
-	//@Unique MappableRingBuffer ringBuffer;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void initialiseUniformData(RenderPipeline pipeline, Identifier outputTargetId, Map<String, List<UniformValue>> uniforms, List<PostEffectPass.Sampler> samplers, CallbackInfo ci) {
-		//ringBuffer = new MappableRingBuffer(() -> "Shader UBO", 130, 1);
-
 		uniforms.forEach((block, list) -> {
 			ImmutableList.Builder<UniformInstance> builder = ImmutableList.builder();
 
@@ -130,6 +111,9 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 			}
 
 			luminance$uniformOverrides.put(block, builder.build());
+
+			LuminanceUniformBuffer luminanceUniformBuffer = new LuminanceUniformBuffer(list, (int)uniformBuffers.get(block).size());
+			overrideBuffers.put(block, luminanceUniformBuffer);
 		});
 	}
 
