@@ -136,12 +136,19 @@ public class DebugShaderScreen extends Screen {
 		}
 		super.render(context, mouseX, mouseY, delta);
 	}
-
-	protected void applyBlur() {
+	@Override
+	protected void applyBlur(DrawContext context) {
+		// noop
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		this.refresh = true;
+	}
+
+	// make sure shaders update properly while in the config screens
+	@Override
+	public boolean shouldPause() {
+		return false;
 	}
 }

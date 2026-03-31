@@ -96,9 +96,7 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 			button.setTooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode." + LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation().toLowerCase(), true)));
 		}).tooltip(Tooltip.of(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode." + LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation().toLowerCase(), true))).build());
 
-		if (ClientData.isDevelopment()) widgets1.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "debug").append(getMore()), (button) -> {
-			ClientData.minecraft.setScreen(new DebugShaderScreen(getRefreshScreen()));
-		}).build());
+		if (ClientData.isDevelopment()) widgets1.add(ButtonWidget.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "debug").append(getMore()), (button) -> ClientData.minecraft.setScreen(new DebugShaderScreen(getRefreshScreen()))).build());
 
 		widgets.add(new ListWidget.ListEntry(widgets1.toArray(new ClickableWidget[0])));
 
@@ -117,5 +115,11 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 
 	public Screen getRefreshScreen() {
 		return new ConfigScreen(this.parent, this.list != null ? this.list.getScrollY() : scrollY, this.splashText, this.isPride);
+	}
+
+	// make sure shaders update properly while in the config screens
+	@Override
+	public boolean shouldPause() {
+		return false;
 	}
 }

@@ -29,4 +29,10 @@ public class CreditsAttributionScreen extends AbstractScrollableScreen {
 	public Screen getRefreshScreen() {
 		return new CreditsAttributionScreen(this.parent, this.info != null ? this.info.getScrollY() : scrollY, this.splashText, this.isPride);
 	}
+
+	// make sure shaders update properly while in the config screens
+	@Override
+	public boolean shouldPause() {
+		return false;
+	}
 }
