@@ -1,12 +1,16 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 uniform sampler2D BaseSampler;
 
-in vec2 texCoord;
-in vec2 oneTexel;
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
 
-uniform vec2 InSize;
+in vec2 texCoord;
+
+out vec4 fragColor;
 
 const vec4 Zero = vec4(0.0);
 const vec4 One = vec4(1.0);
@@ -34,9 +38,8 @@ const float Pi2Length = Pi2 / 83.0;
 const vec4 NotchOffset = vec4(0.0, 1.0, 2.0, 3.0);
 const vec4 W = vec4(Pi2 * CCFrequency * ScanTime);
 
-out vec4 fragColor;
-
 void main() {
+    vec2 oneTexel = 1.0 / InSize;
     vec4 YAccum = Zero;
     vec4 IAccum = Zero;
     vec4 QAccum = Zero;

@@ -60,7 +60,7 @@
             }
         },
         {
-            "vertex_shader": "minecraft:post/downscale",
+            "vertex_shader": "minecraft:core/screenquad",
             "fragment_shader": "minecraft:post/downscale",
             "inputs": [
                 {
@@ -205,9 +205,10 @@
             "uniforms": {
                 "MergeConfig": [
                     {
-                        "name": "luminance_alpha_smooth",
+                        "name": "Alpha",
                         "type": "float",
-                        "value": 1.0
+                        "value": 1.0,
+                        "override": ["luminance:alpha_smooth"]
                     }
                 ]
             }

@@ -1,20 +1,28 @@
-#version 150
+#version 330
 
 in vec4 Position;
 
-uniform mat4 ProjMat;
-uniform vec2 OutSize;
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
 
-uniform float SubPixelShift;
+layout(std140) uniform FxaaConfig {
+    float SubPixelShift;
+    float SpanMax;
+    float ReduceMul;
+};
 
 out vec2 texCoord;
 out vec4 posPos;
 
 void main() {
-    vec4 outPos = ProjMat * vec4(Position.xy, 0.0, 1.0);
-    gl_Position = vec4(outPos.xy, 0.2, 1.0);
+    vec2 uv = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);
+    vec4 pos = vec4(uv * vec2(2, 2) + vec2(-1, -1), 0, 1);
 
-    texCoord = Position.xy / OutSize;
-    posPos.xy = texCoord.xy;
-    posPos.zw = texCoord.xy - (1.0/OutSize * vec2(0.5 + SubPixelShift));
+    gl_Position = pos;
+    texCoord = uv;
+
+    posPos.xy = texCoord;
+    posPos.zw = texCoord - (1.0/OutSize * vec2(0.5 + SubPixelShift));
 }

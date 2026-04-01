@@ -39,20 +39,12 @@
                     {
                         "name": "Floor",
                         "type": "vec3",
-                        "value": [
-                            0.05,
-                            0.05,
-                            0.05
-                        ]
+                        "value": [ 0.05, 0.05, 0.05 ]
                     },
                     {
                         "name": "Power",
                         "type": "vec3",
-                        "value": [
-                            0.8,
-                            0.8,
-                            0.8
-                        ]
+                        "value": [ 0.8, 0.8, 0.8 ]
                     }
                 ]
             }
@@ -74,9 +66,10 @@
             "uniforms": {
                 "MergeConfig": [
                     {
-                        "name": "luminance_alpha_smooth",
+                        "name": "Alpha",
                         "type": "float",
-                        "value": 1.0
+                        "value": 1.0,
+                        "override": ["luminance:alpha_smooth"]
                     }
                 ]
             }
@@ -96,12 +89,7 @@
                     {
                         "name": "ColorModulate",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     }
                 ]
             }

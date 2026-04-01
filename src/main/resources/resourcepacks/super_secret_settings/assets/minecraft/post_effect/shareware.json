@@ -34,11 +34,7 @@
                     {
                         "name": "Gray",
                         "type": "vec3",
-                        "value": [
-                            0.3,
-                            0.59,
-                            0.11
-                        ]
+                        "value": [ 0.3, 0.59, 0.11 ]
                     }
                 ]
             }
@@ -60,9 +56,10 @@
             "uniforms": {
                 "MergeConfig": [
                     {
-                        "name": "luminance_alpha_smooth",
+                        "name": "Alpha",
                         "type": "float",
-                        "value": 1.0
+                        "value": 1.0,
+                        "override": ["luminance:alpha_smooth"]
                     }
                 ]
             }
@@ -82,12 +79,7 @@
                     {
                         "name": "ColorModulate",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     }
                 ]
             }

@@ -54,56 +54,32 @@
                     {
                         "name": "Gray",
                         "type": "vec3",
-                        "value": [
-                            0.3,
-                            0.59,
-                            0.11
-                        ]
+                        "value": [ 0.3, 0.59, 0.11 ]
                     },
                     {
                         "name": "RedMatrix",
                         "type": "vec3",
-                        "value": [
-                            1.0,
-                            0.0,
-                            0.0
-                        ]
+                        "value": [ 1.0, 0.0, 0.0 ]
                     },
                     {
                         "name": "GreenMatrix",
                         "type": "vec3",
-                        "value": [
-                            0.0,
-                            1.0,
-                            0.0
-                        ]
+                        "value": [ 0.0, 1.0, 0.0 ]
                     },
                     {
                         "name": "BlueMatrix",
                         "type": "vec3",
-                        "value": [
-                            0.0,
-                            0.0,
-                            1.0
-                        ]
+                        "value": [ 0.0, 0.0, 1.0 ]
                     },
                     {
                         "name": "Offset",
                         "type": "vec3",
-                        "value": [
-                            0.0,
-                            0.0,
-                            0.0
-                        ]
+                        "value": [ 0.0, 0.0, 0.0 ]
                     },
                     {
                         "name": "ColorScale",
                         "type": "vec3",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0 ]
                     },
                     {
                         "name": "Saturation",
@@ -128,38 +104,22 @@
                     {
                         "name": "ConvergeX",
                         "type": "vec3",
-                        "value": [
-                            -4.0,
-                            0.0,
-                            2.0
-                        ]
+                        "value": [ -4.0, 0.0, 2.0 ]
                     },
                     {
                         "name": "ConvergeY",
                         "type": "vec3",
-                        "value": [
-                            0.0,
-                            -4.0,
-                            2.0
-                        ]
+                        "value": [ 0.0, -4.0, 2.0 ]
                     },
                     {
                         "name": "RadialConvergeX",
                         "type": "vec3",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0 ]
                     },
                     {
                         "name": "RadialConvergeY",
                         "type": "vec3",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0 ]
                     }
                 ]
             }
@@ -179,10 +139,7 @@
                     {
                         "name": "BlurDir",
                         "type": "vec2",
-                        "value": [
-                            1.0,
-                            0.0
-                        ]
+                        "value": [ 1.0, 0.0 ]
                     },
                     {
                         "name": "Radius",
@@ -212,10 +169,7 @@
                     {
                         "name": "BlurDir",
                         "type": "vec2",
-                        "value": [
-                            0.0,
-                            1.0
-                        ]
+                        "value": [ 0.0, 1.0 ]
                     },
                     {
                         "name": "Radius",
@@ -265,20 +219,12 @@
                     {
                         "name": "Floor",
                         "type": "vec3",
-                        "value": [
-                            0.05,
-                            0.05,
-                            0.05
-                        ]
+                        "value": [ 0.05, 0.05, 0.05 ]
                     },
                     {
                         "name": "Power",
                         "type": "vec3",
-                        "value": [
-                            0.8,
-                            0.8,
-                            0.8
-                        ]
+                        "value": [ 0.8, 0.8, 0.8 ]
                     }
                 ]
             }
@@ -302,19 +248,12 @@
                     {
                         "name": "Phosphor",
                         "type": "vec3",
-                        "value": [
-                            0.4,
-                            0.4,
-                            0.4
-                        ]
+                        "value": [ 0.4, 0.4, 0.4 ]
                     },
                     {
                         "name": "Offset",
                         "type": "vec2",
-                        "value": [
-                            0.0,
-                            0.0
-                        ]
+                        "value": [ 0.0, 0.0 ]
                     }
                 ]
             }
@@ -334,12 +273,7 @@
                     {
                         "name": "ColorModulate",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     }
                 ]
             }
@@ -361,9 +295,10 @@
             "uniforms": {
                 "MergeConfig": [
                     {
-                        "name": "luminance_alpha_smooth",
+                        "name": "Alpha",
                         "type": "float",
-                        "value": 1.0
+                        "value": 1.0,
+                        "override": ["luminance:alpha_smooth"]
                     }
                 ]
             }
@@ -383,12 +318,7 @@
                     {
                         "name": "ColorModulate",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     }
                 ]
             }

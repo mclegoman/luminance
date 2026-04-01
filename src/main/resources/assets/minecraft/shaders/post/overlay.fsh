@@ -1,16 +1,21 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 uniform sampler2D OverlaySampler;
 
-uniform vec2 InSize;
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
+
+layout(std140) uniform OverlayConfig {
+    float MosaicSize;
+    vec3 RedMatrix;
+    vec3 GreenMatrix;
+    vec3 BlueMatrix;
+};
 
 in vec2 texCoord;
-
-uniform float MosaicSize;
-uniform vec3 RedMatrix;
-uniform vec3 GreenMatrix;
-uniform vec3 BlueMatrix;
 
 out vec4 fragColor;
 

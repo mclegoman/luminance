@@ -1,11 +1,15 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 
-in vec2 texCoord;
-in vec2 oneTexel;
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
 
-uniform vec2 InSize;
+in vec2 texCoord;
+
+out vec4 fragColor;
 
 const float Pi2 = 6.283185307;
 
@@ -21,9 +25,8 @@ const vec4 QTransform = vec4(0.211456, -0.522591, 0.31135, 0.0);
 const vec4 MinC = vec4(-1.1183);
 const vec4 InvCRange = vec4(1.0 / 3.2366);
 
-out vec4 fragColor;
-
 void main() {
+    vec2 oneTexel = 1.0 / InSize;
     vec2 InverseP = vec2(P, 0.0) * oneTexel;
     
     // UVs for four linearly-interpolated samples spread 0.25 texels apart

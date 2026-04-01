@@ -1,11 +1,17 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
-uniform vec2 OutSize;
 
-uniform float VxOffset;
-uniform float SpanMax;
-uniform float ReduceMul;
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
+
+layout(std140) uniform FxaaConfig {
+    float SubPixelShift;
+    float SpanMax;
+    float ReduceMul;
+};
 
 in vec2 texCoord;
 in vec4 posPos;

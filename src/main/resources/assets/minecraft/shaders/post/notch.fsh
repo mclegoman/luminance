@@ -1,16 +1,22 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 uniform sampler2D DitherSampler;
 
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+    vec2 DitherSize;
+};
+
+layout(std140) uniform NotchConfig {
+    vec3 Mix;
+    float Scale;
+};
+
 in vec2 texCoord;
 
-uniform vec2 InSize;
-
 out vec4 fragColor;
-
-uniform vec3 Mix;
-uniform float Scale;
 
 void main() {
     vec2 halfSize = InSize/Scale;

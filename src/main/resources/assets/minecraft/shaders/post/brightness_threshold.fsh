@@ -1,7 +1,15 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
-uniform float ThresholdBrightness;
+
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
+
+layout(std140) uniform BrightnessThresholdConfig {
+    float ThresholdBrightness;
+};
 
 in vec2 texCoord;
 

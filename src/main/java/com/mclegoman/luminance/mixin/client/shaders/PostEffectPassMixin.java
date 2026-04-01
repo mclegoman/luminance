@@ -72,7 +72,12 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void initialiseUniformData(RenderPipeline pipeline, Identifier outputTargetId, Map<String, List<UniformValue>> uniforms, List<PostEffectPass.Sampler> samplers, CallbackInfo ci) {
-		uniforms.forEach((block, list) -> luminance$overrides.put(block, new UniformBlock(list, (int)uniformBuffers.get(block).size())));
+		uniforms.forEach((block, list) -> {
+			GpuBuffer buffer = uniformBuffers.get(block);
+			if (buffer != null) {
+				luminance$overrides.put(block, new UniformBlock(list, (int) buffer.size()));
+			}
+		});
 	}
 
 	@Override

@@ -1,23 +1,19 @@
-#version 150
+#version 330
 
 in vec4 Position;
 
-uniform mat4 ProjMat;
-uniform vec2 InSize;
-uniform vec2 OutSize;
-uniform vec2 ScreenSize;
+layout(std140) uniform FlipConfig {
+    vec2 X;
+    vec2 Y;
+    vec2 Offset;
+};
 
 out vec2 texCoord;
 
 void main(){
-    vec4 outPos = ProjMat * vec4(Position.xy, 0.0, 1.0);
-    gl_Position = vec4(outPos.xy, 0.2, 1.0);
+    vec2 uv = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);
+    vec4 pos = vec4(uv * vec2(2, 2) + vec2(-1, -1), 0, 1);
 
-    vec2 inOutRatio = OutSize / InSize;
-    vec2 inScreenRatio = ScreenSize / InSize;
-    texCoord = Position.xy / OutSize;
-    texCoord.y = 1.0 - texCoord.y;
-    texCoord.x = texCoord.x * inOutRatio.x;
-    texCoord.y = texCoord.y * inOutRatio.y;
-    texCoord.y -= 1.0 - inScreenRatio.y;
+    gl_Position = pos;
+    texCoord = X * uv.x + Y * uv.y + Offset;
 }

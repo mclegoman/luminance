@@ -1,15 +1,19 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
+
+layout(std140) uniform WobbleConfig {
+    float Time;
+    vec2 Frequency;
+    vec2 WobbleAmount;
+};
+
 in vec2 texCoord;
-in vec2 oneTexel;
-
-uniform vec2 InSize;
-
-uniform float luminance_time;
-uniform vec2 Frequency;
-uniform vec2 WobbleAmount;
 
 out vec4 fragColor;
 
@@ -50,11 +54,11 @@ vec3 RGBtoHSV(vec3 rgb) {
 }
 
 void main() {
-    float xOffset = sin(texCoord.y * Frequency.x + luminance_time * 3.1415926535 * 2.0) * WobbleAmount.x;
-    float yOffset = cos(texCoord.x * Frequency.y + luminance_time * 3.1415926535 * 2.0) * WobbleAmount.y;
+    float xOffset = sin(texCoord.y * Frequency.x + Time * 3.1415926535 * 2.0) * WobbleAmount.x;
+    float yOffset = cos(texCoord.x * Frequency.y + Time * 3.1415926535 * 2.0) * WobbleAmount.y;
     vec2 offset = vec2(xOffset, yOffset);
     vec4 rgb = texture(InSampler, texCoord + offset);
     vec3 hsv = RGBtoHSV(rgb.rgb);
-    hsv.x = fract(hsv.x + luminance_time);
+    hsv.x = fract(hsv.x + Time);
     fragColor = vec4(HSVtoRGB(hsv), 1.0);
 }

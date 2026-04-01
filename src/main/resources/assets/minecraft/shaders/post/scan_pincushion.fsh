@@ -1,11 +1,24 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 
-in vec2 texCoord;
-in vec2 oneTexel;
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
 
-uniform vec2 InSize;
+layout(std140) uniform ScanPincushionConfig {
+    float PincushionAmount;
+    float CurvatureAmount;
+    float ScanlineAmount;
+    float ScanlineScale;
+    vec3 Floor;
+    vec3 Power;
+};
+
+in vec2 texCoord;
+
+out vec4 fragColor;
 
 const vec4 Zero = vec4(0.0);
 const vec4 Half = vec4(0.5);
@@ -13,18 +26,10 @@ const vec4 One = vec4(1.0);
 const vec4 Two = vec4(2.0);
 
 const float Pi = 3.1415926535;
-uniform float PincushionAmount = 0.02;
-uniform float CurvatureAmount = 0.02;
-uniform float ScanlineAmount = 0.8;
-uniform float ScanlineScale = 1.0;
 const float ScanlineHeight = 1.0;
 const float ScanlineBrightScale = 1.0;
 const float ScanlineBrightOffset = 0.0;
 const float ScanlineOffset = 0.0;
-uniform vec3 Floor = vec3(0.05, 0.05, 0.05);
-uniform vec3 Power = vec3(0.8, 0.8, 0.8);
-
-out vec4 fragColor;
 
 void main() {
     vec4 InTexel = texture(InSampler, texCoord);

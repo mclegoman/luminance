@@ -1,16 +1,23 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 
-in vec2 texCoord;
-in vec2 oneTexel;
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
 
-uniform float Radius;
+layout(std140) uniform BlobsConfig {
+    float Radius;
+};
+
+in vec2 texCoord;
 
 out vec4 fragColor;
 
 void main(){
-    vec4 c  = texture(InSampler, texCoord);
+    vec2 oneTexel = 1.0 / InSize;
+    vec4 c = texture(InSampler, texCoord);
     vec4 maxVal = c;
     for(float u = 0.0; u <= Radius; u += 1.0) {
         for(float v = 0.0; v <= Radius; v += 1.0) {

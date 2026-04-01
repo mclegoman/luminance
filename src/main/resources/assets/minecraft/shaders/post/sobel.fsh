@@ -1,17 +1,24 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
+
+layout(std140) uniform SobelConfig {
+    vec4 Distance;
+    vec3 Mix;
+    float MixAmount;
+};
+
 in vec2 texCoord;
-in vec2 oneTexel;
 
 out vec4 fragColor;
 
-uniform vec4 Distance;
-uniform vec3 Mix;
-uniform float MixAmount;
-
-void main(){
+void main() {
+    vec2 oneTexel = 1.0 / InSize;
     vec4 center = texture(InSampler, texCoord);
     vec4 left   = texture(InSampler, texCoord - vec2(oneTexel.x*Distance.z, 0.0)) * Mix.z;
     vec4 right  = texture(InSampler, texCoord + vec2(oneTexel.x*Distance.x, 0.0)) * Mix.x;

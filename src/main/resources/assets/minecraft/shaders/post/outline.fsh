@@ -1,17 +1,24 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
+
+layout(std140) uniform OutlineConfig {
+    vec4 Kernel;
+    vec4 Distance;
+    float Amount;
+};
+
 in vec2 texCoord;
-in vec2 oneTexel;
 
 out vec4 fragColor;
 
-uniform vec4 Kernel;
-uniform vec4 Distance;
-uniform float Amount;
-
-void main(){
+void main() {
+    vec2 oneTexel = 1.0 / InSize;
     vec4 center = texture(InSampler, texCoord);
     vec4 up     = texture(InSampler, texCoord + vec2(        0.0, -oneTexel.y*Distance.x)) * Kernel.x;
     vec4 down   = texture(InSampler, texCoord + vec2( oneTexel.x*Distance.y,         0.0)) * Kernel.y;

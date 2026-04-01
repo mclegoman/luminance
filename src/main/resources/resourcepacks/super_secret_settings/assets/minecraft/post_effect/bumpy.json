@@ -5,7 +5,7 @@
     },
     "passes": [
         {
-            "vertex_shader": "minecraft:post/bumpy",
+            "vertex_shader": "minecraft:core/screenquad",
             "fragment_shader": "minecraft:post/bumpy",
             "inputs": [
                 {
@@ -41,9 +41,10 @@
             "uniforms": {
                 "MergeConfig": [
                     {
-                        "name": "luminance_alpha_smooth",
+                        "name": "Alpha",
                         "type": "float",
-                        "value": 1.0
+                        "value": 1.0,
+                        "override": ["luminance:alpha_smooth"]
                     }
                 ]
             }
@@ -63,12 +64,7 @@
                     {
                         "name": "ColorModulate",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     }
                 ]
             }

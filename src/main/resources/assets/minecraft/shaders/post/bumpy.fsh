@@ -1,15 +1,23 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
+
+layout(std140) uniform BumpyConfig {
+    float Strength;
+};
+
 in vec2 texCoord;
-in vec2 oneTexel;
 
 out vec4 fragColor;
 
-uniform float Strength;
-
 void main(){
+    vec2 oneTexel = 1.0 / InSize;
+
     vec4 c = texture(InSampler, texCoord);
     vec4 u = texture(InSampler, texCoord + vec2(        0.0, -oneTexel.y));
     vec4 d = texture(InSampler, texCoord + vec2(        0.0,  oneTexel.y));

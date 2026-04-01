@@ -19,38 +19,22 @@
                     {
                         "name": "ConvergeX",
                         "type": "vec3",
-                        "value": [
-                            -4.0,
-                            0.0,
-                            2.0
-                        ]
+                        "value": [ -4.0, 0.0, 2.0 ]
                     },
                     {
                         "name": "ConvergeY",
                         "type": "vec3",
-                        "value": [
-                            0.0,
-                            -4.0,
-                            2.0
-                        ]
+                        "value": [ 0.0, -4.0, 2.0 ]
                     },
                     {
                         "name": "RadialConvergeX",
                         "type": "vec3",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0 ]
                     },
                     {
                         "name": "RadialConvergeY",
                         "type": "vec3",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0 ]
                     }
                 ]
             }
@@ -72,9 +56,10 @@
             "uniforms": {
                 "MergeConfig": [
                     {
-                        "name": "luminance_alpha_smooth",
+                        "name": "Alpha",
                         "type": "float",
-                        "value": 1.0
+                        "value": 1.0,
+                        "override": ["luminance:alpha_smooth"]
                     }
                 ]
             }
@@ -94,12 +79,7 @@
                     {
                         "name": "ColorModulate",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     }
                 ]
             }

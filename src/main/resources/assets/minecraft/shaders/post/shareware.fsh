@@ -1,19 +1,22 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
+
+layout(std140) uniform SharewareConfig {
+    float ColorResolution;
+    float Saturation;
+    float Scale;
+    vec3 Gray;
+};
+
 in vec2 texCoord;
-in vec2 oneTexel;
-
-uniform vec2 InSize;
-
-uniform float ColorResolution;
-uniform float Saturation;
 
 out vec4 fragColor;
-
-uniform float Scale;
-uniform vec3 Gray;
 
 void main() {
     vec2 scaleFactors = InSize / Scale;
