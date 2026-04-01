@@ -74,7 +74,7 @@ public abstract class UniformValueImplMixin implements UniformValueInterface {
 
     @SuppressWarnings("DataFlowIssue")
     @Override
-    public @NotNull List<Number> luminance$getValue() {
+    public @NotNull ImmutableList<Number> luminance$getValue() {
         switch ((Object)this) {
             case UniformValue.IntValue value -> {
                 return ImmutableList.of(value.value());

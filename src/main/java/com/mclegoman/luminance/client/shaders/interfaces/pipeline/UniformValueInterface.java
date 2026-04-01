@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.client.shaders.interfaces.pipeline;
 
+import com.google.common.collect.ImmutableList;
 import com.mclegoman.luminance.client.shaders.uniforms.config.ConfigData;
 
 import java.util.List;
@@ -23,5 +24,5 @@ public interface UniformValueInterface {
     void luminance$setConfig(List<ConfigData> config);
 
     int luminance$getLength();
-    List<Number> luminance$getValue();
+    ImmutableList<Number> luminance$getValue();
 }

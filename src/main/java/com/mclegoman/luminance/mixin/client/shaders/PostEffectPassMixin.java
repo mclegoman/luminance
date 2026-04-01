@@ -7,17 +7,12 @@
 
 package com.mclegoman.luminance.mixin.client.shaders;
 
-import com.google.common.collect.ImmutableList;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mclegoman.luminance.client.events.Execute;
-import com.mclegoman.luminance.client.shaders.LuminanceUniformBuffer;
-import com.mclegoman.luminance.client.shaders.UniformInstance;
+import com.mclegoman.luminance.client.shaders.UniformBlock;
 import com.mclegoman.luminance.client.shaders.interfaces.CustomPassData;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
-import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
-import com.mclegoman.luminance.client.shaders.overrides.LuminanceUniformOverride;
-import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -25,7 +20,6 @@ import com.mojang.blaze3d.systems.RenderPass;
 import net.minecraft.client.gl.*;
 import net.minecraft.client.util.Handle;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,10 +38,9 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	@Shadow @Final private List<PostEffectPass.Sampler> samplers;
 
 	@Shadow @Final private Map<String, GpuBuffer> uniformBuffers;
-	@Unique private final Map<String, ImmutableList<@NotNull UniformInstance>> luminance$uniformOverrides = new HashMap<>();
 	@Unique private final Map<Identifier, CustomPassData> luminance$customData = new HashMap<>();
 
-	@Unique private final Map<String, LuminanceUniformBuffer> overrideBuffers = new HashMap<>();
+	@Unique private final Map<String, UniformBlock> luminance$overrides = new HashMap<>();
 
 	@Inject(method = "method_67884", at = @At("HEAD"))
 	private void luminance$beforeRender(Handle<Framebuffer> handle, GpuBufferSlice gpuBufferSlice, Map<Identifier, Handle<Framebuffer>> map, CallbackInfo ci) {
@@ -60,61 +53,26 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 	@Inject(method = "method_67884", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;createRenderPass(Ljava/util/function/Supplier;Lcom/mojang/blaze3d/textures/GpuTextureView;Ljava/util/OptionalInt;Lcom/mojang/blaze3d/textures/GpuTextureView;Ljava/util/OptionalDouble;)Lcom/mojang/blaze3d/systems/RenderPass;"))
 	private void luminance$updateBuffers(Handle<Framebuffer> handle, GpuBufferSlice gpuBufferSlice, Map<Identifier, Handle<Framebuffer>> map, CallbackInfo ci) {
-		for (String block : uniformBuffers.keySet()) {
-			List<UniformInstance> uniformInstances = luminance$uniformOverrides.get(block);
-			assert uniformInstances != null;
-			overrideBuffers.get(block).updateBuffer(uniformInstances);
+		for (UniformBlock uniformBlock : luminance$overrides.values()) {
+			uniformBlock.updateBuffer();
 		}
 	}
 
 	@WrapOperation(method = "method_67884", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderPass;setUniform(Ljava/lang/String;Lcom/mojang/blaze3d/buffers/GpuBuffer;)V", ordinal = 1))
 	private void luminance$replaceBuffers(RenderPass instance, String block, GpuBuffer gpuBuffer, Operation<Void> original) {
-		original.call(instance, block, overrideBuffers.get(block).replaceBuffer(gpuBuffer));
+		original.call(instance, block, luminance$overrides.get(block).replaceBuffer(gpuBuffer));
 	}
 
 	@Inject(method = "close", at = @At("HEAD"))
 	private void clearData(CallbackInfo ci) {
-		for (LuminanceUniformBuffer luminanceUniformBuffer : overrideBuffers.values()) {
-			luminanceUniformBuffer.close();
+		for (UniformBlock uniformBlock : luminance$overrides.values()) {
+			uniformBlock.close();
 		}
 	}
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void initialiseUniformData(RenderPipeline pipeline, Identifier outputTargetId, Map<String, List<UniformValue>> uniforms, List<PostEffectPass.Sampler> samplers, CallbackInfo ci) {
-		uniforms.forEach((block, list) -> {
-			ImmutableList.Builder<UniformInstance> builder = ImmutableList.builder();
-
-			for (UniformValue uniform : list) {
-				UniformValueInterface uniformInterface = (UniformValueInterface)uniform;
-				UniformInstance instance = new UniformInstance(uniformInterface.luminance$getName().orElse(uniform.getType().asString()));
-
-				uniformInterface.luminance$getOverride().ifPresent((override) -> {
-					int length = uniformInterface.luminance$getLength();
-					int overrideValues = override.size();
-
-					// make sure overrides are the same length as the type
-					if (overrideValues > length) {
-						override = override.subList(0, length);
-					}
-					if (overrideValues < length) {
-						// copy list so changes arent destructive (although it shouldnt matter if they were)
-						for (override = new ArrayList<>(override); overrideValues < length; overrideValues++) {
-							override.add(null);
-						}
-					}
-					instance.override = new LuminanceUniformOverride(override);
-				});
-
-				uniformInterface.luminance$getConfig().ifPresent((config) -> instance.config = new MapConfig(config));
-
-				builder.add(instance);
-			}
-
-			luminance$uniformOverrides.put(block, builder.build());
-
-			LuminanceUniformBuffer luminanceUniformBuffer = new LuminanceUniformBuffer(list, (int)uniformBuffers.get(block).size());
-			overrideBuffers.put(block, luminanceUniformBuffer);
-		});
+		uniforms.forEach((block, list) -> luminance$overrides.put(block, new UniformBlock(list, (int)uniformBuffers.get(block).size())));
 	}
 
 	@Override
@@ -123,8 +81,8 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 	}
 
 	@Override
-	public ImmutableList<@NotNull UniformInstance> luminance$getUniformInstances(String block) {
-		return luminance$uniformOverrides.get(block);
+	public UniformBlock luminance$getUniformInstances(String block) {
+		return luminance$overrides.get(block);
 	}
 
 	@Override
