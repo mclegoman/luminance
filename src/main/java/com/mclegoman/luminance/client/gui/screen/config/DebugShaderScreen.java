@@ -31,38 +31,27 @@ import org.lwjgl.glfw.GLFW;
 
 public class DebugShaderScreen extends Screen {
 	private final Screen parentScreen;
-	private final GridWidget grid;
-	private boolean refresh;
+	private GridWidget grid;
 	private boolean shouldClose;
 	private IdentifierListWidget registryList;
 	private IdentifierListWidget shaderList;
 	private Identifier selectedRegistry;
-	private final double registryScroll;
-	private final double shaderScroll;
 
 	public DebugShaderScreen(Screen parent) {
-		this(parent, false);
+		this(parent, Debug.debugShader.getFirst());
 	}
 
-	public DebugShaderScreen(Screen parent, boolean refresh) {
-		this(parent, refresh, -1, -1, Debug.debugShader.getFirst());
-	}
-
-	public DebugShaderScreen(Screen parent, boolean refresh, double registryScroll, double shaderScroll, Identifier selectedRegistry) {
+	public DebugShaderScreen(Screen parent, Identifier selectedRegistry) {
 		super(Text.literal(""));
-		this.grid = new GridWidget();
 		this.parentScreen = parent;
-		this.refresh = refresh;
-		this.registryScroll = registryScroll;
-		this.shaderScroll = shaderScroll;
 		this.selectedRegistry = selectedRegistry;
 	}
 
 	public void init() {
-		clearChildren();
 		try {
-			grid.getMainPositioner().alignHorizontalCenter().margin(2);
-			GridWidget.Adder gridAdder = grid.createAdder(2);
+			this.grid = new GridWidget();
+			this.grid.getMainPositioner().alignHorizontalCenter().margin(2);
+			GridWidget.Adder gridAdder = this.grid.createAdder(2);
 			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShaderEnabled}), button -> {
 				Debug.debugShaderEnabled = !Debug.debugShaderEnabled;
 				button.setMessage(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShaderEnabled}));
@@ -72,17 +61,18 @@ public class DebugShaderScreen extends Screen {
 				button.setMessage(Translation.getText("Debug Render Type: {}", false, new Object[]{Debug.debugRenderType.toString()}));
 			}).build());
 
-			this.registryList = new IdentifierListWidget(150, 200, 20, 20, 20, this.registryScroll >= 0 ? this.registryScroll : -1, Shaders.getRegistries(), this.selectedRegistry, (id, widget) -> {});
+			this.registryList = new IdentifierListWidget(150, 200, 20, 20, 20, Shaders.getRegistries(), this.selectedRegistry, (id, widget) -> {});
 
 			gridAdder.add(this.registryList);
 			IdentifierListWidget.Entry registryListSelected = this.registryList.getSelectedOrNull();
-			this.shaderList = new IdentifierListWidget(150, 200, 20, 20, 20, this.shaderScroll >= 0 ? this.shaderScroll : -1, Shaders.getShaderIds(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId()), Debug.debugShader.getSecond(), (id, widget) -> Debug.setDebugShader(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), id), (identifier) -> Shaders.getShaderName(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), identifier));
+			this.shaderList = new IdentifierListWidget(150, 200, 20, 20, 20, Shaders.getShaderIds(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId()), Debug.debugShader.getSecond(), (id, widget) -> Debug.setDebugShader(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), id), (identifier) -> Shaders.getShaderName(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), identifier));
 			gridAdder.add(this.shaderList);
 
 			this.registryList.onSelect = (id, widget) -> {
 				if (this.selectedRegistry != id) {
 					this.selectedRegistry = id;
 					this.shaderList.setScrollY(0);
+					this.registryList.scrollToSelected();
 				}
 			};
 
@@ -98,9 +88,6 @@ public class DebugShaderScreen extends Screen {
 
 	public void tick() {
 		try {
-			if (this.refresh) {
-				ClientData.minecraft.setScreen(new DebugShaderScreen(parentScreen, false, this.registryList.getScrollY(), this.shaderList.getScrollY(), this.registryList.getSelectedOrNull() != null ? this.registryList.getSelectedOrNull().id : this.selectedRegistry));
-			}
 			if (this.shouldClose) {
 				ClientData.minecraft.setScreen(parentScreen);
 			}
@@ -143,7 +130,9 @@ public class DebugShaderScreen extends Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		this.refresh = true;
+		super.resize(width, height);
+		this.registryList.scrollToSelected();
+		this.shaderList.scrollToSelected();
 	}
 
 	// make sure shaders update properly while in the config screens

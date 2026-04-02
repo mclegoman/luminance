@@ -14,11 +14,11 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
     public OnSelect onSelect;
     public final Label label;
 
-    public IdentifierListWidget(int width, int height, int top, int bottom, int itemHeight, double scrollAmount, List<Identifier> identifiers, Identifier selected, OnSelect onSelect) {
-        this (width, height, top, bottom, itemHeight, scrollAmount, identifiers, selected, onSelect, (identifier) -> Text.literal(identifier.toString()));
+    public IdentifierListWidget(int width, int height, int top, int bottom, int itemHeight, List<Identifier> identifiers, Identifier selected, OnSelect onSelect) {
+        this (width, height, top, bottom, itemHeight, identifiers, selected, onSelect, (identifier) -> Text.literal(identifier.toString()));
     }
 
-    public IdentifierListWidget(int width, int height, int top, int bottom, int itemHeight, double scrollAmount, List<Identifier> identifiers, Identifier selected, OnSelect onSelect, Label label) {
+    public IdentifierListWidget(int width, int height, int top, int bottom, int itemHeight, List<Identifier> identifiers, Identifier selected, OnSelect onSelect, Label label) {
         super(ClientData.minecraft, width, height - top - bottom, top, itemHeight);
         this.onSelect = onSelect;
         this.label = label;
@@ -27,10 +27,9 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
         }
         if (selected != null) {
             int index = identifiers.indexOf(selected);
-            if (scrollAmount < 0 && index != -1) this.setScrollY(index * itemHeight);
             if (index != -1) this.setSelected(this.children().get(index));
         }
-        if (scrollAmount >= 0) this.setScrollY(scrollAmount);
+        this.scrollToSelected();
         this.setFocused(true);
     }
 
@@ -93,5 +92,15 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
     @FunctionalInterface
     public interface Label {
         Text call(Identifier identifier);
+    }
+
+    @Override
+    public void refreshScroll() {
+        this.scrollToSelected();
+        super.refreshScroll();
+    }
+
+    public void scrollToSelected() {
+        ClientData.minecraft.execute(() -> this.centerScrollOn(this.getSelectedOrNull()));
     }
 }

@@ -54,7 +54,7 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 	}
 
 	public void initBody() {
-		this.list = new ListWidget(ClientData.minecraft, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 20, getEntries(), this.scrollY);
+		this.list = new ListWidget(ClientData.minecraft, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 22, getEntries(), this.scrollY);
 		this.layout.addBody(this.list);
 	}
 
