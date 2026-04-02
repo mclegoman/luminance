@@ -12,7 +12,6 @@ import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.events.Runnables;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
@@ -24,7 +23,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -45,8 +43,8 @@ public class Shaders {
                 if (shaders != null) shaders.forEach(shader -> {
                     try {
                         if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-                            if ((shader.shader().getRenderType().call().equals(Shader.RenderType.WORLD) || (shader.shader().getRenderType().call().equals(Shader.RenderType.UI) && (shader.shader().getShaderData().getDisableUiRenderType() || shader.shader().getUseDepth())))) {
-                            	renderUsingAllocator(id, shader, framebuffer, objectAllocator);
+                            if ((shader.shader().getRenderType().call().equals(RenderTypes.WORLD.getIdentifier()) || (shader.shader().getRenderType().call().equals(RenderTypes.UI.getIdentifier()) && (shader.shader().getShaderData().getDisableUiRenderType() || shader.shader().getUseDepth())))) {
+                            	RenderTypes.WORLD.getRenderer().render(id, shader, framebuffer, objectAllocator);
                             }
                         }
                     } catch (Exception error) {
@@ -66,8 +64,8 @@ public class Shaders {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
 						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(Shader.RenderType.UI) && !shader.shader().getShaderData().getDisableUiRenderType() && !shader.shader().getUseDepth()) {
-								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
+							if (shader.shader().getRenderType().call().equals(RenderTypes.UI.getIdentifier()) && !shader.shader().getShaderData().getDisableUiRenderType() && !shader.shader().getUseDepth()) {
+								RenderTypes.UI.getRenderer().render(id, shader, framebuffer, objectAllocator);
 							}
 						}
 					} catch (Exception error) {
@@ -87,8 +85,8 @@ public class Shaders {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
 						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(Shader.RenderType.UI_BACKGROUND) && !shader.shader().getShaderData().getDisableUiBackgroundRenderTypes() && !shader.shader().getUseDepth()) {
-								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
+							if (shader.shader().getRenderType().call().equals(RenderTypes.UI_BACKGROUND.getIdentifier()) && !shader.shader().getShaderData().getDisableUiBackgroundRenderTypes() && !shader.shader().getUseDepth()) {
+								RenderTypes.UI_BACKGROUND.getRenderer().render(id, shader, framebuffer, objectAllocator);
 							}
 						}
 					} catch (Exception error) {
@@ -108,8 +106,8 @@ public class Shaders {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
 						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(Shader.RenderType.PANORAMA) && !shader.shader().getShaderData().getDisableUiBackgroundRenderTypes() && !shader.shader().getUseDepth()) {
-								renderUsingAllocator(id, shader, framebuffer, objectAllocator);
+							if (shader.shader().getRenderType().call().equals(RenderTypes.PANORAMA.getIdentifier()) && !shader.shader().getShaderData().getDisableUiBackgroundRenderTypes() && !shader.shader().getUseDepth()) {
+								RenderTypes.PANORAMA.render(id, shader, framebuffer, objectAllocator);
 							}
 						}
 					} catch (Exception error) {
@@ -173,7 +171,7 @@ public class Shaders {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render post effect processor: {}", error.getLocalizedMessage()));
 		}
 	}
-	private static void renderUsingAllocator(Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
+	public static void renderUsingAllocator(Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
 				if (shader.shader().getShouldRender()) {
@@ -211,10 +209,10 @@ public class Shaders {
 		}
 		return null;
 	}
-	public static Shader get(ShaderRegistryEntry shaderData, Callable<Shader.RenderType> renderType, Callable<Boolean> shouldRender) {
+	public static Shader get(ShaderRegistryEntry shaderData, Callable<Identifier> renderType, Callable<Boolean> shouldRender) {
 		return new Shader(shaderData, renderType, shouldRender);
 	}
-	public static Shader get(ShaderRegistryEntry shaderData, Callable<Shader.RenderType> renderType) {
+	public static Shader get(ShaderRegistryEntry shaderData, Callable<Identifier> renderType) {
 		return new Shader(shaderData, renderType);
 	}
 	public static Identifier getPostShader(Identifier post_effect, boolean full) {

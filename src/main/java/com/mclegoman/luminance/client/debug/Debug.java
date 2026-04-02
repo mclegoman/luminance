@@ -9,6 +9,7 @@ package com.mclegoman.luminance.client.debug;
 
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Events;
+import com.mclegoman.luminance.client.shaders.RenderTypes;
 import com.mclegoman.luminance.client.shaders.Shader;
 import com.mclegoman.luminance.client.shaders.Shaders;
 import com.mclegoman.luminance.client.translation.Translation;
@@ -23,13 +24,17 @@ import java.util.List;
 public class Debug {
 	public static Couple<Identifier, Identifier> debugShader;
 	public static boolean debugShaderEnabled;
-	public static Shader.RenderType debugRenderType;
+	public static Identifier debugRenderType;
 	public static void cycleDebugRenderType() {
-		switch (Debug.debugRenderType) {
-			case UI -> Debug.debugRenderType = Shader.RenderType.WORLD;
-			case WORLD -> Debug.debugRenderType = Shader.RenderType.UI_BACKGROUND;
-			case UI_BACKGROUND -> Debug.debugRenderType = Shader.RenderType.PANORAMA;
-			case PANORAMA -> Debug.debugRenderType = Shader.RenderType.UI;
+		// TODO: use event registry instead.
+		if (Debug.debugRenderType == RenderTypes.UI.getIdentifier()) {
+			Debug.debugRenderType = RenderTypes.WORLD.getIdentifier();
+		} else if (Debug.debugRenderType == RenderTypes.WORLD.getIdentifier()) {
+			Debug.debugRenderType = RenderTypes.UI_BACKGROUND.getIdentifier();
+		} else if (Debug.debugRenderType == RenderTypes.UI_BACKGROUND.getIdentifier()) {
+			Debug.debugRenderType = RenderTypes.PANORAMA.getIdentifier();
+		} else if (Debug.debugRenderType == RenderTypes.PANORAMA.getIdentifier()) {
+			Debug.debugRenderType = RenderTypes.UI.getIdentifier();
 		}
 	}
 	public static void applyDebugShader() {
@@ -61,6 +66,6 @@ public class Debug {
 	static {
 		debugShader = new Couple<>(Shaders.getMainRegistryId(), Shaders.getShaderIds(Shaders.getMainRegistryId()).getFirst());
 		debugShaderEnabled = false;
-		debugRenderType = Shader.RenderType.WORLD;
+		debugRenderType = RenderTypes.WORLD.getIdentifier();
 	}
 }

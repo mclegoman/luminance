@@ -8,30 +8,26 @@
 package com.mclegoman.luminance.client.shaders;
 
 import com.mclegoman.luminance.client.data.ClientData;
-import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.client.gl.PostEffectPass;
 import net.minecraft.client.gl.PostEffectProcessor;
 import net.minecraft.client.render.DefaultFramebufferSet;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 
 public class Shader {
 	private PostEffectProcessor postProcessor;
 	private boolean useDepth;
 	private Identifier shaderId;
-	private Callable<RenderType> renderType;
+	private Callable<Identifier> renderType;
 	private Callable<Boolean> shouldRender;
 	private ShaderRegistryEntry shaderData;
-	public Shader(ShaderRegistryEntry shaderData, Callable<RenderType> renderType, Callable<Boolean> shouldRender) {
+	public Shader(ShaderRegistryEntry shaderData, Callable<Identifier> renderType, Callable<Boolean> shouldRender) {
 		reload(shaderData, renderType, shouldRender);
 	}
-	public Shader(ShaderRegistryEntry shaderData, Callable<RenderType> renderType) {
+	public Shader(ShaderRegistryEntry shaderData, Callable<Identifier> renderType) {
 		this(shaderData, renderType, () -> true);
 	}
 	public PostEffectProcessor getPostProcessor() {
@@ -65,10 +61,10 @@ public class Shader {
 		closePostProcessor();
 		this.shaderId = id;
 	}
-	public Callable<RenderType> getRenderType() {
+	public Callable<Identifier> getRenderType() {
 		return this.renderType;
 	}
-	public void setRenderType(Callable<RenderType> renderType) {
+	public void setRenderType(Callable<Identifier> renderType) {
 		this.renderType = renderType;
 	}
 	public Boolean getShouldRender() {
@@ -89,23 +85,10 @@ public class Shader {
 		this.shaderData = shaderData;
 		if (getShaderData() != null) setShaderId(getShaderData().getPostEffect(false));
 	}
-	public enum RenderType {
-		WORLD(0),
-		UI(1),
-		UI_BACKGROUND(2),
-		PANORAMA(3);
-		private final int id;
-		RenderType(int id) {
-			this.id = id;
-		}
-		public int getId() {
-			return this.id;
-		}
-	}
 	public void reload() {
 		reload(shaderData, renderType, shouldRender);
 	}
-	public void reload(ShaderRegistryEntry shaderData, Callable<RenderType> renderType, Callable<Boolean> shouldRender) {
+	public void reload(ShaderRegistryEntry shaderData, Callable<Identifier> renderType, Callable<Boolean> shouldRender) {
 		closePostProcessor();
 		setRenderType(renderType);
 		setShouldRender(shouldRender);
