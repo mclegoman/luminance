@@ -16,7 +16,7 @@
     "sources": "${sources}"
   },
   "license": "${license}",
-  "icon": "assets/${modId}/icons/icon.png",
+  "icon": "assets/${modId}/textures/icons/icon.png",
   "depends": {
     "minecraft": ">=${mc}",
     "fabric-api": ">=${fapi}"
@@ -27,6 +27,9 @@
     ],
     "modmenu": [
       "com.mclegoman.luminance.compat.ModMenuCompat"
+    ],
+    "sodium:config_api_user": [
+      "com.mclegoman.luminance.compat.SodiumConfigCompat"
     ]
   },
   "custom": {

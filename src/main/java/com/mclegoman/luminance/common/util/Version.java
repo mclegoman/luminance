@@ -8,6 +8,8 @@
 package com.mclegoman.luminance.common.util;
 
 import com.mclegoman.luminance.client.translation.Translation;
+import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,24 +51,27 @@ public class Version implements Comparable<Version> {
 	public static Version create(String name, String id, int major, int minor, int patch, ReleaseType type, int build) {
 		return new Version(name, id, major, minor, patch, type, build, false, false, "");
 	}
-	public static Version parse(ModContainer.ModMetadata metadata) {
+	public static Version parse(ModMetadata metadata) {
 		return parse(metadata, "");
 	}
-	public static Version parse(ModContainer.ModMetadata metadata, String modrinthId) {
-		String version = metadata.rawVersion();
-		String[] versionData = version.split("-");
-		String[] versionVer = versionData[0].split("\\.");
-		String[] versionType = versionData[1].split("\\.");
-		String[] versionTypeVer = (versionType[1].replace(".", "")).split("\\+");
-		return create(metadata.name(),
-				metadata.id(),
-				Integer.parseInt(versionVer[0].replace(".", "")),
-				Integer.parseInt(versionVer[1].replace(".", "")),
-				Integer.parseInt(versionVer[2].replace(".", "")),
-				Helper.stringToType(versionType[0].replace("-", "")),
-				Integer.parseInt(versionTypeVer[0].replace(".", "").replace("+", "")),
-				(versionTypeVer.length >= 2 && versionTypeVer[1].replace(".", "").replace("+", "").equalsIgnoreCase("dirty")),
-				modrinthId);
+	public static Version parse(ModMetadata metadata, String modrinthId) {
+		if (metadata != null) {
+			String version = metadata.getVersion().getFriendlyString();
+			String[] versionData = version.split("-");
+			String[] versionVer = versionData[0].split("\\.");
+			String[] versionType = versionData[1].split("\\.");
+			String[] versionTypeVer = (versionType[1].replace(".", "")).split("\\+");
+			return create(metadata.getName(),
+					metadata.getId(),
+					Integer.parseInt(versionVer[0].replace(".", "")),
+					Integer.parseInt(versionVer[1].replace(".", "")),
+					Integer.parseInt(versionVer[2].replace(".", "")),
+					Helper.stringToType(versionType[0].replace("-", "")),
+					Integer.parseInt(versionTypeVer[0].replace(".", "").replace("+", "")),
+					(versionTypeVer.length >= 2 && versionTypeVer[1].replace(".", "").replace("+", "").equalsIgnoreCase("dirty")),
+					modrinthId);
+		}
+		return create("UNKNOWN", "unknown", 0, 0, 0, ReleaseType.RELEASE, 0);
 	}
 	public String getFriendlyString(boolean full) {
 		return full ? getFriendlyString() : (getType().equals(ReleaseType.RELEASE) ? String.format("%s.%s.%s", getMajor(), getMinor(), getPatch()) : getFriendlyString());

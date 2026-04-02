@@ -32,7 +32,7 @@ public abstract class ModsScreenMixin {
 		if (CompatHelper.getLuminanceModMenuBadge(this.mod.getId())) {
 			int width = ClientData.minecraft.textRenderer.getWidth(Translation.getTranslation(Data.getVersion().getID(), "name")) + 6;
 			if (badgeX + width < badgeMax) {
-				DrawingUtil.drawBadge(context, badgeX, badgeY, width, Translation.getTranslation(Data.getVersion().getID(), "name").asOrderedText(), 0xFFFF8F8F, 0xFFB73A3A, 0xFFFFFF);
+				DrawingUtil.drawBadge(context, badgeX, badgeY, width, Translation.getTranslation(Data.getVersion().getID(), "name").asOrderedText(), 0xFFFF8F8F, 0xFFB73A3A, 0xFFFFFFFF);
 				badgeX += width + 3;
 			}
 		}

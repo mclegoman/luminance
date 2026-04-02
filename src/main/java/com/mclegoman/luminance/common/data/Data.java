@@ -9,12 +9,12 @@ package com.mclegoman.luminance.common.data;
 
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.util.LogType;
-import com.mclegoman.luminance.common.util.ModContainer;
 import com.mclegoman.luminance.common.util.ModHelper;
 import com.mclegoman.luminance.common.util.Version;
+import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collections;
 import java.util.Optional;
 
 public class Data {
@@ -22,7 +22,7 @@ public class Data {
 	public static Version getVersion() {
 		if (version == null) {
 			Optional<ModContainer> modContainer = ModHelper.getModContainer("luminance");
-			version = Version.parse(modContainer.isPresent() ? modContainer.get().metadata() : new ModContainer.ModMetadata("luminance", "0.0.0-release.0", "Luminance", "metadata could not be found!", Collections.emptyList(), Collections.emptyList()), "EBTw0O1c");
+			version = Version.parse(modContainer.map(ModContainer::getMetadata).orElse(null), "EBTw0O1c");
 		}
 		return version;
 	}
@@ -37,7 +37,7 @@ public class Data {
 		try {
 			if (isModInstalled(modId)) {
 				Optional<ModContainer> modContainer = ModHelper.getModContainer(modId);
-				if (modContainer.isPresent()) return checkModVersion(modContainer.get().metadata().rawVersion(), requiredVersion, substring);
+				if (modContainer.isPresent()) return checkModVersion(modContainer.get().getMetadata().getVersion().getFriendlyString(), requiredVersion, substring);
 			}
 		} catch (Exception error) {
 			version.sendToLog(LogType.ERROR, Translation.getString("Failed to check mod version for " + modId + ": {}", error));
@@ -60,5 +60,9 @@ public class Data {
 	}
 	public static boolean checkModVersion(String currentVersion, String requiredVersion, boolean substring) {
 		return checkModVersion(currentVersion, requiredVersion, substring, "-");
+	}
+
+	public static Identifier idOf(String path) {
+		return Identifier.of(getVersion().getID(), path);
 	}
 }

@@ -53,6 +53,11 @@ public class ListWidget extends EntryListWidget<ListWidget.ListEntry> {
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
 	}
 
+	@Override
+	protected boolean isEntrySelectionAllowed() {
+		return false;
+	}
+
 	public static class ListEntry extends Entry<ListEntry> {
 		private final int spacing;
 		private final ClickableWidget[] widgets;

@@ -17,6 +17,7 @@ import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.client.util.Tick;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
+import net.caffeinemc.mods.sodium.client.gui.SodiumOptions;
 import net.fabricmc.api.ClientModInitializer;
 
 public class LuminanceClient implements ClientModInitializer {

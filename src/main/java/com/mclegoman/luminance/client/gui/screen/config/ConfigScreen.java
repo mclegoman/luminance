@@ -18,6 +18,7 @@ import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.client.shaders.Uniforms;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
+import com.mclegoman.luminance.common.util.DateHelper;
 import com.mclegoman.luminance.config.LuminanceConfigHelper;
 import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -46,6 +47,10 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 
 	public ConfigScreen(Screen parent, double scrollY, @Nullable Translation.Data splashText, boolean isPride) {
 		super("", parent, scrollY, splashText, isPride);
+	}
+
+	public static ConfigScreen open(Screen screen) {
+		return new ConfigScreen(screen, 0, null, DateHelper.isPride());
 	}
 
 	public void initBody() {

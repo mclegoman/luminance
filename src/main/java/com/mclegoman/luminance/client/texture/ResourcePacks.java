@@ -9,7 +9,8 @@ package com.mclegoman.luminance.client.texture;
 
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.ModContainer;
+import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.util.Identifier;
 
 import java.util.Optional;
@@ -33,13 +34,13 @@ public class ResourcePacks {
 	            Licence: Minecraft EULA
 	            Notes: These shaders have been modified to work with the latest version of minecraft, and also contain new code.
             */
-			ResourcePackHelper.register(Identifier.of("super_secret_settings"), modContainer.get(), Translation.getTranslation(Data.getVersion().getID(), "resource_pack.super_secret_settings"), ActivationType.enabledDefault);
+			ResourcePackHelper.register(Identifier.of("super_secret_settings"), modContainer.get(), Translation.getTranslation(Data.getVersion().getID(), "resource_pack.super_secret_settings"), PackActivationType.DEFAULT_ENABLED);
 			/*
 	            Luminance: Default
 	            Contributor(s): dannytaylor
 	            Licence: GNU LGPLv3
 	        */
-			ResourcePackHelper.register(Identifier.of("luminance_default"), modContainer.get(), Translation.getTranslation(Data.getVersion().getID(), "resource_pack.luminance_default"), ActivationType.enabledDefault);
+			ResourcePackHelper.register(Identifier.of("luminance_default"), modContainer.get(), Translation.getTranslation(Data.getVersion().getID(), "resource_pack.luminance_default"), PackActivationType.DEFAULT_ENABLED);
 		}
 	}
 }

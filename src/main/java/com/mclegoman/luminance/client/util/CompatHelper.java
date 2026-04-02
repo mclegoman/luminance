@@ -12,18 +12,14 @@ import com.mclegoman.luminance.common.util.Couple;
 import com.mclegoman.luminance.common.util.DateHelper;
 import net.irisshaders.iris.api.v0.IrisApi;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class CompatHelper {
-	public static final Map<Couple<String, String>, Couple<Callable<String>, Callable<Boolean>>> overriddenModMenuIcons = new HashMap<>();
+	public static final Map<Couple<String, String>, IconOverride> iconOverrides = new HashMap<>();
 	public static final List<String> luminanceModMenuBadge = new ArrayList<>();
 	public static void init() {
-		addOverrideModMenuIcon(new Couple<>(Data.getVersion().getID(), "pride"), () -> "assets/" + Data.getVersion().getID() + "/icons/pride.png", DateHelper::isPride);
+		addIconOverride(new Couple<>(Data.getVersion().getID(), "pride"), new IconOverride(Data.idOf("textures/icons/pride.png"), DateHelper::isPride));
 		addLuminanceModMenuBadge(Data.getVersion().getID());
 	}
 	public static boolean isIrisShadersEnabled() {
@@ -34,37 +30,40 @@ public class CompatHelper {
 			return false;
 		}
 	}
-	public static void addOverrideModMenuIcon(Couple<String, String> modId, Callable<String> iconPath, Callable<Boolean> shouldOverride) {
-		if (!shouldOverrideModMenuIcon(modId.getFirst())) overriddenModMenuIcons.put(modId, new Couple<>(iconPath, shouldOverride));
+	public static void addIconOverride(Couple<String, String> modId, IconOverride iconOverride) {
+		if (!shouldIconOverride(modId.getFirst())) iconOverrides.put(modId, iconOverride);
 	}
-	public static void modifyOverrideModMenuIcon(Couple<String, String> modId, Callable<String> iconPath, Callable<Boolean> shouldOverride) {
-		overriddenModMenuIcons.replace(modId, new Couple<>(iconPath, shouldOverride));
+	public static void replaceIconOverride(Couple<String, String> modId, IconOverride iconOverride) {
+		iconOverrides.replace(modId, iconOverride);
 	}
-	public static void removeOverrideModMenuIcon(Couple<String, String> modId) {
-		overriddenModMenuIcons.remove(modId);
+	public static void removeIconOverride(Couple<String, String> modId) {
+		iconOverrides.remove(modId);
 	}
-	public static boolean shouldOverrideModMenuIcon(String modId) {
+	public static boolean shouldIconOverride(String modId) {
 		AtomicReference<Boolean> shouldOverride = new AtomicReference<>(false);
-		overriddenModMenuIcons.forEach((mod, data) -> {
+		iconOverrides.forEach((mod, data) -> {
 			if (mod.getFirst().equalsIgnoreCase(modId)) {
-				try {shouldOverride.set(data.getSecond().call());
+				try {shouldOverride.set(data.shouldOverride());
 				} catch (Exception ignored) {}
 			}
 		});
 		return shouldOverride.get();
 	}
-	public static String getOverrideModMenuIcon(String modId) {
-		AtomicReference<String> modMenuIcon = new AtomicReference<>(null);
-		overriddenModMenuIcons.forEach((mod, data) -> {
+	public static IconOverride getIconOverride(String modId) {
+		return getIconOverride(modId, null);
+	}
+	public static IconOverride getIconOverride(String modId, IconOverride fallback) {
+		AtomicReference<IconOverride> icon = new AtomicReference<>(fallback);
+		iconOverrides.forEach((mod, data) -> {
 			if (mod.getFirst().equalsIgnoreCase(modId)) {
 				try {
-					if (data.getSecond().call()) {
-						modMenuIcon.set(data.getFirst().call());
+					if (data.shouldOverride()) {
+						icon.set(data);
 					}
 				} catch (Exception ignored) {}
 			}
 		});
-		return modMenuIcon.get();
+		return icon.get();
 	}
 	public static void addLuminanceModMenuBadge(String modId) {
 		if (!getLuminanceModMenuBadge(modId)) luminanceModMenuBadge.add(modId);
