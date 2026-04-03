@@ -65,7 +65,7 @@ public class DebugShaderScreen extends Screen {
 
 			gridAdder.add(this.registryList);
 			IdentifierListWidget.Entry registryListSelected = this.registryList.getSelectedOrNull();
-			this.shaderList = new IdentifierListWidget(150, 200, 20, 20, 20, Shaders.getOrderedShaderIds(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId()), Debug.getDebugShader().getSecond(), (id, widget) -> Debug.setDebugShader(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), id), (identifier) -> Shaders.getShaderName(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), identifier));
+			this.shaderList = new IdentifierListWidget(150, 200, 20, 20, 20, Shaders.getOrderedShaderIds(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId()), Debug.getDebugShader().getSecond(), (id, widget) -> Debug.setDebugShader(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), id), (identifier) -> Shaders.getShaderName(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), identifier), (identifier) -> Shaders.getShaderDescription(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), identifier));
 			gridAdder.add(this.shaderList);
 
 			this.registryList.onSelect = (id, widget) -> {

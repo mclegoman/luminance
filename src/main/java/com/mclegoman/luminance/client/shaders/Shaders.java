@@ -19,6 +19,7 @@ import net.minecraft.client.gl.*;
 import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import org.jetbrains.annotations.NotNull;
@@ -299,7 +300,7 @@ public class Shaders {
 
 	public static Text getShaderDescription(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
 		ShaderRegistryEntry shader = get(registry, shaderIndex);
-		if (shader != null) return Translation.getShaderText(shader.getID(), shouldShowNamespace);
+		if (shader != null) return Translation.getShaderText(shader.getID(), shouldShowNamespace, true, new Formatting[]{});
 		return Translation.getErrorTranslation(Data.getVersion().getID());
 	}
 
@@ -309,6 +310,10 @@ public class Shaders {
 
 	public static Text getShaderDescription(Identifier registry, int shaderIndex) {
 		return getShaderDescription(registry, shaderIndex, true);
+	}
+
+	public static Text getShaderDescription(Identifier registryId, Identifier shaderId) {
+		return getShaderDescription(registryId, getShaderIndex(registryId, shaderId));
 	}
 
 	public static Optional<ShaderRegistryEntry> guessPostShader(@NotNull String id) {

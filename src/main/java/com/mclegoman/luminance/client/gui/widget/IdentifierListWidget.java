@@ -4,6 +4,7 @@ import com.mclegoman.luminance.client.data.ClientData;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
+import net.minecraft.text.PlainTextContent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -13,15 +14,21 @@ import java.util.*;
 public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<IdentifierListWidget.Entry> {
     public OnSelect onSelect;
     public final Label label;
+    public final Label hoverText;
 
     public IdentifierListWidget(int width, int height, int top, int bottom, int itemHeight, List<Identifier> identifiers, Identifier selected, OnSelect onSelect) {
-        this (width, height, top, bottom, itemHeight, identifiers, selected, onSelect, (identifier) -> Text.literal(identifier.toString()));
+        this(width, height, top, bottom, itemHeight, identifiers, selected, onSelect, (identifier) -> null);
     }
 
-    public IdentifierListWidget(int width, int height, int top, int bottom, int itemHeight, List<Identifier> identifiers, Identifier selected, OnSelect onSelect, Label label) {
+    public IdentifierListWidget(int width, int height, int top, int bottom, int itemHeight, List<Identifier> identifiers, Identifier selected, OnSelect onSelect, Label hoverText) {
+        this (width, height, top, bottom, itemHeight, identifiers, selected, onSelect, (identifier) -> Text.literal(identifier.toString()), hoverText);
+    }
+
+    public IdentifierListWidget(int width, int height, int top, int bottom, int itemHeight, List<Identifier> identifiers, Identifier selected, OnSelect onSelect, Label label, Label hoverText) {
         super(ClientData.minecraft, width, height - top - bottom, top, itemHeight);
         this.onSelect = onSelect;
         this.label = label;
+        this.hoverText = hoverText;
 
         for (Identifier id : identifiers) {
             this.addEntry(new Entry(id, this));
@@ -44,7 +51,10 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
 
     @Override
     protected void renderEntry(DrawContext context, int mouseX, int mouseY, float delta, Entry entry) {
-        if (this.getHoveredEntry() != null && this.getHoveredEntry().equals(entry)) this.drawSelectionHighlight(context, entry, -8355712);
+        if (this.getHoveredEntry() != null && this.getHoveredEntry().equals(entry)) {
+            this.drawSelectionHighlight(context, entry, -8355712);
+            if (entry.hoverText != null && !entry.hoverText.getString().isBlank()) context.drawTooltip(entry.hoverText, mouseX, mouseY);
+        }
         if (entry.equals(getSelectedOrNull())) this.drawSelectionHighlight(context, entry, -1);
         entry.render(context, mouseX, mouseY, this.hovered, delta);
     }
@@ -62,11 +72,13 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
         public final Identifier id;
         public final IdentifierListWidget parent;
         private final Text label;
+        private final Text hoverText;
 
         public Entry(Identifier id, IdentifierListWidget parent) {
             this.id = id;
             this.parent = parent;
             this.label = parent.label.call(id);
+            this.hoverText = parent.hoverText.call(id);
         }
 
         @Override
