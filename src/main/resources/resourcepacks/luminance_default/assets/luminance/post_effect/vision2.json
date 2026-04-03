@@ -182,27 +182,30 @@
                         "value": -1.0
                     },
                     {
-                        "name": "luminance_crosshair_target",
+                        "name": "TargetPosition",
                         "type": "vec3",
                         "value": [
                             0.0,
                             64.0,
                             0.0
-                        ]
+                        ],
+                        "override": ["luminance:crosshair_target"]
                     },
                     {
-                        "name": "luminance_cam",
+                        "name": "CameraPosition",
                         "type": "vec3",
                         "value": [
                             0.0,
                             64.0,
                             0.0
-                        ]
+                        ],
+                        "override": ["luminance:cam"]
                     },
                     {
-                        "name": "luminance_fov",
+                        "name": "FOV",
                         "type": "float",
-                        "value": 95.0
+                        "value": 95.0,
+                        "override": ["luminance:fov"]
                     }
                 ]
             }
