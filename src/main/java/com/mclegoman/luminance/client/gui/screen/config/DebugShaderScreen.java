@@ -52,13 +52,13 @@ public class DebugShaderScreen extends Screen {
 			this.grid = new GridWidget();
 			this.grid.getMainPositioner().alignHorizontalCenter().margin(2);
 			GridWidget.Adder gridAdder = this.grid.createAdder(2);
-			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShaderEnabled}), button -> {
+			gridAdder.add(ButtonWidget.builder(Translation.getTranslation(Data.getVersion().getID(), "debug.render", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.debugShaderEnabled)}), button -> {
 				Debug.debugShaderEnabled = !Debug.debugShaderEnabled;
-				button.setMessage(Translation.getText("Debug Shader: {}", false, new Object[]{Debug.debugShaderEnabled}));
+				button.setMessage(Translation.getTranslation(Data.getVersion().getID(), "debug.render", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.debugShaderEnabled)}));
 			}).build());
-			gridAdder.add(ButtonWidget.builder(Translation.getText("Debug Render Type: {}", false, new Object[]{Debug.debugRenderType.toString()}), button -> {
-				Debug.cycleDebugRenderType();
-				button.setMessage(Translation.getText("Debug Render Type: {}", false, new Object[]{Debug.debugRenderType.toString()}));
+			gridAdder.add(ButtonWidget.builder(Translation.getTranslation(Data.getVersion().getID(), "debug.render_type", new Object[]{Translation.getRenderTypeTranslation(Debug.debugRenderType)}), button -> {
+				Debug.cycleDebugRenderType(ClientData.minecraft.isShiftPressed());
+				button.setMessage(Translation.getTranslation(Data.getVersion().getID(), "debug.render_type", new Object[]{Translation.getRenderTypeTranslation(Debug.debugRenderType)}));
 			}).build());
 
 			this.registryList = new IdentifierListWidget(150, 200, 20, 20, 20, Shaders.getRegistries(), this.selectedRegistry, (id, widget) -> {});

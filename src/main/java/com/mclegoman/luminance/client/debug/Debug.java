@@ -25,16 +25,28 @@ public class Debug {
 	public static Couple<Identifier, Identifier> debugShader;
 	public static boolean debugShaderEnabled;
 	public static Identifier debugRenderType;
-	public static void cycleDebugRenderType() {
+	public static void cycleDebugRenderType(boolean backwards) {
 		// TODO: use event registry instead.
-		if (Debug.debugRenderType == RenderTypes.UI.getIdentifier()) {
-			Debug.debugRenderType = RenderTypes.WORLD.getIdentifier();
-		} else if (Debug.debugRenderType == RenderTypes.WORLD.getIdentifier()) {
-			Debug.debugRenderType = RenderTypes.UI_BACKGROUND.getIdentifier();
-		} else if (Debug.debugRenderType == RenderTypes.UI_BACKGROUND.getIdentifier()) {
-			Debug.debugRenderType = RenderTypes.PANORAMA.getIdentifier();
-		} else if (Debug.debugRenderType == RenderTypes.PANORAMA.getIdentifier()) {
-			Debug.debugRenderType = RenderTypes.UI.getIdentifier();
+		if (!backwards) {
+			if (Debug.debugRenderType == RenderTypes.UI.getIdentifier()) {
+				Debug.debugRenderType = RenderTypes.WORLD.getIdentifier();
+			} else if (Debug.debugRenderType == RenderTypes.WORLD.getIdentifier()) {
+				Debug.debugRenderType = RenderTypes.UI_BACKGROUND.getIdentifier();
+			} else if (Debug.debugRenderType == RenderTypes.UI_BACKGROUND.getIdentifier()) {
+				Debug.debugRenderType = RenderTypes.PANORAMA.getIdentifier();
+			} else if (Debug.debugRenderType == RenderTypes.PANORAMA.getIdentifier()) {
+				Debug.debugRenderType = RenderTypes.UI.getIdentifier();
+			}
+		} else {
+			if (Debug.debugRenderType == RenderTypes.UI.getIdentifier()) {
+				Debug.debugRenderType = RenderTypes.PANORAMA.getIdentifier();
+			} else if (Debug.debugRenderType == RenderTypes.WORLD.getIdentifier()) {
+				Debug.debugRenderType = RenderTypes.UI.getIdentifier();
+			} else if (Debug.debugRenderType == RenderTypes.UI_BACKGROUND.getIdentifier()) {
+				Debug.debugRenderType = RenderTypes.WORLD.getIdentifier();
+			} else if (Debug.debugRenderType == RenderTypes.PANORAMA.getIdentifier()) {
+				Debug.debugRenderType = RenderTypes.UI_BACKGROUND.getIdentifier();
+			}
 		}
 	}
 	public static void applyDebugShader() {

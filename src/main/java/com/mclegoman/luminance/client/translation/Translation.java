@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.client.translation;
 
+import com.mclegoman.luminance.client.shaders.RenderTypes;
 import com.mclegoman.luminance.common.util.Couple;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -67,6 +68,12 @@ public class Translation {
 	}
 	public static MutableText getConfigTranslation(String namespace, String name) {
 		return getTranslation(namespace, "config." + name);
+	}
+	public static MutableText getRenderTypeTranslation(Identifier renderTypeId) {
+		return Text.translatableWithFallback("gui." + renderTypeId.getNamespace() + ".render_type." + renderTypeId.getPath(), renderTypeId.toString());
+	}
+	public static MutableText getRenderTypeTranslation(RenderTypes.RenderType renderType) {
+		return getRenderTypeTranslation(renderType.getIdentifier());
 	}
 	public static MutableText getTranslation(String namespace, String key, Object[] variables, Formatting[] formattings) {
 		return getText("gui." + namespace + "." + key, true, variables, formattings);
