@@ -10,6 +10,7 @@
 	"gui.luminance.shader.luminance.mirror" : "Mirror",
 	"gui.luminance.shader.luminance.outlined" : "Outlined",
 	"gui.luminance.shader.luminance.outlined2" : "Darkened Outline",
+	"gui.luminance.shader.luminance.painting" : "Painting",
 	"gui.luminance.shader.luminance.pixelated" : "Pixelated",
 	"gui.luminance.shader.luminance.tiltshift" : "Tilt-shift",
 	"gui.luminance.shader.luminance.rainbow" : "Rainbow",
