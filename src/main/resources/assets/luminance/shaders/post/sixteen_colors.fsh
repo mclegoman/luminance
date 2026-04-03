@@ -1,11 +1,14 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 
 in vec2 texCoord;
-out vec4 fragColor;
 
-uniform vec4 ColorModulate;
+layout(std140) uniform SixteenColorsConfig {
+    vec4 ColorModulate;
+};
+
+out vec4 fragColor;
 
 const vec4 palette[16] = vec4[16](
     vec4(0.0, 0.0, 0.0, 1.0),

@@ -1,16 +1,56 @@
-#version 150
+#version 330
 
 // If you want to make a normal double vision shader, update both ShiftL and ShiftR to 31.5.
 // luminance:vision2 uses different values as these are based on my actual eyes. :p
 
-uniform sampler2D InSampler, InDepthSampler;
+uniform sampler2D InSampler;
+uniform sampler2D InDepthSampler;
 
-uniform float SphL, CylL, AxisL, AddNearL, AddInterL, ShiftL, SphR, CylR, AxisR, AddNearR, AddInterR, ShiftR, FoveaAngle, Mode, InvertEyeCorrection, PI, ToRadianDenominator, SampleRange, FovealFalloff, ShiftFactor, DepthFoveaMix, RadiusScale, MinRadius, MaxRadius, CylSphBlend, FoveaCenter, InterpCutoff, Mix, BlurSigmaFactor, CylBias, CylScale, ZPlane;
+in vec2 texCoord;
 
-uniform vec3 luminance_crosshair_target, luminance_cam;
-uniform float luminance_fov;
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
 
-in vec2 texCoord, oneTexel;
+layout(std140) uniform VisionConfig {
+    float SphL;
+    float CylL;
+    float AxisL;
+    float AddNearL;
+    float AddInterL;
+    float ShiftL;
+    float SphR;
+    float CylR;
+    float AxisR;
+    float AddNearR;
+    float AddInterR;
+    float ShiftR;
+    float FoveaAngle;
+    float Mode;
+    float InvertEyeCorrection;
+    float PI;
+    float ToRadianDenominator;
+    float SampleRange;
+    float FovealFalloff;
+    float ShiftFactor;
+    float DepthFoveaMix;
+    float RadiusScale;
+    float MinRadius;
+    float MaxRadius;
+    float CylSphBlend;
+    float FoveaCenter;
+    float InterpCutoff;
+    float Mix;
+    float BlurSigmaFactor;
+    float CylBias;
+    float CylScale;
+    float ZPlane;
+    vec3 TargetPosition;
+    vec3 CameraPosition;
+    float FOV;
+};
+
 out vec4 fragColor;
 
 float toRadians(float degrees) {
@@ -21,11 +61,11 @@ float getRadius(float value, float weight) {
     return clamp(abs(value) * (1.0 - weight) * RadiusScale + 0.5, MinRadius, MaxRadius);
 }
 
-vec4 blur(vec2 uv, float sph, float cyl, float axis, float nearAdd, float interAdd) {
+vec4 blur(vec2 uv, float sph, float cyl, float axis, float nearAdd, float interAdd, vec2 oneTexel) {
     vec2 pos = uv * 2.0 - 1.0;
     pos.x *= oneTexel.y / oneTexel.x;
     pos.y *= -1.0;
-    float angle = acos(clamp(dot(normalize(vec3(pos, ZPlane)), normalize(luminance_crosshair_target - luminance_cam)), -1.0, 1.0));
+    float angle = acos(clamp(dot(normalize(vec3(pos, ZPlane)), normalize(TargetPosition - CameraPosition)), -1.0, 1.0));
     float fov = toRadians(FoveaAngle);
     float weight = mix(clamp(1.0 - texture(InDepthSampler, uv).r, 0.0, 1.0), exp(-angle * angle / (2.0 * fov * fov)), DepthFoveaMix);
     float sphRadius = getRadius(mix(-sph, sph, InvertEyeCorrection) + mix(interAdd * InvertEyeCorrection, nearAdd * InvertEyeCorrection, weight), weight);
@@ -55,13 +95,14 @@ vec4 blur(vec2 uv, float sph, float cyl, float axis, float nearAdd, float interA
 }
 
 void main() {
-    vec4 colorLeft  = blur(clamp(texCoord - vec2(ShiftL * oneTexel.x * ShiftFactor, 0.0), 0.0, 1.0),  SphL, CylL, AxisL, AddNearL, AddInterL);
-    vec4 colorRight = blur(clamp(texCoord + vec2(ShiftR * oneTexel.x * ShiftFactor, 0.0), 0.0, 1.0), SphR, CylR, AxisR, AddNearR, AddInterR);
+    vec2 oneTexel = 1.0 / InSize;
+    vec4 colorLeft  = blur(clamp(texCoord - vec2(ShiftL * oneTexel.x * ShiftFactor, 0.0), 0.0, 1.0),  SphL, CylL, AxisL, AddNearL, AddInterL, oneTexel);
+    vec4 colorRight = blur(clamp(texCoord + vec2(ShiftR * oneTexel.x * ShiftFactor, 0.0), 0.0, 1.0), SphR, CylR, AxisR, AddNearR, AddInterR, oneTexel);
     float mode = floor(Mode + 0.5);
     if (mode == 0.0) fragColor = colorLeft;
     else if (mode == 1.0) fragColor = colorRight;
     else if (mode == 2.0) {
-        float halfFoveaUV = FoveaAngle / luminance_fov * 0.5;
+        float halfFoveaUV = FoveaAngle / FOV * 0.5;
         fragColor = mix(colorLeft, colorRight, smoothstep(FoveaCenter - halfFoveaUV, FoveaCenter + halfFoveaUV, texCoord.x));
     } else if (mode == 3.0) fragColor = texCoord.x < InterpCutoff ? colorLeft : colorRight;
     else fragColor = mix(colorLeft, colorRight, Mix);
