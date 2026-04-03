@@ -53,14 +53,17 @@ public abstract class PostEffectPassMixin implements PostEffectPassInterface {
 
 	@Inject(method = "method_67884", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;createRenderPass(Ljava/util/function/Supplier;Lcom/mojang/blaze3d/textures/GpuTextureView;Ljava/util/OptionalInt;Lcom/mojang/blaze3d/textures/GpuTextureView;Ljava/util/OptionalDouble;)Lcom/mojang/blaze3d/systems/RenderPass;"))
 	private void luminance$updateBuffers(Handle<Framebuffer> handle, GpuBufferSlice gpuBufferSlice, Map<Identifier, Handle<Framebuffer>> map, CallbackInfo ci) {
-		for (UniformBlock uniformBlock : luminance$overrides.values()) {
-			uniformBlock.updateBuffer();
-		}
+		luminance$overrides.values().forEach(UniformBlock::updateBuffer);
 	}
 
 	@WrapOperation(method = "method_67884", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderPass;setUniform(Ljava/lang/String;Lcom/mojang/blaze3d/buffers/GpuBuffer;)V", ordinal = 1))
 	private void luminance$replaceBuffers(RenderPass instance, String block, GpuBuffer gpuBuffer, Operation<Void> original) {
 		original.call(instance, block, luminance$overrides.get(block).replaceBuffer(gpuBuffer));
+	}
+
+	@Inject(method = "method_67884", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/MappableRingBuffer;rotate()V"))
+	private void luminance$rotateBuffers(Handle<Framebuffer> handle, GpuBufferSlice gpuBufferSlice, Map<Identifier, Handle<Framebuffer>> map, CallbackInfo ci) {
+		luminance$overrides.values().forEach(UniformBlock::rotateBuffer);
 	}
 
 	@Inject(method = "close", at = @At("HEAD"))

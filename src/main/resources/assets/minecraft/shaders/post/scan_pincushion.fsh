@@ -50,22 +50,22 @@ void main() {
     ScreenClipCoord += Half.xy;
     ScreenClipCoord += CurvatureClipCurve;
 
-    // -- Alpha Clipping --
-    if (ScanCoord.x < 0.0) discard;
-    if (ScanCoord.y < 0.0) discard;
-    if (ScanCoord.x > 1.0) discard;
-    if (ScanCoord.y > 1.0) discard;
+    if (ScanCoord.x < 0.0 || ScanCoord.y < 0.0 || ScanCoord.x > 1.0 || ScanCoord.y > 1.0) {
+        // -- Alpha Clipping --
+        // this used to use the discard keyword, but how that works is a little inconsistent
+        fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    } else {
+        // -- Scanline Simulation --
+        float InnerSine = ScanCoord.y * InSize.y * ScanlineScale * 0.25;
+        float ScanBrightMod = sin(InnerSine * Pi + ScanlineOffset * InSize.y * 0.25);
+        float ScanBrightness = mix(1.0, (pow(ScanBrightMod * ScanBrightMod, ScanlineHeight) * ScanlineBrightScale + 1.0) * 0.5, ScanlineAmount);
+        vec3 ScanlineTexel = InTexel.rgb * ScanBrightness;
 
-    // -- Scanline Simulation --
-    float InnerSine = ScanCoord.y * InSize.y * ScanlineScale * 0.25;
-    float ScanBrightMod = sin(InnerSine * Pi + ScanlineOffset * InSize.y * 0.25);
-    float ScanBrightness = mix(1.0, (pow(ScanBrightMod * ScanBrightMod, ScanlineHeight) * ScanlineBrightScale + 1.0) * 0.5, ScanlineAmount);
-    vec3 ScanlineTexel = InTexel.rgb * ScanBrightness;
+        // -- Color Compression (increasing the floor of the signal without affecting the ceiling) --
+        ScanlineTexel = Floor + (One.xyz - Floor) * ScanlineTexel;
 
-    // -- Color Compression (increasing the floor of the signal without affecting the ceiling) --
-    ScanlineTexel = Floor + (One.xyz - Floor) * ScanlineTexel;
+        ScanlineTexel.rgb = pow(ScanlineTexel.rgb, Power);
 
-    ScanlineTexel.rgb = pow(ScanlineTexel.rgb, Power);
-
-    fragColor = vec4(ScanlineTexel.rgb, 1.0);
+        fragColor = vec4(ScanlineTexel.rgb, 1.0);
+    }
 }

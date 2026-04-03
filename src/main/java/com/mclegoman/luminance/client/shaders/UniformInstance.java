@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mclegoman.luminance.client.shaders.overrides.UniformOverride;
 import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
+import com.mojang.blaze3d.buffers.Std140Builder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,5 +28,55 @@ public class UniformInstance {
         }
 
         return override.getOverride(config == null ? EmptyConfig.INSTANCE : config, Uniforms.shaderTime);
+    }
+
+    public void putValues(Std140Builder builder) {
+        List<Float> values = getValues();
+
+        // vec3s are written with some extra padding for a 4th value (prob because vec3s arent real)
+        // we write the values sequentially instead of using putVecN, so buffer alignment needs to be handled manually
+        // doing a bunch of checks to do the function calls nicely would be a little awkward (since vector types dont like being handled generically)
+        // but maybe storing the result of those calculations with a function reference would be decent?
+        // this is *way* simpler though
+        if (defaultValue.size() >= 3) {
+            builder.align(16);
+        } else if (defaultValue.size() == 2){
+            builder.align(8);
+        }
+
+        if (values == null) {
+            for (Number number : defaultValue) {
+                putValue(builder, number, null);
+            }
+        } else {
+            for (int i = 0; i < defaultValue.size(); i++) {
+                Float value = values.get(i);
+                putValue(builder, defaultValue.get(i), value);
+            }
+        }
+
+        // i would expect it would be required to move the buffer position forwards by writing a single value, like so:
+        // if (defaultValue.size() == 3) {
+        //     builder.putFloat(0f);
+        // }
+        // but this doesnt seem to be the case?
+    }
+
+    private void putValue(Std140Builder builder, Number defaultValue, @Nullable Float overrideValue) {
+        if (overrideValue != null) {
+            // match type
+            if (defaultValue instanceof Float) {
+                builder.putFloat(overrideValue);
+            } else if (defaultValue instanceof Integer) {
+                builder.putInt(Math.round(overrideValue));
+            }
+            return;
+        }
+
+        if (defaultValue instanceof Float f) {
+            builder.putFloat(f);
+        } else if (defaultValue instanceof Integer i) {
+            builder.putInt(i);
+        }
     }
 }

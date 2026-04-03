@@ -10,9 +10,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gl.MappableRingBuffer;
 import net.minecraft.client.gl.UniformValue;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +19,7 @@ public class UniformBlock {
     private final int bufferSize;
 
     private MappableRingBuffer ringBuffer;
-    private GpuBuffer bufferCache;
-    private boolean changes;
+    private boolean pass;
 
     public UniformBlock(@NotNull List<UniformValue> uniformValues, int bufferSize) {
         ImmutableList.Builder<UniformInstance> builder = ImmutableList.builder();
@@ -58,56 +55,45 @@ public class UniformBlock {
     }
 
     public void updateBuffer() {
+        pass = true;
+
+        for (UniformInstance instance : uniforms) {
+            if (instance.override != null) {
+                pass = false;
+                break;
+            }
+        }
+
+        // avoid creating buffer if the shader has no overrides
+        // the default buffer is cached, so skipping on writing to the gpu again should be a little more efficient
+        // and in the case that a shader *never* has an override, it slightly reduces vram usage (ring buffers are slightly larger than the cache as well!)
+        if (pass) {
+            return;
+        }
+
         if (ringBuffer == null) {
-            // TODO: does this need to be a ring buffer? we never rotate() it
             ringBuffer = new MappableRingBuffer(() -> "Luminance Shader UBO", 130, bufferSize);
         }
 
-        changes = false;
-
-        bufferCache = ringBuffer.getBlocking();
-        GpuBuffer.MappedView mappedView = RenderSystem.getDevice().createCommandEncoder().mapBuffer(bufferCache, false, true);
-        ByteBuffer buffer = mappedView.data();
-        buffer.position(0);
-        Std140Builder builder = Std140Builder.intoBuffer(buffer);
+        GpuBuffer gpuBuffer = ringBuffer.getBlocking();
+        GpuBuffer.MappedView mappedView = RenderSystem.getDevice().createCommandEncoder().mapBuffer(gpuBuffer, false, true);
+        Std140Builder builder = Std140Builder.intoBuffer(mappedView.data());
 
         for (UniformInstance instance : uniforms) {
-            List<Float> values = instance.getValues();
-
-            if (values == null) {
-                for (Number number : instance.defaultValue) {
-                    write(builder, number, null);
-                }
-            } else {
-                for (int i = 0; i < instance.defaultValue.size(); i++) {
-                    Float value = values.get(i);
-                    write(builder, instance.defaultValue.get(i), value);
-                    changes |= value != null;
-                }
-            }
+            instance.putValues(builder);
         }
+
         mappedView.close();
     }
 
     public GpuBuffer replaceBuffer(GpuBuffer original) {
-        return changes ? bufferCache : original;
+        return pass ? original : ringBuffer.getBlocking();
     }
 
-    private void write(Std140Builder builder, Number defaultValue, @Nullable Float overrideValue) {
-        if (overrideValue != null) {
-            // match type
-            if (defaultValue instanceof Float) {
-                builder.putFloat(overrideValue);
-            } else if (defaultValue instanceof Integer) {
-                builder.putInt(Math.round(overrideValue));
-            }
-            return;
-        }
-
-        if (defaultValue instanceof Float f) {
-            builder.putFloat(f);
-        } else if (defaultValue instanceof Integer i) {
-            builder.putInt(i);
+    public void rotateBuffer() {
+        // buffer only needs to be rotated if it was used this call
+        if (!pass) {
+            ringBuffer.rotate();
         }
     }
 
