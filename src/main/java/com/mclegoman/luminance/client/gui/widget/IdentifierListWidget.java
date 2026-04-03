@@ -22,13 +22,16 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
         super(ClientData.minecraft, width, height - top - bottom, top, itemHeight);
         this.onSelect = onSelect;
         this.label = label;
+
         for (Identifier id : identifiers) {
             this.addEntry(new Entry(id, this));
         }
+
         if (selected != null) {
             int index = identifiers.indexOf(selected);
             if (index != -1) this.setSelected(this.children().get(index));
         }
+
         this.scrollToSelected();
         this.setFocused(true);
     }
@@ -85,10 +88,12 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
             return super.mouseClicked(click, doubled);
         }
     }
+
     @FunctionalInterface
     public interface OnSelect {
         void call(Identifier identifier, IdentifierListWidget widget);
     }
+
     @FunctionalInterface
     public interface Label {
         Text call(Identifier identifier);

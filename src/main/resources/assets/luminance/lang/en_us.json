@@ -47,7 +47,7 @@
 	"gui.luminance.debug.render_type": "Render Type: %s",
 	"gui.luminance.render_type.world": "World",
 	"gui.luminance.render_type.ui": "UI",
-	"gui.luminance.render_type.ui_background": "Screen Background",
+	"gui.luminance.render_type.ui_background": "UI Background",
 	"gui.luminance.render_type.panorama": "Panorama",
 
 	"gui.luminance.config": "Configure",

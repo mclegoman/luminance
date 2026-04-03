@@ -19,42 +19,35 @@ import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Debug {
 	public static Couple<Identifier, Identifier> debugShader;
 	public static boolean debugShaderEnabled;
 	public static Identifier debugRenderType;
+
 	public static void cycleDebugRenderType(boolean backwards) {
-		// TODO: use event registry instead.
-		if (!backwards) {
-			if (Debug.debugRenderType == RenderTypes.UI.getIdentifier()) {
-				Debug.debugRenderType = RenderTypes.WORLD.getIdentifier();
-			} else if (Debug.debugRenderType == RenderTypes.WORLD.getIdentifier()) {
-				Debug.debugRenderType = RenderTypes.UI_BACKGROUND.getIdentifier();
-			} else if (Debug.debugRenderType == RenderTypes.UI_BACKGROUND.getIdentifier()) {
-				Debug.debugRenderType = RenderTypes.PANORAMA.getIdentifier();
-			} else if (Debug.debugRenderType == RenderTypes.PANORAMA.getIdentifier()) {
-				Debug.debugRenderType = RenderTypes.UI.getIdentifier();
-			}
-		} else {
-			if (Debug.debugRenderType == RenderTypes.UI.getIdentifier()) {
-				Debug.debugRenderType = RenderTypes.PANORAMA.getIdentifier();
-			} else if (Debug.debugRenderType == RenderTypes.WORLD.getIdentifier()) {
-				Debug.debugRenderType = RenderTypes.UI.getIdentifier();
-			} else if (Debug.debugRenderType == RenderTypes.UI_BACKGROUND.getIdentifier()) {
-				Debug.debugRenderType = RenderTypes.WORLD.getIdentifier();
-			} else if (Debug.debugRenderType == RenderTypes.PANORAMA.getIdentifier()) {
-				Debug.debugRenderType = RenderTypes.UI_BACKGROUND.getIdentifier();
-			}
+		List<Identifier> renderTypes = new ArrayList<>(Events.RenderType.registry.keySet());
+		if (!renderTypes.isEmpty()) {
+			renderTypes.sort(Comparator.comparing(Identifier::toString));
+			int prevIndex = renderTypes.indexOf(debugRenderType);
+			if (prevIndex == -1) prevIndex = 0;
+			int size = renderTypes.size();
+			int index;
+			if (backwards) index = (prevIndex - 1 + size) % size;
+			else index = (prevIndex + 1 + size) % size;
+			debugRenderType = renderTypes.get(index);
 		}
 	}
+
 	public static void applyDebugShader() {
 		if (ClientData.isDevelopment()) {
 			Events.ShaderRender.register(getDebugId(), new ArrayList<>());
 			Events.ShaderRender.modify(getDebugId(), List.of(new Shader.Data(getDebugId(0), new Shader(Shaders.get(Debug.debugShader.getFirst(), Debug.debugShader.getSecond()), () -> Debug.debugRenderType, () -> Debug.debugShaderEnabled))));
 		}
 	}
+
 	public static void setDebugShader(Identifier registry, Identifier shader) {
 		if (ClientData.isDevelopment()) {
 			try {
@@ -69,12 +62,15 @@ public class Debug {
 			}
 		}
 	}
+
 	public static Identifier getDebugId() {
 		return Identifier.of(Data.getVersion().getID(), "debug");
 	}
+
 	public static Identifier getDebugId(int index) {
 		return Identifier.of(Data.getVersion().getID() + "_debug", String.valueOf(index));
 	}
+
 	static {
 		debugShader = new Couple<>(Shaders.getMainRegistryId(), Shaders.getShaderIds(Shaders.getMainRegistryId()).getFirst());
 		debugShaderEnabled = false;
