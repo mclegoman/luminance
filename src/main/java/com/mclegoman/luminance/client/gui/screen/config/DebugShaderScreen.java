@@ -38,7 +38,7 @@ public class DebugShaderScreen extends Screen {
 	private Identifier selectedRegistry;
 
 	public DebugShaderScreen(Screen parent) {
-		this(parent, Debug.debugShader.getFirst());
+		this(parent, Debug.getDebugShader().getFirst());
 	}
 
 	public DebugShaderScreen(Screen parent, Identifier selectedRegistry) {
@@ -52,9 +52,9 @@ public class DebugShaderScreen extends Screen {
 			this.grid = new GridWidget();
 			this.grid.getMainPositioner().alignHorizontalCenter().margin(2);
 			GridWidget.Adder gridAdder = this.grid.createAdder(2);
-			gridAdder.add(ButtonWidget.builder(Translation.getTranslation(Data.getVersion().getID(), "debug.render", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.debugShaderEnabled)}), button -> {
-				Debug.debugShaderEnabled = !Debug.debugShaderEnabled;
-				button.setMessage(Translation.getTranslation(Data.getVersion().getID(), "debug.render", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.debugShaderEnabled)}));
+			gridAdder.add(ButtonWidget.builder(Translation.getTranslation(Data.getVersion().getID(), "debug.render", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.isDebugShaderEnabled())}), button -> {
+				Debug.setDebugShaderEnabled(!Debug.isDebugShaderEnabled());
+				button.setMessage(Translation.getTranslation(Data.getVersion().getID(), "debug.render", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.isDebugShaderEnabled())}));
 			}).build());
 			gridAdder.add(ButtonWidget.builder(Translation.getTranslation(Data.getVersion().getID(), "debug.render_type", new Object[]{Translation.getRenderTypeTranslation(Debug.debugRenderType)}), button -> {
 				Debug.cycleDebugRenderType(ClientData.minecraft.isShiftPressed());
@@ -65,7 +65,7 @@ public class DebugShaderScreen extends Screen {
 
 			gridAdder.add(this.registryList);
 			IdentifierListWidget.Entry registryListSelected = this.registryList.getSelectedOrNull();
-			this.shaderList = new IdentifierListWidget(150, 200, 20, 20, 20, Shaders.getShaderIds(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId()), Debug.debugShader.getSecond(), (id, widget) -> Debug.setDebugShader(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), id), (identifier) -> Shaders.getShaderName(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), identifier));
+			this.shaderList = new IdentifierListWidget(150, 200, 20, 20, 20, Shaders.getOrderedShaderIds(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId()), Debug.getDebugShader().getSecond(), (id, widget) -> Debug.setDebugShader(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), id), (identifier) -> Shaders.getShaderName(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), identifier));
 			gridAdder.add(this.shaderList);
 
 			this.registryList.onSelect = (id, widget) -> {

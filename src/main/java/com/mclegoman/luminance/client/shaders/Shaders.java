@@ -29,6 +29,7 @@ import java.util.concurrent.Callable;
 
 public class Shaders {
 	protected static final Map<Identifier, List<ShaderRegistryEntry>> registries = new HashMap<>();
+
 	public static void init() {
 		Events.ClientResourceReloaders.register(Identifier.of(Data.getVersion().getID(), "shaders"), new ShaderReloader());
 		Uniforms.init();
@@ -119,24 +120,36 @@ public class Shaders {
 			}
 		}));
 	}
+
 	public static Identifier getMainRegistryId() {
 		return Identifier.of(Data.getVersion().getID(), "main");
 	}
+
 	public static List<Identifier> getRegistries() {
 		return registries.keySet().stream().toList();
 	}
+
 	public static List<Identifier> getShaderIds(Identifier registry) {
 		List<Identifier> entries = new ArrayList<>();
 		for (ShaderRegistryEntry entry : getRegistry(registry)) entries.add(entry.getID());
 		return entries;
 	}
+
+	public static List<Identifier> getOrderedShaderIds(Identifier registry) {
+		List<Identifier> shaderIds = new ArrayList<>(getShaderIds(registry));
+		shaderIds.sort(Comparator.comparing((identifier) -> Shaders.getShaderName(registry, identifier).getString()));
+		return shaderIds;
+	}
+
 	public static List<ShaderRegistryEntry> getRegistry() {
 		return getRegistry(getMainRegistryId());
 	}
+
 	public static List<ShaderRegistryEntry> getRegistry(Identifier registry) {
 		if (!registries.containsKey(registry)) registries.put(registry, new ArrayList<>());
 		return registries.get(registry);
 	}
+
 	private static void renderUsingFramebufferSet(Identifier id, Shader.Data shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet) {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
@@ -156,6 +169,7 @@ public class Shaders {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" using framebuffer set, shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
 		}
 	}
+
 	public static void renderProcessorUsingFramebufferSet(Shader shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet, @Nullable Identifier customPasses) {
 		try {
 			if (shader.getPostProcessor() != null) {
@@ -171,6 +185,7 @@ public class Shaders {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render post effect processor: {}", error.getLocalizedMessage()));
 		}
 	}
+
 	public static void renderUsingAllocator(Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
@@ -190,18 +205,22 @@ public class Shaders {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" using allocator, shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
 		}
 	}
+
 	@Nullable
 	public static ShaderRegistryEntry get(int shaderIndex) {
 		return get(getMainRegistryId(), shaderIndex);
 	}
+
 	@Nullable
 	public static ShaderRegistryEntry get(Identifier registry, int shaderIndex) {
 		return isValidIndex(registry, shaderIndex) ? getRegistry(registry).get(shaderIndex) : null;
 	}
+
 	@Nullable
 	public static ShaderRegistryEntry get(Identifier shaderId) {
 		return get(getMainRegistryId(), shaderId);
 	}
+
 	@Nullable
 	public static ShaderRegistryEntry get(Identifier registry, Identifier shaderId) {
 		for (ShaderRegistryEntry entry : getRegistry(registry)) {
@@ -209,18 +228,23 @@ public class Shaders {
 		}
 		return null;
 	}
+
 	public static Shader get(ShaderRegistryEntry shaderData, Callable<Identifier> renderType, Callable<Boolean> shouldRender) {
 		return new Shader(shaderData, renderType, shouldRender);
 	}
+
 	public static Shader get(ShaderRegistryEntry shaderData, Callable<Identifier> renderType) {
 		return new Shader(shaderData, renderType);
 	}
+
 	public static Identifier getPostShader(Identifier post_effect, boolean full) {
 		return Identifier.of(post_effect.getNamespace(), ((full ? "post_effect/" : "") + post_effect.getPath() + (full ? ".json" : "")));
 	}
+
 	public static int getShaderIndex(Identifier shaderId) {
 		return getShaderIndex(getMainRegistryId(), shaderId);
 	}
+
 	public static int getShaderIndex(Identifier registry, Identifier shaderId) {
 		if (shaderId != null) {
 			for (ShaderRegistryEntry data : getRegistry(registry)) {
@@ -229,9 +253,11 @@ public class Shaders {
 		}
 		return -1;
 	}
+
 	public static JsonObject getCustom(int shaderIndex, String namespace) {
 		return getCustom(getMainRegistryId(), shaderIndex, namespace);
 	}
+
 	public static JsonObject getCustom(Identifier registry, int shaderIndex, String namespace) {
 		ShaderRegistryEntry shader = get(registry, shaderIndex);
 		if (shader != null) {
@@ -244,40 +270,51 @@ public class Shaders {
 		}
 		return null;
 	}
+
 	public static Text getShaderName(int shaderIndex, boolean shouldShowNamespace) {
 		return getShaderName(getMainRegistryId(), shaderIndex, shouldShowNamespace);
 	}
+
 	public static Text getShaderName(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
 		ShaderRegistryEntry shader = get(registry, shaderIndex);
 		if (shader != null) return Translation.getShaderText(shader.getID(), shouldShowNamespace);
 		return Translation.getErrorTranslation(Data.getVersion().getID());
 	}
+
 	public static Text getShaderName(int shaderIndex) {
 		return getShaderName(getMainRegistryId(), shaderIndex);
 	}
+
 	public static Text getShaderName(Identifier registry, int shaderIndex) {
 		return getShaderName(registry, shaderIndex, true);
 	}
+
 	public static Text getShaderName(Identifier registryId, Identifier shaderId) {
 		return getShaderName(registryId, getShaderIndex(registryId, shaderId));
 	}
+
 	public static Text getShaderDescription(int shaderIndex, boolean shouldShowNamespace) {
 		return getShaderDescription(getMainRegistryId(), shaderIndex, shouldShowNamespace);
 	}
+
 	public static Text getShaderDescription(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
 		ShaderRegistryEntry shader = get(registry, shaderIndex);
 		if (shader != null) return Translation.getShaderText(shader.getID(), shouldShowNamespace);
 		return Translation.getErrorTranslation(Data.getVersion().getID());
 	}
+
 	public static Text getShaderDescription(int shaderIndex) {
 		return getShaderDescription(getMainRegistryId(), shaderIndex);
 	}
+
 	public static Text getShaderDescription(Identifier registry, int shaderIndex) {
 		return getShaderDescription(registry, shaderIndex, true);
 	}
+
 	public static Optional<ShaderRegistryEntry> guessPostShader(@NotNull String id) {
 		return guessPostShader(getMainRegistryId(), id);
 	}
+
 	public static Optional<ShaderRegistryEntry> guessPostShader(@NotNull Identifier registry, @NotNull String id) {
 		// If the shader registry contains at least one shader with the name, the first detected instance will be used.
 		id = id.toLowerCase(Locale.ROOT);
@@ -304,6 +341,7 @@ public class Shaders {
 
 		return Optional.empty();
 	}
+
 	// This is identical to the deprecated `PostEffectProcessor.render(framebuffer, objectAllocator);` function.
 	public static void renderShaderUsingAllocator(Shader shader, Framebuffer framebuffer, ObjectAllocator objectAllocator, @Nullable Identifier customPasses) {
 		try {
@@ -314,15 +352,19 @@ public class Shaders {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render processor: {}", error.getLocalizedMessage()));
 		}
 	}
+
 	public static int getShaderAmount() {
 		return getShaderAmount(getMainRegistryId());
 	}
+
 	public static int getShaderAmount(Identifier registry) {
 		return getRegistry(registry).size();
 	}
+
 	public static boolean isValidIndex(int index) {
 		return isValidIndex(getMainRegistryId(), index);
 	}
+
 	public static boolean isValidIndex(Identifier registry, int index) {
 		return index <= getShaderAmount(registry) && index >= 0;
 	}

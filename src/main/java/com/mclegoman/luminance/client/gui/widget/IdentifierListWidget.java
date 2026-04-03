@@ -8,7 +8,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.*;
 
 public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<IdentifierListWidget.Entry> {
     public OnSelect onSelect;
