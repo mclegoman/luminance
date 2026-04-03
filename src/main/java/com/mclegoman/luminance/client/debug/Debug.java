@@ -21,13 +21,14 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class Debug {
 	public static Couple<Identifier, Identifier> debugShader;
 	public static boolean debugShaderEnabled;
 	public static Identifier debugRenderType;
 
-	public static void cycleDebugRenderType(boolean backwards) {
+	public static Optional<Identifier> cycleDebugRenderType(boolean backwards) {
 		List<Identifier> renderTypes = new ArrayList<>(Events.RenderType.registry.keySet());
 		if (!renderTypes.isEmpty()) {
 			renderTypes.sort(Comparator.comparing(Identifier::toString));
@@ -37,8 +38,9 @@ public class Debug {
 			int index;
 			if (backwards) index = (prevIndex - 1 + size) % size;
 			else index = (prevIndex + 1 + size) % size;
-			debugRenderType = renderTypes.get(index);
+			return Optional.of(debugRenderType = renderTypes.get(index));
 		}
+		return Optional.empty();
 	}
 
 	public static void applyDebugShader() {
