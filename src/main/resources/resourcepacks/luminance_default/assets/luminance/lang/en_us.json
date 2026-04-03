@@ -1,5 +1,5 @@
 {
-	"gui.luminance.shader.luminance.aa" : "Anti-alias",
+	"gui.luminance.shader.luminance.aa" : "Anti-aliasing",
 	"gui.luminance.shader.luminance.crt" : "CRT",
 	"gui.luminance.shader.luminance.dominant_channel" : "Dominant Channel",
 	"gui.luminance.shader.luminance.vision2": "Double Vision",
