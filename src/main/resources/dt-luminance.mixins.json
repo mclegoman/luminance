@@ -19,9 +19,11 @@
     "client.shaders.PostEffectProcessorMixin",
     "client.shaders.RotatingCubeMapRendererMixin",
     "client.shaders.ScreenMixin",
+    "client.shaders.Std140BuilderMixin",
+    "client.shaders.Std140SizeCalculatorMixin",
     "client.shaders.TitleScreenMixin",
-    "client.shaders.UniformValueMixin",
     "client.shaders.UniformValueImplMixin",
+    "client.shaders.UniformValueMixin",
     "client.shaders.WorldRendererMixin",
     "compat.modmenu.FabricModMixin",
     "compat.modmenu.ModsScreenMixin"

@@ -33,11 +33,14 @@ public class UniformInstance {
     public void putValues(Std140Builder builder) {
         List<Float> values = getValues();
 
-        // vec3s are written with some extra padding for a 4th value (prob because vec3s arent real)
         // we write the values sequentially instead of using putVecN, so buffer alignment needs to be handled manually
         // doing a bunch of checks to do the function calls nicely would be a little awkward (since vector types dont like being handled generically)
         // but maybe storing the result of those calculations with a function reference would be decent?
         // this is *way* simpler though
+
+        // vec3s are aligned to 16 bytes, instead of the expected 12
+        // this is actually handled incorrectly by minecraft, see: https://bugs.mojang.com/browse/MC/issues/MC-307206
+        // but we have a mixin to fix this, so that wouldn't matter, and we could use the putVec3 function
         if (defaultValue.size() >= 3) {
             builder.align(16);
         } else if (defaultValue.size() == 2){
@@ -54,12 +57,6 @@ public class UniformInstance {
                 putValue(builder, defaultValue.get(i), value);
             }
         }
-
-        // i would expect it would be required to move the buffer position forwards by writing a single value, like so:
-        // if (defaultValue.size() == 3) {
-        //     builder.putFloat(0f);
-        // }
-        // but this doesnt seem to be the case?
     }
 
     private void putValue(Std140Builder builder, Number defaultValue, @Nullable Float overrideValue) {
