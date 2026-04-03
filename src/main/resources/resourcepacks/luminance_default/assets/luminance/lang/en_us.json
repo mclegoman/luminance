@@ -1,5 +1,5 @@
 {
-	"gui.luminance.shader.luminance.aa" : "Anti-alias",
+	"gui.luminance.shader.luminance.aa" : "Anti-aliasing",
 	"gui.luminance.shader.luminance.crt" : "CRT",
 	"gui.luminance.shader.luminance.dominant_channel" : "Dominant Channel",
 	"gui.luminance.shader.luminance.vision2": "Double Vision",
@@ -10,6 +10,7 @@
 	"gui.luminance.shader.luminance.mirror" : "Mirror",
 	"gui.luminance.shader.luminance.outlined" : "Outlined",
 	"gui.luminance.shader.luminance.outlined2" : "Darkened Outline",
+	"gui.luminance.shader.luminance.painting" : "Painting",
 	"gui.luminance.shader.luminance.pixelated" : "Pixelated",
 	"gui.luminance.shader.luminance.tiltshift" : "Tilt-shift",
 	"gui.luminance.shader.luminance.rainbow" : "Rainbow",

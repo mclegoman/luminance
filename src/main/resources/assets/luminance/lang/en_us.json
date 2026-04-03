@@ -43,6 +43,15 @@
 	"gui.luminance.resource_pack.luminance_default": "Luminance: Default",
 	"gui.luminance.resource_pack.luminance_default.description": "The default look of Luminance",
 
+	"gui.luminance.debug.render": "Debug Shader: %s",
+	"gui.luminance.debug.render_type": "Render Type: %s",
+	"gui.luminance.render_type.world": "World",
+	"gui.luminance.render_type.ui": "UI",
+	"gui.luminance.render_type.ui_background": "UI Background",
+	"gui.luminance.render_type.panorama": "Panorama",
+
+	"gui.luminance.config": "Configure",
+
 	"gui.luminance.config.alpha": "Shader Strength: %s",
 	"gui.luminance.config.alpha.hover": "§fChanges the strength of shaders.\n§7Note: Only shaders that were developed to use this feature will work, some shaders may use this differently. \n\n%s§c§l + Scroll Wheel",
 

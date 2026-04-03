@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.client.shaders;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 public class ShaderTime {
@@ -21,7 +22,7 @@ public class ShaderTime {
     private float expDelta;
 
     // current position in the rendering pipeline
-    public static Shader.RenderType currentRenderType;
+    public static RenderTypes.RenderType currentRenderType;
 
     public void update(float tickProgress) {
         this.tickProgress = tickProgress;

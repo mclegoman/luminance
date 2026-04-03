@@ -62,7 +62,6 @@ public class Uniforms {
 		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.update(shaderTime));
 	}
 	public static void init() {
-		// a renderType uniform could be useful?
 		try {
 			String namespace = Data.getVersion().getID();
 
@@ -119,7 +118,7 @@ public class Uniforms {
 			registerSingleTree(namespace, "star_brightness", Uniforms::getStarBrightness, 0f, 1f);
 			registerStandardTree(namespace, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("period", List.of(1.0f)))), false);
 			registerStandardTree(namespace, "random", Uniforms::getRandom, 0f, 1f, 1, EmptyConfig.INSTANCE, false);
-			registerStandardTree(namespace, "render_type", Uniforms::getRenderType, 0f, (float)Shader.RenderType.values().length-1, 1, EmptyConfig.INSTANCE, false);
+			//registerStandardTree(namespace, "render_type", Uniforms::getRenderType, 0f, (float)Shader.RenderType.values().length-1, 1, EmptyConfig.INSTANCE, false); todo; fix
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
 		}
@@ -452,7 +451,7 @@ public class Uniforms {
 		uniformValue.set(0, Accessors.getGameRenderer().getRandom().nextFloat());
 	}
 	public static void getRenderType(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
-		uniformValue.set(0, ShaderTime.currentRenderType.getId());
+		//uniformValue.set(0, ShaderTime.currentRenderType.getId()); // todo fix
 	}
 	public static void getZero(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		uniformValue.set(0, 0F);

@@ -11,11 +11,12 @@ import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.debug.Debug;
 import com.mclegoman.luminance.client.gui.screen.config.ConfigScreen;
 import com.mclegoman.luminance.client.translation.Translation;
+import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.DateHelper;
 import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.util.Identifier;
+import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -46,8 +47,13 @@ public class Keybindings {
 			ClientData.minecraft.setScreen(new ConfigScreen(ClientData.minecraft.currentScreen, 0, null, DateHelper.isPride()));
 		}
 		if (ClientData.isDevelopment()) {
-			if (toggle_debug_shader != null && toggle_debug_shader.wasPressed()) Debug.debugShaderEnabled = !Debug.debugShaderEnabled;
-			if (cycle_debug_render_type != null && cycle_debug_render_type.wasPressed()) Debug.cycleDebugRenderType();
+			if (toggle_debug_shader != null && toggle_debug_shader.wasPressed()) {
+				Debug.setDebugShaderEnabled(!Debug.isDebugShaderEnabled());
+				MessageOverlay.setOverlay(Translation.getTranslation(Data.getVersion().getID(), "debug.render", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.isDebugShaderEnabled())}));
+			}
+			if (cycle_debug_render_type != null && cycle_debug_render_type.wasPressed()) {
+				Debug.cycleDebugRenderType(ClientData.minecraft.isShiftPressed()).ifPresent(renderTypeId -> MessageOverlay.setOverlay(Translation.getTranslation(Data.getVersion().getID(), "debug.render_type", new Object[]{Text.translatableWithFallback("gui." + renderTypeId.getNamespace() + ".render_type." + renderTypeId.getPath(), renderTypeId.toString())})));
+			}
 		}
 	}
 }

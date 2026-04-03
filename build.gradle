@@ -2,8 +2,7 @@
 //file:noinspection GroovyAccessibility
 plugins {
 	id "maven-publish"
-	// TODO: loom version needs to be configurable
-	alias libs.plugins.loom version '1.14-SNAPSHOT'
+	alias libs.plugins.loom
 	alias libs.plugins.minotaur
 }
 

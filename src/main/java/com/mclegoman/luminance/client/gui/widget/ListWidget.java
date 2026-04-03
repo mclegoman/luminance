@@ -42,7 +42,9 @@ public class ListWidget extends EntryListWidget<ListWidget.ListEntry> {
 
 	public ListWidget(MinecraftClient client, int width, int height, int y, int itemHeight, List<ListEntry> entries, double scrollY) {
 		super(client, width, height, y, itemHeight);
-		for (ListEntry entry : entries) addEntry(entry);
+		for (ListEntry entry : entries) {
+			addEntry(entry);
+		}
 		setScrollY(scrollY);
 	}
 
@@ -51,6 +53,11 @@ public class ListWidget extends EntryListWidget<ListWidget.ListEntry> {
 	}
 
 	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+	}
+
+	@Override
+	protected boolean isEntrySelectionAllowed() {
+		return false;
 	}
 
 	public static class ListEntry extends Entry<ListEntry> {
@@ -72,9 +79,12 @@ public class ListWidget extends EntryListWidget<ListWidget.ListEntry> {
 			int totalSpacing = (this.widgets.length - 1) * this.spacing;
 			int widgetWidth = (this.getWidth() - totalSpacing) / this.widgets.length;
 			int currentX = this.getX();
+			int verticalSpacing = this.spacing / 4;
+			int widgetHeight = this.getHeight() - (verticalSpacing * 2);
+			int yOffset = this.getY() + verticalSpacing;
 			for (ClickableWidget widget : this.widgets) {
-				widget.setDimensions(widgetWidth, this.getHeight());
-				widget.setPosition(currentX, this.getY());
+				widget.setDimensions(widgetWidth, widgetHeight);
+				widget.setPosition(currentX, yOffset);
 				widget.render(context, mouseX, mouseY, ClientData.minecraft.getRenderTickCounter().getTickProgress(true));
 				currentX += widgetWidth + this.spacing;
 			}

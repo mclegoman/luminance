@@ -1,5 +1,5 @@
 [versions]
-loom = "1.10.+"
+loom = "1.15.+"
 minotaur = "2.+"
 
 mc = "1.21.11"

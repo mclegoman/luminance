@@ -1,0 +1,10 @@
+{
+  "post_effect": "luminance:painting",
+  "enabled": true,
+  "disable_ui_rendertype": true,
+  "custom": {
+    "souper_secret_settings": {
+      "groups": [ "edible", "blur" ]
+    }
+  }
+}

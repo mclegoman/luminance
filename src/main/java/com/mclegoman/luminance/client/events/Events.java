@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.client.events;
 
+import com.mclegoman.luminance.client.shaders.RenderTypes;
 import com.mclegoman.luminance.client.shaders.Shader;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
@@ -45,7 +46,7 @@ public class Events {
 
 	public static final Registry<Runnable> OnShaderDataReset = new Registry<>();
 	public static final Registry<Runnables.ShaderData> OnShaderDataRegistered = new Registry<>();
-	public static final Registry<Runnables.ShaderData> OnShaderDataRemoved= new Registry<>();
+	public static final Registry<Runnables.ShaderData> OnShaderDataRemoved = new Registry<>();
 	public static final Registry<Runnable> AfterShaderDataRegistered = new Registry<>();
 
 	public static final Registry<Runnables.InGameHudRender> BeforeInGameHudRender = new Registry<>();
@@ -67,7 +68,7 @@ public class Events {
 	public static final Registry<Runnables.Shader> AfterShaderRender = new Registry<>();
 
 	public static final Registry<Uniform> ShaderUniform = new Registry<>();
-
+	public static final Registry<RenderTypes.RenderType> RenderType = new Registry<>();
 
 	public static class ShaderRender {
 		public static final Map<Identifier, List<Shader.Data>> registry = new HashMap<>();
