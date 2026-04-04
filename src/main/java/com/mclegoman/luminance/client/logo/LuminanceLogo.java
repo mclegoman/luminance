@@ -15,6 +15,7 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -69,10 +70,9 @@ public class LuminanceLogo {
 		@Override
 		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
 		}
-		//TODO: find updated version
-		//@Override
-		//protected boolean isValidClickButton(int button) {
-		//	return false;
-		//}
+		@Override
+		protected boolean isValidClickButton(MouseInput input) {
+			return false;
+		}
 	}
 }
