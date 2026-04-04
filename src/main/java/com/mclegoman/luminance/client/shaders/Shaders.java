@@ -8,7 +8,6 @@
 package com.mclegoman.luminance.client.shaders;
 
 import com.google.gson.JsonObject;
-import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.events.Runnables;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
@@ -35,91 +34,11 @@ public class Shaders {
 		Events.ClientResourceReloaders.register(Identifier.of(Data.getVersion().getID(), "shaders"), new ShaderReloader());
 		Uniforms.init();
 		Events.BeforeGameRender.register(Identifier.of(Data.getVersion().getID(), "update"), Uniforms::update);
-		Events.AfterVanillaPostEffectRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
-            if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
-				return;
-			}
-			// Renders shaders using the WORLD render type.
-			// Shaders that are set to render using the UI render type, but are
-			try {
-                if (shaders != null) shaders.forEach(shader -> {
-                    try {
-                        if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-                            if ((shader.shader().getRenderType().call().equals(RenderTypes.WORLD.getIdentifier()) || (shader.shader().getRenderType().call().equals(RenderTypes.UI.getIdentifier()) && (shader.shader().getShaderData().getDisableUiRenderType() || shader.shader().getUseDepth())))) {
-                            	RenderTypes.WORLD.getRenderer().render(id, shader, framebuffer, objectAllocator);
-                            }
-                        }
-                    } catch (Exception error) {
-                        Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterHandRender shader with id: {}:{}", id, error));
-                    }
-                });
-            } catch (Exception error) {
-                Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterHandRender shader with id: {}:{}", id, error));
-            }
-        }));
-		Events.AfterUiRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
-			if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
-				return;
-			}
-			// Renders shaders using the UI render type.
-			try {
-				if (shaders != null) shaders.forEach(shader -> {
-					try {
-						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(RenderTypes.UI.getIdentifier()) && !shader.shader().getShaderData().getDisableUiRenderType() && !shader.shader().getUseDepth()) {
-								RenderTypes.UI.getRenderer().render(id, shader, framebuffer, objectAllocator);
-							}
-						}
-					} catch (Exception error) {
-						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
-					}
-				});
-			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterGameRender shader with id: {}:{}", id, error));
-			}
-		}));
-		Events.AfterUiBackgroundRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
-			if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
-				return;
-			}
-			// Renders shaders using the UI_BACKGROUND render type.
-			try {
-				if (shaders != null) shaders.forEach(shader -> {
-					try {
-						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(RenderTypes.UI_BACKGROUND.getIdentifier()) && !shader.shader().getShaderData().getDisableUiBackgroundRenderTypes() && !shader.shader().getUseDepth()) {
-								RenderTypes.UI_BACKGROUND.getRenderer().render(id, shader, framebuffer, objectAllocator);
-							}
-						}
-					} catch (Exception error) {
-						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterBackgroundRender shader with id: {}:{}", id, error));
-					}
-				});
-			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterBackgroundRender shader with id: {}:{}", id, error));
-			}
-		}));
-		Events.AfterPanoramaRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> Events.ShaderRender.registry.forEach((id, shaders) -> {
-			if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
-				return;
-			}
-			// Renders shaders using the PANORAMA render type.
-			try {
-				if (shaders != null) shaders.forEach(shader -> {
-					try {
-						if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
-							if (shader.shader().getRenderType().call().equals(RenderTypes.PANORAMA.getIdentifier()) && !shader.shader().getShaderData().getDisableUiBackgroundRenderTypes() && !shader.shader().getUseDepth()) {
-								RenderTypes.PANORAMA.render(id, shader, framebuffer, objectAllocator);
-							}
-						}
-					} catch (Exception error) {
-						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterPanoramaRender shader with id: {}:{}", id, error));
-					}
-				});
-			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render AfterPanoramaRender shader with id: {}:{}", id, error));
-			}
-		}));
+
+		Events.AfterVanillaPostEffectRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.WORLD, framebuffer, objectAllocator));
+		Events.AfterUiRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.UI, framebuffer, objectAllocator));
+		Events.AfterUiBackgroundRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.UI_BACKGROUND, framebuffer, objectAllocator));
+		Events.AfterPanoramaRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.PANORAMA, framebuffer, objectAllocator));
 	}
 
 	public static Identifier getMainRegistryId() {

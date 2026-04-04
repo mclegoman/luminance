@@ -29,6 +29,10 @@ public abstract class GameRendererMixin {
 	private void luminance$afterPostRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
 		Execute.afterVanillaPostEffectRender(this.pool);
 	}
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
+	private void luminance$beforeUiRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
+		Execute.beforeUiRender(this.pool);
+	}
 	@Inject(method = "render", at = @At("TAIL"))
 	private void luminance$afterUiRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
 		Execute.afterUiRender(this.pool);

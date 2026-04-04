@@ -18,8 +18,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(priority = 100, value = Screen.class)
 public abstract class ScreenMixin {
-	@Inject(method = "renderBackground", at = @At("RETURN"))
-	private void luminance$afterBackgroundRender(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+	@Inject(method = "renderInGameBackground", at = @At("RETURN"))
+	private void luminance$afterBackgroundRender_afterGradient(DrawContext context, CallbackInfo ci) {
+		Execute.afterUiBackgroundRender(((GameRendererAccessor) ClientData.minecraft.gameRenderer).getPool());
+	}
+
+	@Inject(method = "renderPanoramaBackground", at = @At("RETURN"))
+	private void luminance$afterBackgroundRender_afterPanorama(DrawContext context, float deltaTicks, CallbackInfo ci) {
 		Execute.afterUiBackgroundRender(((GameRendererAccessor) ClientData.minecraft.gameRenderer).getPool());
 	}
 }

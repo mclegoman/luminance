@@ -105,6 +105,15 @@ public class Execute {
 			}
 		}));
 	}
+	public static void beforeUiRender(ObjectAllocator allocator) {
+		Events.BeforeUiRender.registry.forEach(((id, runnable) -> {
+			try {
+				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
+			} catch (Exception error) {
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute BeforeUiRender event with id: {}: {}", id, error));
+			}
+		}));
+	}
 	public static void afterUiBackgroundRender(ObjectAllocator allocator) {
 		RenderTypes.RenderType previous = ShaderTime.currentRenderType;
 		ShaderTime.currentRenderType = RenderTypes.UI_BACKGROUND;
@@ -112,7 +121,7 @@ public class Execute {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterScreenBackgroundRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterUiBackgroundRender event with id: {}: {}", id, error));
 			}
 		}));
 		// this and afterPanoramaRender are a special case, so resetting the RenderType it makes sense
