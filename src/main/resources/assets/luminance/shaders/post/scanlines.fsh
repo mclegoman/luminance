@@ -8,7 +8,6 @@ layout(std140) uniform SamplerInfo {
 };
 
 layout(std140) uniform ScanlinesConfig {
-    vec2 InSize;
     float Amount;
     float Strength;
 };

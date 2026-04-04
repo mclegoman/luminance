@@ -8,7 +8,6 @@ layout(std140) uniform SamplerInfo {
 };
 
 layout(std140) uniform AspectRatioConfig {
-    sampler2D InSampler;
     vec2 AspectRatio;
     vec3 BorderColor;
     vec2 Scale;

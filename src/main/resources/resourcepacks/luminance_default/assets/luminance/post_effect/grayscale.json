@@ -1,19 +1,19 @@
 {
     "targets": {
-        "0": {},
-        "1": {}
+        "merge": {},
+        "swap": {}
     },
     "passes": [
         {
             "vertex_shader": "minecraft:core/screenquad",
-            "fragment_shader": "minecraft:post/color_convolve",
+            "fragment_shader": "luminance:post/color_matrix",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
                 }
             ],
-            "output": "0",
+            "output": "merge",
             "uniforms": {
                 "ColorConfig": [
                     {
@@ -46,7 +46,7 @@
                     {
                         "name": "Saturation",
                         "type": "float",
-                        "value": 0
+                        "value": 0.0
                     }
                 ]
             }
@@ -57,14 +57,14 @@
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "0"
+                    "target": "merge"
                 },
                 {
                     "sampler_name": "Merge",
                     "target": "minecraft:main"
                 }
             ],
-            "output": "1",
+            "output": "swap",
             "uniforms": {
                 "MergeConfig": [
                     {
@@ -82,7 +82,7 @@
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "1"
+                    "target": "swap"
                 }
             ],
             "output": "minecraft:main",

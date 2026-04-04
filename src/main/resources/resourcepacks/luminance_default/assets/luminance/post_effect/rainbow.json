@@ -17,14 +17,14 @@
             "uniforms": {
                 "RainbowConfig": [
                     {
-                        "name": "Colors",
-                        "type": "float",
-                        "value": 7.0
-                    },
-                    {
                         "name": "Scale",
                         "type": "vec3",
                         "value": [ 0.0, 7.0, 0.0 ]
+                    },
+                    {
+                        "name": "Colors",
+                        "type": "float",
+                        "value": 7.0
                     },
                     {
                         "name": "Color1",

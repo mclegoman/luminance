@@ -96,7 +96,7 @@
             }
         },
         {
-            "vertex_shader": "minecraft:post/downscale",
+            "vertex_shader": "minecraft:core/screenquad",
             "fragment_shader": "minecraft:post/downscale",
             "inputs": [
                 {
