@@ -33,6 +33,11 @@
                         "type": "float",
                         "value": 12.0,
                         "override": ["luminance:view_distance"]
+                    },
+                    {
+                        "name": "Scale",
+                        "type": "float",
+                        "value": 2.0
                     }
                 ]
             }

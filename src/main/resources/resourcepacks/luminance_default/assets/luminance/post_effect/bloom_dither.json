@@ -125,6 +125,11 @@
                         "name": "Thirst",
                         "type": "float",
                         "value": 1.0
+                    },
+                    {
+                        "name": "Scale",
+                        "type": "float",
+                        "value": 2.0
                     }
                 ]
             }

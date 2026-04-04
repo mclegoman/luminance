@@ -17,6 +17,7 @@ layout(std140) uniform BloomDitherConfig {
     float BloomFactor;
     float HighlightsFactor;
     float Thirst;
+    float Scale;
 };
 
 in vec2 texCoord;
@@ -24,7 +25,7 @@ in vec2 texCoord;
 out vec4 fragColor;
 
 void main() {
-    vec2 halfSize = InSize * 0.5;
+    vec2 halfSize = InSize/Scale;
 
     vec2 steppedCoord = texCoord;
     vec4 color = texture(InSampler, steppedCoord);
@@ -32,7 +33,7 @@ void main() {
     steppedCoord.x = float(int(steppedCoord.x*halfSize.x)) / halfSize.x;
     steppedCoord.y = float(int(steppedCoord.y*halfSize.y)) / halfSize.y;
 
-    vec4 noise = texture(DitherSampler, steppedCoord * halfSize / 4.0);
+    vec4 noise = texture(DitherSampler, fract(steppedCoord * halfSize / DitherSize));
     vec4 col = color + noise * vec4(1.0/12.0, 1.0/12.0, 1.0/6.0, 1.0);
 
     vec4 bloom = texture(BloomSampler, texCoord);
