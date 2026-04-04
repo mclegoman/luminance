@@ -40,12 +40,14 @@ public class RenderTypes {
 
     public static void renderShader(RenderType type, Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
         try {
-            if (shader == null || shader.shader() == null || shader.shader().getShaderData() == null) return;
-
+            if (shader == null) return;
             boolean isFallback = type.equals(getFallback());
 
             Shader shaderInstance = shader.shader();
+            if (shaderInstance == null) return;
+
             ShaderRegistryEntry shaderData = shaderInstance.getShaderData();
+            if (shaderData == null) return;
 
             Callable<Identifier> callableRenderType = shaderInstance.getRenderType();
             if (callableRenderType == null) return;
