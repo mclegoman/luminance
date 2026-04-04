@@ -184,21 +184,13 @@
                     {
                         "name": "TargetPosition",
                         "type": "vec3",
-                        "value": [
-                            0.0,
-                            64.0,
-                            0.0
-                        ],
+                        "value": [ 0.0, 64.0, 0.0 ],
                         "override": ["luminance:crosshair_target"]
                     },
                     {
                         "name": "CameraPosition",
                         "type": "vec3",
-                        "value": [
-                            0.0,
-                            64.0,
-                            0.0
-                        ],
+                        "value": [ 0.0, 64.0, 0.0 ],
                         "override": ["luminance:cam"]
                     },
                     {
@@ -250,12 +242,7 @@
                     {
                         "name": "ColorModulate",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     }
                 ]
             }

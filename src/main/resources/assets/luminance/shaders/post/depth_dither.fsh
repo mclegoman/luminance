@@ -1,19 +1,26 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 uniform sampler2D DitherSampler;
 uniform sampler2D InDepthSampler;
 
-in vec2 texCoord;
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+    vec2 DitherSize;
+    vec2 InDepthSize;
+};
 
-uniform vec2 InSize;
+layout(std140) uniform DepthDitherConfig {
+    float ViewDistance;
+};
+
+in vec2 texCoord;
 
 out vec4 fragColor;
 
-uniform float luminance_viewDistance;
-
 void main() {
-    float depth = min(max(1.0 - (1.0 - texture(InDepthSampler, texCoord).r) * ((luminance_viewDistance * 16) * (luminance_viewDistance * 0.1)), 0.0), 1.0);
+    float depth = min(max(1.0 - (1.0 - texture(InDepthSampler, texCoord).r) * ((ViewDistance * 16) * (ViewDistance * 0.1)), 0.0), 1.0);
     vec2 halfSize = InSize * 0.5;
 
     vec2 steppedCoord = texCoord;

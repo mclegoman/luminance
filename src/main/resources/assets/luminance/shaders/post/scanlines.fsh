@@ -1,13 +1,21 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 
-in vec2 texCoord;
-out vec4 fragColor;
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
 
-uniform vec2 InSize;
-uniform float Amount;
-uniform float Strength;
+layout(std140) uniform ScanlinesConfig {
+    vec2 InSize;
+    float Amount;
+    float Strength;
+};
+
+in vec2 texCoord;
+
+out vec4 fragColor;
 
 void main() {
     vec3 inputColor = texture(InSampler, texCoord).rgb;

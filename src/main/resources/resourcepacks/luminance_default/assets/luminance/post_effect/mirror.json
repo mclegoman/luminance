@@ -6,8 +6,8 @@
     },
     "passes": [
         {
-            "vertex_shader": "minecraft:core/screenquad",
-            "fragment_shader": "luminance:post/mirror",
+            "vertex_shader": "minecraft:post/flip",
+            "fragment_shader": "minecraft:post/blit",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -16,7 +16,30 @@
             ],
             "output": "0",
             "uniforms": {
-                "MirrorConfig": []
+                "FlipConfig": [
+                    {
+                        "name": "X",
+                        "type": "vec2",
+                        "value": [ -1.0, 0.0 ]
+                    },
+                    {
+                        "name": "Y",
+                        "type": "vec2",
+                        "value": [ 0.0, 1.0 ]
+                    },
+                    {
+                        "name": "Offset",
+                        "type": "vec2",
+                        "value": [ 1.0, 0.0 ]
+                    }
+                ],
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
+                    }
+                ]
             }
         },
         {
@@ -43,15 +66,13 @@
                     {
                         "name": "Amount",
                         "type": "vec2",
-                        "value": [
-                            0.9,
-                            0.91
-                        ]
+                        "value": [ 0.9, 0.91 ]
                     },
                     {
-                        "name": "luminance_viewDistance",
+                        "name": "ViewDistance",
                         "type": "float",
-                        "value": 12.0
+                        "value": 12.0,
+                        "override": ["luminance:view_distance"]
                     }
                 ]
             }
@@ -96,12 +117,7 @@
                     {
                         "name": "ColorModulate",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     }
                 ]
             }

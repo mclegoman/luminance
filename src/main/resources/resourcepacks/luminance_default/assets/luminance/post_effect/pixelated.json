@@ -19,10 +19,7 @@
                     {
                         "name": "Amount",
                         "type": "vec2",
-                        "value": [
-                            8.0,
-                            8.0
-                        ]
+                        "value": [ 8.0, 8.0 ]
                     },
                     {
                         "name": "AmountMultiplier",
@@ -32,10 +29,7 @@
                     {
                         "name": "Offset",
                         "type": "vec2",
-                        "value": [
-                            0.5,
-                            0.5
-                        ]
+                        "value": [ 0.5, 0.5 ]
                     }
                 ]
             }
@@ -80,12 +74,7 @@
                     {
                         "name": "ColorModulate",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     }
                 ]
             }

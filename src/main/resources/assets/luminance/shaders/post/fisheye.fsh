@@ -1,15 +1,22 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
+
+layout(std140) uniform FisheyeConfig {
+    vec2 Curvature;
+    vec2 Rotation;
+    float Scale;
+    float Wrapping;
+};
+
 in vec2 texCoord;
+
 out vec4 fragColor;
-
-uniform vec2 Curvature;
-uniform vec2 Rotation;
-uniform float Scale;
-
-uniform float Wrapping;
 
 vec4 wrapTexture(sampler2D tex, vec2 coord) {
     return texture(tex, mix(coord, fract(coord), Wrapping));

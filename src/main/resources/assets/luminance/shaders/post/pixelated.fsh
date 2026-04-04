@@ -1,11 +1,21 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
+
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
+
+layout(std140) uniform PixelatedConfig {
+    uniform vec2 Amount;
+    uniform float AmountMultiplier;
+    uniform vec2 Offset;
+};
+
 in vec2 texCoord;
+
 out vec4 fragColor;
-uniform vec2 Amount;
-uniform float AmountMultiplier;
-uniform vec2 Offset;
 
 void main() {
     vec2 outputAmount = Amount * AmountMultiplier;

@@ -21,48 +21,27 @@
                     {
                         "name": "Color1",
                         "type": "vec3",
-                        "value": [
-                            0.058,
-                            0.219,
-                            0.058
-                        ]
+                        "value": [ 0.058, 0.219, 0.058 ]
                     },
                     {
                         "name": "Color2",
                         "type": "vec3",
-                        "value": [
-                            0.188,
-                            0.384,
-                            0.188
-                        ]
+                        "value": [ 0.188, 0.384, 0.188 ]
                     },
                     {
                         "name": "Color3",
                         "type": "vec3",
-                        "value": [
-                            0.545,
-                            0.674,
-                            0.058
-                        ]
+                        "value": [ 0.545, 0.674, 0.058 ]
                     },
                     {
                         "name": "Color4",
                         "type": "vec3",
-                        "value": [
-                            0.607,
-                            0.737,
-                            0.058
-                        ]
+                        "value": [ 0.607, 0.737, 0.058 ]
                     },
                     {
                         "name": "ColorModulate",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     }
                 ]
             }
@@ -82,10 +61,7 @@
                     {
                         "name": "Amount",
                         "type": "vec2",
-                        "value": [
-                            4.0,
-                            4.0
-                        ]
+                        "value": [ 4.0, 4.0 ]
                     },
                     {
                         "name": "AmountMultiplier",
@@ -95,10 +71,7 @@
                     {
                         "name": "Offset",
                         "type": "vec2",
-                        "value": [
-                            0.5,
-                            0.5
-                        ]
+                        "value": [ 0.5, 0.5 ]
                     }
                 ]
             }
@@ -125,11 +98,7 @@
                     {
                         "name": "Mix",
                         "type": "vec3",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0 ]
                     },
                     {
                         "name": "Scale",
@@ -179,12 +148,7 @@
                     {
                         "name": "ColorModulate",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     }
                 ]
             }

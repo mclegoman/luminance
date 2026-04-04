@@ -1,10 +1,19 @@
-#version 150
-
-in vec2 texCoord;
-out vec4 fragColor;
+#version 330
 
 uniform sampler2D InSampler;
-uniform vec3 Amount;
+
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
+
+layout(std140) uniform HueShiftConfig {
+    vec3 Amount;
+};
+
+in vec2 texCoord;
+
+out vec4 fragColor;
 
 vec3 shift(vec3 color, vec3 shift) {
     const vec3 v = vec3(0.57735);

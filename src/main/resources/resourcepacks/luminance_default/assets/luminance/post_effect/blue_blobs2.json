@@ -18,58 +18,31 @@
             "uniforms": {
                 "ColorConfig": [
                     {
-                        "name": "Gray",
-                        "type": "vec3",
-                        "value": [
-                            0.3,
-                            0.59,
-                            0.11
-                        ]
-                    },
-                    {
                         "name": "RedMatrix",
                         "type": "vec3",
-                        "value": [
-                            0.3921,
-                            0.3921,
-                            0.3921
-                        ]
+                        "value": [ 0.3921, 0.3921, 0.3921 ]
                     },
                     {
                         "name": "GreenMatrix",
                         "type": "vec3",
-                        "value": [
-                            0.9843,
-                            0.9843,
-                            0.9843
-                        ]
+                        "value": [ 0.9843, 0.9843, 0.9843 ]
                     },
                     {
                         "name": "BlueMatrix",
                         "type": "vec3",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0 ]
                     },
                     {
                         "name": "Offset",
                         "type": "vec3",
-                        "value": [
-                            0.0,
-                            0.0,
-                            0.0
-                        ]
-                    },
+                        "value": [ 0.0, 0.0, 0.0 ]
+                    }
+                ],
+                "SaturationConfig": [
                     {
-                        "name": "ColorScale",
+                        "name": "Gray",
                         "type": "vec3",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 0.3, 0.59, 0.11 ]
                     },
                     {
                         "name": "Saturation",
@@ -139,12 +112,7 @@
                     {
                         "name": "ColorModulate",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     }
                 ]
             }

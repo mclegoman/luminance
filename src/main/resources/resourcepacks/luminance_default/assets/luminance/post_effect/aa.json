@@ -19,31 +19,17 @@
                     {
                         "name": "ColorDiff",
                         "type": "vec3",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0 ]
                     },
                     {
                         "name": "SampleDistance",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     },
                     {
                         "name": "Weights",
                         "type": "vec4",
-                        "value": [
-                            0.5,
-                            0.5,
-                            2.5,
-                            2.5
-                        ]
+                        "value": [ 0.5, 0.5, 2.5, 2.5 ]
                     },
                     {
                         "name": "Bias",
@@ -93,12 +79,7 @@
                     {
                         "name": "ColorModulate",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     }
                 ]
             }

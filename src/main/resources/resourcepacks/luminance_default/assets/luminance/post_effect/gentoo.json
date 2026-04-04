@@ -23,38 +23,22 @@
                     {
                         "name": "ConvergeX",
                         "type": "vec3",
-                        "value": [
-                            -4.0,
-                            0.0,
-                            2.0
-                        ]
+                        "value": [ -4.0, 0.0, 2.0 ]
                     },
                     {
                         "name": "ConvergeY",
                         "type": "vec3",
-                        "value": [
-                            0.0,
-                            -4.0,
-                            2.0
-                        ]
+                        "value": [ 0.0, -4.0, 2.0 ]
                     },
                     {
                         "name": "RadialConvergeX",
                         "type": "vec3",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0 ]
                     },
                     {
                         "name": "RadialConvergeY",
                         "type": "vec3",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0 ]
                     }
                 ]
             }
@@ -101,11 +85,7 @@
                     {
                         "name": "Mix",
                         "type": "vec3",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0 ]
                     },
                     {
                         "name": "Scale",
@@ -170,20 +150,12 @@
                     {
                         "name": "Floor",
                         "type": "vec3",
-                        "value": [
-                            0.05,
-                            0.05,
-                            0.05
-                        ]
+                        "value": [ 0.05, 0.05, 0.05 ]
                     },
                     {
                         "name": "Power",
                         "type": "vec3",
-                        "value": [
-                            0.8,
-                            0.8,
-                            0.8
-                        ]
+                        "value": [ 0.8, 0.8, 0.8 ]
                     }
                 ]
             }
@@ -228,12 +200,7 @@
                     {
                         "name": "ColorModulate",
                         "type": "vec4",
-                        "value": [
-                            1.0,
-                            1.0,
-                            1.0,
-                            1.0
-                        ]
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
                     }
                 ]
             }

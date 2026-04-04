@@ -1,23 +1,31 @@
-#version 150
-
-in vec2 texCoord;
-in vec2 oneTexel;
-uniform vec2 InSize;
-uniform vec2 OutSize;
+#version 330
 
 uniform sampler2D InSampler;
 uniform sampler2D InDepthSampler;
 uniform sampler2D MixSampler;
+
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+    vec2 InDepthSize;
+    vec2 MixSize;
+};
+
+layout(std140) uniform DepthMixConfig {
+    vec2 Amount;
+    float ViewDistance;
+};
+
+in vec2 texCoord;
+
 out vec4 fragColor;
 
-uniform vec2 Amount;
-uniform float luminance_viewDistance;
-
 void main() {
+    vec2 oneTexel = 1.0 / InSize;
     vec4 inputColor = texture(InSampler, texCoord);
     vec3 mixColor = texture(MixSampler, texCoord).rgb;
 
-    float depth = clamp(1.0 - (1.0 - texture(InDepthSampler, texCoord).r) * ((luminance_viewDistance * 16) * 0.64), 0.0, 1.0);
+    float depth = clamp(1.0 - (1.0 - texture(InDepthSampler, texCoord).r) * ((ViewDistance * 16) * 0.64), 0.0, 1.0);
 
     vec3 outputColor = inputColor.rgb;
     vec2 amount;

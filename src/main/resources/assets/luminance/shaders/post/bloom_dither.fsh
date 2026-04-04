@@ -1,17 +1,25 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 uniform sampler2D DitherSampler;
 uniform sampler2D BloomSampler;
 uniform sampler2D HighlightsSampler;
 
-uniform float BloomFactor;
-uniform float HighlightsFactor;
-uniform float Thirst;
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+    vec2 DitherSize;
+    vec2 BloomSize;
+    vec2 HighlightsSize;
+};
+
+layout(std140) uniform BloomDitherConfig {
+    float BloomFactor;
+    float HighlightsFactor;
+    float Thirst;
+};
 
 in vec2 texCoord;
-
-uniform vec2 InSize;
 
 out vec4 fragColor;
 

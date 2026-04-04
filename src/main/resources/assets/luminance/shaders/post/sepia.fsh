@@ -1,14 +1,22 @@
-#version 150
-
-in vec2 texCoord;
-in vec2 oneTexel;
-out vec4 fragColor;
+#version 330
 
 uniform sampler2D InSampler;
-uniform vec3 SepiaR;
-uniform vec3 SepiaG;
-uniform vec3 SepiaB;
-uniform float Intensity;
+
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
+
+layout(std140) uniform SepiaConfig {
+    vec3 SepiaR;
+    vec3 SepiaG;
+    vec3 SepiaB;
+    float Intensity;
+};
+
+in vec2 texCoord;
+
+out vec4 fragColor;
 
 void main() {
     vec4 color = texture(InSampler, texCoord);
