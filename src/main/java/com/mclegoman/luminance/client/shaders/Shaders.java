@@ -35,6 +35,7 @@ public class Shaders {
 		Uniforms.init();
 		Events.BeforeGameRender.register(Identifier.of(Data.getVersion().getID(), "update"), Uniforms::update);
 
+		// TODO: when registering a shader renderer, we should be able to have a callable that is used to set disablePhotosensitivity.
 		Events.AfterVanillaPostEffectRender.register(Identifier.of(Data.getVersion().getID(), "main"),
 				(framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.WORLD, framebuffer, objectAllocator));
 		Events.AfterUiRender.register(Identifier.of(Data.getVersion().getID(), "main"),
