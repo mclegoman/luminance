@@ -14,6 +14,7 @@ import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.gui.screen.LuminanceTitleScreen;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.shaders.interfaces.DynamicRenderTickCounterInterfact;
+import com.mclegoman.luminance.client.shaders.interfaces.WorldRendererInterface;
 import com.mclegoman.luminance.client.shaders.uniforms.RootUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.TreeUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
@@ -119,7 +120,9 @@ public class Uniforms {
 			registerSingleTree(namespace, "star_brightness", Uniforms::getStarBrightness, 0f, 1f);
 			registerStandardTree(namespace, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("period", List.of(1.0f)))), false);
 			registerStandardTree(namespace, "random", Uniforms::getRandom, 0f, 1f, 1, EmptyConfig.INSTANCE, false);
-			//registerStandardTree(namespace, "render_type", Uniforms::getRenderType, 0f, (float)Shader.RenderType.values().length-1, 1, EmptyConfig.INSTANCE, false); todo; fix
+			registerSingleTree(namespace, "render_type/is_depth_supported", Uniforms::getRenderTypeIsDepthSupported, 0f, 1f);
+			registerSingleTree(namespace, "render_type/is_over_ui", Uniforms::getRenderTypeIsOverUi, 0f, 1f);
+			registerSingleTree(namespace, "render_type/is_under_ui", Uniforms::getRenderTypeIsUnderUi, 0f, 1f);
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
 		}
@@ -441,19 +444,27 @@ public class Uniforms {
 	public static float getIsDay(ShaderTime shaderTime) {
 		return (getSunAngle(shaderTime) <= 0.5) ? 1.0F : 0.0F;
 	}
-	public static float getStarBrightness(ShaderTime shaderTime) {
-		// TODO: update this
-		//  sky settings are now stored in WorldRenderer.worldRenderState.skyRenderState
 
-		//return ClientData.minecraft.world != null ? ClientData.minecraft.world.getStarBrightness(shaderTime.getTickProgress()) : 0.0F;
-		return 0f;
+	public static float getStarBrightness(ShaderTime shaderTime) {
+		return ((WorldRendererInterface)ClientData.minecraft.worldRenderer).luminance$getWorldRenderState().skyRenderState.starBrightness;
 	}
+
 	public static void getRandom(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		uniformValue.set(0, Accessors.getGameRenderer().getRandom().nextFloat());
 	}
-	public static void getRenderType(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
-		//uniformValue.set(0, ShaderTime.currentRenderType.getId()); // todo fix
+
+	public static float getRenderTypeIsDepthSupported(ShaderTime shaderTime) {
+		return ShaderTime.currentRenderType.isDepthSupported() ? 1.0F : 0.0F;
 	}
+
+	public static float getRenderTypeIsOverUi(ShaderTime shaderTime) {
+		return ShaderTime.currentRenderType.isOverUi() ? 1.0F : 0.0F;
+	}
+
+	public static float getRenderTypeIsUnderUi(ShaderTime shaderTime) {
+		return ShaderTime.currentRenderType.isUnderUi() ? 1.0F : 0.0F;
+	}
+
 	public static void getZero(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
 		uniformValue.set(0, 0F);
 	}
