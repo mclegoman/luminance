@@ -43,10 +43,7 @@ public class RenderTypes {
             if (!shader.shader().getRenderType().call().equals(type.getIdentifier())) return RenderReturn.INVALID_TYPE;
             if (shader.shader().getUseDepth() && !type.isDepthSupported()) return RenderReturn.USE_FALLBACK;
             if (shader.shader().getShaderData().getDisableUiRenderType() && type.isOverUi()) return RenderReturn.USE_FALLBACK;
-            if (shader.shader().getShaderData().getDisableUiBackgroundRenderTypes() && type.isUnderUi()) {
-                System.out.println("Under Disabled: Using fallback!");
-                return RenderReturn.USE_FALLBACK;
-            }
+            if (shader.shader().getShaderData().getDisableUiBackgroundRenderTypes() && type.isUnderUi()) return RenderReturn.USE_FALLBACK;
             type.render(id, shader, framebuffer, objectAllocator);
             return RenderReturn.COMPLETED;
         } catch (Exception error) {
