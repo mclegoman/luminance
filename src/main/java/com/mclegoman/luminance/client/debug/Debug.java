@@ -71,13 +71,17 @@ public class Debug {
 
 	public static void applyDebugShader() {
 		if (ClientData.isDevelopment()) {
-			Events.ShaderRender.register(getDebugId(), new ArrayList<>());
+			Events.ShaderRender.register(getDebugId(), new Events.ShaderRenderData(new ArrayList<>(), Debug::disablePhotosensitive));
 			modifyDebugShader(Shaders.get(Debug.debugShader.getFirst(), Debug.debugShader.getSecond()));
 		}
 	}
 
 	public static void modifyDebugShader(ShaderRegistryEntry shaderData) {
-		Events.ShaderRender.modify(getDebugId(), List.of(new Shader.Data(getDebugId(0), new Shader(shaderData, () -> Debug.debugRenderType, Debug::isDebugShaderEnabled))));
+		Events.ShaderRender.modify(getDebugId(), new Events.ShaderRenderData(List.of(new Shader.Data(getDebugId(0), new Shader(shaderData, () -> Debug.debugRenderType, Debug::isDebugShaderEnabled))), Debug::disablePhotosensitive));
+	}
+
+	public static boolean disablePhotosensitive() {
+		return false;
 	}
 
 	public static void setDebugShader(Identifier registry, Identifier shader) {

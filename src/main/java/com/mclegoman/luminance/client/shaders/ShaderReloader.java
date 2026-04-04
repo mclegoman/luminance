@@ -133,14 +133,17 @@ public class ShaderReloader extends JsonResourceReloader {
 				}
 			});
 
-			Events.ShaderRender.registry.forEach((id, shaders) -> {
-				if (shaders != null) shaders.forEach(shader -> {
-					try {
-						if (shader.shader() != null) shader.shader().reload();
-					} catch (Exception error) {
-						Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to reload shader with id: {}:{}:", id, error));
-					}
-				});
+			Events.ShaderRender.registry.forEach((id, shaderRenderData) -> {
+				if (shaderRenderData != null) {
+					List<Shader.Data> shaders = shaderRenderData.shaders();
+					if (shaders != null) shaders.forEach(shader -> {
+						try {
+							if (shader.shader() != null) shader.shader().reload();
+						} catch (Exception error) {
+							Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to reload shader with id: {}:{}:", id, error));
+						}
+					});
+				}
 			});
 
 			isReloading = false;
