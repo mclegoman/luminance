@@ -13,8 +13,6 @@ import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.gui.screen.LuminanceTitleScreen;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
-import com.mclegoman.luminance.client.shaders.interfaces.DynamicRenderTickCounterInterfact;
-import com.mclegoman.luminance.client.shaders.interfaces.WorldRendererInterface;
 import com.mclegoman.luminance.client.shaders.uniforms.RootUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.TreeUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
@@ -31,7 +29,9 @@ import com.mclegoman.luminance.client.util.Accessors;
 import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
+import com.mclegoman.luminance.mixin.client.shaders.DynamicRenderTickCounterAccessor;
 import com.mclegoman.luminance.mixin.client.shaders.GameRendererAccessor;
+import com.mclegoman.luminance.mixin.client.shaders.WorldRendererAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.option.Perspective;
@@ -60,7 +60,7 @@ public class Uniforms {
 		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.tick());
 	}
 	public static void update() {
-		shaderTime.update(((DynamicRenderTickCounterInterfact)ClientData.minecraft.getRenderTickCounter()).luminance$getRawTickProgress());
+		shaderTime.update(((DynamicRenderTickCounterAccessor)ClientData.minecraft.getRenderTickCounter()).getRawTickProgress());
 		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.update(shaderTime));
 	}
 	public static void init() {
@@ -431,10 +431,10 @@ public class Uniforms {
 		return 0.0F;
 	}
 	public static float getSkyAngle(ShaderTime shaderTime) {
-		// TODO: update this
-		//  sky settings are now stored in WorldRenderer.worldRenderState.skyRenderState
-
-		//return ClientData.minecraft.world != null ? ClientData.minecraft.world.getSkyAngle(shaderTime.getTickProgress()) : 0.0F;
+		// TODO: sky angle seems to have been split into sun, moon, star angles.
+		// ((WorldRendererAccessor)ClientData.minecraft.worldRenderer).getWorldRenderState().skyRenderState.sunAngle;
+		// ((WorldRendererAccessor)ClientData.minecraft.worldRenderer).getWorldRenderState().skyRenderState.moonAngle;
+		// ((WorldRendererAccessor)ClientData.minecraft.worldRenderer).getWorldRenderState().skyRenderState.starAngle;
 		return 0f;
 	}
 	public static float getSunAngle(ShaderTime shaderTime) {
@@ -446,7 +446,7 @@ public class Uniforms {
 	}
 
 	public static float getStarBrightness(ShaderTime shaderTime) {
-		return ((WorldRendererInterface)ClientData.minecraft.worldRenderer).luminance$getWorldRenderState().skyRenderState.starBrightness;
+		return ((WorldRendererAccessor)ClientData.minecraft.worldRenderer).getWorldRenderState().skyRenderState.starBrightness;
 	}
 
 	public static void getRandom(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {

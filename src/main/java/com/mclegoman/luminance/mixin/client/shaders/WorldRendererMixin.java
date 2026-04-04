@@ -14,14 +14,12 @@ import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Execute;
 import com.mclegoman.luminance.client.shaders.LuminanceFramebufferSet;
 import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
-import com.mclegoman.luminance.client.shaders.interfaces.WorldRendererInterface;
 import com.mclegoman.luminance.common.data.Data;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.PostEffectProcessor;
 import net.minecraft.client.gl.SimpleFramebufferFactory;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.client.util.Pool;
 import net.minecraft.util.Identifier;
@@ -35,9 +33,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(priority = 100, value = WorldRenderer.class)
-public abstract class WorldRendererMixin implements WorldRendererInterface {
+public abstract class WorldRendererMixin {
 	@Shadow @Final private DefaultFramebufferSet framebufferSet;
-	@Shadow @Final private WorldRenderState worldRenderState;
 
 	@Inject(method = "render", at = @At("HEAD"))
 	private void luminance$beforeRender(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f positionMatrix, Matrix4f basicProjectionMatrix, Matrix4f projectionMatrix, GpuBufferSlice fogBuffer, Vector4f fogColor, boolean renderSky, CallbackInfo ci) {
@@ -75,10 +72,5 @@ public abstract class WorldRendererMixin implements WorldRendererInterface {
 	@Inject(method = "render", at = @At("TAIL"))
 	private void luminance$afterRender(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f positionMatrix, Matrix4f basicProjectionMatrix, Matrix4f projectionMatrix, GpuBufferSlice fogBuffer, Vector4f fogColor, boolean renderSky, CallbackInfo ci) {
 		Execute.afterWorldRender(allocator);
-	}
-
-	@Override
-	public WorldRenderState luminance$getWorldRenderState() {
-		return this.worldRenderState;
 	}
 }

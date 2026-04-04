@@ -17,7 +17,7 @@
     "client.shaders.PostEffectPipelineTargetMixin",
     "client.shaders.PostEffectPipelineTargetsMixin",
     "client.shaders.PostEffectProcessorMixin",
-    "client.shaders.RenderTickCounterInterfactMixin",
+    "client.shaders.DynamicRenderTickCounterAccessor",
     "client.shaders.RotatingCubeMapRendererMixin",
     "client.shaders.ScreenMixin",
     "client.shaders.Std140BuilderMixin",
@@ -25,6 +25,7 @@
     "client.shaders.TitleScreenMixin",
     "client.shaders.UniformValueImplMixin",
     "client.shaders.UniformValueMixin",
+    "client.shaders.WorldRendererAccessor",
     "client.shaders.WorldRendererMixin",
     "compat.modmenu.FabricModMixin",
     "compat.modmenu.ModsScreenMixin"
