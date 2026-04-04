@@ -47,8 +47,8 @@ public class ShaderReloader extends JsonResourceReloader {
 		});
 	}
 
-	private ShaderRegistryEntry getShaderData(Identifier id, boolean disableOverUi, boolean disableUnderUi, boolean photosensitive, JsonObject custom) {
-		return ShaderRegistryEntry.builder(id).disableOverUi(disableOverUi).disableUnderUi(disableUnderUi).photosensitive(photosensitive).custom(custom).build();
+	private ShaderRegistryEntry getShaderData(Identifier id, boolean fallbackWhenOverUi, boolean fallbackWhenUnderUi, boolean photosensitive, JsonObject custom) {
+		return ShaderRegistryEntry.builder(id).fallbackWhenOverUi(fallbackWhenOverUi).fallbackWhenUnderUi(fallbackWhenUnderUi).photosensitive(photosensitive).custom(custom).build();
 	}
 
 	private void add(List<Identifier> registries, ShaderRegistryEntry shaderData, ResourceManager manager) {
@@ -90,12 +90,12 @@ public class ShaderReloader extends JsonResourceReloader {
 					JsonObject reader = jsonElement.getAsJsonObject();
 					Identifier post_effect = IdentifierHelper.identifierFromString(JsonHelper.getString(reader, "post_effect", identifier.getNamespace() + ":" + identifier.getPath()));
 					boolean enabled = JsonHelper.getBoolean(reader, "enabled", true);
-					boolean disableOverUi = JsonHelper.getBoolean(reader, "disable_over_ui", false);
-					boolean disableUnderUi = JsonHelper.getBoolean(reader, "disable_under_ui", false);
+					boolean fallbackWhenOverUi = JsonHelper.getBoolean(reader, "fallback_when_over_ui", false);
+					boolean fallbackWhenUnderUi = JsonHelper.getBoolean(reader, "fallback_when_under_ui", false);
 					boolean photosensitive = JsonHelper.getBoolean(reader, "photosensitive", false);
 					JsonObject customData = JsonHelper.getObject(reader, "custom", new JsonObject());
 					JsonArray registries = JsonHelper.getArray(reader, "registries", new JsonArray());
-					ShaderRegistryEntry shaderData = getShaderData(post_effect, disableOverUi, disableUnderUi, photosensitive, customData);
+					ShaderRegistryEntry shaderData = getShaderData(post_effect, fallbackWhenOverUi, fallbackWhenUnderUi, photosensitive, customData);
 
 					List<Identifier> registryList = getRegistries(registries);
 					// If the registries are empty, we add the default registry.

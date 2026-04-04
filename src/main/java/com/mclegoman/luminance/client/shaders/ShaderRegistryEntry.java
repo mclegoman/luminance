@@ -12,15 +12,15 @@ import net.minecraft.util.Identifier;
 
 public class ShaderRegistryEntry {
 	private final Identifier id;
-	private final boolean disableOverUi;
-	private final boolean disableUnderUi;
+	private final boolean fallbackWhenOverUi;
+	private final boolean fallbackWhenUnderUi;
 	private final boolean photosensitive;
 	private final JsonObject custom;
 
-	private ShaderRegistryEntry(Identifier id, boolean disableOverUi, boolean disableUnderUi, boolean photosensitive, JsonObject custom) {
+	private ShaderRegistryEntry(Identifier id, boolean fallbackWhenOverUi, boolean fallbackWhenUnderUi, boolean photosensitive, JsonObject custom) {
 		this.id = id;
-		this.disableOverUi = disableOverUi;
-		this.disableUnderUi = disableUnderUi;
+		this.fallbackWhenOverUi = fallbackWhenOverUi;
+		this.fallbackWhenUnderUi = fallbackWhenUnderUi;
 		this.photosensitive = photosensitive;
 		this.custom = custom;
 	}
@@ -31,26 +31,26 @@ public class ShaderRegistryEntry {
 
 	public static class Builder {
 		private final Identifier id;
-		private boolean disableOverUi;
-		private boolean disableUnderUi;
+		private boolean fallbackWhenOverUi;
+		private boolean fallbackWhenUnderUi;
 		private boolean photosensitive;
 		private JsonObject custom;
 
 		private Builder(Identifier id) {
 			this.id = id;
-			this.disableOverUi = false;
-			this.disableUnderUi = false;
+			this.fallbackWhenOverUi = false;
+			this.fallbackWhenUnderUi = false;
 			this.photosensitive = false;
 			this.custom = new JsonObject();
 		}
 
-		public Builder disableOverUi(boolean disableOverUi) {
-			this.disableOverUi = disableOverUi;
+		public Builder fallbackWhenOverUi(boolean fallbackWhenOverUi) {
+			this.fallbackWhenOverUi = fallbackWhenOverUi;
 			return this;
 		}
 
-		public Builder disableUnderUi(boolean disableUnderUi) {
-			this.disableUnderUi = disableUnderUi;
+		public Builder fallbackWhenUnderUi(boolean fallbackWhenUnderUi) {
+			this.fallbackWhenUnderUi = fallbackWhenUnderUi;
 			return this;
 		}
 
@@ -65,7 +65,7 @@ public class ShaderRegistryEntry {
 		}
 
 		public ShaderRegistryEntry build() {
-			return new ShaderRegistryEntry(this.id, this.disableOverUi, this.disableUnderUi, this.photosensitive, this.custom);
+			return new ShaderRegistryEntry(this.id, this.fallbackWhenOverUi, this.fallbackWhenUnderUi, this.photosensitive, this.custom);
 		}
 	}
 
@@ -77,12 +77,12 @@ public class ShaderRegistryEntry {
 		return Shaders.getPostShader(this.id, full);
 	}
 
-	public boolean shouldDisableOverUi() {
-		return this.disableOverUi;
+	public boolean useFallbackWhenOverUi() {
+		return this.fallbackWhenOverUi;
 	}
 
-	public boolean shouldDisableUnderUi() {
-		return this.disableUnderUi;
+	public boolean useFallbackWhenUnderUi() {
+		return this.fallbackWhenUnderUi;
 	}
 
 	public boolean isPhotosensitive() {
