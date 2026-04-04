@@ -37,6 +37,7 @@ public class DebugShaderScreen extends Screen {
 	private IdentifierListWidget registryList;
 	private IdentifierListWidget shaderList;
 	private Identifier selectedRegistry;
+	private boolean reducedAlpha = true;
 
 	public DebugShaderScreen(Screen parent) {
 		this(parent, Debug.getDebugShader().getFirst());
@@ -54,6 +55,11 @@ public class DebugShaderScreen extends Screen {
 				Debug.setDisablePhotosensitive(!Debug.getDisablePhotosensitive());
 				button.setMessage(Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.getDisablePhotosensitive()));
 			}).width(32).tooltip(Tooltip.of(Translation.getTranslation(Data.getVersion().getID(), "debug.disable_photosensitive"))).position(2, 2).build());
+
+			this.addDrawableChild(ButtonWidget.builder(Translation.getVariableTranslation(Data.getVersion().getID(), "onff", this.reducedAlpha), button -> {
+				this.reducedAlpha = !this.reducedAlpha;
+				button.setMessage(Translation.getVariableTranslation(Data.getVersion().getID(), "onff", this.reducedAlpha));
+			}).width(32).tooltip(Tooltip.of(Translation.getTranslation(Data.getVersion().getID(), "debug.reduced_alpha"))).position(2, 22).build());
 
 			this.grid = new GridWidget();
 			this.grid.getMainPositioner().alignHorizontalCenter().margin(2);
@@ -125,7 +131,7 @@ public class DebugShaderScreen extends Screen {
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		for (Element element : children()) {
 			if (element instanceof ClickableWidget clickableWidget) {
-				clickableWidget.setAlpha(0.24F);
+				clickableWidget.setAlpha(this.reducedAlpha ? 0.24F : 1.0F);
 			}
 		}
 		super.render(context, mouseX, mouseY, delta);

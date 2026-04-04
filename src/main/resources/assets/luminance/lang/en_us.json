@@ -51,6 +51,7 @@
 	"gui.luminance.render_type.panorama": "Panorama",
 
 	"gui.luminance.debug.disable_photosensitive": "Disable Photosensitive Shaders",
+	"gui.luminance.debug.reduced_alpha": "Reduced Debug Screen Alpha",
 
 	"gui.luminance.config": "Configure",
 
