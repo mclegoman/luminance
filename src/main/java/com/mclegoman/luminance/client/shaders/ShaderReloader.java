@@ -30,9 +30,11 @@ import java.util.Map;
 public class ShaderReloader extends JsonResourceReloader {
 	protected static boolean isReloading;
 	public static final String resourceLocation = "luminance";
+
 	public ShaderReloader() {
 		super(new Gson(), resourceLocation);
 	}
+
 	private void reset() {
 		SpectatorHandler.clearActive();
 		Shaders.registries.clear();
@@ -44,9 +46,11 @@ public class ShaderReloader extends JsonResourceReloader {
 			}
 		});
 	}
-	private ShaderRegistryEntry getShaderData(Identifier id, boolean disableUiRenderType, boolean disableUiBackgroundRenderTypes, JsonObject custom) {
-		return ShaderRegistryEntry.builder(id).disableUiRenderType(disableUiRenderType).disableUiBackgroundRenderTypes(disableUiBackgroundRenderTypes).custom(custom).build();
+
+	private ShaderRegistryEntry getShaderData(Identifier id, boolean disableOverUi, boolean disableUnderUi, boolean photosensitive, JsonObject custom) {
+		return ShaderRegistryEntry.builder(id).disableOverUi(disableOverUi).disableUnderUi(disableUnderUi).photosensitive(photosensitive).custom(custom).build();
 	}
+
 	private void add(List<Identifier> registries, ShaderRegistryEntry shaderData, ResourceManager manager) {
 		try {
 			manager.getResourceOrThrow(shaderData.getPostEffect(true));
@@ -65,14 +69,17 @@ public class ShaderReloader extends JsonResourceReloader {
 			Data.getVersion().sendToLog(LogType.WARN, "Failed to add shader to registry: " + error);
 		}
 	}
+
 	private void remove(List<Identifier> registries, ShaderRegistryEntry shaderData) {
 		for (Identifier registry : registries) Shaders.getRegistry(registry).removeIf((shader) -> (shader.getID().equals(shaderData.getID())));
 	}
+
 	private List<Identifier> getRegistries(JsonArray input) {
 		List<Identifier> output = new ArrayList<>();
 		for (JsonElement registry : input.asList()) output.add(Identifier.of(registry.getAsString()));
 		return output;
 	}
+
 	@Override
 	public void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {
 		try {
@@ -83,17 +90,12 @@ public class ShaderReloader extends JsonResourceReloader {
 					JsonObject reader = jsonElement.getAsJsonObject();
 					Identifier post_effect = IdentifierHelper.identifierFromString(JsonHelper.getString(reader, "post_effect", identifier.getNamespace() + ":" + identifier.getPath()));
 					boolean enabled = JsonHelper.getBoolean(reader, "enabled", true);
-					// "disable_ui_rendertype" used to be called "disable_game_rendertype", and before that when this was part of Perspective "disable_screen_mode".
-					// We check for all of these in the order of "disable_ui_rendertype", "disable_game_rendertype", "disable_screen_mode".
-					// When creating a new luminance shader, it's recommended to use "disable_ui_rendertype".
-					boolean disableUiRenderType = JsonHelper.getBoolean(reader, "disable_ui_rendertype",
-							JsonHelper.getBoolean(reader, "disable_game_rendertype",
-									JsonHelper.getBoolean(reader, "disable_screen_mode",
-											false)));
-					boolean disableUiBackgroundRenderTypes = JsonHelper.getBoolean(reader, "disable_ui_background_rendertypes", false);
+					boolean disableOverUi = JsonHelper.getBoolean(reader, "disable_over_ui", false);
+					boolean disableUnderUi = JsonHelper.getBoolean(reader, "disable_under_ui", false);
+					boolean photosensitive = JsonHelper.getBoolean(reader, "photosensitive", false);
 					JsonObject customData = JsonHelper.getObject(reader, "custom", new JsonObject());
 					JsonArray registries = JsonHelper.getArray(reader, "registries", new JsonArray());
-					ShaderRegistryEntry shaderData = getShaderData(post_effect, disableUiRenderType, disableUiBackgroundRenderTypes, customData);
+					ShaderRegistryEntry shaderData = getShaderData(post_effect, disableOverUi, disableUnderUi, photosensitive, customData);
 
 					List<Identifier> registryList = getRegistries(registries);
 					// If the registries are empty, we add the default registry.
@@ -122,6 +124,7 @@ public class ShaderReloader extends JsonResourceReloader {
 					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to load luminance shader: {}", error));
 				}
 			});
+
 			Events.AfterShaderDataRegistered.registry.forEach((id, runnable) -> {
 				try {
 					runnable.run();
@@ -129,6 +132,7 @@ public class ShaderReloader extends JsonResourceReloader {
 					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterShaderDataRegistered event with id: {}:{}:", id, error));
 				}
 			});
+
 			Events.ShaderRender.registry.forEach((id, shaders) -> {
 				if (shaders != null) shaders.forEach(shader -> {
 					try {
@@ -138,10 +142,12 @@ public class ShaderReloader extends JsonResourceReloader {
 					}
 				});
 			});
+
 			isReloading = false;
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to apply shaders dataloader: {}", error));
 		}
+
 		Debug.applyDebugShader();
 	}
 }

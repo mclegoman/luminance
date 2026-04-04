@@ -1,7 +1,9 @@
 {
   "post_effect": "minecraft:ntsc",
   "enabled": true,
-  "disable_ui_rendertype": true,
+  "disable_over_ui": true,
+  "disable_under_ui": false,
+  "photosensitive": false,
   "custom": {
     "souper_secret_settings": {
       "groups": [ "edible", "retro" ]

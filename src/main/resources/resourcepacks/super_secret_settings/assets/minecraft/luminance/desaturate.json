@@ -1,7 +1,9 @@
 {
   "post_effect": "minecraft:desaturate",
   "enabled": true,
-  "disable_ui_rendertype": false,
+  "disable_over_ui": false,
+  "disable_under_ui": false,
+  "photosensitive": false,
   "custom": {
     "souper_secret_settings": {
       "groups": [ "edible", "filter" ]

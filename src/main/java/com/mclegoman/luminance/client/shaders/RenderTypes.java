@@ -23,15 +23,23 @@ public class RenderTypes {
     }
 
     public static void render(RenderType type, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
+        render(type, framebuffer, objectAllocator, false);
+    }
+
+    public static void render(RenderType type, Framebuffer framebuffer, ObjectAllocator objectAllocator, boolean disablePhotosensitivity) {
         if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) return;
-        Events.ShaderRender.registry.forEach((id, shaders) -> renderShaders(type, shaders, id, framebuffer, objectAllocator));
+        Events.ShaderRender.registry.forEach((id, shaders) -> renderShaders(type, shaders, id, framebuffer, objectAllocator, disablePhotosensitivity));
     }
 
     public static void renderShaders(RenderType type, List<Shader.Data> shaders, Identifier id, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
+        renderShaders(type, shaders, id, framebuffer, objectAllocator, false);
+    }
+
+    public static void renderShaders(RenderType type, List<Shader.Data> shaders, Identifier id, Framebuffer framebuffer, ObjectAllocator objectAllocator, boolean disablePhotosensitivity) {
         if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) return;
         if (shaders != null) shaders.forEach(shader -> {
             try {
-                renderShader(type, id, shader, framebuffer, objectAllocator);
+                renderShader(type, id, shader, framebuffer, objectAllocator, disablePhotosensitivity);
             } catch (Exception error) {
                 Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render {} shader with id: {}:{}", type.identifier(), id, error));
             }
@@ -39,6 +47,10 @@ public class RenderTypes {
     }
 
     public static void renderShader(RenderType type, Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
+        renderShader(type, id, shader, framebuffer, objectAllocator, false);
+    }
+
+    public static void renderShader(RenderType type, Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator, boolean disablePhotosensitivity) {
         if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) return;
         try {
             if (shader == null) return;
@@ -50,6 +62,8 @@ public class RenderTypes {
             ShaderRegistryEntry shaderData = shaderInstance.getShaderData();
             if (shaderData == null) return;
 
+            if (shaderData.isPhotosensitive() && disablePhotosensitivity) return;
+
             Callable<Identifier> callableRenderType = shaderInstance.getRenderType();
             if (callableRenderType == null) return;
 
@@ -59,7 +73,7 @@ public class RenderTypes {
             boolean isCorrectType = renderType.equals(type.identifier());
             if (!isCorrectType && !isFallback) return;
 
-            boolean useFallback = (shaderInstance.getUseDepth() && !type.isDepthSupported()) || (shaderData.getDisableUiRenderType() && type.isOverUi()) || (shaderData.getDisableUiBackgroundRenderTypes() && type.isUnderUi());
+            boolean useFallback = (shaderInstance.getUseDepth() && !type.isDepthSupported()) || (shaderData.shouldDisableOverUi() && type.isOverUi()) || (shaderData.shouldDisableUnderUi() && type.isUnderUi());
             if (!useFallback && !isCorrectType) return;
 
             if (!useFallback || isFallback) type.render(id, shader, framebuffer, objectAllocator);

@@ -10,62 +10,85 @@ package com.mclegoman.luminance.client.shaders;
 import com.google.gson.JsonObject;
 import net.minecraft.util.Identifier;
 
-// TODO: It could be nice to have a "photosensitivity" option, that could be used to disable the shader if a photosensitivity mode is turned on for a mod.
-// I'd personally still have a warning on it ^dannytaylor
-
 public class ShaderRegistryEntry {
 	private final Identifier id;
-	private final boolean disableUiRenderType;
-	private final boolean disableUiBackgroundRenderTypes;
+	private final boolean disableOverUi;
+	private final boolean disableUnderUi;
+	private final boolean photosensitive;
 	private final JsonObject custom;
-	private ShaderRegistryEntry(Identifier id, boolean disableUiRenderType, boolean disableUiBackgroundRenderTypes, JsonObject custom) {
+
+	private ShaderRegistryEntry(Identifier id, boolean disableOverUi, boolean disableUnderUi, boolean photosensitive, JsonObject custom) {
 		this.id = id;
-		this.disableUiRenderType = disableUiRenderType;
-		this.disableUiBackgroundRenderTypes = disableUiBackgroundRenderTypes;
+		this.disableOverUi = disableOverUi;
+		this.disableUnderUi = disableUnderUi;
+		this.photosensitive = photosensitive;
 		this.custom = custom;
 	}
+
 	public static Builder builder(Identifier id) {
 		return new Builder(id);
 	}
+
 	public static class Builder {
 		private final Identifier id;
-		private boolean disableUiRenderType;
-		private boolean disableUiBackgroundRenderTypes;
+		private boolean disableOverUi;
+		private boolean disableUnderUi;
+		private boolean photosensitive;
 		private JsonObject custom;
+
 		private Builder(Identifier id) {
 			this.id = id;
-			this.disableUiRenderType = false;
-			this.disableUiBackgroundRenderTypes = false;
+			this.disableOverUi = false;
+			this.disableUnderUi = false;
+			this.photosensitive = false;
 			this.custom = new JsonObject();
 		}
-		public Builder disableUiRenderType(boolean disableUiRenderType) {
-			this.disableUiRenderType = disableUiRenderType;
+
+		public Builder disableOverUi(boolean disableOverUi) {
+			this.disableOverUi = disableOverUi;
 			return this;
 		}
-		public Builder disableUiBackgroundRenderTypes(boolean disableUiBackgroundRenderTypes) {
-			this.disableUiBackgroundRenderTypes = disableUiBackgroundRenderTypes;
+
+		public Builder disableUnderUi(boolean disableUnderUi) {
+			this.disableUnderUi = disableUnderUi;
 			return this;
 		}
+
+		public Builder photosensitive(boolean photosensitive) {
+			this.photosensitive = photosensitive;
+			return this;
+		}
+
 		public Builder custom(JsonObject custom) {
 			this.custom = custom;
 			return this;
 		}
+
 		public ShaderRegistryEntry build() {
-			return new ShaderRegistryEntry(this.id, this.disableUiRenderType, this.disableUiBackgroundRenderTypes, this.custom);
+			return new ShaderRegistryEntry(this.id, this.disableOverUi, this.disableUnderUi, this.photosensitive, this.custom);
 		}
 	}
+
 	public Identifier getID() {
 		return this.id;
 	}
+
 	public Identifier getPostEffect(boolean full) {
 		return Shaders.getPostShader(this.id, full);
 	}
-	public boolean getDisableUiRenderType() {
-		return this.disableUiRenderType;
+
+	public boolean shouldDisableOverUi() {
+		return this.disableOverUi;
 	}
-	public boolean getDisableUiBackgroundRenderTypes() {
-		return this.disableUiBackgroundRenderTypes;
+
+	public boolean shouldDisableUnderUi() {
+		return this.disableUnderUi;
 	}
+
+	public boolean isPhotosensitive() {
+		return this.photosensitive;
+	}
+
 	public JsonObject getCustom() {
 		return this.custom;
 	}
