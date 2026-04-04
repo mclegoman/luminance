@@ -23,22 +23,23 @@ public class RenderTypes {
     }
 
     public static void render(RenderType type, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
+        if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) return;
         Events.ShaderRender.registry.forEach((id, shaders) -> renderShaders(type, shaders, id, framebuffer, objectAllocator));
     }
 
     public static void renderShaders(RenderType type, List<Shader.Data> shaders, Identifier id, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
-        if (!ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
-            if (shaders != null) shaders.forEach(shader -> {
-                try {
-                    renderShader(type, id, shader, framebuffer, objectAllocator);
-                } catch (Exception error) {
-                    Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render {} shader with id: {}:{}", type.identifier(), id, error));
-                }
-            });
-        }
+        if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) return;
+        if (shaders != null) shaders.forEach(shader -> {
+            try {
+                renderShader(type, id, shader, framebuffer, objectAllocator);
+            } catch (Exception error) {
+                Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render {} shader with id: {}:{}", type.identifier(), id, error));
+            }
+        });
     }
 
     public static void renderShader(RenderType type, Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
+        if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) return;
         try {
             if (shader == null) return;
             boolean isFallback = type.equals(getFallback());
