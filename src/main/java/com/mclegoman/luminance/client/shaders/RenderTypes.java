@@ -23,12 +23,14 @@ public class RenderTypes {
     }
 
     public static void render(RenderType type, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
-        render(type, framebuffer, objectAllocator, false);
-    }
-
-    public static void render(RenderType type, Framebuffer framebuffer, ObjectAllocator objectAllocator, boolean disablePhotosensitivity) {
         if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) return;
-        Events.ShaderRender.registry.forEach((id, shaders) -> renderShaders(type, shaders, id, framebuffer, objectAllocator, disablePhotosensitivity));
+        Events.ShaderRender.registry.forEach((id, shaders) -> {
+            try {
+                renderShaders(type, shaders, id, framebuffer, objectAllocator, shaders.disablePhotosensitive().call());
+            } catch (Exception error) {
+                Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render {} shader with id: {}:{}", type.identifier(), id, error));
+            }
+        });
     }
 
     public static void renderShaders(RenderType type, Events.ShaderRenderData shaderRenderData, Identifier id, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
