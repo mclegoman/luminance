@@ -30,6 +30,7 @@ public class Debug {
 	private static final Couple<Identifier, Identifier> debugShader;
 	private static boolean debugShaderEnabled;
 	public static Identifier debugRenderType;
+	private static boolean disablePhotosensitive;
 
 	public static void tick() {
 		if (ClientData.isDevelopment()) {
@@ -71,17 +72,13 @@ public class Debug {
 
 	public static void applyDebugShader() {
 		if (ClientData.isDevelopment()) {
-			Events.ShaderRender.register(getDebugId(), new Events.ShaderRenderData(new ArrayList<>(), Debug::disablePhotosensitive));
+			Events.ShaderRender.register(getDebugId(), new Events.ShaderRenderData(new ArrayList<>(), Debug::getDisablePhotosensitive));
 			modifyDebugShader(Shaders.get(Debug.debugShader.getFirst(), Debug.debugShader.getSecond()));
 		}
 	}
 
 	public static void modifyDebugShader(ShaderRegistryEntry shaderData) {
-		Events.ShaderRender.modify(getDebugId(), new Events.ShaderRenderData(List.of(new Shader.Data(getDebugId(0), new Shader(shaderData, () -> Debug.debugRenderType, Debug::isDebugShaderEnabled))), Debug::disablePhotosensitive));
-	}
-
-	public static boolean disablePhotosensitive() {
-		return false;
+		Events.ShaderRender.modify(getDebugId(), new Events.ShaderRenderData(List.of(new Shader.Data(getDebugId(0), new Shader(shaderData, () -> Debug.debugRenderType, Debug::isDebugShaderEnabled))), Debug::getDisablePhotosensitive));
 	}
 
 	public static void setDebugShader(Identifier registry, Identifier shader) {
@@ -109,6 +106,14 @@ public class Debug {
 
 	public static Identifier getDebugId(int index) {
 		return Identifier.of(Data.getVersion().getID() + "_debug", String.valueOf(index));
+	}
+
+	public static boolean getDisablePhotosensitive() {
+		return disablePhotosensitive;
+	}
+
+	public static void setDisablePhotosensitive(boolean value) {
+		disablePhotosensitive = value;
 	}
 
 	static {

@@ -19,6 +19,7 @@ import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.GridWidget;
@@ -49,17 +50,23 @@ public class DebugShaderScreen extends Screen {
 
 	public void init() {
 		try {
+			this.addDrawableChild(ButtonWidget.builder(Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.getDisablePhotosensitive()), button -> {
+				Debug.setDisablePhotosensitive(!Debug.getDisablePhotosensitive());
+				button.setMessage(Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.getDisablePhotosensitive()));
+			}).width(32).tooltip(Tooltip.of(Translation.getTranslation(Data.getVersion().getID(), "debug.disable_photosensitive"))).position(2, 2).build());
+
 			this.grid = new GridWidget();
 			this.grid.getMainPositioner().alignHorizontalCenter().margin(2);
 			GridWidget.Adder gridAdder = this.grid.createAdder(2);
+
 			gridAdder.add(ButtonWidget.builder(Translation.getTranslation(Data.getVersion().getID(), "debug.render", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.isDebugShaderEnabled())}), button -> {
 				Debug.setDebugShaderEnabled(!Debug.isDebugShaderEnabled());
 				button.setMessage(Translation.getTranslation(Data.getVersion().getID(), "debug.render", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.isDebugShaderEnabled())}));
-			}).build());
+			}).width(140).build());
 			gridAdder.add(ButtonWidget.builder(Translation.getTranslation(Data.getVersion().getID(), "debug.render_type", new Object[]{Translation.getRenderTypeTranslation(Debug.debugRenderType)}), button -> {
 				Debug.cycleDebugRenderType(ClientData.minecraft.isShiftPressed());
 				button.setMessage(Translation.getTranslation(Data.getVersion().getID(), "debug.render_type", new Object[]{Translation.getRenderTypeTranslation(Debug.debugRenderType)}));
-			}).build());
+			}).width(140).build());
 
 			this.registryList = new IdentifierListWidget(150, 200, 20, 20, 20, Shaders.getRegistries(), this.selectedRegistry, (id, widget) -> {});
 

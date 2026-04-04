@@ -50,6 +50,8 @@
 	"gui.luminance.render_type.ui_background": "UI Background",
 	"gui.luminance.render_type.panorama": "Panorama",
 
+	"gui.luminance.debug.disable_photosensitive": "Disable Photosensitive Shaders",
+
 	"gui.luminance.config": "Configure",
 
 	"gui.luminance.config.alpha": "Shader Strength: %s",
