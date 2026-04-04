@@ -73,7 +73,7 @@ public class Translation {
 		return Text.translatableWithFallback("gui." + renderTypeId.getNamespace() + ".render_type." + renderTypeId.getPath(), renderTypeId.toString());
 	}
 	public static MutableText getRenderTypeTranslation(RenderTypes.RenderType renderType) {
-		return getRenderTypeTranslation(renderType.getIdentifier());
+		return getRenderTypeTranslation(renderType.identifier());
 	}
 	public static MutableText getTranslation(String namespace, String key, Object[] variables, Formatting[] formattings) {
 		return getText("gui." + namespace + "." + key, true, variables, formattings);

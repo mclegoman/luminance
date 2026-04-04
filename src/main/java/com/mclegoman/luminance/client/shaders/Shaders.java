@@ -35,10 +35,14 @@ public class Shaders {
 		Uniforms.init();
 		Events.BeforeGameRender.register(Identifier.of(Data.getVersion().getID(), "update"), Uniforms::update);
 
-		Events.AfterVanillaPostEffectRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.WORLD, framebuffer, objectAllocator));
-		Events.AfterUiRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.UI, framebuffer, objectAllocator));
-		Events.AfterUiBackgroundRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.UI_BACKGROUND, framebuffer, objectAllocator));
-		Events.AfterPanoramaRender.register(Identifier.of(Data.getVersion().getID(), "main"), (framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.PANORAMA, framebuffer, objectAllocator));
+		Events.AfterVanillaPostEffectRender.register(Identifier.of(Data.getVersion().getID(), "main"),
+				(framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.WORLD, framebuffer, objectAllocator));
+		Events.AfterUiRender.register(Identifier.of(Data.getVersion().getID(), "main"),
+				(framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.UI, framebuffer, objectAllocator));
+		Events.AfterUiBackgroundRender.register(Identifier.of(Data.getVersion().getID(), "main"),
+				(framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.UI_BACKGROUND, framebuffer, objectAllocator));
+		Events.AfterPanoramaRender.register(Identifier.of(Data.getVersion().getID(), "main"),
+				(framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.PANORAMA, framebuffer, objectAllocator));
 	}
 
 	public static Identifier getMainRegistryId() {

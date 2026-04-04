@@ -107,6 +107,6 @@ public class Debug {
 
 	static {
 		debugShader = new Couple<>(Shaders.getMainRegistryId(), Shaders.getOrderedShaderIds(Shaders.getMainRegistryId()).getFirst());
-		debugRenderType = RenderTypes.WORLD.getIdentifier();
+		debugRenderType = RenderTypes.WORLD.identifier();
 	}
 }

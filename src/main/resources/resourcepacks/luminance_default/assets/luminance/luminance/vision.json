@@ -2,7 +2,6 @@
   "post_effect": "luminance:vision",
   "enabled": true,
   "disable_ui_rendertype": true,
-  "disable_ui_background_rendertypes": true,
   "custom": {
     "souper_secret_settings": {
       "groups": [ "edible" ]

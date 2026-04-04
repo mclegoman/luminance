@@ -10,6 +10,7 @@ import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class RenderTypes {
     public static RenderType WORLD = register(Data.idOf("world"), Shaders::renderUsingAllocator, true, false, false);
@@ -29,27 +30,38 @@ public class RenderTypes {
         if (!ClientData.minecraft.gameRenderer.isRenderingPanorama()) {
             if (shaders != null) shaders.forEach(shader -> {
                 try {
-                    if (renderShader(type, id, shader, framebuffer, objectAllocator).equals(RenderReturn.USE_FALLBACK)) getFallback().render(id, shader, framebuffer, objectAllocator);
+                    renderShader(type, id, shader, framebuffer, objectAllocator);
                 } catch (Exception error) {
-                    Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render {} shader with id: {}:{}", type.getIdentifier(), id, error));
+                    Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render {} shader with id: {}:{}", type.identifier(), id, error));
                 }
             });
         }
     }
 
-    public static RenderReturn renderShader(RenderType type, Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
+    public static void renderShader(RenderType type, Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
         try {
-            if (shader == null || shader.shader() == null || shader.shader().getShaderData() == null) return RenderReturn.MISSING_DATA;
-            if (!shader.shader().getRenderType().call().equals(type.getIdentifier())) return RenderReturn.INVALID_TYPE;
-            if (shader.shader().getUseDepth() && !type.isDepthSupported()) return RenderReturn.USE_FALLBACK;
-            if (shader.shader().getShaderData().getDisableUiRenderType() && type.isOverUi()) return RenderReturn.USE_FALLBACK;
-            if (shader.shader().getShaderData().getDisableUiBackgroundRenderTypes() && type.isUnderUi()) return RenderReturn.USE_FALLBACK;
-            type.render(id, shader, framebuffer, objectAllocator);
-            return RenderReturn.COMPLETED;
+            if (shader == null || shader.shader() == null || shader.shader().getShaderData() == null) return;
+
+            boolean isFallback = type.equals(getFallback());
+
+            Shader shaderInstance = shader.shader();
+            ShaderRegistryEntry shaderData = shaderInstance.getShaderData();
+
+            Callable<Identifier> callableRenderType = shaderInstance.getRenderType();
+            if (callableRenderType == null) return;
+
+            Identifier renderType = callableRenderType.call();
+            if (renderType == null) return;
+
+            boolean isCorrectType = renderType.equals(type.identifier());
+            if (!isCorrectType) return;
+
+            boolean useFallback = (shaderInstance.getUseDepth() && !type.isDepthSupported()) || (shaderData.getDisableUiRenderType() && type.isOverUi()) || (shaderData.getDisableUiBackgroundRenderTypes() && type.isUnderUi());
+
+            if (!useFallback || isFallback) type.render(id, shader, framebuffer, objectAllocator);
         } catch (Exception error) {
-            Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render {} shader with id: {}:{}", type.getIdentifier(), id, error));
+            Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render {} shader with id: {}:{}", type.identifier(), id, error));
         }
-        return RenderReturn.USE_FALLBACK;
     }
 
     public static RenderType register(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi) {
@@ -62,50 +74,9 @@ public class RenderTypes {
         void render(Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator);
     }
 
-    public static class RenderType {
-        private final Identifier identifier;
-        private final Renderer renderer;
-        private final boolean isDepthSupported;
-        private final boolean isOverUi;
-        private final boolean isUnderUi;
-
-        public RenderType(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi) {
-            this.identifier = identifier;
-            this.renderer = renderer;
-            this.isDepthSupported = isDepthSupported;
-            this.isOverUi = isOverUi;
-            this.isUnderUi = isUnderUi;
-        }
-
-        public Identifier getIdentifier() {
-            return this.identifier;
-        }
-
-        public Renderer getRenderer() {
-            return this.renderer;
-        }
-
-        public boolean isDepthSupported() {
-            return this.isDepthSupported;
-        }
-
-        public boolean isOverUi() {
-            return this.isOverUi;
-        }
-
-        public boolean isUnderUi() {
-            return this.isUnderUi;
-        }
-
+    public record RenderType(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi) {
         public void render(Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
-            this.getRenderer().render(id, shader, framebuffer, objectAllocator);
+            this.renderer().render(id, shader, framebuffer, objectAllocator);
         }
-    }
-
-    public enum RenderReturn {
-        MISSING_DATA,
-        INVALID_TYPE,
-        USE_FALLBACK,
-        COMPLETED
     }
 }
