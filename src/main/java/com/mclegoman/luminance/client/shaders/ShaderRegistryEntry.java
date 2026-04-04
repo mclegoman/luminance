@@ -10,6 +10,9 @@ package com.mclegoman.luminance.client.shaders;
 import com.google.gson.JsonObject;
 import net.minecraft.util.Identifier;
 
+// TODO: It could be nice to have a "photosensitivity" option, that could be used to disable the shader if a photosensitivity mode is turned on for a mod.
+// I'd personally still have a warning on it ^dannytaylor
+
 public class ShaderRegistryEntry {
 	private final Identifier id;
 	private final boolean disableUiRenderType;

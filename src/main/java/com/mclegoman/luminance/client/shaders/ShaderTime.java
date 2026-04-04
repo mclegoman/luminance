@@ -7,7 +7,6 @@
 
 package com.mclegoman.luminance.client.shaders;
 
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 public class ShaderTime {

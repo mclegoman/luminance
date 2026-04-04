@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): dannytaylor
+    Contributor(s): dannytaylor, Nettakrim
     Github: https://github.com/mclegoman/Luminance
     Licence: GNU LGPLv3
 */
@@ -13,6 +13,7 @@ import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.gui.screen.LuminanceTitleScreen;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
+import com.mclegoman.luminance.client.shaders.interfaces.DynamicRenderTickCounterInterfact;
 import com.mclegoman.luminance.client.shaders.uniforms.RootUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.TreeUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
@@ -58,7 +59,7 @@ public class Uniforms {
 		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.tick());
 	}
 	public static void update() {
-		shaderTime.update(ClientData.minecraft.getRenderTickCounter().getTickProgress(true));
+		shaderTime.update(((DynamicRenderTickCounterInterfact)ClientData.minecraft.getRenderTickCounter()).luminance$getRawTickProgress());
 		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.update(shaderTime));
 	}
 	public static void init() {

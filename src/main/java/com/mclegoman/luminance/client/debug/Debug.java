@@ -32,11 +32,13 @@ public class Debug {
 	public static Identifier debugRenderType;
 
 	public static void tick() {
-		// This will select the top-most shader in the sorted shader list on boot.
-		if (!setup) {
-			resetDebugShader();
-			applyDebugShader();
-			setup = true;
+		if (ClientData.isDevelopment()) {
+			// This will select the top-most shader in the sorted shader list on boot.
+			if (!setup) {
+				resetDebugShader();
+				applyDebugShader();
+				setup = true;
+			}
 		}
 	}
 

@@ -17,6 +17,7 @@
     "client.shaders.PostEffectPipelineTargetMixin",
     "client.shaders.PostEffectPipelineTargetsMixin",
     "client.shaders.PostEffectProcessorMixin",
+    "client.shaders.RenderTickCounterInterfactMixin",
     "client.shaders.RotatingCubeMapRendererMixin",
     "client.shaders.ScreenMixin",
     "client.shaders.Std140BuilderMixin",
