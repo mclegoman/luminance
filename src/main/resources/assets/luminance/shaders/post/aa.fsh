@@ -1,18 +1,25 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
 
 in vec2 texCoord;
-in vec2 oneTexel;
+
+layout(std140) uniform SamplerInfo {
+    vec2 OutSize;
+    vec2 InSize;
+};
+
+layout(std140) uniform AaConfig {
+    vec3 ColorDiff;
+    vec4 SampleDistance;
+    vec4 Weights;
+    float Bias;
+};
 
 out vec4 fragColor;
 
-uniform vec3 ColorDiff;
-uniform vec4 SampleDistance;
-uniform vec4 Weights;
-uniform float Bias;
-
 void main() {
+    vec2 oneTexel = 1.0 / InSize;
     vec2 aTexel = oneTexel*SampleDistance.xy;
     vec2 bTexel = oneTexel*SampleDistance.z;
     vec2 cTexel = oneTexel*SampleDistance.w;

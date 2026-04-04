@@ -1,10 +1,14 @@
-#version 150
+#version 330
 
 uniform sampler2D InSampler;
-uniform float Mode;
-uniform float Channels;
 
 in vec2 texCoord;
+
+layout(std140) uniform DominantChannelConfig {
+    float Mode;
+    float Channels;
+};
+
 out vec4 fragColor;
 
 void main() {
