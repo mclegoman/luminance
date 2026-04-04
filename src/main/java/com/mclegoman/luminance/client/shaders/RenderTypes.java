@@ -54,9 +54,10 @@ public class RenderTypes {
             if (renderType == null) return;
 
             boolean isCorrectType = renderType.equals(type.identifier());
-            if (!isCorrectType) return;
+            if (!isCorrectType && !isFallback) return;
 
             boolean useFallback = (shaderInstance.getUseDepth() && !type.isDepthSupported()) || (shaderData.getDisableUiRenderType() && type.isOverUi()) || (shaderData.getDisableUiBackgroundRenderTypes() && type.isUnderUi());
+            if (!useFallback && !isCorrectType) return;
 
             if (!useFallback || isFallback) type.render(id, shader, framebuffer, objectAllocator);
         } catch (Exception error) {
