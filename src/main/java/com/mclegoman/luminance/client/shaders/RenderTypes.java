@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 public class RenderTypes {
-    public static RenderType WORLD = register(Data.idOf("world"), Shaders::renderUsingAllocator, true, false, false);
-    public static RenderType UI = register(Data.idOf("ui"), Shaders::renderUsingAllocator, false, true, false);
-    public static RenderType UI_BACKGROUND = register(Data.idOf("ui_background"), Shaders::renderUsingAllocator, false, false, true);
-    public static RenderType PANORAMA = register(Data.idOf("panorama"), Shaders::renderUsingAllocator, false, false, true);
+    public static RenderType WORLD = register(Data.idOf("world"), Shaders::renderUsingAllocator, true, false, false, false);
+    public static RenderType UI = register(Data.idOf("ui"), Shaders::renderUsingAllocator, false, true, false, true);
+    public static RenderType UI_BACKGROUND = register(Data.idOf("ui_background"), Shaders::renderUsingAllocator, false, false, true, true);
+    public static RenderType PANORAMA = register(Data.idOf("panorama"), Shaders::renderUsingAllocator, false, false, true, false);
 
     public static RenderType getFallback() {
         return WORLD;
@@ -67,23 +67,29 @@ public class RenderTypes {
             Callable<Identifier> callableRenderType = shaderInstance.getRenderType();
             if (callableRenderType == null) return;
 
-            Identifier renderType = callableRenderType.call();
-            if (renderType == null) return;
+            Identifier renderTypeId = callableRenderType.call();
+            if (renderTypeId == null) return;
 
-            boolean isCorrectType = renderType.equals(type.identifier());
+            boolean isCorrectType = renderTypeId.equals(type.identifier());
             if (!isCorrectType && !isFallback) return;
 
-            boolean useFallback = (shaderInstance.getUseDepth() && !type.isDepthSupported()) || (shaderData.useFallbackWhenOverUi() && type.isOverUi()) || (shaderData.useFallbackWhenUnderUi() && type.isUnderUi());
-            if (!useFallback && !isCorrectType) return;
+            RenderType renderType = Events.RenderType.get(renderTypeId);
+            if (renderType == null) return;
 
-            if (!useFallback || isFallback) type.render(id, shader, framebuffer, objectAllocator);
+            boolean shouldFallback = (shaderInstance.getUseDepth() && !renderType.isDepthSupported()) || (shaderData.useFallbackWhenOverUi() && renderType.isOverUi()) || (shaderData.useFallbackWhenUnderUi() && renderType.isUnderUi());
+            if (shouldFallback && !renderType.canFallback()) return;
+
+            boolean canRender = (!shouldFallback && isCorrectType) || (shouldFallback && isFallback);
+            if (!canRender) return;
+
+            type.render(id, shader, framebuffer, objectAllocator);
         } catch (Exception error) {
             Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}:{}", type.identifier(), id, error);
         }
     }
 
-    public static RenderType register(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi) {
-        RenderType renderType = new RenderType(identifier, renderer, isDepthSupported, isOverUi, isUnderUi);
+    public static RenderType register(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean canFallback) {
+        RenderType renderType = new RenderType(identifier, renderer, isDepthSupported, isOverUi, isUnderUi, canFallback);
         Events.RenderType.register(identifier, renderType);
         return renderType;
     }
@@ -92,7 +98,7 @@ public class RenderTypes {
         void render(Identifier id, Shader.Data shader, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator);
     }
 
-    public record RenderType(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi) {
+    public record RenderType(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean canFallback) {
         public void render(Identifier id, Shader.Data shader, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator) {
             this.renderer().render(id, shader, framebuffer, objectAllocator);
         }
