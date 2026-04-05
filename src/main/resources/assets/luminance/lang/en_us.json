@@ -2,6 +2,7 @@
 	"gui.luminance.name": "Luminance",
 	"gui.luminance.description": "A library mod that helps other mods with shaders.",
 	"gui.luminance.licenses": "LGPL-3.0-or-later",
+	"gui.luminance.passthrough": "%s",
 	"gui.luminance.authors": "§6§lDevelopers§r",
 	"gui.luminance.authors.dannytaylor": "§fdannytaylor§r",
 	"gui.luminance.authors.nettakrim": "§fNettakrim§r",
