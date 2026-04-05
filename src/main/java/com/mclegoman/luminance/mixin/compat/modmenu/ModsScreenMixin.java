@@ -27,7 +27,7 @@ public abstract class ModsScreenMixin {
 	@Shadow protected int badgeMax;
 	@Shadow protected int badgeY;
 	@Shadow protected Mod mod;
-	@Inject(method = "draw", at = @At("RETURN"))
+	@Inject(method = "draw", at = @At(value = "INVOKE", target = "Ljava/util/Set;forEach(Ljava/util/function/Consumer;)V"))
 	private void luminance$draw(DrawContext context, int mouseX, int mouseY, CallbackInfo ci) {
 		if (CompatHelper.getLuminanceModMenuBadge(this.mod.getId())) {
 			int width = ClientData.minecraft.textRenderer.getWidth(Translation.getTranslation(Data.getVersion().getID(), "name")) + 6;

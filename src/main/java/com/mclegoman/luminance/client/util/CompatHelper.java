@@ -17,11 +17,14 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class CompatHelper {
 	public static final Map<Couple<String, String>, IconOverride> iconOverrides = new HashMap<>();
+
 	public static final List<String> luminanceModMenuBadge = new ArrayList<>();
+
 	public static void init() {
 		addIconOverride(new Couple<>(Data.getVersion().getID(), "pride"), new IconOverride(Data.idOf("textures/icons/pride.png"), DateHelper::isPride));
 		addLuminanceModMenuBadge(Data.getVersion().getID());
 	}
+
 	public static boolean isIrisShadersEnabled() {
 		try {
 			return Data.isModInstalled("iris") && IrisApi.getInstance().isShaderPackInUse();
@@ -30,15 +33,19 @@ public class CompatHelper {
 			return false;
 		}
 	}
+
 	public static void addIconOverride(Couple<String, String> modId, IconOverride iconOverride) {
 		if (!shouldIconOverride(modId.getFirst())) iconOverrides.put(modId, iconOverride);
 	}
+
 	public static void replaceIconOverride(Couple<String, String> modId, IconOverride iconOverride) {
 		iconOverrides.replace(modId, iconOverride);
 	}
+
 	public static void removeIconOverride(Couple<String, String> modId) {
 		iconOverrides.remove(modId);
 	}
+
 	public static boolean shouldIconOverride(String modId) {
 		AtomicReference<Boolean> shouldOverride = new AtomicReference<>(false);
 		iconOverrides.forEach((mod, data) -> {
@@ -49,9 +56,11 @@ public class CompatHelper {
 		});
 		return shouldOverride.get();
 	}
+
 	public static IconOverride getIconOverride(String modId) {
 		return getIconOverride(modId, null);
 	}
+
 	public static IconOverride getIconOverride(String modId, IconOverride fallback) {
 		AtomicReference<IconOverride> icon = new AtomicReference<>(fallback);
 		iconOverrides.forEach((mod, data) -> {
@@ -65,9 +74,11 @@ public class CompatHelper {
 		});
 		return icon.get();
 	}
+
 	public static void addLuminanceModMenuBadge(String modId) {
 		if (!getLuminanceModMenuBadge(modId)) luminanceModMenuBadge.add(modId);
 	}
+
 	public static boolean getLuminanceModMenuBadge(String modId) {
 		return luminanceModMenuBadge.contains(modId);
 	}
