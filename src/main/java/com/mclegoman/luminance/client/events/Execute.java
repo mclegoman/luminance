@@ -103,12 +103,6 @@ public class Execute {
 	public static void afterVanillaPostEffectRender(GraphicsResourceAllocator allocator) {
 		mergeDepth(allocator);
 
-		// direct GL call to replace RenderSystem.depthMask. not sure if theres an api better alternative
-		// vulkan seems to do it by having a separate pipeline? perhaps the pipeline used for shaders can have their depth disabled?
-
-		// TODO: see if this has been done already (i think it has)
-
-		GL11.glDepthMask(false);
 		Events.AfterVanillaPostEffectRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
@@ -116,7 +110,6 @@ public class Execute {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute VanillaPostEffect event with id: {}: {}", id, error);
 			}
 		}));
-		GL11.glDepthMask(true);
 	}
 
 	public static void afterUiRender(GraphicsResourceAllocator allocator) {
@@ -186,8 +179,6 @@ public class Execute {
 			return;
 		}
 
-		// see Execute.afterVanillaPostEffectRender() for note on depth mask
-		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "prepare_shader_render"), () -> GL11.glDepthMask(false));
 		Events.AfterFabulousRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(frameGraphBuilder, ClientData.minecraft.getMainRenderTarget().width, ClientData.minecraft.getMainRenderTarget().height, framebufferSet);
@@ -195,7 +186,6 @@ public class Execute {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterFabulousRender event with id: {}: {}", id, error);
 			}
 		}));
-		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "cleanup_shader_render"), () -> GL11.glDepthMask(true));
 	}
 
 	public static void afterWorldRender(GraphicsResourceAllocator allocator) {
