@@ -16,7 +16,7 @@ import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
 import com.mclegoman.luminance.client.util.CompatHelper;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import com.mclegoman.luminance.mixin.client.shaders.ShaderManagerAcessor;
+import com.mclegoman.luminance.mixin.client.shaders.ShaderManagerAccessor;
 import com.mojang.blaze3d.ProjectionType;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -44,24 +44,29 @@ public class Execute {
 	public static void registerClientResourceReloaders(ReloadableResourceManager resourceManager) {
 		Events.ClientResourceReloaders.registry.forEach((id, resourceReloader) -> resourceManager.registerReloadListener(resourceReloader));
 	}
+
 	public static void afterClientResourceReload() {
 		Events.AfterClientResourceReload.registry.forEach((id, runnable) -> runnable.run());
 		if (ClientData.minecraft.getCameraEntity() != null) {
 			SpectatorHandler.onSpectate(ClientData.minecraft.getCameraEntity(), LuminanceConfig.config.spectatorPriorityMode.value().getMode());
 		}
 	}
+
 	public static void onCameraEntitySet(@NotNull Entity entity) {
 		SpectatorHandler.onSpectate(entity, LuminanceConfig.config.spectatorPriorityMode.value().getMode());
 	}
+
 	public static void onJoinWorld() {
 		ClientData.minecraft.schedule(() -> {
 			assert ClientData.minecraft.player != null;
 			SpectatorHandler.onSpectate(ClientData.minecraft.player, LuminanceConfig.config.spectatorPriorityMode.value().getMode());
 		});
 	}
+
 	public static void onDisconnect() {
 		SpectatorHandler.clearActive();
 	}
+
 	public static void beforeInGameHudRender(GuiGraphics context, DeltaTracker renderTickCounter) {
 		ShaderTime.currentRenderType = RenderTypes.UI;
 		Events.BeforeInGameHudRender.registry.forEach(((id, runnable) -> {
@@ -72,6 +77,7 @@ public class Execute {
 			}
 		}));
 	}
+
 	public static void afterInGameHudRender(GuiGraphics context, DeltaTracker renderTickCounter) {
 		Events.AfterInGameHudRender.registry.forEach(((id, runnable) -> {
 			try {
@@ -81,6 +87,7 @@ public class Execute {
 			}
 		}));
 	}
+
 	public static void beforeGameRender() {
 		ShaderTime.currentRenderType = RenderTypes.WORLD;
 		Events.BeforeGameRender.registry.forEach(((id, runnable) -> {
@@ -91,6 +98,7 @@ public class Execute {
 			}
 		}));
 	}
+
 	public static void afterVanillaPostEffectRender(GraphicsResourceAllocator allocator) {
 		mergeDepth(allocator);
 
@@ -109,6 +117,7 @@ public class Execute {
 		}));
 		GL11.glDepthMask(true);
 	}
+
 	public static void afterUiRender(GraphicsResourceAllocator allocator) {
 		Events.AfterUiRender.registry.forEach(((id, runnable) -> {
 			try {
@@ -118,6 +127,7 @@ public class Execute {
 			}
 		}));
 	}
+
 	public static void beforeUiRender(GraphicsResourceAllocator allocator) {
 		Events.BeforeUiRender.registry.forEach(((id, runnable) -> {
 			try {
@@ -127,6 +137,7 @@ public class Execute {
 			}
 		}));
 	}
+
 	public static void afterUiBackgroundRender(GraphicsResourceAllocator allocator) {
 		RenderTypes.RenderType previous = ShaderTime.currentRenderType;
 		ShaderTime.currentRenderType = RenderTypes.UI_BACKGROUND;
@@ -140,6 +151,7 @@ public class Execute {
 		// this and afterPanoramaRender are a special case, so resetting the RenderType it makes sense
 		ShaderTime.currentRenderType = previous;
 	}
+
 	public static void afterPanoramaRender(GraphicsResourceAllocator allocator) {
 		RenderTypes.RenderType previous = ShaderTime.currentRenderType;
 		ShaderTime.currentRenderType = RenderTypes.PANORAMA;
@@ -152,9 +164,11 @@ public class Execute {
 		}));
 		ShaderTime.currentRenderType = previous;
 	}
+
 	public static void resize(int width, int height) {
 		Events.OnResized.registry.forEach((id, runnable) -> runnable.run(width, height));
 	}
+
 	public static void beforeWorldRender() {
 		ShaderTime.currentRenderType = RenderTypes.WORLD;
 		Events.BeforeWorldRender.registry.forEach(((id, runnable) -> {
@@ -165,6 +179,7 @@ public class Execute {
 			}
 		}));
 	}
+
 	public static void afterFabulousRender(FrameGraphBuilder frameGraphBuilder, PostChain.TargetBundle framebufferSet) {
 		if (Events.AfterFabulousRender.registry.isEmpty()) {
 			return;
@@ -181,6 +196,7 @@ public class Execute {
 		}));
 		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "cleanup_shader_render"), () -> GL11.glDepthMask(true));
 	}
+
 	public static void afterWorldRender(GraphicsResourceAllocator allocator) {
 		Events.AfterWorldRender.registry.forEach(((id, runnable) -> {
 			try {
@@ -192,6 +208,7 @@ public class Execute {
 
 		copyDepth(allocator);
 	}
+
 	public static void beforeShaderRender(PostPass postEffectPass) {
 		Events.BeforeShaderRender.registry.forEach(((id, runnable) -> {
 			try {
@@ -201,6 +218,7 @@ public class Execute {
 			}
 		}));
 	}
+
 	public static void afterShaderRender(PostPass postEffectPass) {
 		Events.AfterShaderRender.registry.forEach(((id, runnable) -> {
 			try {
@@ -247,7 +265,7 @@ public class Execute {
 			CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
 			RenderSystem.backupProjectionMatrix();
 
-			CachedOrthoProjectionMatrixBuffer matrixCache = ((ShaderManagerAcessor)ClientData.minecraft.getShaderManager()).getPostChainProjectionMatrixBuffer();
+			CachedOrthoProjectionMatrixBuffer matrixCache = ((ShaderManagerAccessor)ClientData.minecraft.getShaderManager()).getPostChainProjectionMatrixBuffer();
 			RenderSystem.setProjectionMatrix(matrixCache.getBuffer(target.width, target.height), ProjectionType.ORTHOGRAPHIC);
 
 			try (RenderPass renderPass = commandEncoder.createRenderPass(() -> "Depth Merge", target.getColorTextureView(), OptionalInt.empty(), target.getDepthTextureView(), OptionalDouble.empty())) {
