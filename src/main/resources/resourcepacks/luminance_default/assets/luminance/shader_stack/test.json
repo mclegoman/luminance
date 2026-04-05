@@ -1,7 +1,5 @@
 {
   "registries": [ "luminance:main" ],
-  "translatable": false,
-  "description": false,
   "shaders": [
     {
       "registry": "luminance:main",
