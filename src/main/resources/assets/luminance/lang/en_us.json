@@ -90,5 +90,6 @@
 	"gui.luminance.config.more": "...",
 	"gui.luminance.config.external": " ↗",
 
-	"gui.luminance.dev": "%s"
+	"gui.luminance.dev": "Development Build",
+	"gui.luminance.dev.version": "%s"
 }

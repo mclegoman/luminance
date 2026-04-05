@@ -13,7 +13,7 @@ import java.util.*;
 
 public record MapConfig(Map<String, List<Object>> config) implements UniformConfig {
     public MapConfig(List<ConfigData> config) {
-        this.config = new HashMap<>(config.size());
+        this(new HashMap<>(config.size()));
         for (ConfigData configData : config) {
             this.config.put(configData.name(), configData.objects());
         }

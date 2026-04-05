@@ -23,11 +23,23 @@
 		{
 			"type": "translatable",
 			"value": "gui.luminance.authors.dannytaylor",
+			"style": {
+				"clickEvent": {
+					"action": "open_url",
+					"url": "https://modrinth.com/user/dannytaylor"
+				}
+			},
 			"indent": 2
 		},
 		{
 			"type": "translatable",
 			"value": "gui.luminance.authors.nettakrim",
+			"style": {
+				"clickEvent": {
+					"action": "open_url",
+					"url": "https://modrinth.com/user/Nettakrim"
+				}
+			},
 			"indent": 2
 		},
 		{},
@@ -38,6 +50,12 @@
 		{
 			"type": "translatable",
 			"value": "gui.luminance.attributions.quilt_config",
+			"style": {
+				"clickEvent": {
+					"action": "open_url",
+					"url": "https://github.com/QuiltMC/quilt-config"
+				}
+			},
 			"indent": 2
 		},
 		{
@@ -70,6 +88,12 @@
 		{
 			"type": "translatable",
 			"value": "gui.luminance.attributions.fabric_api",
+			"style": {
+				"clickEvent": {
+					"action": "open_url",
+					"url": "https://modrinth.com/mod/fabric-api"
+				}
+			},
 			"indent": 2
 		},
 		{
@@ -102,6 +126,12 @@
 		{
 			"type": "translatable",
 			"value": "gui.luminance.attributions.fabric_loader",
+			"style": {
+				"clickEvent": {
+					"action": "open_url",
+					"url": "https://fabricmc.net/"
+				}
+			},
 			"indent": 2
 		},
 		{
@@ -134,6 +164,12 @@
 		{
 			"type": "translatable",
 			"value": "gui.luminance.attributions.minecraft",
+			"style": {
+				"clickEvent": {
+					"action": "open_url",
+					"url": "https://minecraft.net/"
+				}
+			},
 			"indent": 2
 		},
 		{

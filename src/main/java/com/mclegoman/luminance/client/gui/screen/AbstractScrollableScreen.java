@@ -20,6 +20,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractScrollableScreen extends Screen {
@@ -117,7 +118,11 @@ public abstract class AbstractScrollableScreen extends Screen {
 	}
 
 	public void renderDevNotice(GuiGraphics context) {
-		if (!Data.getVersion().getType().equals(ReleaseType.RELEASE)) context.drawString(this.font, Translation.getTranslation(Data.getVersion().getID(), "dev", new Object[]{Data.getVersion().getFriendlyString()}), 2, this.height - 11, 0xAAAAAA);
+		if (!Data.getVersion().getType().equals(ReleaseType.RELEASE)) {
+			context.drawString(this.font, Translation.getTranslation(Data.getVersion().getID(), "dev"), 2, this.height - 11, 0xFFAAAAAA);
+			MutableComponent versionText = Translation.getTranslation(Data.getVersion().getID(), "dev.version", new Object[]{Data.getVersion().getFriendlyString()});
+			context.drawString(this.font, versionText, this.width - 2 - this.font.width(versionText), this.height - 11, 0xFFAAAAAA);
+		}
 	}
 
 	@Override
