@@ -210,7 +210,7 @@ public class ShaderStacks {
         }
 
         public static String getTranslationKey(Identifier id, boolean description) {
-            return Data.getVersion().getID() + ".shader_stack." + id.getNamespace() + "." + id.getPath() + (description ? ".description" : "");
+            return "gui." + Data.getVersion().getID() + ".shader_stack." + id.getNamespace() + "." + id.getPath() + (description ? ".description" : "");
         }
 
         public static MutableComponent getComponent(Identifier id, boolean isStack, boolean description, boolean showNamespace) {

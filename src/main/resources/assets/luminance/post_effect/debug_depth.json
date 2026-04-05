@@ -6,7 +6,7 @@
     "passes": [
         {
             "vertex_shader": "minecraft:core/screenquad",
-            "fragment_shader": "luminance:post/depth_debug",
+            "fragment_shader": "luminance:post/debug_depth",
             "inputs": [
                 {
                     "sampler_name": "InDepth",
