@@ -74,5 +74,10 @@
 	"gui.luminance.config.external": " ↗",
 
 	"gui.luminance.dev": "Development Build",
-	"gui.luminance.dev.version": "%s"
+	"gui.luminance.dev.version": "%s",
+
+	"gui.luminance.shader.luminance.debug_depth": "Depth",
+	"gui.luminance.shader.luminance.debug_depth.description": "Renders depth as a grayscale image.",
+	"gui.luminance.shader_stack.luminance.debug_stack": "Custom Stack",
+	"gui.luminance.shader_stack.luminance.debug_stack.description": "Renders a custom shader stack."
 }

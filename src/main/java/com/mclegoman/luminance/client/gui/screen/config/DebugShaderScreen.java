@@ -83,9 +83,7 @@ public class DebugShaderScreen extends Screen {
 
 			this.registryList.onSelect = (id, widget) -> {
 				if (this.selectedRegistry != id) {
-					this.selectedRegistry = id;
-					this.shaderList.setScrollAmount(0);
-					this.registryList.scrollToSelected();
+					ClientData.minecraft.setScreen(new DebugShaderScreen(parentScreen, id));
 				}
 			};
 

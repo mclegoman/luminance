@@ -1,13 +1,13 @@
 {
-  "registries": [ "luminance:main" ],
+  "registries": [ "luminance:debug" ],
   "shaders": [
     {
       "registry": "luminance:main",
-      "shader": "minecraft:flip"
+      "shader": "minecraft:creeper"
     },
     {
       "registry": "luminance:main",
-      "shader": "luminance:dos"
+      "shader": "minecraft:spider"
     }
   ],
   "custom": {}

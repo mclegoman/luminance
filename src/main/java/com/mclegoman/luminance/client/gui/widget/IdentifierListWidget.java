@@ -40,10 +40,10 @@ public class IdentifierListWidget extends ObjectSelectionList<IdentifierListWidg
             this.addEntry(new Entry(id, this));
         }
 
-        if (selected != null) {
+        if (selected != null && identifiers.contains(selected)) {
             int index = identifiers.indexOf(selected);
             if (index != -1) this.setSelected(this.children().get(index));
-        }
+        } else this.setSelected(this.children().getFirst());
 
         this.scrollToSelected();
         this.setFocused(true);

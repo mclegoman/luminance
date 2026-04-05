@@ -83,7 +83,7 @@ public class ShaderStacks {
     private static void addDefaultStacks() {
         for (Identifier registryId : Shaders.getRegistries()) {
             for (ShaderRegistryEntry shader : Shaders.getRegistry(registryId)) {
-                addStack(shader.getID(), new Entry.Text(shader.getID(), false), List.of(new Entry.ShaderInfo(registryId, shader.getID())), shader.getCustom());
+                addStack(registryId, shader.getID(), new Entry.Text(shader.getID(), false), List.of(new Entry.ShaderInfo(registryId, shader.getID())), shader.getCustom());
             }
         }
     }
@@ -210,7 +210,7 @@ public class ShaderStacks {
         }
 
         public static String getTranslationKey(Identifier id, boolean description) {
-            return Data.getVersion().getID() + ".shader_stack." + id.getNamespace() + "." + id.getPath() + (description ? ".description" : "");
+            return "gui." + Data.getVersion().getID() + ".shader_stack." + id.getNamespace() + "." + id.getPath() + (description ? ".description" : "");
         }
 
         public static MutableComponent getComponent(Identifier id, boolean isStack, boolean description, boolean showNamespace) {
