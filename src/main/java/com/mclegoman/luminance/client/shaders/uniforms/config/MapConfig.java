@@ -12,11 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public record MapConfig(Map<String, List<Object>> config) implements UniformConfig {
-    public MapConfig(List<ConfigData> config) {
-        this(new HashMap<>(config.size()));
-        for (ConfigData configData : config) {
-            this.config.put(configData.name(), configData.objects());
-        }
+    public MapConfig(Map<String, List<Object>> config) {
+        this.config = new HashMap<>(config);
     }
 
     @Override
@@ -29,7 +26,6 @@ public record MapConfig(Map<String, List<Object>> config) implements UniformConf
     public List<Object> getObjects(String name) {
         return config.get(name);
     }
-
 
     @Override
     public Optional<Number> getNumber(String name, int index) {
@@ -48,7 +44,8 @@ public record MapConfig(Map<String, List<Object>> config) implements UniformConf
 
     @Override
     public UniformConfig copy() {
-        MapConfig mapConfig = new MapConfig(List.of());
+        // create new arraylists, so that theyre mutable
+        MapConfig mapConfig = new MapConfig(Map.of());
         config.forEach((name, objects) -> mapConfig.config.put(name, new ArrayList<>(objects)));
         return mapConfig;
     }

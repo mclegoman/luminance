@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
 import com.mclegoman.luminance.client.shaders.overrides.LuminanceUniformOverride;
 import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -15,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class UniformBlock {
@@ -59,7 +56,6 @@ public class UniformBlock {
                         }
                     }
                 }
-                Data.getVersion().sendToLog(LogType.INFO, uniformInterface.luminance$getName().orElse("null")+" "+Arrays.toString(override.toArray()));
                 instance.override = new LuminanceUniformOverride(override);
             });
 

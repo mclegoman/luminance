@@ -20,7 +20,10 @@
                         "name": "Time",
                         "type": "float",
                         "value": 0.0,
-                        "override": "luminance:time"
+                        "override": "luminance:time",
+                        "config": {
+                            "period": [ 4.0 ]
+                        }
                     },
                     {
                         "name": "Frequency",

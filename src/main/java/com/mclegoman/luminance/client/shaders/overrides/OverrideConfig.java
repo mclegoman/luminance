@@ -12,6 +12,7 @@ import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,7 +26,7 @@ public class OverrideConfig implements UniformConfig {
     }
 
     public OverrideConfig(UniformConfig uniformConfig, int index) {
-        MapConfig mapConfig = new MapConfig(List.of());
+        MapConfig mapConfig = new MapConfig(Map.of());
         String prefix = index+"_";
         for (String name : uniformConfig.getNames()) {
             mapConfig.config().put(prefix+name, uniformConfig.getObjects(name));
@@ -54,8 +55,14 @@ public class OverrideConfig implements UniformConfig {
 
     @Override
     public Optional<Number> getNumber(String name, int index) {
-        // TODO: this should allow a config of "thing" to wildcard alias to "0_thing", "1_thing", "2_thing" etc with lower priority, to make configs simpler
-        return uniformConfig.getNumber(preprocessName(name), index);
+        // prioritise "index_name", but if its not there, allow "name"
+        // also note that the index in the function here is indexing into the object list
+        // whereas the index in the config name is the index of the override in the values
+        Optional<Number> number = uniformConfig.getNumber(preprocessName(name), index);
+        if (number.isPresent()) {
+            return number;
+        }
+        return uniformConfig.getNumber(name, index);
     }
 
     @Override

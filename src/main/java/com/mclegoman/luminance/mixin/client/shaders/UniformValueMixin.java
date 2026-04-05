@@ -2,11 +2,11 @@ package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
-import com.mclegoman.luminance.client.shaders.uniforms.config.ConfigData;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.renderer.UniformValue;
+import net.minecraft.util.ExtraCodecs;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +28,7 @@ public interface UniformValueMixin {
                         MapCodec.assumeMapUnsafe(original).forGetter(Function.identity()),
                         Codec.STRING.lenientOptionalFieldOf("name").forGetter(uniform -> ((UniformValueInterface)uniform).luminance$getName()),
                         Codec.STRING.sizeLimitedListOf(4).withAlternative(Codec.STRING.xmap(s -> List.of("auto#"+s) /* slightly janky way to communicate that it should be handled differently*/, List::getFirst)).lenientOptionalFieldOf("override").forGetter((uniform -> ((UniformValueInterface)uniform).luminance$getOverride())),
-                        ConfigData.CODEC.listOf().lenientOptionalFieldOf("config").forGetter((uniform -> ((UniformValueInterface)uniform).luminance$getConfig()))
+                        Codec.unboundedMap(Codec.STRING, ExtraCodecs.JAVA.listOf()).lenientOptionalFieldOf("config").forGetter((uniform -> ((UniformValueInterface)uniform).luminance$getConfig()))
                 ).apply(instance, (uniform, name, override, config) -> {
                     name.ifPresent(string -> ((UniformValueInterface)uniform).luminance$setName(string));
                     override.ifPresent(strings -> ((UniformValueInterface) uniform).luminance$setOverride(strings));

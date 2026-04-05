@@ -9,7 +9,6 @@ package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.google.common.collect.ImmutableList;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
-import com.mclegoman.luminance.client.shaders.uniforms.config.ConfigData;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
 import net.minecraft.client.renderer.UniformValue;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +18,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Mixin({UniformValue.IntUniform.class, UniformValue.FloatUniform.class, UniformValue.Vec2Uniform.class, UniformValue.Vec3Uniform.class, UniformValue.Vec4Uniform.class, UniformValue.IVec3Uniform.class, UniformValue.Matrix4x4Uniform.class})
@@ -52,15 +52,15 @@ public abstract class UniformValueImplMixin implements UniformValueInterface {
     }
 
     @Unique
-    private List<ConfigData> luminance$config;
+    private Map<String, List<Object>> luminance$config;
 
     @Override
-    public Optional<List<ConfigData>> luminance$getConfig() {
+    public Optional<Map<String, List<Object>>> luminance$getConfig() {
         return Optional.ofNullable(luminance$config);
     }
 
     @Override
-    public void luminance$setConfig(List<ConfigData> config) {
+    public void luminance$setConfig(Map<String,List<Object>> config) {
         this.luminance$config = config;
     }
 

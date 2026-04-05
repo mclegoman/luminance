@@ -20,7 +20,6 @@ import com.mclegoman.luminance.client.shaders.uniforms.children.DeltaUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.children.ElementUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.children.PrevUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.children.SmoothUniform;
-import com.mclegoman.luminance.client.shaders.uniforms.config.ConfigData;
 import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
@@ -48,6 +47,7 @@ import net.minecraft.world.level.MoonPhase;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class Uniforms {
@@ -105,9 +105,9 @@ public class Uniforms {
 			registerSingleTree(namespace, "is_invisible", Uniforms::getIsInvisible, 0f, 1f);
 			registerSingleTree(namespace, "is_withered", (shaderTime) -> Uniforms.getHasEffect(MobEffects.WITHER), 0f, 1f);
 			registerSingleTree(namespace, "is_poisoned", (shaderTime) -> Uniforms.getHasEffect(MobEffects.POISON), 0f, 1f);
-			registerStandardTree(namespace, "is_in_biome", Uniforms::getIsInBiome, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("biome", List.of("minecraft:plains")))), false);
-			registerStandardTree(namespace, "effect_duration", Uniforms::getEffectDuration, null, null, 1, new MapConfig(List.of(new ConfigData("effect", List.of("minecraft:speed")))), false);
-			registerStandardTree(namespace, "effect_amplifier", Uniforms::getEffectAmplifier, 0f, 255f, 1, new MapConfig(List.of(new ConfigData("effect", List.of("minecraft:speed")))), false);
+			registerStandardTree(namespace, "is_in_biome", Uniforms::getIsInBiome, 0f, 1f, 1, new MapConfig(Map.of("biome", List.of("minecraft:plains"))), false);
+			registerStandardTree(namespace, "effect_duration", Uniforms::getEffectDuration, null, null, 1, new MapConfig(Map.of("effect", List.of("minecraft:speed"))), false);
+			registerStandardTree(namespace, "effect_amplifier", Uniforms::getEffectAmplifier, 0f, 255f, 1, new MapConfig(Map.of("effect", List.of("minecraft:speed"))), false);
 			registerSingleTree(namespace, "is_burning", Uniforms::getIsBurning, 0f, 1f);
 			registerSingleTree(namespace, "is_on_ground", Uniforms::getIsOnGround, 0f, 1f);
 			registerSingleTree(namespace, "is_on_ladder", Uniforms::getIsOnLadder, 0f, 1f);
@@ -131,7 +131,7 @@ public class Uniforms {
 			registerSingleTree(namespace, "end_flash_pitch", Uniforms::getEndFlashPitch, -90f, 90f);
 			registerSingleTree(namespace, "end_flash_yaw", Uniforms::getEndFlashYaw, -180f, 180f);
 			registerSingleTree(namespace, "is_day", Uniforms::getIsDay, 0f, 1f);
-			registerStandardTree(namespace, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(List.of(new ConfigData("period", List.of(1.0f)))), false);
+			registerStandardTree(namespace, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(Map.of("period", List.of(1.0))), false);
 			registerStandardTree(namespace, "random", Uniforms::getRandom, 0f, 1f, 1, EmptyConfig.INSTANCE, false);
 			registerStandardTree(namespace, "render_type", Uniforms::getRenderType, 0f, 1f, 3, EmptyConfig.INSTANCE, false);
 		} catch (Exception error) {

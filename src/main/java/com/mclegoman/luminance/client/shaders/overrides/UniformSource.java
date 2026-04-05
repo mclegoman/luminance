@@ -17,10 +17,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class UniformSource implements OverrideSource {
     @NotNull
@@ -77,9 +74,9 @@ public class UniformSource implements OverrideSource {
                     ArrayList<Object> objects = new ArrayList<>(2);
                     objects.add(min.get().values.getFirst());
                     objects.add(max.get().values.getFirst());
-                    configTemplate = new MapConfig(List.of(new ConfigData("range", objects)));
+                    configTemplate = new MapConfig(Map.of("range", objects));
                 } else {
-                    configTemplate = new MapConfig(List.of(new ConfigData("range", List.of(0.0f, 1.0f))));
+                    configTemplate = new MapConfig(Map.of("range", List.of(0.0f, 1.0f)));
                 }
             }
         }
@@ -103,5 +100,5 @@ public class UniformSource implements OverrideSource {
         return a + (b - a) * f;
     }
 
-    private static final UniformConfig nullRange = new MapConfig(List.of(new ConfigData("range", new ArrayList<>(Collections.nCopies(2, null)))));
+    private static final UniformConfig nullRange = new MapConfig(Map.of("range", new ArrayList<>(Collections.nCopies(2, null))));
 }
