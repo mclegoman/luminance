@@ -48,7 +48,7 @@ public class AttributionsWidget {
             texts.add(empty());
         }
 
-        texts.add(Translation.getTranslation(Data.getVersion().getID(), "attributions", new ChatFormatting[]{ChatFormatting.GOLD}));
+        texts.add(Translation.getTranslation(Data.getVersion().getID(), "attributions", new ChatFormatting[]{ChatFormatting.GOLD, ChatFormatting.BOLD}));
 
         texts.addAll(getAttribution(createMetadata("Quilt Config", "A library designed to facilitate the creation and management of config files.", List.of("QuiltMC"), List.of("Apache-2.0"), "https://github.com/QuiltMC/quilt-config")));
 
