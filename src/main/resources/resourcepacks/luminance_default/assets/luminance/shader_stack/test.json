@@ -1,0 +1,15 @@
+{
+  "registries": [ "luminance:main" ],
+  "translatable": false,
+  "description": false,
+  "shaders": [
+    {
+      "registry": "luminance:main",
+      "shader": "minecraft:flip"
+    },
+    {
+      "registry": "luminance:main",
+      "shader": "luminance:dos"
+    }
+  ]
+}

@@ -9,10 +9,7 @@ package com.mclegoman.luminance.client.debug;
 
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Events;
-import com.mclegoman.luminance.client.shaders.RenderTypes;
-import com.mclegoman.luminance.client.shaders.Shader;
-import com.mclegoman.luminance.client.shaders.ShaderRegistryEntry;
-import com.mclegoman.luminance.client.shaders.Shaders;
+import com.mclegoman.luminance.client.shaders.*;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.Couple;
 import com.mclegoman.luminance.common.util.LogType;
@@ -24,23 +21,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class Debug {
-	private static boolean setup;
-
 	private static final Couple<Identifier, Identifier> debugShader;
 	private static boolean debugShaderEnabled;
 	public static Identifier debugRenderType;
 	private static boolean disablePhotosensitive;
-
-	public static void tick() {
-		if (ClientData.isDevelopment()) {
-			// This will select the top-most shader in the sorted shader list on boot.
-			if (!setup) {
-				resetDebugShader();
-				applyDebugShader();
-				setup = true;
-			}
-		}
-	}
 
 	public static boolean isDebugShaderEnabled() {
 		return debugShaderEnabled;
@@ -72,12 +56,12 @@ public class Debug {
 	public static void applyDebugShader() {
 		if (ClientData.isDevelopment()) {
 			Events.ShaderRender.register(getDebugId(), new Events.ShaderRenderData(new ArrayList<>(), Debug::getDisablePhotosensitive));
-			modifyDebugShader(Shaders.get(Debug.debugShader.getFirst(), Debug.debugShader.getSecond()));
+			modifyDebugShader(ShaderStacks.getStack(Debug.debugShader.getFirst(), Debug.debugShader.getSecond()));
 		}
 	}
 
-	public static void modifyDebugShader(ShaderRegistryEntry shaderData) {
-		Events.ShaderRender.modify(getDebugId(), new Events.ShaderRenderData(List.of(new Shader.Data(getDebugId(0), new Shader(shaderData, () -> Debug.debugRenderType, Debug::isDebugShaderEnabled))), Debug::getDisablePhotosensitive));
+	public static void modifyDebugShader(ShaderStacks.Entry stack) {
+		Events.ShaderRender.modify(getDebugId(), ShaderStacks.getShaders(getDebugId(0), stack, () -> Debug.debugRenderType, Debug::isDebugShaderEnabled, Debug::getDisablePhotosensitive));
 	}
 
 	public static void setDebugShader(Identifier registry, Identifier shader) {
@@ -95,8 +79,8 @@ public class Debug {
 	}
 
 	public static void resetDebugShader() {
-		Debug.getDebugShader().setFirst(Shaders.getMainRegistryId());
-		Debug.getDebugShader().setSecond(Shaders.getOrderedShaderIds(Shaders.getMainRegistryId()).getFirst());
+		Debug.getDebugShader().setFirst(ShaderStacks.getMainRegistryId());
+		Debug.getDebugShader().setSecond(ShaderStacks.getShaderStacks(ShaderStacks.getMainRegistryId()).getFirst());
 	}
 
 	public static Identifier getDebugId() {
@@ -120,7 +104,7 @@ public class Debug {
 	}
 
 	static {
-		debugShader = new Couple<>(Shaders.getMainRegistryId(), Shaders.getOrderedShaderIds(Shaders.getMainRegistryId()).getFirst());
+		debugShader = new Couple<>(ShaderStacks.getMainRegistryId(), ShaderStacks.getShaderStacks(ShaderStacks.getMainRegistryId()).getFirst());
 		debugRenderType = RenderTypes.WORLD.identifier();
 	}
 }

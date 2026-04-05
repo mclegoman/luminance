@@ -33,6 +33,7 @@ public class Shaders {
 
 	public static void init() {
 		Events.ClientResourceReloaders.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "shaders"), new ShaderReloader());
+		ShaderStacks.init();
 		Uniforms.init();
 		Events.BeforeGameRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "update"), Uniforms::update);
 

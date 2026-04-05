@@ -44,6 +44,7 @@ public class Events {
 	public static final Registry<Runnables.ShaderData> OnShaderDataRegistered = new Registry<>();
 	public static final Registry<Runnables.ShaderData> OnShaderDataRemoved = new Registry<>();
 	public static final Registry<Runnable> AfterShaderDataRegistered = new Registry<>();
+	public static final Registry<Runnable> AfterShaderStacksRegistered = new Registry<>();
 
 	public static final Registry<Runnables.InGameHudRender> BeforeInGameHudRender = new Registry<>();
 	public static final Registry<Runnables.InGameHudRender> AfterInGameHudRender = new Registry<>();

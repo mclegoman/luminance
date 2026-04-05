@@ -12,7 +12,7 @@ package com.mclegoman.luminance.client.gui.screen.config;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.debug.Debug;
 import com.mclegoman.luminance.client.gui.widget.IdentifierListWidget;
-import com.mclegoman.luminance.client.shaders.Shaders;
+import com.mclegoman.luminance.client.shaders.ShaderStacks;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
@@ -74,11 +74,11 @@ public class DebugShaderScreen extends Screen {
 				button.setMessage(Translation.getTranslation(Data.getVersion().getID(), "debug.render_type", new Object[]{Translation.getRenderTypeTranslation(Debug.debugRenderType)}));
 			}).width(140).build());
 
-			this.registryList = new IdentifierListWidget(150, 200, 20, 20, 20, Shaders.getRegistries(), this.selectedRegistry, (id, widget) -> {});
+			this.registryList = new IdentifierListWidget(150, 200, 20, 20, 20, ShaderStacks.getRegistries(), this.selectedRegistry, (id, widget) -> {});
 
 			gridAdder.addChild(this.registryList);
 			IdentifierListWidget.Entry registryListSelected = this.registryList.getSelected();
-			this.shaderList = new IdentifierListWidget(150, 200, 20, 20, 20, Shaders.getOrderedShaderIds(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId()), Debug.getDebugShader().getSecond(), (id, widget) -> Debug.setDebugShader(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), id), (identifier) -> Shaders.getShaderName(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), identifier), (identifier) -> Shaders.getShaderDescription(registryListSelected != null ? registryListSelected.id : Shaders.getMainRegistryId(), identifier));
+			this.shaderList = new IdentifierListWidget(150, 200, 20, 20, 20, ShaderStacks.getShaderStacks(registryListSelected != null ? registryListSelected.id : ShaderStacks.getMainRegistryId()), Debug.getDebugShader().getSecond(), (id, widget) -> Debug.setDebugShader(registryListSelected != null ? registryListSelected.id : ShaderStacks.getMainRegistryId(), id), (identifier) -> ShaderStacks.getShaderName(registryListSelected != null ? registryListSelected.id : ShaderStacks.getMainRegistryId(), identifier), (identifier) -> ShaderStacks.getShaderDescription(registryListSelected != null ? registryListSelected.id : ShaderStacks.getMainRegistryId(), identifier));
 			gridAdder.addChild(this.shaderList);
 
 			this.registryList.onSelect = (id, widget) -> {
