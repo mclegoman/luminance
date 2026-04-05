@@ -35,7 +35,7 @@ public class ShaderStacks {
     }
 
     public static Identifier getMainRegistryId() {
-        return Data.idOf("main");
+        return Shaders.getMainRegistryId();
     }
 
     public static boolean shouldShowNamespace(Identifier registryId, Identifier shaderId) {
@@ -81,8 +81,10 @@ public class ShaderStacks {
     }
 
     private static void addDefaultStacks() {
-        for (ShaderRegistryEntry shader : Shaders.getRegistry()) {
-            addStack(shader.getID(), new Entry.Text(shader.getID(), false), List.of(new Entry.ShaderInfo(Shaders.getMainRegistryId(), shader.getID())), shader.getCustom());
+        for (Identifier registryId : Shaders.getRegistries()) {
+            for (ShaderRegistryEntry shader : Shaders.getRegistry(registryId)) {
+                addStack(shader.getID(), new Entry.Text(shader.getID(), false), List.of(new Entry.ShaderInfo(registryId, shader.getID())), shader.getCustom());
+            }
         }
     }
 
