@@ -12,6 +12,7 @@ import com.mclegoman.luminance.client.gui.screen.AbstractScrollableScreen;
 import com.mclegoman.luminance.client.gui.widget.AttributionsWidget;
 import com.mclegoman.luminance.client.gui.widget.ScrollableTextWidget;
 import com.mclegoman.luminance.client.translation.Translation;
+import com.mclegoman.luminance.common.data.Data;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +24,7 @@ public class CreditsAttributionScreen extends AbstractScrollableScreen {
 	}
 
 	public void initBody() {
-		this.info = AttributionsWidget.get(ClientData.minecraft, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 11, this.scrollY);
+		this.info = AttributionsWidget.get(ClientData.minecraft, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 11, this.scrollY, Data.getVersion().getModContainer().orElse(null));
 		this.layout.addToContents(this.info);
 	}
 

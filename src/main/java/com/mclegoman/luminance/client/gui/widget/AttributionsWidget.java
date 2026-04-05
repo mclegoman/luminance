@@ -10,6 +10,7 @@ package com.mclegoman.luminance.client.gui.widget;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.*;
 import net.fabricmc.loader.impl.metadata.BuiltinModMetadata;
 import net.fabricmc.loader.impl.metadata.ContactInformationImpl;
@@ -21,18 +22,18 @@ import java.net.URI;
 import java.util.*;
 
 public class AttributionsWidget {
-    private static List<FormattedText> getTexts() {
+    private static List<FormattedText> getTexts(ModContainer modContainer) {
         List<FormattedText> texts = new ArrayList<>();
         List<FormattedText> developers = new ArrayList<>();
         List<FormattedText> contributors = new ArrayList<>();
-        Data.getVersion().getModContainer().ifPresent(modContainer -> {
+        if (modContainer != null) {
             texts.add(getDescription(modContainer.getMetadata()));
             getLicense(modContainer.getMetadata()).ifPresent(texts::add);
             texts.add(empty());
 
             for (Person developer : modContainer.getMetadata().getAuthors()) developers.add(getPersonName(developer));
             for (Person contributor : modContainer.getMetadata().getContributors()) contributors.add(getPersonName(contributor));
-        });
+        }
 
         if (!developers.isEmpty()) {
             texts.add(Translation.getTranslation(Data.getVersion().getID(), "developers", new ChatFormatting[]{ChatFormatting.GOLD, ChatFormatting.BOLD}));
@@ -54,7 +55,7 @@ public class AttributionsWidget {
 
         texts.add(empty());
 
-        Data.getVersion().getModContainer().ifPresent(modContainer -> {
+        if (modContainer != null) {
             for (ModDependency dependency : modContainer.getMetadata().getDependencies()) {
                 FabricLoader.getInstance().getModContainer(dependency.getModId()).ifPresent(fabric -> {
                     if (!fabric.getMetadata().getId().equalsIgnoreCase("minecraft")) {
@@ -63,7 +64,7 @@ public class AttributionsWidget {
                     }
                 });
             }
-        });
+        }
 
         texts.addAll(getAttribution(createMetadata("Minecraft", "The base game.", List.of("Mojang Studios"), List.of("Minecraft EULA"), "https://minecraft.net")));
 
@@ -78,12 +79,12 @@ public class AttributionsWidget {
         return builder.build();
     }
 
-    public static ScrollableTextWidget get(Minecraft minecraft, int width, int height, int y, int lineHeight, double scrollY) {
-        return new ScrollableTextWidget(minecraft, width, height, y, lineHeight, scrollY, getTexts());
+    public static ScrollableTextWidget get(Minecraft minecraft, int width, int height, int y, int lineHeight, double scrollY, ModContainer modContainer) {
+        return new ScrollableTextWidget(minecraft, width, height, y, lineHeight, scrollY, getTexts(modContainer));
     }
 
-    public static ScrollableTextWidget get(Minecraft minecraft, int width, int height, int y, int lineHeight) {
-        return new ScrollableTextWidget(minecraft, width, height, y, lineHeight, getTexts());
+    public static ScrollableTextWidget get(Minecraft minecraft, int width, int height, int y, int lineHeight, ModContainer modContainer) {
+        return new ScrollableTextWidget(minecraft, width, height, y, lineHeight, getTexts(modContainer));
     }
 
     private static FormattedText getPersonName(Person person) {
