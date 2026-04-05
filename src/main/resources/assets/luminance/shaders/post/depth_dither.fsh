@@ -36,4 +36,7 @@ void main() {
     float g = float(int(col.g*8.0))/8.0;
     float b = float(int(col.b*4.0))/4.0;
     fragColor = vec4(mix(color.rgb, vec3(r, g, b), depth), 1.0);
+
+    // temporary depth output for testing
+    fragColor = vec4(vec3(texture(InDepthSampler, texCoord).r), 1.0);
 }

@@ -24,6 +24,7 @@
     "client.shaders.PostEffectPipelineTargetsMixin",
     "client.shaders.PostPassMixin",
     "client.shaders.ScreenMixin",
+    "client.shaders.ShaderManagerAcessor",
     "client.shaders.Std140BuilderMixin",
     "client.shaders.Std140SizeCalculatorMixin",
     "client.shaders.TitleScreenMixin",
