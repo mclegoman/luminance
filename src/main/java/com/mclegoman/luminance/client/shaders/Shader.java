@@ -9,7 +9,6 @@ package com.mclegoman.luminance.client.shaders;
 
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
-import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.client.renderer.LevelTargetBundle;

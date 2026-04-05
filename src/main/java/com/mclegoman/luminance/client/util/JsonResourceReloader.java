@@ -9,7 +9,6 @@ package com.mclegoman.luminance.client.util;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.server.packs.resources.Resource;

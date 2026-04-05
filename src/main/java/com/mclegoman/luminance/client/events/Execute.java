@@ -13,7 +13,6 @@ import com.mclegoman.luminance.client.shaders.RenderTypes;
 import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
-import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.client.util.CompatHelper;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;

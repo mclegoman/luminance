@@ -7,7 +7,6 @@
 
 package com.mclegoman.luminance.client.texture;
 
-import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;

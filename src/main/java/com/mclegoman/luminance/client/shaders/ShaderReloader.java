@@ -13,7 +13,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mclegoman.luminance.client.debug.Debug;
 import com.mclegoman.luminance.client.events.Events;
-import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.client.util.JsonResourceReloader;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.IdentifierHelper;

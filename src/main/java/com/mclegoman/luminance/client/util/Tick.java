@@ -11,7 +11,6 @@ import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.debug.Debug;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.shaders.Uniforms;
-import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;

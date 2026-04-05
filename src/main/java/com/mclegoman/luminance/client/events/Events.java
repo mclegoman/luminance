@@ -11,7 +11,6 @@ import com.mclegoman.luminance.client.shaders.RenderTypes;
 import com.mclegoman.luminance.client.shaders.Shader;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
-import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;

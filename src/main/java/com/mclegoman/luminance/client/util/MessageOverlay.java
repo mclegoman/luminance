@@ -9,10 +9,7 @@ package com.mclegoman.luminance.client.util;
 
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Events;
-import com.mclegoman.luminance.client.events.Runnables;
 import com.mclegoman.luminance.common.data.Data;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
