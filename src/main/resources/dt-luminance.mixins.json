@@ -4,8 +4,10 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.mclegoman.luminance.mixin.MixinPlugin",
   "client": [
-    "client.hud.DebugScreenOverlayMixin",
-    "client.hud.GuiMixin",
+    "client.gui.DebugScreenOverlayMixin",
+    "client.gui.GuiMixin",
+    "client.gui.ScreenAccessor",
+    "client.gui.StringSplitterAccessor",
     "client.resources.MinecraftMixin",
     "client.shaders.DynamicRenderTickCounterAccessor",
     "client.shaders.FrameGraphBuilderMixin",

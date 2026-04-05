@@ -8,11 +8,24 @@
 package com.mclegoman.luminance.client.translation;
 
 import com.mclegoman.luminance.client.shaders.RenderTypes;
+import com.mclegoman.luminance.mixin.client.gui.StringSplitterAccessor;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.StringSplitter;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.FormattedCharSink;
+import net.minecraft.util.StringDecomposer;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.mutable.MutableObject;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public class Translation {
 	public static MutableComponent getText(String string, boolean isTranslatable) {
@@ -190,5 +203,56 @@ public class Translation {
 	}
 
 	public record Data(String key, boolean translatable) {
+	}
+
+	@Nullable
+	public static Style getStyleAt(FormattedText text, int x, StringSplitter textHandler) {
+		WidthLimitingVisitor widthLimitingVisitor = new WidthLimitingVisitor((float)x, textHandler);
+		return text.visit((style, string) -> StringDecomposer.iterateFormatted(string, style, widthLimitingVisitor) ? Optional.empty() : Optional.of(style), Style.EMPTY).orElse(null);
+	}
+
+	@Nullable
+	public static Style getStyleAt(FormattedCharSequence text, int x, StringSplitter textHandler) {
+		WidthLimitingVisitor widthLimitingVisitor = new WidthLimitingVisitor((float)x, textHandler);
+		MutableObject<Style> mutableObject = new MutableObject<>();
+		text.accept((index, style, codePoint) -> {
+			if (!widthLimitingVisitor.accept(index, style, codePoint)) {
+				mutableObject.setValue(style);
+				return false;
+			} else {
+				return true;
+			}
+		});
+		return mutableObject.get();
+	}
+
+	@Environment(EnvType.CLIENT)
+	static class WidthLimitingVisitor implements FormattedCharSink {
+		private float widthLeft;
+		private int length;
+		private final StringSplitter textHandler;
+
+		public WidthLimitingVisitor(float maxWidth, StringSplitter textHandler) {
+			this.widthLeft = maxWidth;
+			this.textHandler = textHandler;
+		}
+
+		public boolean accept(int i, Style style, int j) {
+			this.widthLeft -= ((StringSplitterAccessor)this.textHandler).getWidthProvider().getWidth(j, style);
+			if (this.widthLeft >= 0.0F) {
+				this.length = i + Character.charCount(j);
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		public int getLength() {
+			return this.length;
+		}
+
+		public void resetLength() {
+			this.length = 0;
+		}
 	}
 }

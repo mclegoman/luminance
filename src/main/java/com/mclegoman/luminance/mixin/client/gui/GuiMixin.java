@@ -5,7 +5,7 @@
     Licence: GNU LGPLv3
 */
 
-package com.mclegoman.luminance.mixin.client.hud;
+package com.mclegoman.luminance.mixin.client.gui;
 
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Execute;
