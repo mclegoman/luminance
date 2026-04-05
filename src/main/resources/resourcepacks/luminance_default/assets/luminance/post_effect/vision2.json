@@ -185,19 +185,19 @@
                         "name": "TargetPosition",
                         "type": "vec3",
                         "value": [ 0.0, 64.0, 0.0 ],
-                        "override": ["luminance:crosshair_target"]
+                        "override": "luminance:crosshair_target"
                     },
                     {
                         "name": "CameraPosition",
                         "type": "vec3",
                         "value": [ 0.0, 64.0, 0.0 ],
-                        "override": ["luminance:cam"]
+                        "override": "luminance:cam"
                     },
                     {
                         "name": "FOV",
                         "type": "float",
                         "value": 95.0,
-                        "override": ["luminance:fov"]
+                        "override": "luminance:fov"
                     }
                 ]
             }
@@ -222,7 +222,7 @@
                         "name": "Alpha",
                         "type": "float",
                         "value": 1.0,
-                        "override": ["luminance:alpha_smooth"]
+                        "override": "luminance:alpha_smooth"
                     }
                 ]
             }

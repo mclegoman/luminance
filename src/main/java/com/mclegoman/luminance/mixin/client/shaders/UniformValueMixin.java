@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Mixin(UniformValue.class)
@@ -26,7 +27,7 @@ public interface UniformValueMixin {
                 instance.group(
                         MapCodec.assumeMapUnsafe(original).forGetter(Function.identity()),
                         Codec.STRING.lenientOptionalFieldOf("name").forGetter(uniform -> ((UniformValueInterface)uniform).luminance$getName()),
-                        Codec.STRING.sizeLimitedListOf(4).lenientOptionalFieldOf("override").forGetter((uniform -> ((UniformValueInterface)uniform).luminance$getOverride())),
+                        Codec.STRING.sizeLimitedListOf(4).withAlternative(Codec.STRING.xmap(s -> List.of("auto#"+s) /* slightly janky way to communicate that it should be handled differently*/, List::getFirst)).lenientOptionalFieldOf("override").forGetter((uniform -> ((UniformValueInterface)uniform).luminance$getOverride())),
                         ConfigData.CODEC.listOf().lenientOptionalFieldOf("config").forGetter((uniform -> ((UniformValueInterface)uniform).luminance$getConfig()))
                 ).apply(instance, (uniform, name, override, config) -> {
                     name.ifPresent(string -> ((UniformValueInterface)uniform).luminance$setName(string));

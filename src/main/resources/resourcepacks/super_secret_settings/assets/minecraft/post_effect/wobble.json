@@ -20,7 +20,7 @@
                         "name": "Time",
                         "type": "float",
                         "value": 0.0,
-                        "override": ["luminance:time"]
+                        "override": "luminance:time"
                     },
                     {
                         "name": "Frequency",
@@ -55,7 +55,7 @@
                         "name": "Alpha",
                         "type": "float",
                         "value": 1.0,
-                        "override": ["luminance:alpha_smooth"]
+                        "override": "luminance:alpha_smooth"
                     }
                 ]
             }

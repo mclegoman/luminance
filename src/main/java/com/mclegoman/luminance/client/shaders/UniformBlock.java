@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
 import com.mclegoman.luminance.client.shaders.overrides.LuminanceUniformOverride;
 import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
+import com.mclegoman.luminance.common.data.Data;
+import com.mclegoman.luminance.common.util.LogType;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -12,6 +14,7 @@ import net.minecraft.client.gl.UniformValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UniformBlock {
@@ -32,16 +35,30 @@ public class UniformBlock {
                 int length = uniformInterface.luminance$getLength();
                 int overrideValues = override.size();
 
-                // make sure overrides are the same length as the type
-                if (overrideValues > length) {
-                    override = override.subList(0, length);
-                }
-                if (overrideValues < length) {
-                    // copy list so changes arent destructive (although it shouldnt matter if they were)
-                    for (override = new ArrayList<>(override); overrideValues < length; overrideValues++) {
-                        override.add(null);
+                if (overrideValues == 1 && override.getFirst().startsWith("auto#")) {
+                    // automatically populate override with _x etc if needed
+                    String name = override.getFirst().substring(5);
+                    override = new ArrayList<>(length);
+                    if (length == 1) {
+                        override.add(name);
+                    } else {
+                        for (int i = 0; i < length; i++) {
+                            override.add(name + "_" + ("xyzw".charAt(i)));
+                        }
+                    }
+                } else {
+                    // make sure overrides are the same length as the type
+                    if (overrideValues > length) {
+                        override = override.subList(0, length);
+                    }
+                    if (overrideValues < length) {
+                        // copy list since the list from getOverride() isnt mutable
+                        for (override = new ArrayList<>(override); overrideValues < length; overrideValues++) {
+                            override.add(null);
+                        }
                     }
                 }
+                Data.getVersion().sendToLog(LogType.INFO, uniformInterface.luminance$getName().orElse("null")+" "+Arrays.toString(override.toArray()));
                 instance.override = new LuminanceUniformOverride(override);
             });
 

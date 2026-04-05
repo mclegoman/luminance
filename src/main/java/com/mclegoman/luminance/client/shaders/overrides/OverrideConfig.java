@@ -54,6 +54,7 @@ public class OverrideConfig implements UniformConfig {
 
     @Override
     public Optional<Number> getNumber(String name, int index) {
+        // TODO: this should allow a config of "thing" to wildcard alias to "0_thing", "1_thing", "2_thing" etc with lower priority, to make configs simpler
         return uniformConfig.getNumber(preprocessName(name), index);
     }
 
