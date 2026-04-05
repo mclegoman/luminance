@@ -32,6 +32,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 
 public class ScrollableTextWidget extends AbstractSelectionList<ScrollableTextWidget.LineEntry> {
     public ScrollableTextWidget(Minecraft minecraft, int width, int height, int y, int lineHeight, List<FormattedText> texts) {
@@ -56,6 +57,11 @@ public class ScrollableTextWidget extends AbstractSelectionList<ScrollableTextWi
     protected void updateWidgetNarration(@NonNull NarrationElementOutput narrationElementOutput) {
     }
 
+    @Override
+    protected void renderItem(@NonNull GuiGraphics guiGraphics, int i, int j, float f, LineEntry entry) {
+        entry.renderContent(guiGraphics, i, j, Objects.equals(this.getHovered(), entry), f);
+    }
+
     public class LineEntry extends AbstractSelectionList.Entry<LineEntry> {
         private final FormattedCharSequence text;
         private final Font font;
@@ -66,15 +72,22 @@ public class ScrollableTextWidget extends AbstractSelectionList<ScrollableTextWi
         }
 
         @Override
-        public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-            guiGraphics.drawString(this.font, this.text, this.getX(), this.getY(), 0xFFAAAAAA);
+        public void renderContent(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+            FormattedCharSequence renderText = this.text;
             if (hovered) {
-                Style style = Translation.getStyleAt(this.text, mouseX - this.getX(), this.font.getSplitter());
-                if (style != null) {
-                    if (style.getClickEvent() != null) guiGraphics.requestCursor(CursorTypes.POINTING_HAND);
-                    if (style.getHoverEvent() != null) guiGraphics.renderComponentHoverEffect(this.font, style, mouseX, mouseY);
+                Style hoverStyle = Translation.getStyleAt(this.text, mouseX - this.getX(), this.font.getSplitter());
+                if (hoverStyle != null) {
+                    if (hoverStyle.getClickEvent() != null) {
+                        renderText = (sink) -> this.text.accept((index, style, codePoint) -> {
+                            if (style.equals(hoverStyle)) style = style.withUnderlined(true);
+                            return sink.accept(index, style, codePoint);
+                        });
+                        guiGraphics.requestCursor(CursorTypes.POINTING_HAND);
+                    }
+                    if (hoverStyle.getHoverEvent() != null) guiGraphics.renderComponentHoverEffect(this.font, hoverStyle, mouseX, mouseY);
                 }
             }
+            guiGraphics.drawString(this.font, renderText, this.getX(), this.getY(), 0xFFAAAAAA);
         }
 
         public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {

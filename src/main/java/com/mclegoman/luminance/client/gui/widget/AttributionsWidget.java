@@ -12,6 +12,7 @@ import com.mclegoman.luminance.common.data.Data;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.*;
 import net.fabricmc.loader.impl.metadata.BuiltinModMetadata;
+import net.fabricmc.loader.impl.metadata.ContactInformationImpl;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.*;
@@ -49,8 +50,8 @@ public class AttributionsWidget {
 
         texts.add(Translation.getTranslation(Data.getVersion().getID(), "attributions", new ChatFormatting[]{ChatFormatting.GOLD}));
 
-        texts.addAll(getAttribution(createMetadata("Quilt Config", "A library designed to facilitate the creation and management of config files.", List.of("QuiltMC"), List.of("Apache-2.0"))));
-        
+        texts.addAll(getAttribution(createMetadata("Quilt Config", "A library designed to facilitate the creation and management of config files.", List.of("QuiltMC"), List.of("Apache-2.0"), "https://github.com/QuiltMC/quilt-config")));
+
         texts.add(empty());
 
         Data.getVersion().getModContainer().ifPresent(modContainer -> {
@@ -64,15 +65,16 @@ public class AttributionsWidget {
             }
         });
 
-        texts.addAll(getAttribution(createMetadata("Minecraft", "The base game.", List.of("Mojang Studios"), List.of("Minecraft EULA"))));
+        texts.addAll(getAttribution(createMetadata("Minecraft", "The base game.", List.of("Mojang Studios"), List.of("Minecraft EULA"), "https://minecraft.net")));
 
         return texts;
     }
 
-    public static ModMetadata createMetadata(String name, String description, List<String> authors, List<String> licenses) {
+    public static ModMetadata createMetadata(String name, String description, List<String> authors, List<String> licenses, String homepage) {
         BuiltinModMetadata.Builder builder = new BuiltinModMetadata.Builder(name.toLowerCase(), "0").setName(name).setDescription(description);
         for (String author : authors) builder.addAuthor(author, Map.of());
         for (String license : licenses) builder.addLicense(license);
+        if (homepage != null && !homepage.isBlank()) builder.setContact(new ContactInformationImpl(Map.of("homepage", homepage)));
         return builder.build();
     }
 
@@ -136,7 +138,7 @@ public class AttributionsWidget {
     private static FormattedText getText(String key, boolean translatable, String homepage, ChatFormatting[] chatFormattings, Object... args) {
         MutableComponent text = translatable ? Component.translatable(key, args) : Component.literal(key);
         if (chatFormattings != null) text.withStyle(chatFormattings);
-        if (homepage != null) text.setStyle(text.getStyle().withClickEvent(new ClickEvent.OpenUrl(URI.create(homepage))));
+        if (homepage != null && !homepage.isBlank()) text.setStyle(text.getStyle().withClickEvent(new ClickEvent.OpenUrl(URI.create(homepage))));
         return text;
     }
     
