@@ -13,7 +13,6 @@ import com.mclegoman.luminance.client.shaders.RenderTypes;
 import com.mclegoman.luminance.client.shaders.Shader;
 import com.mclegoman.luminance.client.shaders.ShaderRegistryEntry;
 import com.mclegoman.luminance.client.shaders.Shaders;
-import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.Couple;
 import com.mclegoman.luminance.common.util.LogType;
@@ -88,7 +87,7 @@ public class Debug {
 				Debug.getDebugShader().setSecond(shader);
 				applyDebugShader();
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set debug shader: {}", error));
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to set debug shader: {}", error);
 				resetDebugShader();
 				applyDebugShader();
 			}

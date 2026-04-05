@@ -135,7 +135,7 @@ public class Uniforms {
 			registerStandardTree(namespace, "random", Uniforms::getRandom, 0f, 1f, 1, EmptyConfig.INSTANCE, false);
 			registerStandardTree(namespace, "render_type", Uniforms::getRenderType, 0f, 1f, 3, EmptyConfig.INSTANCE, false);
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to initialize uniforms: {}", error));
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to initialize uniforms: {}", error);
 		}
 	}
 

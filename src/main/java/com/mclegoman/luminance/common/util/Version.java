@@ -135,10 +135,10 @@ public class Version implements Comparable<Version> {
 			return Integer.compare(build, other.build);
 		}
 	}
-	public void sendToLog(LogType logType, String logMessage) {
-		if (logType.equals(LogType.INFO)) getLogger().info(Translation.getString("{} {}", getLoggerPrefix(), logMessage));
-		if (logType.equals(LogType.WARN)) getLogger().warn(Translation.getString("{} {}", getLoggerPrefix(), logMessage));
-		if (logType.equals(LogType.ERROR)) getLogger().error(Translation.getString("{} {}", getLoggerPrefix(), logMessage));
-		if (logType.equals(LogType.DEBUG)) getLogger().debug(Translation.getString("{} {}", getLoggerPrefix(), logMessage));
+	public void sendToLog(LogType type, String message, Object... args) {
+		if (type.equals(LogType.INFO)) getLogger().info(Translation.getString("{} {}", getLoggerPrefix(), Translation.getString(message, args)));
+		if (type.equals(LogType.WARN)) getLogger().warn(Translation.getString("{} {}", getLoggerPrefix(), Translation.getString(message, args)));
+		if (type.equals(LogType.ERROR)) getLogger().error(Translation.getString("{} {}", getLoggerPrefix(), Translation.getString(message, args)));
+		if (type.equals(LogType.DEBUG)) getLogger().debug(Translation.getString("{} {}", getLoggerPrefix(), Translation.getString(message, args)));
 	}
 }

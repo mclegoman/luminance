@@ -20,10 +20,10 @@ import net.minecraft.util.Identifier;
 public class ResourcePackHelper {
 	public static void register(Identifier id, ModContainer container, Text text, PackActivationType packActivationType) {
 		try {
-			Data.getVersion().sendToLog(LogType.INFO, Translation.getString("Registering resource pack: {}", id.getPath()));
+			Data.getVersion().sendToLog(LogType.INFO, "Registering resource pack: {}", id.getPath());
 			FabricLoader.getInstance().getModContainer(container.getMetadata().getId()).ifPresent(modContainer -> ResourceLoader.registerBuiltinPack(id, modContainer, text, packActivationType));
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to register resource pack: {}", error));
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to register resource pack: {}", error);
 		}
 	}
 }

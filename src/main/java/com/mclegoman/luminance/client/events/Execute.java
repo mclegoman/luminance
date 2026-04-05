@@ -55,7 +55,7 @@ public class Execute {
 			try {
 				runnable.run(context, renderTickCounter);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterInGameHudRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterInGameHudRender event with id: {}: {}", id, error);
 			}
 		}));
 	}
@@ -64,7 +64,7 @@ public class Execute {
 			try {
 				runnable.run(context, renderTickCounter);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterInGameHudRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterInGameHudRender event with id: {}: {}", id, error);
 			}
 		}));
 	}
@@ -74,7 +74,7 @@ public class Execute {
 			try {
 				runnable.run();
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterGameRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterGameRender event with id: {}: {}", id, error);
 			}
 		}));
 	}
@@ -91,7 +91,7 @@ public class Execute {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute VanillaPostEffect event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute VanillaPostEffect event with id: {}: {}", id, error);
 			}
 		}));
 		GL11.glDepthMask(true);
@@ -101,7 +101,7 @@ public class Execute {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterGameRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterGameRender event with id: {}: {}", id, error);
 			}
 		}));
 	}
@@ -110,7 +110,7 @@ public class Execute {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute BeforeUiRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute BeforeUiRender event with id: {}: {}", id, error);
 			}
 		}));
 	}
@@ -121,7 +121,7 @@ public class Execute {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterUiBackgroundRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterUiBackgroundRender event with id: {}: {}", id, error);
 			}
 		}));
 		// this and afterPanoramaRender are a special case, so resetting the RenderType it makes sense
@@ -134,7 +134,7 @@ public class Execute {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterPanoramaRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterPanoramaRender event with id: {}: {}", id, error);
 			}
 		}));
 		ShaderTime.currentRenderType = previous;
@@ -148,7 +148,7 @@ public class Execute {
 			try {
 				runnable.run();
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute BeforeWorldRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute BeforeWorldRender event with id: {}: {}", id, error);
 			}
 		}));
 	}
@@ -163,7 +163,7 @@ public class Execute {
 			try {
 				runnable.run(frameGraphBuilder, ClientData.minecraft.getFramebuffer().textureWidth, ClientData.minecraft.getFramebuffer().textureHeight, framebufferSet);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterFabulousRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterFabulousRender event with id: {}: {}", id, error);
 			}
 		}));
 		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.of(Data.getVersion().getID(), "cleanup_shader_render"), () -> GL11.glDepthMask(true));
@@ -173,7 +173,7 @@ public class Execute {
 			try {
 				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterWorldRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterWorldRender event with id: {}: {}", id, error);
 			}
 		}));
 
@@ -184,7 +184,7 @@ public class Execute {
 			try {
 				runnable.run(postEffectPass);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute BeforeShaderRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute BeforeShaderRender event with id: {}: {}", id, error);
 			}
 		}));
 	}
@@ -193,7 +193,7 @@ public class Execute {
 			try {
 				runnable.run(postEffectPass);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to execute AfterShaderRender event with id: {}: {}", id, error));
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterShaderRender event with id: {}: {}", id, error);
 			}
 		}));
 	}
@@ -205,8 +205,7 @@ public class Execute {
 		cleanupDepth(allocator);
 
 		if (CompatHelper.isIrisShadersEnabled()) {
-			return;
-		}
+        }
 
 		// TODO: update this (its used for depth merging)
 		//  beginWrite no longer exists, it might be fine to just ignore though, it might rebind the correct buffer as is

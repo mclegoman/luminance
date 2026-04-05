@@ -39,7 +39,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 				boolean isModMenuInstalled = FabricLoader.getInstance().isModLoaded("modmenu");
 				List<String> modsInstalled = new ArrayList<>();
 				if (isModMenuInstalled) modsInstalled.add("modmenu");
-				if (!modsInstalled.isEmpty()) Data.getVersion().sendToLog(LogType.INFO, Translation.getString("Enabling {}: {}", mixin, modsInstalled));
+				if (!modsInstalled.isEmpty()) Data.getVersion().sendToLog(LogType.INFO, "Enabling {}: {}", mixin, modsInstalled);
 				return !modsInstalled.isEmpty();
 			}
 			default -> {

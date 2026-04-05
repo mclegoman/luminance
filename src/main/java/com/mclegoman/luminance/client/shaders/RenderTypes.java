@@ -28,7 +28,7 @@ public class RenderTypes {
             try {
                 renderShaders(type, shaders, id, framebuffer, objectAllocator);
             } catch (Exception error) {
-                Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render {} shader with id: {}:{}", type.identifier(), id, error));
+                Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}:{}", type.identifier(), id, error);
             }
         });
     }
@@ -41,7 +41,7 @@ public class RenderTypes {
                 try {
                     renderShader(type, id, shader, framebuffer, objectAllocator, shaderRenderData.disablePhotosensitive().call(shader.shader().getShaderData()));
                 } catch (Exception error) {
-                    Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render {} shader with id: {}:{}", type.identifier(), id, error));
+                    Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}:{}", type.identifier(), id, error);
                 }
             });
         }
@@ -79,7 +79,7 @@ public class RenderTypes {
 
             if (!useFallback || isFallback) type.render(id, shader, framebuffer, objectAllocator);
         } catch (Exception error) {
-            Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render {} shader with id: {}:{}", type.identifier(), id, error));
+            Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}:{}", type.identifier(), id, error);
         }
     }
 

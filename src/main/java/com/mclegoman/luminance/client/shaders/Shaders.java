@@ -92,7 +92,7 @@ public class Shaders {
 						try {
 							shader.shader().setPostProcessor();
 						} catch (Exception error) {
-							Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set \"{}:{}:{}\" post processor: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
+							Data.getVersion().sendToLog(LogType.ERROR, "Failed to set \"{}:{}:{}\" post processor: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
@@ -100,7 +100,7 @@ public class Shaders {
 				}
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" using framebuffer set, shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render \"{}:{}\" using framebuffer set, shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
 		}
 	}
 
@@ -112,11 +112,11 @@ public class Shaders {
 					// this is because FrameGraphBuilder delays calls, so any rendersystem methods wont work with their intended timing
 					((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, framebufferSet, customPasses);
 				} catch (Exception error) {
-					Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render processor: {}", error.getLocalizedMessage()));
+					Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());
 				}
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render post effect processor: {}", error.getLocalizedMessage()));
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render post effect processor: {}", error.getLocalizedMessage());
 		}
 	}
 
@@ -128,7 +128,7 @@ public class Shaders {
 						try {
 							shader.shader().setPostProcessor();
 						} catch (Exception error) {
-							Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set \"{}:{}:{}\" post processor: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
+							Data.getVersion().sendToLog(LogType.ERROR, "Failed to set \"{}:{}:{}\" post processor: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
@@ -136,7 +136,7 @@ public class Shaders {
 				}
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render \"{}:{}\" using allocator, shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error));
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render \"{}:{}\" using allocator, shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
 		}
 	}
 
@@ -287,7 +287,7 @@ public class Shaders {
 				Runnables.WorldRender.fromGameRender((builder, width, height, set) -> ((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, width, height, set, customPasses), framebuffer, objectAllocator);
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render processor: {}", error.getLocalizedMessage()));
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());
 		}
 	}
 

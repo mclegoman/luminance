@@ -19,6 +19,7 @@ import java.util.Optional;
 
 public class Data {
 	private static Version version;
+
 	public static Version getVersion() {
 		if (version == null) {
 			Optional<ModContainer> modContainer = ModHelper.getModContainer("luminance");
@@ -26,6 +27,7 @@ public class Data {
 		}
 		return version;
 	}
+
 	public static boolean isModInstalled(String modId) {
 		try {
 			return ModHelper.isModLoaded(modId);
@@ -33,6 +35,7 @@ public class Data {
 			return false;
 		}
 	}
+
 	public static boolean isModInstalledVersionOrHigher(String modId, String requiredVersion, boolean substring, String separator) {
 		try {
 			if (isModInstalled(modId)) {
@@ -40,24 +43,28 @@ public class Data {
 				if (modContainer.isPresent()) return checkModVersion(modContainer.get().getMetadata().getVersion().getFriendlyString(), requiredVersion, substring);
 			}
 		} catch (Exception error) {
-			version.sendToLog(LogType.ERROR, Translation.getString("Failed to check mod version for " + modId + ": {}", error));
+			version.sendToLog(LogType.ERROR, "Failed to check mod version for " + modId + ": {}", error);
 		}
 		return false;
 	}
+
 	public static boolean isModInstalledVersionOrHigher(String modId, String requiredVersion, boolean substring) {
 		return isModInstalledVersionOrHigher(modId, requiredVersion, substring, "-");
 	}
+
 	public static boolean isModInstalledVersionOrHigher(String modId, String requiredVersion) {
 		return isModInstalledVersionOrHigher(modId, requiredVersion, false);
 	}
+
 	public static boolean checkModVersion(String currentVersion, String requiredVersion, boolean substring, String separator) {
 		try {
 			return net.fabricmc.loader.api.Version.parse(requiredVersion).compareTo(net.fabricmc.loader.api.Version.parse(substring ? StringUtils.substringBefore(currentVersion, separator) : currentVersion)) <= 0;
 		} catch (Exception error) {
-			version.sendToLog(LogType.ERROR, Translation.getString("Failed to check mod version!"));
+			version.sendToLog(LogType.ERROR, "Failed to check mod version!");
 		}
 		return false;
 	}
+
 	public static boolean checkModVersion(String currentVersion, String requiredVersion, boolean substring) {
 		return checkModVersion(currentVersion, requiredVersion, substring, "-");
 	}

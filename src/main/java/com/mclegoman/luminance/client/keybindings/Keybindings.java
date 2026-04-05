@@ -40,7 +40,7 @@ public class Keybindings {
 		}
 	}
 	public static void init() {
-		Data.getVersion().sendToLog(LogType.INFO, Translation.getString("Initializing keybindings!"));
+		Data.getVersion().sendToLog(LogType.INFO, "Initializing keybindings!");
 	}
 	public static void tick() {
 		if (openConfig.wasPressed()) {

@@ -27,7 +27,7 @@ public class LuminanceClient implements ClientModInitializer {
 
 	public static void init() {
 		try {
-			Data.getVersion().sendToLog(LogType.INFO, Translation.getString("Initializing {}:client", Data.getVersion().getName()));
+			Data.getVersion().sendToLog(LogType.INFO, "Initializing {}:client", Data.getVersion().getName());
 			LuminanceConfig.init();
 			ResourcePacks.init();
 			Keybindings.init();
@@ -36,7 +36,7 @@ public class LuminanceClient implements ClientModInitializer {
 			MessageOverlay.init();
 			Tick.init();
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to run client:init: {}", error));
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to run client:init: {}", error);
 		}
 	}
 }

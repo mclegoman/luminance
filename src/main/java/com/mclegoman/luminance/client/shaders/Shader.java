@@ -44,7 +44,7 @@ public class Shader {
 				setUseDepth(true);
 			}
 		} catch (Exception error) {
-			com.mclegoman.luminance.common.data.Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to set post processor: {}", error));
+			com.mclegoman.luminance.common.data.Data.getVersion().sendToLog(LogType.ERROR, "Failed to set post processor: {}", error);
 			closePostProcessor();
 		}
 	}

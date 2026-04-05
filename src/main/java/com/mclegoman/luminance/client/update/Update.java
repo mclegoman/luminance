@@ -36,10 +36,10 @@ public class Update {
 				}
 				return JsonParser.parseString(jsonContent.toString());
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.INFO, Translation.getString("Failed to read data from Modrinth API: {}", error));
+				Data.getVersion().sendToLog(LogType.INFO, "Failed to read data from Modrinth API: {}", error);
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.INFO, Translation.getString("Failed to get data from Modrinth API: {}", error));
+			Data.getVersion().sendToLog(LogType.INFO, "Failed to get data from Modrinth API: {}", error);
 		}
 		return null;
 	}
