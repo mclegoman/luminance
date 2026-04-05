@@ -179,11 +179,11 @@ public class ShaderStacks {
     }
 
     public static Component getShaderName(Identifier registryId, Identifier shaderId) {
-        return getStack(registryId, shaderId).text.getName(true);
+        return getStack(registryId, shaderId).text.getName(shouldShowNamespace(registryId, shaderId));
     }
 
     public static Component getShaderDescription(Identifier registryId, Identifier shaderId) {
-        return getStack(registryId, shaderId).text.getDescription(true);
+        return getStack(registryId, shaderId).text.getDescription(shouldShowNamespace(registryId, shaderId));
     }
 
     public record Entry(Identifier registryId, Text text, List<Entry.ShaderInfo> shaders, JsonObject customData) {
