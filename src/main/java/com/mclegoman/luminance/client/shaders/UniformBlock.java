@@ -12,6 +12,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.MappableRingBuffer;
 import net.minecraft.client.renderer.UniformValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -118,5 +119,21 @@ public class UniformBlock {
         if (ringBuffer != null) {
             ringBuffer.close();
         }
+    }
+
+    public @Nullable UniformInstance findUniform(@NotNull String name) {
+        return findUniform(name, 0);
+    }
+
+    public @Nullable UniformInstance findUniform(@NotNull String name, int skip) {
+        for (UniformInstance instance : uniforms) {
+            if (name.equals(instance.name)) {
+                if (skip <= 0) {
+                    return instance;
+                }
+                skip--;
+            }
+        }
+        return null;
     }
 }
