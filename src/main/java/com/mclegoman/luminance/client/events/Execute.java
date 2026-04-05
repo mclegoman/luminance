@@ -21,6 +21,7 @@ import com.mojang.blaze3d.ProjectionType;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.resource.RenderTargetDescriptor;
 import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.systems.RenderPass;
@@ -230,9 +231,9 @@ public class Execute {
 
 		RenderTarget target = ClientData.minecraft.getMainRenderTarget();
 
-		//framebufferFactory = new RenderTargetDescriptor(target.width, target.height, true, 0);
-		//worldDepth = allocator.acquire(framebufferFactory);
-		//worldDepth.copyDepthFrom(target);
+		framebufferFactory = new RenderTargetDescriptor(target.width, target.height, true, 0);
+		worldDepth = allocator.acquire(framebufferFactory);
+		worldDepth.copyDepthFrom(target);
 	}
 
 	private static void mergeDepth(GraphicsResourceAllocator allocator) {
@@ -240,10 +241,20 @@ public class Execute {
 			return;
 		}
 
+
+
 		try {
 			RenderTarget target = ClientData.minecraft.getMainRenderTarget();
 
+			// temporary fix for depth, just ignoring hand
+			target.copyDepthFrom(worldDepth);
 
+			// attempt at a proper fix - it correctly renders the shader
+			// but the texture bind doesnt seem to be doing anything
+			// and it also cant write to the depth buffer
+			// TODO: merge the hand depth nicely
+
+			/*
 			CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
 			RenderSystem.backupProjectionMatrix();
 
@@ -257,10 +268,17 @@ public class Execute {
 				renderPass.bindTexture("InSampler", worldDepth.getDepthTextureView(), sampler);
 				renderPass.bindTexture("HandSampler", target.getDepthTextureView(), sampler);
 
+				//GL11.glDepthFunc(GL11.GL_ALWAYS);
+				//GL11.glEnable(GL11.GL_DEPTH_TEST);
+
 				renderPass.draw(0, 3);
-			}
+
+				//GL11.glDisable(GL11.GL_DEPTH_TEST);
+				//GL11.glDepthFunc(GL11.GL_LESS);
+            }
 
 			RenderSystem.restoreProjectionMatrix();
+			*/
 		} catch (Exception e) {
 			Data.getVersion().sendToLog(LogType.INFO, "Error Fixing Depth: "+e.getMessage());
 		}
