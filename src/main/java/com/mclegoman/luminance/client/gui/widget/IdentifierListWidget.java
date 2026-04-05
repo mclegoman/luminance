@@ -1,3 +1,10 @@
+/*
+    Luminance
+    Contributor(s): dannytaylor
+    Github: https://github.com/mclegoman/Luminance
+    Licence: GNU LGPLv3
+*/
+
 package com.mclegoman.luminance.client.gui.widget;
 
 import com.mclegoman.luminance.client.data.ClientData;
@@ -117,6 +124,6 @@ public class IdentifierListWidget extends ObjectSelectionList<IdentifierListWidg
     }
 
     public void scrollToSelected() {
-        ClientData.minecraft.execute(() -> this.centerScrollOn(this.getSelected()));
+        if (this.getSelected() != null) ClientData.minecraft.execute(() -> this.centerScrollOn(this.getSelected()));
     }
 }

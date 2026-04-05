@@ -9,21 +9,21 @@ package com.mclegoman.luminance.client.gui.screen.config;
 
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.gui.screen.AbstractScrollableScreen;
-import com.mclegoman.luminance.client.gui.widget.PageWidget;
+import com.mclegoman.luminance.client.gui.widget.AttributionsWidget;
+import com.mclegoman.luminance.client.gui.widget.ScrollableTextWidget;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.common.data.Data;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 
 public class CreditsAttributionScreen extends AbstractScrollableScreen {
-	public PageWidget info;
+	public ScrollableTextWidget info;
 
 	public CreditsAttributionScreen(Screen parent, double scrollY, Translation.@Nullable Data splashText, boolean isPride) {
 		super("credits_attribution", parent, scrollY, splashText, isPride);
 	}
 
 	public void initBody() {
-		this.info = new PageWidget(ClientData.minecraft, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 11, this.scrollY, Data.idOf("texts/info.json"));
+		this.info = AttributionsWidget.get(ClientData.minecraft, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 11, this.scrollY);
 		this.layout.addToContents(this.info);
 	}
 

@@ -114,7 +114,7 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 		widgets.add(new ListWidget.ListEntry(new StringWidget(Translation.getConfigTranslation(Data.getVersion().getID(), "information"), ClientData.minecraft.font)));
 		widgets.add(new ListWidget.ListEntry(Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information.source_code").append(getExternal()), ConfirmLinkScreen.confirmLink(this, "https://github.com/mclegoman/luminance")).width(304).build(),
 				Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information.report").append(getExternal()), ConfirmLinkScreen.confirmLink(this, "https://github.com/mclegoman/luminance/issues")).width(304).build()));
-		widgets.add(new ListWidget.ListEntry(Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "credits_attribution").append(getMore()), button -> ClientData.minecraft.setScreen(new CreditsAttributionScreen(ClientData.minecraft.screen, 0, splashText, isPride))).width(304).build()));
+		widgets.add(new ListWidget.ListEntry(Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "credits_attribution").append(getMore()), button -> ClientData.minecraft.setScreen(new CreditsAttributionScreen(getRefreshScreen(), 0, splashText, isPride))).width(304).build()));
 		return widgets;
 	}
 

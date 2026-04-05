@@ -5,10 +5,20 @@
   "name": "${modName}",
   "description": "${modDescription}",
   "authors": [
-    "${authors}"
+    {
+      "name": "dannytaylor",
+      "contact": {
+        "homepage": "https://modrinth.com/user/dannytaylor"
+      }
+    },
+    {
+      "name": "Nettakrim",
+      "contact": {
+        "homepage": "https://modrinth.com/user/Nettakrim"
+      }
+    }
   ],
   "contributors": [
-    "${contributors}"
   ],
   "contact": {
     "homepage": "${homepage}",
@@ -18,8 +28,9 @@
   "license": "${license}",
   "icon": "assets/${modId}/textures/icons/icon.png",
   "depends": {
-    "minecraft": ">=${mc}",
-    "fabric-api": ">=${fapi}"
+    "fabric-api": ">=${fapi}",
+    "fabricloader": "*",
+    "minecraft": ">=${mc}"
   },
   "entrypoints": {
     "client": [
