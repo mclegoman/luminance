@@ -8,7 +8,7 @@
 package com.mclegoman.luminance.client.shaders;
 
 import com.google.gson.JsonObject;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public class ShaderRegistryEntry {
 	private final Identifier id;

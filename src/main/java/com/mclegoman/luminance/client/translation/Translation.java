@@ -8,104 +8,104 @@
 package com.mclegoman.luminance.client.translation;
 
 import com.mclegoman.luminance.client.shaders.RenderTypes;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.StringUtils;
 
 public class Translation {
-	public static MutableText getText(String string, boolean isTranslatable) {
+	public static MutableComponent getText(String string, boolean isTranslatable) {
 		return getText(string, isTranslatable, new Object[]{});
 	}
 
-	public static MutableText getText(String string, boolean isTranslatable, Formatting[] formattings) {
-		return getText(string, isTranslatable).formatted(formattings);
+	public static MutableComponent getText(String string, boolean isTranslatable, ChatFormatting[] formattings) {
+		return getText(string, isTranslatable).withStyle(formattings);
 	}
 
-	public static MutableText getText(String string, boolean isTranslatable, Object[] variables) {
-		return isTranslatable ? Text.translatable(string, variables) : Text.literal(getString(string, variables));
+	public static MutableComponent getText(String string, boolean isTranslatable, Object[] variables) {
+		return isTranslatable ? Component.translatable(string, variables) : Component.literal(getString(string, variables));
 	}
 
-	public static MutableText getText(String string, boolean isTranslatable, Object[] variables, Formatting[] formattings) {
-		return getText(string, isTranslatable, variables).formatted(formattings);
+	public static MutableComponent getText(String string, boolean isTranslatable, Object[] variables, ChatFormatting[] formattings) {
+		return getText(string, isTranslatable, variables).withStyle(formattings);
 	}
 
-	public static MutableText getText(Data data) {
+	public static MutableComponent getText(Data data) {
 		return getText(data.key(), data.translatable());
 	}
 
-	public static MutableText getText(Data data, Formatting[] formattings) {
+	public static MutableComponent getText(Data data, ChatFormatting[] formattings) {
 		return getText(data.key(), data.translatable(), formattings);
 	}
 
-	public static MutableText getText(Data data, Object[] variables) {
+	public static MutableComponent getText(Data data, Object[] variables) {
 		return getText(data.key(), data.translatable(), variables);
 	}
 
-	public static MutableText getText(Data data, Object[] variables, Formatting[] formattings) {
+	public static MutableComponent getText(Data data, Object[] variables, ChatFormatting[] formattings) {
 		return getText(data.key(), data.translatable(), variables, formattings);
 	}
 
-	public static MutableText getCombinedText(MutableText... texts) {
-		MutableText outputText = getText("", false);
-		for (Text text : texts) outputText.append(text);
+	public static MutableComponent getCombinedText(MutableComponent... texts) {
+		MutableComponent outputText = getText("", false);
+		for (Component text : texts) outputText.append(text);
 		return outputText;
 	}
 
-	public static MutableText getConfigTranslation(String namespace, String name, Object[] variables, Formatting[] formattings, boolean hover) {
+	public static MutableComponent getConfigTranslation(String namespace, String name, Object[] variables, ChatFormatting[] formattings, boolean hover) {
 		return hover ? getTranslation(namespace, "config." + name + ".hover", variables, formattings) : getTranslation(namespace, "config." + name, variables, formattings);
 	}
 
-	public static MutableText getConfigTranslation(String namespace, String name, Object[] variables, Formatting[] formattings) {
+	public static MutableComponent getConfigTranslation(String namespace, String name, Object[] variables, ChatFormatting[] formattings) {
 		return getTranslation(namespace, "config." + name, variables, formattings);
 	}
 
-	public static MutableText getConfigTranslation(String namespace, String name, Object[] variables, boolean hover) {
+	public static MutableComponent getConfigTranslation(String namespace, String name, Object[] variables, boolean hover) {
 		return hover ? getTranslation(namespace, "config." + name + ".hover", variables) : getTranslation(namespace, "config." + name, variables);
 	}
 
-	public static MutableText getConfigTranslation(String namespace, String name, Object[] variables) {
+	public static MutableComponent getConfigTranslation(String namespace, String name, Object[] variables) {
 		return getTranslation(namespace, "config." + name, variables);
 	}
 
-	public static MutableText getConfigTranslation(String namespace, String name, Formatting[] formattings, boolean hover) {
+	public static MutableComponent getConfigTranslation(String namespace, String name, ChatFormatting[] formattings, boolean hover) {
 		return hover ? getTranslation(namespace, "config." + name + ".hover", formattings) : getTranslation(namespace, "config." + name, formattings);
 	}
 
-	public static MutableText getConfigTranslation(String namespace, String name, Formatting[] formattings) {
+	public static MutableComponent getConfigTranslation(String namespace, String name, ChatFormatting[] formattings) {
 		return getTranslation(namespace, "config." + name, formattings);
 	}
 
-	public static MutableText getConfigTranslation(String namespace, String name, boolean hover) {
+	public static MutableComponent getConfigTranslation(String namespace, String name, boolean hover) {
 		return hover ? getTranslation(namespace, "config." + name + ".hover") : getTranslation(namespace, "config." + name);
 	}
 
-	public static MutableText getConfigTranslation(String namespace, String name) {
+	public static MutableComponent getConfigTranslation(String namespace, String name) {
 		return getTranslation(namespace, "config." + name);
 	}
 
-	public static MutableText getRenderTypeTranslation(Identifier renderTypeId) {
-		return Text.translatableWithFallback("gui." + renderTypeId.getNamespace() + ".render_type." + renderTypeId.getPath(), renderTypeId.toString());
+	public static MutableComponent getRenderTypeTranslation(Identifier renderTypeId) {
+		return Component.translatableWithFallback("gui." + renderTypeId.getNamespace() + ".render_type." + renderTypeId.getPath(), renderTypeId.toString());
 	}
 
-	public static MutableText getRenderTypeTranslation(RenderTypes.RenderType renderType) {
+	public static MutableComponent getRenderTypeTranslation(RenderTypes.RenderType renderType) {
 		return getRenderTypeTranslation(renderType.identifier());
 	}
 
-	public static MutableText getTranslation(String namespace, String key, Object[] variables, Formatting[] formattings) {
+	public static MutableComponent getTranslation(String namespace, String key, Object[] variables, ChatFormatting[] formattings) {
 		return getText("gui." + namespace + "." + key, true, variables, formattings);
 	}
 
-	public static MutableText getTranslation(String namespace, String key, Object[] variables) {
+	public static MutableComponent getTranslation(String namespace, String key, Object[] variables) {
 		return getText("gui." + namespace + "." + key, true, variables);
 	}
 
-	public static MutableText getTranslation(String namespace, String key, Formatting[] formattings) {
+	public static MutableComponent getTranslation(String namespace, String key, ChatFormatting[] formattings) {
 		return getText("gui." + namespace + "." + key, true, formattings);
 	}
 
-	public static MutableText getTranslation(String namespace, String key) {
+	public static MutableComponent getTranslation(String namespace, String key) {
 		return getText("gui." + namespace + "." + key, true);
 	}
 
@@ -127,61 +127,61 @@ public class Translation {
 		return getString("gui.{}.keybindings.keybinding.{}", namespace, key);
 	}
 
-	public static MutableText getVariableTranslation(String namespace, String type, boolean toggle) {
+	public static MutableComponent getVariableTranslation(String namespace, String type, boolean toggle) {
 		return toggle ? getTranslation(namespace, "variable." + type + ".true") : getTranslation(namespace, "variable." + type + ".false");
 	}
 
-	public static MutableText getErrorTranslation(String namespace) {
-		return getConfigTranslation(namespace, "error", new Formatting[]{Formatting.RED, Formatting.BOLD});
+	public static MutableComponent getErrorTranslation(String namespace) {
+		return getConfigTranslation(namespace, "error", new ChatFormatting[]{ChatFormatting.RED, ChatFormatting.BOLD});
 	}
 
-	public static MutableText getTranslation(String type, String namespace, String key, Object[] variables, Formatting[] formattings) {
+	public static MutableComponent getTranslation(String type, String namespace, String key, Object[] variables, ChatFormatting[] formattings) {
 		return getText(type + "." + namespace + "." + key, true, variables, formattings);
 	}
 
-	public static MutableText getTranslation(String type, String namespace, String key, Object[] variables) {
+	public static MutableComponent getTranslation(String type, String namespace, String key, Object[] variables) {
 		return getText(type + "." + namespace + "." + key, true, variables);
 	}
 
-	public static MutableText getTranslation(String type, String namespace, String key, Formatting[] formattings) {
+	public static MutableComponent getTranslation(String type, String namespace, String key, ChatFormatting[] formattings) {
 		return getText(type + "." + namespace + "." + key, true, formattings);
 	}
 
-	public static MutableText getTranslation(String type, String namespace, String key) {
+	public static MutableComponent getTranslation(String type, String namespace, String key) {
 		return getText(type + "." + namespace + "." + key, true);
 	}
 
-	public static MutableText getItemTranslation(String namespace, String key, Object[] variables, Formatting[] formattings) {
+	public static MutableComponent getItemTranslation(String namespace, String key, Object[] variables, ChatFormatting[] formattings) {
 		return getTranslation("item", namespace, key, variables, formattings);
 	}
 
-	public static MutableText getItemTranslation(String namespace, String key, Object[] variables) {
+	public static MutableComponent getItemTranslation(String namespace, String key, Object[] variables) {
 		return getTranslation("item", namespace, key, variables);
 	}
 
-	public static MutableText getItemTranslation(String namespace, String key, Formatting[] formattings) {
+	public static MutableComponent getItemTranslation(String namespace, String key, ChatFormatting[] formattings) {
 		return getTranslation("item", namespace, key, formattings);
 	}
 
-	public static MutableText getItemTranslation(String namespace, String key) {
+	public static MutableComponent getItemTranslation(String namespace, String key) {
 		return getTranslation("item", namespace, key);
 	}
 
-	public static MutableText getShaderText(Identifier shaderId, boolean shouldShowNamespace, boolean description, Formatting[] formattings) {
-		MutableText text = Text.translatableWithFallback(getString("gui.{}.shader.{}.{}{}", com.mclegoman.luminance.common.data.Data.getVersion().getID(), shaderId.getNamespace(), shaderId.getPath(), (description ? ".description" : "")), description ? "" : getString((shouldShowNamespace ? shaderId.getNamespace() : "") + shaderId.getPath()));
-		if (formattings != null) text.formatted(formattings);
+	public static MutableComponent getShaderText(Identifier shaderId, boolean shouldShowNamespace, boolean description, ChatFormatting[] formattings) {
+		MutableComponent text = Component.translatableWithFallback(getString("gui.{}.shader.{}.{}{}", com.mclegoman.luminance.common.data.Data.getVersion().getID(), shaderId.getNamespace(), shaderId.getPath(), (description ? ".description" : "")), description ? "" : getString((shouldShowNamespace ? shaderId.getNamespace() : "") + shaderId.getPath()));
+		if (formattings != null) text.withStyle(formattings);
 		return text;
 	}
 
-	public static MutableText getShaderText(Identifier shaderId, boolean shouldShowNamespace, Formatting[] formattings) {
+	public static MutableComponent getShaderText(Identifier shaderId, boolean shouldShowNamespace, ChatFormatting[] formattings) {
 		return getShaderText(shaderId, shouldShowNamespace, false, formattings);
 	}
 
-	public static MutableText getShaderText(Identifier shaderId, boolean shouldShowNamespace, boolean description) {
+	public static MutableComponent getShaderText(Identifier shaderId, boolean shouldShowNamespace, boolean description) {
 		return getShaderText(shaderId, shouldShowNamespace, description, null);
 	}
 
-	public static MutableText getShaderText(Identifier shaderId, boolean shouldShowNamespace) {
+	public static MutableComponent getShaderText(Identifier shaderId, boolean shouldShowNamespace) {
 		return getShaderText(shaderId, shouldShowNamespace, null);
 	}
 

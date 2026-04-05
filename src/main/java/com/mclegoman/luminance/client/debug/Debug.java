@@ -16,7 +16,7 @@ import com.mclegoman.luminance.client.shaders.Shaders;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.Couple;
 import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -100,11 +100,11 @@ public class Debug {
 	}
 
 	public static Identifier getDebugId() {
-		return Identifier.of(Data.getVersion().getID(), "debug");
+		return Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "debug");
 	}
 
 	public static Identifier getDebugId(int index) {
-		return Identifier.of(Data.getVersion().getID() + "_debug", String.valueOf(index));
+		return Identifier.fromNamespaceAndPath(Data.getVersion().getID() + "_debug", String.valueOf(index));
 	}
 
 	public static boolean getRawDisablePhotosensitive() {

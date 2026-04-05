@@ -7,7 +7,7 @@
 
 package com.mclegoman.luminance.client.util;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import java.util.concurrent.Callable;
 

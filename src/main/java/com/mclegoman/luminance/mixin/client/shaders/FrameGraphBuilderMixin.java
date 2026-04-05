@@ -9,9 +9,9 @@ package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
-import net.minecraft.client.render.FrameGraphBuilder;
-import net.minecraft.client.render.FramePass;
-import net.minecraft.client.util.ObjectAllocator;
+import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
+import com.mojang.blaze3d.framegraph.FramePass;
+import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,8 +26,8 @@ import java.util.List;
 public class FrameGraphBuilderMixin {
     @Shadow @Final private List<FramePass> passes;
 
-    @Inject(at = @At(value = "INVOKE", target = "Ljava/util/BitSet;cardinality()I"), method = "run(Lnet/minecraft/client/util/ObjectAllocator;Lnet/minecraft/client/render/FrameGraphBuilder$Profiler;)V")
-    private void forceVisits(ObjectAllocator allocator, FrameGraphBuilder.Profiler profiler, CallbackInfo ci, @Local(ordinal = 0) BitSet bitSet) {
+    @Inject(at = @At(value = "INVOKE", target = "Ljava/util/BitSet;cardinality()I"), method = "execute(Lcom/mojang/blaze3d/resource/GraphicsResourceAllocator;Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder$Inspector;)V")
+    private void forceVisits(GraphicsResourceAllocator allocator, FrameGraphBuilder.Inspector profiler, CallbackInfo ci, @Local(ordinal = 0) BitSet bitSet) {
         for (FramePass renderPass : passes) {
             if (renderPass instanceof FramePassInterface framePassInterface && framePassInterface.luminance$getForceVisit()) {
                 // this is a slightly inelegant way to force framePasses to not get culled

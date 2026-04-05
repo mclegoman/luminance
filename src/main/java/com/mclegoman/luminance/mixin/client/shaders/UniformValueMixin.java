@@ -6,7 +6,7 @@ import com.mclegoman.luminance.client.shaders.uniforms.config.ConfigData;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.gl.UniformValue;
+import net.minecraft.client.renderer.UniformValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 @Mixin(UniformValue.class)
 public interface UniformValueMixin {
-    @ModifyExpressionValue(method = "<clinit>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/StringIdentifiable$EnumCodec;dispatch(Ljava/util/function/Function;Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false))
+    @ModifyExpressionValue(method = "<clinit>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/StringRepresentable$EnumCodec;dispatch(Ljava/util/function/Function;Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false))
     private static Codec<UniformValue> wrapCreatePrimitiveOverride(Codec<UniformValue> original) {
         return wrapCodec(original);
     }

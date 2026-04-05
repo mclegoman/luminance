@@ -8,11 +8,11 @@
 package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTargetInterface;
-import net.minecraft.client.gl.PostEffectPipeline;
+import net.minecraft.client.renderer.PostChainConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(PostEffectPipeline.Targets.class)
+@Mixin(PostChainConfig.InternalTarget.class)
 public class PostEffectPipelineTargetsMixin implements PipelineTargetInterface {
     @Unique
     private DynamicSize luminance$dynamicSize;

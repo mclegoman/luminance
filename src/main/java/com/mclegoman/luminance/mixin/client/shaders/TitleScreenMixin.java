@@ -9,8 +9,8 @@ package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mclegoman.luminance.client.gui.screen.LuminanceTitleScreen;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,8 +21,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class TitleScreenMixin implements LuminanceTitleScreen {
 	@Unique private float luminance$backgroundAlpha;
 
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/TitleScreen;renderPanoramaBackground(Lnet/minecraft/client/gui/DrawContext;F)V"))
-	private void luminance$setBackgroundAlpha(DrawContext context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci, @Local(name = "f") float f) {
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/TitleScreen;renderPanorama(Lnet/minecraft/client/gui/GuiGraphics;F)V"))
+	private void luminance$setBackgroundAlpha(GuiGraphics context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci, @Local(name = "f") float f) {
 		this.luminance$backgroundAlpha = f;
 	}
 

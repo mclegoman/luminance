@@ -14,11 +14,11 @@ import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 public class ResourcePackHelper {
-	public static void register(Identifier id, ModContainer container, Text text, PackActivationType packActivationType) {
+	public static void register(Identifier id, ModContainer container, Component text, PackActivationType packActivationType) {
 		try {
 			Data.getVersion().sendToLog(LogType.INFO, "Registering resource pack: {}", id.getPath());
 			FabricLoader.getInstance().getModContainer(container.getMetadata().getId()).ifPresent(modContainer -> ResourceLoader.registerBuiltinPack(id, modContainer, text, packActivationType));

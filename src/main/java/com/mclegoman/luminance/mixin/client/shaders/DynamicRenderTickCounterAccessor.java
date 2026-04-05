@@ -7,12 +7,12 @@
 
 package com.mclegoman.luminance.mixin.client.shaders;
 
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.DeltaTracker;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(RenderTickCounter.Dynamic.class)
+@Mixin(DeltaTracker.Timer.class)
 public interface DynamicRenderTickCounterAccessor {
-    @Accessor("tickProgress")
+    @Accessor("deltaTickResidual")
     float getRawTickProgress(); // allows ui background and panorama render types to use shader time
 }

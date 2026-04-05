@@ -15,19 +15,19 @@ import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.DateHelper;
 import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.text.Text;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Keybindings {
-	public static final KeyBinding adjustAlpha;
-	public static final KeyBinding openConfig;
-	public static KeyBinding toggle_debug_shader;
-	public static KeyBinding cycle_debug_render_type;
-	public static final List<KeyBinding> allKeybindings = new ArrayList<>();
+	public static final KeyMapping adjustAlpha;
+	public static final KeyMapping openConfig;
+	public static KeyMapping toggle_debug_shader;
+	public static KeyMapping cycle_debug_render_type;
+	public static final List<KeyMapping> allKeybindings = new ArrayList<>();
 	static {
 		allKeybindings.add(adjustAlpha = KeybindingHelper.getKeybinding(Data.getVersion().getID(), Data.getVersion().getID(), "adjust_alpha", GLFW.GLFW_KEY_J));
 		allKeybindings.add(openConfig = KeybindingHelper.getKeybinding(Data.getVersion().getID(), Data.getVersion().getID(), "open_config", GLFW.GLFW_KEY_UNKNOWN));
@@ -43,16 +43,16 @@ public class Keybindings {
 		Data.getVersion().sendToLog(LogType.INFO, "Initializing keybindings!");
 	}
 	public static void tick() {
-		if (openConfig.wasPressed()) {
-			ClientData.minecraft.setScreen(new ConfigScreen(ClientData.minecraft.currentScreen, 0, null, DateHelper.isPride()));
+		if (openConfig.consumeClick()) {
+			ClientData.minecraft.setScreen(new ConfigScreen(ClientData.minecraft.screen, 0, null, DateHelper.isPride()));
 		}
 		if (ClientData.isDevelopment()) {
-			if (toggle_debug_shader != null && toggle_debug_shader.wasPressed()) {
+			if (toggle_debug_shader != null && toggle_debug_shader.consumeClick()) {
 				Debug.setDebugShaderEnabled(!Debug.isDebugShaderEnabled());
 				MessageOverlay.setOverlay(Translation.getTranslation(Data.getVersion().getID(), "debug.render", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.isDebugShaderEnabled())}));
 			}
-			if (cycle_debug_render_type != null && cycle_debug_render_type.wasPressed()) {
-				Debug.cycleDebugRenderType(ClientData.minecraft.isShiftPressed()).ifPresent(renderTypeId -> MessageOverlay.setOverlay(Translation.getTranslation(Data.getVersion().getID(), "debug.render_type", new Object[]{Text.translatableWithFallback("gui." + renderTypeId.getNamespace() + ".render_type." + renderTypeId.getPath(), renderTypeId.toString())})));
+			if (cycle_debug_render_type != null && cycle_debug_render_type.consumeClick()) {
+				Debug.cycleDebugRenderType(ClientData.minecraft.hasShiftDown()).ifPresent(renderTypeId -> MessageOverlay.setOverlay(Translation.getTranslation(Data.getVersion().getID(), "debug.render_type", new Object[]{Component.translatableWithFallback("gui." + renderTypeId.getNamespace() + ".render_type." + renderTypeId.getPath(), renderTypeId.toString())})));
 			}
 		}
 	}

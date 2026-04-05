@@ -13,7 +13,7 @@ import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTarget
 import com.mojang.datafixers.kinds.App;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.gl.PostEffectPipeline;
+import net.minecraft.client.renderer.PostChainConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import java.util.Optional;
 import java.util.function.Function;
 
-@Mixin(PostEffectPipeline.Targets.class)
+@Mixin(PostChainConfig.InternalTarget.class)
 public class PostEffectPipelineTargetMixin {
     @WrapOperation(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/RecordCodecBuilder;create(Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false))
     private static <O> Codec<O> wrapCreateOverride(Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> builder, Operation<Codec<O>> original) {

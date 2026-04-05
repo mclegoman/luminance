@@ -20,7 +20,7 @@ public class Tick {
 	public static void init() {
 		try {
 			ClientTickEvents.END_CLIENT_TICK.register((client) -> {
-				if (ClientData.minecraft.isFinishedLoading()) {
+				if (ClientData.minecraft.isGameLoadFinished()) {
 					Debug.tick();
 					Keybindings.tick();
 					MessageOverlay.tick();

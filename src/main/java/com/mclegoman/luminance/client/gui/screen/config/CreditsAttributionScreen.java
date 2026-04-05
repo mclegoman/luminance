@@ -11,7 +11,7 @@ import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.gui.screen.AbstractScrollableScreen;
 import com.mclegoman.luminance.client.gui.widget.InfoWidget;
 import com.mclegoman.luminance.client.translation.Translation;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 
 public class CreditsAttributionScreen extends AbstractScrollableScreen {
@@ -23,16 +23,16 @@ public class CreditsAttributionScreen extends AbstractScrollableScreen {
 
 	public void initBody() {
 		this.info = new InfoWidget(ClientData.minecraft, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 11, this.scrollY);
-		this.layout.addBody(this.info);
+		this.layout.addToContents(this.info);
 	}
 
 	public Screen getRefreshScreen() {
-		return new CreditsAttributionScreen(this.parent, this.info != null ? this.info.getScrollY() : scrollY, this.splashText, this.isPride);
+		return new CreditsAttributionScreen(this.parent, this.info != null ? this.info.scrollAmount() : scrollY, this.splashText, this.isPride);
 	}
 
 	// make sure shaders update properly while in the config screens
 	@Override
-	public boolean shouldPause() {
+	public boolean isPauseScreen() {
 		return false;
 	}
 }

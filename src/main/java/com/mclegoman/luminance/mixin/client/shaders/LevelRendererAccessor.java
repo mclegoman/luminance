@@ -7,13 +7,13 @@
 
 package com.mclegoman.luminance.mixin.client.shaders;
 
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.state.WorldRenderState;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.state.LevelRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(WorldRenderer.class)
-public interface WorldRendererAccessor {
-	@Accessor("worldRenderState")
-	WorldRenderState getWorldRenderState();
+@Mixin(LevelRenderer.class)
+public interface LevelRendererAccessor {
+	@Accessor("levelRenderState")
+    LevelRenderState getLevelRenderState();
 }

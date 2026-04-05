@@ -14,7 +14,7 @@ import com.mclegoman.luminance.common.data.Data;
 import com.terraformersmc.modmenu.util.DrawingUtil;
 import com.terraformersmc.modmenu.util.mod.Mod;
 import com.terraformersmc.modmenu.util.mod.ModBadgeRenderer;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.GuiGraphics;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,11 +28,11 @@ public abstract class ModsScreenMixin {
 	@Shadow protected int badgeY;
 	@Shadow protected Mod mod;
 	@Inject(method = "draw", at = @At(value = "INVOKE", target = "Ljava/util/Set;forEach(Ljava/util/function/Consumer;)V"))
-	private void luminance$draw(DrawContext context, int mouseX, int mouseY, CallbackInfo ci) {
+	private void luminance$draw(GuiGraphics context, int mouseX, int mouseY, CallbackInfo ci) {
 		if (CompatHelper.getLuminanceModMenuBadge(this.mod.getId())) {
-			int width = ClientData.minecraft.textRenderer.getWidth(Translation.getTranslation(Data.getVersion().getID(), "name")) + 6;
+			int width = ClientData.minecraft.font.width(Translation.getTranslation(Data.getVersion().getID(), "name")) + 6;
 			if (badgeX + width < badgeMax) {
-				DrawingUtil.drawBadge(context, badgeX, badgeY, width, Translation.getTranslation(Data.getVersion().getID(), "name").asOrderedText(), 0xFFFF8F8F, 0xFFB73A3A, 0xFFFFFFFF);
+				DrawingUtil.drawBadge(context, badgeX, badgeY, width, Translation.getTranslation(Data.getVersion().getID(), "name").getVisualOrderText(), 0xFFFF8F8F, 0xFFB73A3A, 0xFFFFFFFF);
 				badgeX += width + 3;
 			}
 		}

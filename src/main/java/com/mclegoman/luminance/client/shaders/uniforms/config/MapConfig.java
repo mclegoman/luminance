@@ -11,12 +11,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class MapConfig implements UniformConfig {
-    public final Map<String, List<Object>> config;
-
-    public MapConfig(List<ConfigData> configValues) {
-        this.config = new HashMap<>(configValues.size());
-        for (ConfigData configData : configValues) {
+public record MapConfig(Map<String, List<Object>> config) implements UniformConfig {
+    public MapConfig(List<ConfigData> config) {
+        this.config = new HashMap<>(config.size());
+        for (ConfigData configData : config) {
             this.config.put(configData.name(), configData.objects());
         }
     }
@@ -26,7 +24,8 @@ public class MapConfig implements UniformConfig {
         return config.keySet();
     }
 
-    @Override @Nullable
+    @Override
+    @Nullable
     public List<Object> getObjects(String name) {
         return config.get(name);
     }

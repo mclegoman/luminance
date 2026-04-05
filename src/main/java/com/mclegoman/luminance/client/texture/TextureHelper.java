@@ -7,10 +7,10 @@
 
 package com.mclegoman.luminance.client.texture;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public class TextureHelper {
 	public static Identifier getTexture(Identifier texture, Identifier current) {
-		return texture.getPath().equals("none") ? current : Identifier.of(texture.getNamespace(), texture.getPath().endsWith(".png") ? texture.getPath() : texture.getPath() + ".png");
+		return texture.getPath().equals("none") ? current : Identifier.fromNamespaceAndPath(texture.getNamespace(), texture.getPath().endsWith(".png") ? texture.getPath() : texture.getPath() + ".png");
 	}
 }

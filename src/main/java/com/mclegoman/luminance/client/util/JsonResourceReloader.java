@@ -12,39 +12,39 @@ import com.google.gson.JsonElement;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceFinder;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SinglePreparationResourceReloader;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.profiler.Profiler;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.resources.FileToIdConverter;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class JsonResourceReloader extends SinglePreparationResourceReloader<Map<Identifier, JsonElement>> {
+public abstract class JsonResourceReloader extends SimplePreparableReloadListener<Map<Identifier, JsonElement>> {
 	private final Gson gson;
 	private final String resourceLocation;
 	public JsonResourceReloader(Gson gson, String resourceLocation) {
 		this.gson = gson;
 		this.resourceLocation = resourceLocation;
 	}
-	protected Map<Identifier, JsonElement> prepare(ResourceManager resourceManager, Profiler profiler) {
+	protected Map<Identifier, JsonElement> prepare(ResourceManager resourceManager, ProfilerFiller profiler) {
 		Map<Identifier, JsonElement> map = new HashMap<>();
 		load(resourceManager, this.resourceLocation, this.gson, map);
 		return map;
 	}
 	public static void load(ResourceManager manager, String dataType, Gson gson, Map<Identifier, JsonElement> results) {
-		ResourceFinder resourceFinder = ResourceFinder.json(dataType);
-		for (Map.Entry<Identifier, Resource> identifierResourceEntry : resourceFinder.findResources(manager).entrySet()) {
+		FileToIdConverter resourceFinder = FileToIdConverter.json(dataType);
+		for (Map.Entry<Identifier, Resource> identifierResourceEntry : resourceFinder.listMatchingResources(manager).entrySet()) {
 			Identifier resourceEntryKey = identifierResourceEntry.getKey();
-			Identifier resourceId = resourceFinder.toResourceId(resourceEntryKey);
+			Identifier resourceId = resourceFinder.fileToId(resourceEntryKey);
 			try {
-				Reader reader = identifierResourceEntry.getValue().getReader();
+				Reader reader = identifierResourceEntry.getValue().openAsReader();
 				try {
-					JsonElement jsonElement = results.put(resourceId, JsonHelper.deserialize(gson, reader, JsonElement.class));
+					JsonElement jsonElement = results.put(resourceId, GsonHelper.fromJson(gson, reader, JsonElement.class));
 					if (jsonElement != null) throw new IllegalStateException("Duplicate data file ignored with ID " + resourceId);
 				} catch (Throwable throwable) {
 					if (reader != null) {

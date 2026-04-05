@@ -13,13 +13,13 @@ import com.mclegoman.luminance.client.util.IconOverride;
 import com.mclegoman.luminance.common.data.Data;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
 
 public class ClientData {
-	public static final MinecraftClient minecraft = MinecraftClient.getInstance();
+	public static final Minecraft minecraft = Minecraft.getInstance();
 
 	public static boolean isDevelopment() {
 		return FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment() || LuminanceConfig.config.debug.value();
@@ -46,6 +46,6 @@ public class ClientData {
 		String trimmed = path.substring("/assets/".length());
 		int slashIndex = trimmed.indexOf("/");
 		if (slashIndex == -1) throw new IllegalArgumentException("Missing path in: " + path);
-		return Identifier.of(trimmed.substring(0, slashIndex), trimmed.substring(slashIndex + 1));
+		return Identifier.fromNamespaceAndPath(trimmed.substring(0, slashIndex), trimmed.substring(slashIndex + 1));
 	}
 }

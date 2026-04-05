@@ -11,7 +11,7 @@ import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformVector;
 import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public class SmoothUniform extends ChildUniform {
     protected UniformVector smooth;

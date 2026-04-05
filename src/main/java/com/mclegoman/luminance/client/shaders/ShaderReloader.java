@@ -18,10 +18,10 @@ import com.mclegoman.luminance.client.util.JsonResourceReloader;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.IdentifierHelper;
 import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.profiler.Profiler;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,30 +76,30 @@ public class ShaderReloader extends JsonResourceReloader {
 
 	private List<Identifier> getRegistries(JsonArray input) {
 		List<Identifier> output = new ArrayList<>();
-		for (JsonElement registry : input.asList()) output.add(Identifier.of(registry.getAsString()));
+		for (JsonElement registry : input.asList()) output.add(Identifier.parse(registry.getAsString()));
 		return output;
 	}
 
 	@Override
-	public void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {
+	public void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, ProfilerFiller profiler) {
 		try {
 			isReloading = true;
 			reset();
 			prepared.forEach((identifier, jsonElement) -> {
 				try {
 					JsonObject reader = jsonElement.getAsJsonObject();
-					Identifier post_effect = IdentifierHelper.identifierFromString(JsonHelper.getString(reader, "post_effect", identifier.getNamespace() + ":" + identifier.getPath()));
-					boolean enabled = JsonHelper.getBoolean(reader, "enabled", true);
-					boolean fallbackWhenOverUi = JsonHelper.getBoolean(reader, "fallback_when_over_ui", false);
-					boolean fallbackWhenUnderUi = JsonHelper.getBoolean(reader, "fallback_when_under_ui", false);
-					boolean photosensitive = JsonHelper.getBoolean(reader, "photosensitive", false);
-					JsonObject customData = JsonHelper.getObject(reader, "custom", new JsonObject());
-					JsonArray registries = JsonHelper.getArray(reader, "registries", new JsonArray());
+					Identifier post_effect = IdentifierHelper.identifierFromString(GsonHelper.getAsString(reader, "post_effect", identifier.getNamespace() + ":" + identifier.getPath()));
+					boolean enabled = GsonHelper.getAsBoolean(reader, "enabled", true);
+					boolean fallbackWhenOverUi = GsonHelper.getAsBoolean(reader, "fallback_when_over_ui", false);
+					boolean fallbackWhenUnderUi = GsonHelper.getAsBoolean(reader, "fallback_when_under_ui", false);
+					boolean photosensitive = GsonHelper.getAsBoolean(reader, "photosensitive", false);
+					JsonObject customData = GsonHelper.getAsJsonObject(reader, "custom", new JsonObject());
+					JsonArray registries = GsonHelper.getAsJsonArray(reader, "registries", new JsonArray());
 					ShaderRegistryEntry shaderData = getShaderData(post_effect, fallbackWhenOverUi, fallbackWhenUnderUi, photosensitive, customData);
 
 					List<Identifier> registryList = getRegistries(registries);
 					// If the registries are empty, we add the default registry.
-					if (registries.isEmpty()) registryList.add(Identifier.of(Data.getVersion().getID(), "main"));
+					if (registries.isEmpty()) registryList.add(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"));
 
 					if (enabled) {
 						add(registryList, shaderData, manager);

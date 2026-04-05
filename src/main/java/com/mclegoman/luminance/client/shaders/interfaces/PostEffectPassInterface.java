@@ -8,7 +8,7 @@
 package com.mclegoman.luminance.client.shaders.interfaces;
 
 import com.mclegoman.luminance.client.shaders.UniformBlock;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
 

@@ -9,8 +9,8 @@ import com.mclegoman.luminance.common.util.LogType;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gl.MappableRingBuffer;
-import net.minecraft.client.gl.UniformValue;
+import net.minecraft.client.renderer.MappableRingBuffer;
+import net.minecraft.client.renderer.UniformValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class UniformBlock {
 
         for (UniformValue uniform : uniformValues) {
             UniformValueInterface uniformInterface = (UniformValueInterface)uniform;
-            UniformInstance instance = new UniformInstance(uniformInterface.luminance$getName().orElse(uniform.getType().asString()), uniformInterface.luminance$getValue());
+            UniformInstance instance = new UniformInstance(uniformInterface.luminance$getName().orElse(uniform.type().getSerializedName()), uniformInterface.luminance$getValue());
 
             uniformInterface.luminance$getOverride().ifPresent((override) -> {
                 int length = uniformInterface.luminance$getLength();
@@ -92,7 +92,7 @@ public class UniformBlock {
             ringBuffer = new MappableRingBuffer(() -> "Luminance Shader UBO", 130, bufferSize);
         }
 
-        GpuBuffer gpuBuffer = ringBuffer.getBlocking();
+        GpuBuffer gpuBuffer = ringBuffer.currentBuffer();
         GpuBuffer.MappedView mappedView = RenderSystem.getDevice().createCommandEncoder().mapBuffer(gpuBuffer, false, true);
         Std140Builder builder = Std140Builder.intoBuffer(mappedView.data());
 
@@ -104,7 +104,7 @@ public class UniformBlock {
     }
 
     public GpuBuffer replaceBuffer(GpuBuffer original) {
-        return pass ? original : ringBuffer.getBlocking();
+        return pass ? original : ringBuffer.currentBuffer();
     }
 
     public void rotateBuffer() {

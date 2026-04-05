@@ -11,14 +11,14 @@ import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.client.gl.PostEffectProcessor;
-import net.minecraft.client.render.DefaultFramebufferSet;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.PostChain;
+import net.minecraft.client.renderer.LevelTargetBundle;
+import net.minecraft.resources.Identifier;
 
 import java.util.concurrent.Callable;
 
 public class Shader {
-	private PostEffectProcessor postProcessor;
+	private PostChain postProcessor;
 	private boolean useDepth;
 	private Identifier shaderId;
 	private Callable<Identifier> renderType;
@@ -33,13 +33,13 @@ public class Shader {
 		this(shaderData, renderType, () -> true);
 	}
 
-	public PostEffectProcessor getPostProcessor() {
+	public PostChain getPostProcessor() {
 		return this.postProcessor;
 	}
 
 	public void setPostProcessor() {
 		try {
-			this.postProcessor = ClientData.minecraft.getShaderLoader().loadPostEffect(this.shaderId, DefaultFramebufferSet.STAGES);
+			this.postProcessor = ClientData.minecraft.getShaderManager().getPostChain(this.shaderId, LevelTargetBundle.SORTING_TARGETS);
 			if (postProcessor != null && ((PostEffectProcessorInterface)this.postProcessor).luminance$usesDepth()) {
 				setUseDepth(true);
 			}

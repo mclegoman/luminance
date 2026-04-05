@@ -13,7 +13,7 @@ import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import net.caffeinemc.mods.sodium.api.config.ConfigEntryPoint;
 import net.caffeinemc.mods.sodium.api.config.structure.ConfigBuilder;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 public class SodiumConfigCompat implements ConfigEntryPoint {
     @Override
@@ -23,6 +23,6 @@ public class SodiumConfigCompat implements ConfigEntryPoint {
                 .setIcon(ClientData.getOverrideIcon().getIconId())
                 .setVersion(Data.getVersion().getFriendlyString())
                 .addPage(builder.createExternalPage().setName(Translation.getTranslation(Data.getVersion().getID(), "config"))
-                        .setScreenConsumer((screen) -> MinecraftClient.getInstance().setScreen(ConfigScreen.open(screen))));
+                        .setScreenConsumer((screen) -> Minecraft.getInstance().setScreen(ConfigScreen.open(screen))));
     }
 }

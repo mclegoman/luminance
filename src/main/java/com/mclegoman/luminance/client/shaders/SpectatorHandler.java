@@ -9,7 +9,7 @@ package com.mclegoman.luminance.client.shaders;
 
 import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.events.Events;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

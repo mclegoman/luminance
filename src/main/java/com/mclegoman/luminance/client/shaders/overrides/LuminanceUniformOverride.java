@@ -9,7 +9,7 @@ package com.mclegoman.luminance.client.shaders.overrides;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;

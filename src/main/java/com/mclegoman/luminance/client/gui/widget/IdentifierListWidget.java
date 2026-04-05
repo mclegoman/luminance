@@ -1,17 +1,16 @@
 package com.mclegoman.luminance.client.gui.widget;
 
 import com.mclegoman.luminance.client.data.ClientData;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
-import net.minecraft.text.PlainTextContent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<IdentifierListWidget.Entry> {
+public class IdentifierListWidget extends ObjectSelectionList<IdentifierListWidget.Entry> {
     public OnSelect onSelect;
     public final Label label;
     public final Label hoverText;
@@ -21,7 +20,7 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
     }
 
     public IdentifierListWidget(int width, int height, int top, int bottom, int itemHeight, List<Identifier> identifiers, Identifier selected, OnSelect onSelect, Label hoverText) {
-        this (width, height, top, bottom, itemHeight, identifiers, selected, onSelect, (identifier) -> Text.literal(identifier.toString()), hoverText);
+        this (width, height, top, bottom, itemHeight, identifiers, selected, onSelect, (identifier) -> Component.literal(identifier.toString()), hoverText);
     }
 
     public IdentifierListWidget(int width, int height, int top, int bottom, int itemHeight, List<Identifier> identifiers, Identifier selected, OnSelect onSelect, Label label, Label hoverText) {
@@ -50,13 +49,13 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
     }
 
     @Override
-    protected void renderEntry(DrawContext context, int mouseX, int mouseY, float delta, Entry entry) {
-        if (this.getHoveredEntry() != null && this.getHoveredEntry().equals(entry)) {
-            this.drawSelectionHighlight(context, entry, -8355712);
-            if (entry.hoverText != null && !entry.hoverText.getString().isBlank()) context.drawTooltip(entry.hoverText, mouseX, mouseY);
+    protected void renderItem(GuiGraphics context, int mouseX, int mouseY, float delta, Entry entry) {
+        if (this.getHovered() != null && this.getHovered().equals(entry)) {
+            this.renderSelection(context, entry, -8355712);
+            if (entry.hoverText != null && !entry.hoverText.getString().isBlank()) context.setTooltipForNextFrame(entry.hoverText, mouseX, mouseY);
         }
-        if (entry.equals(getSelectedOrNull())) this.drawSelectionHighlight(context, entry, -1);
-        entry.render(context, mouseX, mouseY, this.hovered, delta);
+        if (entry.equals(getSelected())) this.renderSelection(context, entry, -1);
+        entry.renderContent(context, mouseX, mouseY, this.isHovered, delta);
     }
 
     public int getRowWidth() {
@@ -64,15 +63,15 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
     }
 
     @Override
-    protected int getScrollbarX() {
+    protected int scrollBarX() {
         return this.getRowRight();
     }
 
-    public static class Entry extends AlwaysSelectedEntryListWidget.Entry<Entry> {
+    public static class Entry extends ObjectSelectionList.Entry<Entry> {
         public final Identifier id;
         public final IdentifierListWidget parent;
-        private final Text label;
-        private final Text hoverText;
+        private final Component label;
+        private final Component hoverText;
 
         public Entry(Identifier id, IdentifierListWidget parent) {
             this.id = id;
@@ -82,17 +81,17 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
         }
 
         @Override
-        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-            context.drawCenteredTextWithShadow(ClientData.minecraft.textRenderer, this.label, this.getX() + (this.getWidth() / 2), this.getY() + (this.getHeight() - ClientData.minecraft.textRenderer.fontHeight) / 2, 0xFFFFFFFF);
+        public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+            context.drawCenteredString(ClientData.minecraft.font, this.label, this.getX() + (this.getWidth() / 2), this.getY() + (this.getHeight() - ClientData.minecraft.font.lineHeight) / 2, 0xFFFFFFFF);
         }
 
         @Override
-        public Text getNarration() {
+        public Component getNarration() {
             return this.label;
         }
 
         @Override
-        public boolean mouseClicked(Click click, boolean doubled) {
+        public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
             if (isMouseOver(click.x(), click.y())) {
                 parent.setSelected(this);
                 return true;
@@ -108,16 +107,16 @@ public class IdentifierListWidget extends AlwaysSelectedEntryListWidget<Identifi
 
     @FunctionalInterface
     public interface Label {
-        Text call(Identifier identifier);
+        Component call(Identifier identifier);
     }
 
     @Override
-    public void refreshScroll() {
+    public void refreshScrollAmount() {
         this.scrollToSelected();
-        super.refreshScroll();
+        super.refreshScrollAmount();
     }
 
     public void scrollToSelected() {
-        ClientData.minecraft.execute(() -> this.centerScrollOn(this.getSelectedOrNull()));
+        ClientData.minecraft.execute(() -> this.centerScrollOn(this.getSelected()));
     }
 }

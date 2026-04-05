@@ -12,7 +12,7 @@ import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformVector;
 import com.mclegoman.luminance.client.shaders.uniforms.config.*;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -14,13 +14,14 @@ import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInte
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.client.gl.*;
-import net.minecraft.client.render.FrameGraphBuilder;
-import net.minecraft.client.util.ObjectAllocator;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
+import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
+import net.minecraft.client.renderer.PostChain;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,22 +32,22 @@ public class Shaders {
 	protected static final Map<Identifier, List<ShaderRegistryEntry>> registries = new HashMap<>();
 
 	public static void init() {
-		Events.ClientResourceReloaders.register(Identifier.of(Data.getVersion().getID(), "shaders"), new ShaderReloader());
+		Events.ClientResourceReloaders.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "shaders"), new ShaderReloader());
 		Uniforms.init();
-		Events.BeforeGameRender.register(Identifier.of(Data.getVersion().getID(), "update"), Uniforms::update);
+		Events.BeforeGameRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "update"), Uniforms::update);
 
-		Events.AfterVanillaPostEffectRender.register(Identifier.of(Data.getVersion().getID(), "main"),
+		Events.AfterVanillaPostEffectRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
 				(framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.WORLD, framebuffer, objectAllocator));
-		Events.AfterUiRender.register(Identifier.of(Data.getVersion().getID(), "main"),
+		Events.AfterUiRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
 				(framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.UI, framebuffer, objectAllocator));
-		Events.AfterUiBackgroundRender.register(Identifier.of(Data.getVersion().getID(), "main"),
+		Events.AfterUiBackgroundRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
 				(framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.UI_BACKGROUND, framebuffer, objectAllocator));
-		Events.AfterPanoramaRender.register(Identifier.of(Data.getVersion().getID(), "main"),
+		Events.AfterPanoramaRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
 				(framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.PANORAMA, framebuffer, objectAllocator));
 	}
 
 	public static Identifier getMainRegistryId() {
-		return Identifier.of(Data.getVersion().getID(), "main");
+		return Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main");
 	}
 
 	public static List<Identifier> getRegistries() {
@@ -84,7 +85,7 @@ public class Shaders {
 		return shaders;
 	}
 
-	private static void renderUsingFramebufferSet(Identifier id, Shader.Data shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet) {
+	private static void renderUsingFramebufferSet(Identifier id, Shader.Data shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle framebufferSet) {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
 				if (shader.shader().getShouldRender()) {
@@ -104,7 +105,7 @@ public class Shaders {
 		}
 	}
 
-	public static void renderProcessorUsingFramebufferSet(Shader shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet, @Nullable Identifier customPasses) {
+	public static void renderProcessorUsingFramebufferSet(Shader shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle framebufferSet, @Nullable Identifier customPasses) {
 		try {
 			if (shader.getPostProcessor() != null) {
 				try {
@@ -120,7 +121,7 @@ public class Shaders {
 		}
 	}
 
-	public static void renderUsingAllocator(Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
+	public static void renderUsingAllocator(Identifier id, Shader.Data shader, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator) {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
 				if (shader.shader().getShouldRender()) {
@@ -172,7 +173,7 @@ public class Shaders {
 	}
 
 	public static Identifier getPostShader(Identifier post_effect, boolean full) {
-		return Identifier.of(post_effect.getNamespace(), ((full ? "post_effect/" : "") + post_effect.getPath() + (full ? ".json" : "")));
+		return Identifier.fromNamespaceAndPath(post_effect.getNamespace(), ((full ? "post_effect/" : "") + post_effect.getPath() + (full ? ".json" : "")));
 	}
 
 	public static int getShaderIndex(Identifier shaderId) {
@@ -198,54 +199,54 @@ public class Shaders {
 			JsonObject customData = shader.getCustom();
 			if (customData != null) {
 				if (customData.has(namespace)) {
-					return JsonHelper.getObject(customData, namespace);
+					return GsonHelper.getAsJsonObject(customData, namespace);
 				}
 			}
 		}
 		return null;
 	}
 
-	public static Text getShaderName(int shaderIndex, boolean shouldShowNamespace) {
+	public static Component getShaderName(int shaderIndex, boolean shouldShowNamespace) {
 		return getShaderName(getMainRegistryId(), shaderIndex, shouldShowNamespace);
 	}
 
-	public static Text getShaderName(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
+	public static Component getShaderName(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
 		ShaderRegistryEntry shader = get(registry, shaderIndex);
 		if (shader != null) return Translation.getShaderText(shader.getID(), shouldShowNamespace);
 		return Translation.getErrorTranslation(Data.getVersion().getID());
 	}
 
-	public static Text getShaderName(int shaderIndex) {
+	public static Component getShaderName(int shaderIndex) {
 		return getShaderName(getMainRegistryId(), shaderIndex);
 	}
 
-	public static Text getShaderName(Identifier registry, int shaderIndex) {
+	public static Component getShaderName(Identifier registry, int shaderIndex) {
 		return getShaderName(registry, shaderIndex, true);
 	}
 
-	public static Text getShaderName(Identifier registryId, Identifier shaderId) {
+	public static Component getShaderName(Identifier registryId, Identifier shaderId) {
 		return getShaderName(registryId, getShaderIndex(registryId, shaderId));
 	}
 
-	public static Text getShaderDescription(int shaderIndex, boolean shouldShowNamespace) {
+	public static Component getShaderDescription(int shaderIndex, boolean shouldShowNamespace) {
 		return getShaderDescription(getMainRegistryId(), shaderIndex, shouldShowNamespace);
 	}
 
-	public static Text getShaderDescription(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
+	public static Component getShaderDescription(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
 		ShaderRegistryEntry shader = get(registry, shaderIndex);
-		if (shader != null) return Translation.getShaderText(shader.getID(), shouldShowNamespace, true, new Formatting[]{});
+		if (shader != null) return Translation.getShaderText(shader.getID(), shouldShowNamespace, true, new ChatFormatting[]{});
 		return Translation.getErrorTranslation(Data.getVersion().getID());
 	}
 
-	public static Text getShaderDescription(int shaderIndex) {
+	public static Component getShaderDescription(int shaderIndex) {
 		return getShaderDescription(getMainRegistryId(), shaderIndex);
 	}
 
-	public static Text getShaderDescription(Identifier registry, int shaderIndex) {
+	public static Component getShaderDescription(Identifier registry, int shaderIndex) {
 		return getShaderDescription(registry, shaderIndex, true);
 	}
 
-	public static Text getShaderDescription(Identifier registryId, Identifier shaderId) {
+	public static Component getShaderDescription(Identifier registryId, Identifier shaderId) {
 		return getShaderDescription(registryId, getShaderIndex(registryId, shaderId));
 	}
 
@@ -281,7 +282,7 @@ public class Shaders {
 	}
 
 	// This is identical to the deprecated `PostEffectProcessor.render(framebuffer, objectAllocator);` function.
-	public static void renderShaderUsingAllocator(Shader shader, Framebuffer framebuffer, ObjectAllocator objectAllocator, @Nullable Identifier customPasses) {
+	public static void renderShaderUsingAllocator(Shader shader, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator, @Nullable Identifier customPasses) {
 		try {
 			if (shader.getPostProcessor() != null) {
 				Runnables.WorldRender.fromGameRender((builder, width, height, set) -> ((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, width, height, set, customPasses), framebuffer, objectAllocator);

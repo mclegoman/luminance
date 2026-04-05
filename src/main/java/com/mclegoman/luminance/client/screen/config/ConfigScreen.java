@@ -15,8 +15,8 @@ import com.mclegoman.luminance.client.gui.widget.AlphaSliderWidget;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 @Deprecated
 public class ConfigScreen extends Screen {
@@ -29,7 +29,7 @@ public class ConfigScreen extends Screen {
     }
 
     public ConfigScreen(Screen parent, boolean refresh, boolean saveConfig, Translation.Data splashText, boolean isPride, boolean invis) {
-        super(Text.empty());
+        super(Component.empty());
         this.parent = parent;
         this.splashText = splashText;
         this.isPride = isPride;

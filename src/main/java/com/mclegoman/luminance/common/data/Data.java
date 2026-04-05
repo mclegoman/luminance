@@ -7,12 +7,11 @@
 
 package com.mclegoman.luminance.common.data;
 
-import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.util.LogType;
 import com.mclegoman.luminance.common.util.ModHelper;
 import com.mclegoman.luminance.common.util.Version;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
@@ -70,6 +69,6 @@ public class Data {
 	}
 
 	public static Identifier idOf(String path) {
-		return Identifier.of(getVersion().getID(), path);
+		return Identifier.fromNamespaceAndPath(getVersion().getID(), path);
 	}
 }

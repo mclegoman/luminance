@@ -9,7 +9,7 @@ package com.mclegoman.luminance.client.shaders.interfaces.pipeline;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 public interface PipelineTargetInterface {
@@ -25,7 +25,7 @@ public interface PipelineTargetInterface {
 
         public record Calculation(float add, float width, float height) {
             public int run(float width, float height) {
-                return Math.max(MathHelper.floor(this.add + this.width*width + this.height*height), 1);
+                return Math.max(Mth.floor(this.add + this.width*width + this.height*height), 1);
             }
 
             @Override

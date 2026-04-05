@@ -28,7 +28,7 @@ public class OverrideConfig implements UniformConfig {
         MapConfig mapConfig = new MapConfig(List.of());
         String prefix = index+"_";
         for (String name : uniformConfig.getNames()) {
-            mapConfig.config.put(prefix+name, uniformConfig.getObjects(name));
+            mapConfig.config().put(prefix+name, uniformConfig.getObjects(name));
         }
         this.uniformConfig = mapConfig;
         this.index = index;

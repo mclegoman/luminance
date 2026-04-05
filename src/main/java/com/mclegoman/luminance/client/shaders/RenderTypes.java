@@ -2,12 +2,11 @@ package com.mclegoman.luminance.client.shaders;
 
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Events;
-import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.client.gl.Framebuffer;
-import net.minecraft.client.util.ObjectAllocator;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -22,8 +21,8 @@ public class RenderTypes {
         return WORLD;
     }
 
-    public static void render(RenderType type, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
-        if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) return;
+    public static void render(RenderType type, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator) {
+        if (ClientData.minecraft.gameRenderer.isPanoramicMode()) return;
         Events.ShaderRender.registry.forEach((id, shaders) -> {
             try {
                 renderShaders(type, shaders, id, framebuffer, objectAllocator);
@@ -33,8 +32,8 @@ public class RenderTypes {
         });
     }
 
-    public static void renderShaders(RenderType type, Events.ShaderRenderData shaderRenderData, Identifier id, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
-        if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) return;
+    public static void renderShaders(RenderType type, Events.ShaderRenderData shaderRenderData, Identifier id, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator) {
+        if (ClientData.minecraft.gameRenderer.isPanoramicMode()) return;
         if (shaderRenderData != null) {
             List<Shader.Data> shaders = shaderRenderData.shaders();
             if (shaders != null) shaders.forEach(shader -> {
@@ -47,12 +46,12 @@ public class RenderTypes {
         }
     }
 
-    public static void renderShader(RenderType type, Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
+    public static void renderShader(RenderType type, Identifier id, Shader.Data shader, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator) {
         renderShader(type, id, shader, framebuffer, objectAllocator, false);
     }
 
-    public static void renderShader(RenderType type, Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator, boolean disablePhotosensitivity) {
-        if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) return;
+    public static void renderShader(RenderType type, Identifier id, Shader.Data shader, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator, boolean disablePhotosensitivity) {
+        if (ClientData.minecraft.gameRenderer.isPanoramicMode()) return;
         try {
             if (shader == null) return;
             boolean isFallback = type.equals(getFallback());
@@ -90,11 +89,11 @@ public class RenderTypes {
     }
 
     public interface Renderer {
-        void render(Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator);
+        void render(Identifier id, Shader.Data shader, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator);
     }
 
     public record RenderType(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi) {
-        public void render(Identifier id, Shader.Data shader, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
+        public void render(Identifier id, Shader.Data shader, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator) {
             this.renderer().render(id, shader, framebuffer, objectAllocator);
         }
     }

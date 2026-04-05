@@ -11,10 +11,10 @@ import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.shaders.Uniforms;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
-import net.minecraft.client.gui.widget.SliderWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.network.chat.Component;
 
-public class AlphaSliderWidget extends SliderWidget {
+public class AlphaSliderWidget extends AbstractSliderButton {
     private final Runnable onChange;
 
     public AlphaSliderWidget(int x, int y, int width, int height, double value, Runnable onChange) {
@@ -33,7 +33,7 @@ public class AlphaSliderWidget extends SliderWidget {
         onChange.run();
     }
 
-    private static Text getText() {
-        return Translation.getConfigTranslation(Data.getVersion().getID(), "alpha", new Object[]{Text.literal(Uniforms.getRawAlpha() + "%")}, false);
+    private static Component getText() {
+        return Translation.getConfigTranslation(Data.getVersion().getID(), "alpha", new Object[]{Component.literal(Uniforms.getRawAlpha() + "%")}, false);
     }
 }

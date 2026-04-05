@@ -10,12 +10,12 @@ package com.mclegoman.luminance.mixin.client.resources;
 import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.events.Execute;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.RunArgs;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.resource.ReloadableResourceManagerImpl;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.main.GameConfig;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,17 +23,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(priority = 100, value = MinecraftClient.class)
-public abstract class MinecraftClientMixin {
-	@Shadow @Final private ReloadableResourceManagerImpl resourceManager;
+@Mixin(priority = 100, value = Minecraft.class)
+public abstract class MinecraftMixin {
+	@Shadow @Final private ReloadableResourceManager resourceManager;
 	@Shadow @Final public GameRenderer gameRenderer;
 
-	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resource/language/LanguageManager;<init>(Ljava/lang/String;Ljava/util/function/Consumer;)V"))
-	private void luminance$clientInit(RunArgs runArgs, CallbackInfo ci) {
+	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/language/LanguageManager;<init>(Ljava/lang/String;Ljava/util/function/Consumer;)V"))
+	private void luminance$clientInit(GameConfig runArgs, CallbackInfo ci) {
 		Execute.registerClientResourceReloaders(resourceManager);
 	}
 
-	@Inject(method = "onFinishedLoading", at = @At("HEAD"))
+	@Inject(method = "onResourceLoadFinished", at = @At("HEAD"))
 	private void luminance$finishedLoading(CallbackInfo ci) {
 		Execute.afterClientResourceReload();
 	}
@@ -42,16 +42,16 @@ public abstract class MinecraftClientMixin {
 	void onCameraEntitySet(Entity entity, CallbackInfo ci) {
 		Execute.onCameraEntitySet(entity);
 		if (!SpectatorHandler.activeHandlers.isEmpty() && LuminanceConfig.config.spectatorPriorityMode.value().getMode() != SpectatorHandler.Mode.ALL) {
-			gameRenderer.onCameraEntitySet(null);
+			gameRenderer.checkEntityPostEffect(null);
 		}
 	}
 
-	@Inject(at = @At("TAIL"), method = "joinWorld")
-	void onJoinWorld(ClientWorld world, CallbackInfo ci) {
+	@Inject(at = @At("TAIL"), method = "setLevel")
+	void onJoinWorld(ClientLevel world, CallbackInfo ci) {
 		Execute.onJoinWorld();
 	}
 
-	@Inject(at = @At("HEAD"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;ZZ)V")
+	@Inject(at = @At("HEAD"), method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V")
 	void onDisconnect(CallbackInfo ci) {
 		Execute.onDisconnect();
 	}

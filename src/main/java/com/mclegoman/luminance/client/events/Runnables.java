@@ -9,23 +9,23 @@ package com.mclegoman.luminance.client.events;
 
 import com.mclegoman.luminance.client.shaders.LuminanceFramebufferSet;
 import com.mclegoman.luminance.client.shaders.ShaderRegistryEntry;
-import net.minecraft.client.gl.Framebuffer;
-import net.minecraft.client.gl.PostEffectPass;
-import net.minecraft.client.gl.PostEffectProcessor;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.FrameGraphBuilder;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.util.ObjectAllocator;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import net.minecraft.client.renderer.PostPass;
+import net.minecraft.client.renderer.PostChain;
+import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
+import net.minecraft.client.DeltaTracker;
+import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
 public class Runnables {
 	public interface InGameHudRender {
-		void run(DrawContext context, RenderTickCounter renderTickCounter);
+		void run(GuiGraphics context, DeltaTracker renderTickCounter);
 	}
 	public interface Shader {
-		void run(PostEffectPass postEffectPass);
+		void run(PostPass postEffectPass);
 	}
 	public interface ShaderData {
 		void run(ShaderRegistryEntry shaderData, List<Identifier> registries);
@@ -34,16 +34,16 @@ public class Runnables {
 		void run(int width, int height);
 	}
 	public interface WorldRender {
-		void run(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet);
+		void run(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle framebufferSet);
 
-		static void fromGameRender(WorldRender worldRender, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
+		static void fromGameRender(WorldRender worldRender, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator) {
 			FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
-			PostEffectProcessor.FramebufferSet framebufferSet = new LuminanceFramebufferSet(frameGraphBuilder, framebuffer, LuminanceFramebufferSet.fabulous);
-			worldRender.run(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet);
-			frameGraphBuilder.run(objectAllocator);
+			PostChain.TargetBundle framebufferSet = new LuminanceFramebufferSet(frameGraphBuilder, framebuffer, LuminanceFramebufferSet.fabulous);
+			worldRender.run(frameGraphBuilder, framebuffer.width, framebuffer.height, framebufferSet);
+			frameGraphBuilder.execute(objectAllocator);
 		}
 	}
 	public interface GameRender {
-		void run(Framebuffer framebuffer, ObjectAllocator objectAllocator);
+		void run(RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator);
 	}
 }

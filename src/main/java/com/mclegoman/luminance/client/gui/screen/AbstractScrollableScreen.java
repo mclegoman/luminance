@@ -13,18 +13,18 @@ import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.DateHelper;
 import com.mclegoman.luminance.common.util.ReleaseType;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ThreePartsLayoutWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractScrollableScreen extends Screen {
 	public final Screen parent;
-	public final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
+	public final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
 	public final double scrollY;
 	public final Translation.Data splashText;
 	public final boolean isPride;
@@ -54,15 +54,15 @@ public abstract class AbstractScrollableScreen extends Screen {
 		this.initHeader();
 		this.initBody();
 		this.initFooter();
-		this.layout.forEachChild(this::addDrawableChild);
-		refreshWidgetPositions();
+		this.layout.visitWidgets(this::addRenderableWidget);
+		repositionElements();
 	}
 
 	public void initHeader() {
 		LuminanceLogo.Widget logo = new LuminanceLogo.Widget(this.splashText != null, this.splashText, this.isPride);
-		this.layout.addHeader(logo, (positioner) -> {
+		this.layout.addToHeader(logo, (positioner) -> {
 			this.layout.setHeaderHeight(logo.getHeight());
-			positioner.marginTop(11);
+			positioner.paddingTop(11);
 		});
 	}
 
@@ -70,38 +70,38 @@ public abstract class AbstractScrollableScreen extends Screen {
 	}
 
 	public void initFooter() {
-		this.layout.addFooter(ButtonWidget.builder(ScreenTexts.BACK, (button) -> this.close()).width(200).build());
+		this.layout.addToFooter(Button.builder(CommonComponents.GUI_BACK, (button) -> this.onClose()).width(200).build());
 	}
 
-	public void close() {
+	public void onClose() {
 		ClientData.minecraft.setScreen(this.parent);
 	}
 
-	public void refreshWidgetPositions() {
-		this.layout.refreshPositions();
+	public void repositionElements() {
+		this.layout.arrangeElements();
 	}
 
-	public static Text getName(String id) {
+	public static Component getName(String id) {
 		return Translation.getTranslation(Data.getVersion().getID(), "name");
 	}
 	
-	public static Text getTitle(Text title) {
+	public static Component getTitle(Component title) {
 		return Translation.getConfigTranslation(Data.getVersion().getID(), "title", new Object[]{getName(""), title});
 	}
 
-	public static Text getSubtitle(String id) {
+	public static Component getSubtitle(String id) {
 		return Translation.getConfigTranslation(Data.getVersion().getID(), id);
 	}
 
-	public static Text getMore() {
+	public static Component getMore() {
 		return Translation.getConfigTranslation(Data.getVersion().getID(), "more");
 	}
 
-	public static Text getExternal() {
+	public static Component getExternal() {
 		return Translation.getConfigTranslation(Data.getVersion().getID(), "external");
 	}
 
-	public void resize(MinecraftClient client, int width, int height) {
+	public void resize(Minecraft client, int width, int height) {
 		super.resize(width, height);
 		client.setScreen(getRefreshScreen());
 	}
@@ -111,17 +111,17 @@ public abstract class AbstractScrollableScreen extends Screen {
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
 		renderDevNotice(context);
 	}
 
-	public void renderDevNotice(DrawContext context) {
-		if (!Data.getVersion().getType().equals(ReleaseType.RELEASE)) context.drawTextWithShadow(this.textRenderer, Translation.getTranslation(Data.getVersion().getID(), "dev", new Object[]{Data.getVersion().getFriendlyString()}), 2, this.height - 11, 0xAAAAAA);
+	public void renderDevNotice(GuiGraphics context) {
+		if (!Data.getVersion().getType().equals(ReleaseType.RELEASE)) context.drawString(this.font, Translation.getTranslation(Data.getVersion().getID(), "dev", new Object[]{Data.getVersion().getFriendlyString()}), 2, this.height - 11, 0xAAAAAA);
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		this.client.setScreen(getRefreshScreen());
+		this.minecraft.setScreen(getRefreshScreen());
 	}
 }

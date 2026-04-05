@@ -7,10 +7,10 @@
 
 package com.mclegoman.luminance.mixin.client.shaders;
 
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.Pool;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.client.Camera;
+import net.minecraft.client.renderer.GameRenderer;
+import com.mojang.blaze3d.resource.CrossFrameResourcePool;
+import net.minecraft.util.RandomSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
@@ -19,10 +19,10 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface GameRendererAccessor {
 	@Invoker("getFov")
 	float invokeGetFov(Camera camera, float tickProgress, boolean changingFov);
-	@Accessor("pool")
-	Pool getPool();
+	@Accessor("resourcePool")
+    CrossFrameResourcePool getResourcePool();
 	@Accessor("random")
-	Random getRandom();
-	@Accessor("camera")
-	Camera getCamera();
+    RandomSource getRandom();
+	@Accessor("mainCamera")
+    Camera getMainCamera();
 }

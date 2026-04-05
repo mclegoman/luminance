@@ -9,17 +9,17 @@ package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Execute;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.RotatingCubeMapRenderer;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.PanoramaRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(priority = 100, value = RotatingCubeMapRenderer.class)
-public class RotatingCubeMapRendererMixin {
+@Mixin(priority = 100, value = PanoramaRenderer.class)
+public class PanoramaRendererMixin {
 	@Inject(method = "render", at = @At("RETURN"))
-	private void luminance$afterPanoramaRender(DrawContext context, int width, int height, boolean rotate, CallbackInfo ci) {
-		Execute.afterPanoramaRender(((GameRendererAccessor) ClientData.minecraft.gameRenderer).getPool());
+	private void luminance$afterPanoramaRender(GuiGraphics context, int width, int height, boolean rotate, CallbackInfo ci) {
+		Execute.afterPanoramaRender(((GameRendererAccessor) ClientData.minecraft.gameRenderer).getResourcePool());
 	}
 }

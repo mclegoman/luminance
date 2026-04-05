@@ -17,19 +17,21 @@ import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.client.util.CompatHelper;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.client.gl.*;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.*;
-import net.minecraft.client.util.ObjectAllocator;
-import net.minecraft.entity.Entity;
-import net.minecraft.resource.ReloadableResourceManagerImpl;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
+import net.minecraft.client.renderer.PostChain;
+import net.minecraft.client.renderer.PostPass;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 public class Execute {
-	public static void registerClientResourceReloaders(ReloadableResourceManagerImpl resourceManager) {
-		Events.ClientResourceReloaders.registry.forEach((id, resourceReloader) -> resourceManager.registerReloader(resourceReloader));
+	public static void registerClientResourceReloaders(ReloadableResourceManager resourceManager) {
+		Events.ClientResourceReloaders.registry.forEach((id, resourceReloader) -> resourceManager.registerReloadListener(resourceReloader));
 	}
 	public static void afterClientResourceReload() {
 		Events.AfterClientResourceReload.registry.forEach((id, runnable) -> runnable.run());
@@ -41,7 +43,7 @@ public class Execute {
 		SpectatorHandler.onSpectate(entity, LuminanceConfig.config.spectatorPriorityMode.value().getMode());
 	}
 	public static void onJoinWorld() {
-		ClientData.minecraft.send(() -> {
+		ClientData.minecraft.schedule(() -> {
 			assert ClientData.minecraft.player != null;
 			SpectatorHandler.onSpectate(ClientData.minecraft.player, LuminanceConfig.config.spectatorPriorityMode.value().getMode());
 		});
@@ -49,7 +51,7 @@ public class Execute {
 	public static void onDisconnect() {
 		SpectatorHandler.clearActive();
 	}
-	public static void beforeInGameHudRender(DrawContext context, RenderTickCounter renderTickCounter) {
+	public static void beforeInGameHudRender(GuiGraphics context, DeltaTracker renderTickCounter) {
 		ShaderTime.currentRenderType = RenderTypes.UI;
 		Events.BeforeInGameHudRender.registry.forEach(((id, runnable) -> {
 			try {
@@ -59,7 +61,7 @@ public class Execute {
 			}
 		}));
 	}
-	public static void afterInGameHudRender(DrawContext context, RenderTickCounter renderTickCounter) {
+	public static void afterInGameHudRender(GuiGraphics context, DeltaTracker renderTickCounter) {
 		Events.AfterInGameHudRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(context, renderTickCounter);
@@ -78,7 +80,7 @@ public class Execute {
 			}
 		}));
 	}
-	public static void afterVanillaPostEffectRender(ObjectAllocator allocator) {
+	public static void afterVanillaPostEffectRender(GraphicsResourceAllocator allocator) {
 		mergeDepth(allocator);
 
 		// direct GL call to replace RenderSystem.depthMask. not sure if theres an api better alternative
@@ -89,37 +91,37 @@ public class Execute {
 		GL11.glDepthMask(false);
 		Events.AfterVanillaPostEffectRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
+				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute VanillaPostEffect event with id: {}: {}", id, error);
 			}
 		}));
 		GL11.glDepthMask(true);
 	}
-	public static void afterUiRender(ObjectAllocator allocator) {
+	public static void afterUiRender(GraphicsResourceAllocator allocator) {
 		Events.AfterUiRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
+				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterGameRender event with id: {}: {}", id, error);
 			}
 		}));
 	}
-	public static void beforeUiRender(ObjectAllocator allocator) {
+	public static void beforeUiRender(GraphicsResourceAllocator allocator) {
 		Events.BeforeUiRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
+				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute BeforeUiRender event with id: {}: {}", id, error);
 			}
 		}));
 	}
-	public static void afterUiBackgroundRender(ObjectAllocator allocator) {
+	public static void afterUiBackgroundRender(GraphicsResourceAllocator allocator) {
 		RenderTypes.RenderType previous = ShaderTime.currentRenderType;
 		ShaderTime.currentRenderType = RenderTypes.UI_BACKGROUND;
 		Events.AfterUiBackgroundRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
+				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterUiBackgroundRender event with id: {}: {}", id, error);
 			}
@@ -127,12 +129,12 @@ public class Execute {
 		// this and afterPanoramaRender are a special case, so resetting the RenderType it makes sense
 		ShaderTime.currentRenderType = previous;
 	}
-	public static void afterPanoramaRender(ObjectAllocator allocator) {
+	public static void afterPanoramaRender(GraphicsResourceAllocator allocator) {
 		RenderTypes.RenderType previous = ShaderTime.currentRenderType;
 		ShaderTime.currentRenderType = RenderTypes.PANORAMA;
 		Events.AfterPanoramaRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
+				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterPanoramaRender event with id: {}: {}", id, error);
 			}
@@ -152,26 +154,26 @@ public class Execute {
 			}
 		}));
 	}
-	public static void afterFabulousRender(FrameGraphBuilder frameGraphBuilder, PostEffectProcessor.FramebufferSet framebufferSet) {
+	public static void afterFabulousRender(FrameGraphBuilder frameGraphBuilder, PostChain.TargetBundle framebufferSet) {
 		if (Events.AfterFabulousRender.registry.isEmpty()) {
 			return;
 		}
 
 		// see Execute.afterVanillaPostEffectRender() for note on depth mask
-		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.of(Data.getVersion().getID(), "prepare_shader_render"), () -> GL11.glDepthMask(false));
+		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "prepare_shader_render"), () -> GL11.glDepthMask(false));
 		Events.AfterFabulousRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(frameGraphBuilder, ClientData.minecraft.getFramebuffer().textureWidth, ClientData.minecraft.getFramebuffer().textureHeight, framebufferSet);
+				runnable.run(frameGraphBuilder, ClientData.minecraft.getMainRenderTarget().width, ClientData.minecraft.getMainRenderTarget().height, framebufferSet);
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterFabulousRender event with id: {}: {}", id, error);
 			}
 		}));
-		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.of(Data.getVersion().getID(), "cleanup_shader_render"), () -> GL11.glDepthMask(true));
+		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "cleanup_shader_render"), () -> GL11.glDepthMask(true));
 	}
-	public static void afterWorldRender(ObjectAllocator allocator) {
+	public static void afterWorldRender(GraphicsResourceAllocator allocator) {
 		Events.AfterWorldRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(ClientData.minecraft.getFramebuffer(), allocator);
+				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterWorldRender event with id: {}: {}", id, error);
 			}
@@ -179,7 +181,7 @@ public class Execute {
 
 		copyDepth(allocator);
 	}
-	public static void beforeShaderRender(PostEffectPass postEffectPass) {
+	public static void beforeShaderRender(PostPass postEffectPass) {
 		Events.BeforeShaderRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(postEffectPass);
@@ -188,7 +190,7 @@ public class Execute {
 			}
 		}));
 	}
-	public static void afterShaderRender(PostEffectPass postEffectPass) {
+	public static void afterShaderRender(PostPass postEffectPass) {
 		Events.AfterShaderRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(postEffectPass);
@@ -201,7 +203,7 @@ public class Execute {
 	//private static SimpleFramebufferFactory framebufferFactory;
 	//private static Framebuffer worldDepth;
 
-	private static void copyDepth(ObjectAllocator allocator) {
+	private static void copyDepth(GraphicsResourceAllocator allocator) {
 		cleanupDepth(allocator);
 
 		if (CompatHelper.isIrisShadersEnabled()) {
@@ -219,7 +221,7 @@ public class Execute {
 		//framebuffer.beginWrite(false);
 	}
 
-	private static void mergeDepth(ObjectAllocator allocator) {
+	private static void mergeDepth(GraphicsResourceAllocator allocator) {
 		if (CompatHelper.isIrisShadersEnabled()) {
 			return;
 		}
@@ -263,7 +265,7 @@ public class Execute {
 		cleanupDepth(allocator);
 	}
 
-	private static void cleanupDepth(ObjectAllocator allocator) {
+	private static void cleanupDepth(GraphicsResourceAllocator allocator) {
 		// if (worldDepth != null) {
 		// 	allocator.release(framebufferFactory, worldDepth);
 		// 	worldDepth = null;

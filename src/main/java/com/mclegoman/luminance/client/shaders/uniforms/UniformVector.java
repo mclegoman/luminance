@@ -7,8 +7,8 @@
 
 package com.mclegoman.luminance.client.shaders.uniforms;
 
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class UniformVector {
         }
     }
 
-    public void set(Vec3d vec3d) {
+    public void set(Vec3 vec3d) {
         if (values.size() == 3) {
             values.set(0, (float)vec3d.x);
             values.set(1, (float)vec3d.y);
@@ -80,7 +80,7 @@ public class UniformVector {
     }
 
     public void lerp(UniformVector other, float t) {
-        elementwise((a,b) -> MathHelper.lerp(t, a, b), other);
+        elementwise((a,b) -> Mth.lerp(t, a, b), other);
     }
 
     public void subtract(UniformVector other) {
@@ -131,6 +131,6 @@ public class UniformVector {
     }
 
     private float wrapDelta(float delta, float range) {
-        return MathHelper.abs(delta) < range/2 ? delta : (delta > 0 ? delta - range : delta + range);
+        return Mth.abs(delta) < range/2 ? delta : (delta > 0 ? delta - range : delta + range);
     }
 }

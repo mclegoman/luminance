@@ -15,15 +15,21 @@ import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.EntryListWidget;
-import net.minecraft.text.*;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.components.AbstractSelectionList;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.util.StringRepresentable;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -32,84 +38,84 @@ import java.util.List;
 import java.util.Optional;
 
 // This updates again in 26.1, and I've already done that in another mod so when we update I'll just copy that over rather than fixing it twice.
-public class InfoWidget extends EntryListWidget<InfoWidget.InfoEntry> {
-	private final TextRenderer textRenderer;
+public class InfoWidget extends AbstractSelectionList<InfoWidget.InfoEntry> {
+	private final Font textRenderer;
 
-	public InfoWidget(MinecraftClient client, int width, int height, int y, int lineHeight) {
+	public InfoWidget(Minecraft client, int width, int height, int y, int lineHeight) {
 		this(client, width, height, y, lineHeight, 0);
 	}
 
-	public InfoWidget(MinecraftClient client, int width, int height, int y, int lineHeight, double scrollY) {
+	public InfoWidget(Minecraft client, int width, int height, int y, int lineHeight, double scrollY) {
 		super(client, width, height, y, lineHeight);
-		this.textRenderer = client.textRenderer;
-		for (OrderedText row : this.textRenderer.wrapLines(load(Identifier.of(Data.getVersion().getID(), "texts/info.json"), InfoWidget::read), this.getRowWidth())) addEntry(new InfoEntry(row));
-		setScrollY(scrollY);
+		this.textRenderer = client.font;
+		for (FormattedCharSequence row : this.textRenderer.split(load(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "texts/info.json"), InfoWidget::read), this.getRowWidth())) addEntry(new InfoEntry(row));
+		setScrollAmount(scrollY);
 	}
 
 	@Override
-	protected void renderEntry(DrawContext context, int mouseX, int mouseY, float delta, InfoEntry entry) {
-		entry.render(context, mouseX, mouseY, this.hovered, delta);
+	protected void renderItem(GuiGraphics context, int mouseX, int mouseY, float delta, InfoEntry entry) {
+		entry.renderContent(context, mouseX, mouseY, this.isHovered, delta);
 	}
 
 	public int getRowWidth() {
 		return this.width - 32;
 	}
 
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+	protected void updateWidgetNarration(NarrationElementOutput builder) {
 	}
 
 	public class InfoEntry extends Entry<InfoEntry> {
-		private final OrderedText text;
-		public InfoEntry(OrderedText text) {
+		private final FormattedCharSequence text;
+		public InfoEntry(FormattedCharSequence text) {
 			this.text = text;
 		}
-		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			context.drawTextWithShadow(textRenderer, this.text, getX(), getY(), 0xFFAAAAAA);
+		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			context.drawString(textRenderer, this.text, getX(), getY(), 0xFFAAAAAA);
 		}
 	}
 
-	private static Text load(Identifier id, InfoReader infoReader) {
+	private static Component load(Identifier id, InfoReader infoReader) {
 		try (Reader reader = ClientData.minecraft.getResourceManager().openAsReader(id)) {
 			return infoReader.read(reader);
 		} catch (Exception exception) {
 			Data.getVersion().sendToLog(LogType.ERROR, "Couldn't load info from file " + id + ": "+ exception.getLocalizedMessage());
 		}
-		return Text.empty();
+		return Component.empty();
 	}
 
-	private static Text read(Reader reader) {
-		JsonObject root = JsonHelper.deserialize(reader).getAsJsonObject();
-		MutableText text = Text.empty();
+	private static Component read(Reader reader) {
+		JsonObject root = GsonHelper.parse(reader).getAsJsonObject();
+		MutableComponent text = Component.empty();
 		if (root.has("values")) {
 			for (JsonElement element : root.getAsJsonArray("values")) {
-				text.append(read(Text.empty(), element));
+				text.append(read(Component.empty(), element));
 				if (root.has("line_breaks") && root.get("line_breaks").getAsBoolean()) text.append("\n");
 			}
 		}
 		return text;
 	}
 
-	private static Text read(MutableText text, JsonElement element) {
+	private static Component read(MutableComponent text, JsonElement element) {
 		JsonObject jsonObject = element.getAsJsonObject();
 		if (jsonObject.has("indent")) {
 			int indents = jsonObject.get("indent").getAsInt();
-			if (indents > 0) text.append(Text.literal(" ".repeat(indents)));
+			if (indents > 0) text.append(Component.literal(" ".repeat(indents)));
 		}
-		List<Text> args = new ArrayList<>();
+		List<Component> args = new ArrayList<>();
 		if (jsonObject.has("args")) {
 			for (JsonElement argElement : jsonObject.getAsJsonArray("args")) {
-				args.add(read(Text.empty(), argElement));
+				args.add(read(Component.empty(), argElement));
 			}
 		}
 		if (jsonObject.has("value")) {
 			text.append(switch (jsonObject.has("type") ? TextType.valueOf(jsonObject.get("type").getAsString()) : TextType.literal) {
-				case literal -> Text.literal(jsonObject.get("value").getAsString());
-				case translatable -> Text.translatable(jsonObject.get("value").getAsString(), args.toArray(new Object[0]));
+				case literal -> Component.literal(jsonObject.get("value").getAsString());
+				case translatable -> Component.translatable(jsonObject.get("value").getAsString(), args.toArray(new Object[0]));
 				case variable -> switch (jsonObject.get("value").getAsString()) {
-					case "id" -> Text.literal(Data.getVersion().getID());
+					case "id" -> Component.literal(Data.getVersion().getID());
 					case "name" -> Translation.getTranslation(Data.getVersion().getID(), "name");
-					case "version" -> Text.literal(Data.getVersion().getFriendlyString());
-                    case null, default -> Text.empty();
+					case "version" -> Component.literal(Data.getVersion().getFriendlyString());
+                    case null, default -> Component.empty();
                 };
 			});
 		}
@@ -123,7 +129,7 @@ public class InfoWidget extends EntryListWidget<InfoWidget.InfoEntry> {
 			if (styleObject.has("shadow_color")) style = style.withShadowColor(styleObject.get("shadow_color").getAsInt());
 			if (styleObject.has("bold")) style = style.withBold(styleObject.get("bold").getAsBoolean());
 			if (styleObject.has("italic")) style = style.withItalic(styleObject.get("italic").getAsBoolean());
-			if (styleObject.has("underlined")) style = style.withUnderline(styleObject.get("underlined").getAsBoolean());
+			if (styleObject.has("underlined")) style = style.withUnderlined(styleObject.get("underlined").getAsBoolean());
 			if (styleObject.has("strikethrough")) style = style.withStrikethrough(styleObject.get("strikethrough").getAsBoolean());
 			if (styleObject.has("obfuscated")) style = style.withObfuscated(styleObject.get("obfuscated").getAsBoolean());
 			if (styleObject.has("click_event")) {
@@ -143,10 +149,10 @@ public class InfoWidget extends EntryListWidget<InfoWidget.InfoEntry> {
 	}
 
 	interface InfoReader {
-		Text read(Reader reader) throws IOException;
+		Component read(Reader reader) throws IOException;
 	}
 
-	private enum TextType implements StringIdentifiable {
+	private enum TextType implements StringRepresentable {
 		literal("literal"),
 		translatable("translatable"),
 		variable("variable");
@@ -157,7 +163,7 @@ public class InfoWidget extends EntryListWidget<InfoWidget.InfoEntry> {
 			this.id = id;
 		}
 
-		public String asString() {
+		public String getSerializedName() {
 			return this.id;
 		}
 	}

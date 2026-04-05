@@ -10,7 +10,7 @@ package com.mclegoman.luminance.client.gui.screen;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.gui.widget.ListWidget;
 import com.mclegoman.luminance.client.translation.Translation;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public abstract class AbstractScrollableListScreen extends AbstractScrollableScr
 
 	public void initBody() {
 		this.list = new ListWidget(ClientData.minecraft, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 20, getEntries(), this.scrollY);
-		this.layout.addBody(this.list);
+		this.layout.addToContents(this.list);
 	}
 
 	public List<ListWidget.ListEntry> getEntries() {

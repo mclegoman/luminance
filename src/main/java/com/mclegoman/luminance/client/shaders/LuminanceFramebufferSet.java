@@ -8,60 +8,60 @@
 package com.mclegoman.luminance.client.shaders;
 
 import com.mclegoman.luminance.common.data.Data;
-import net.minecraft.client.gl.Framebuffer;
-import net.minecraft.client.gl.PostEffectProcessor;
-import net.minecraft.client.gl.SimpleFramebufferFactory;
-import net.minecraft.client.render.DefaultFramebufferSet;
-import net.minecraft.client.render.FrameGraphBuilder;
-import net.minecraft.client.util.Handle;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import net.minecraft.client.renderer.PostChain;
+import com.mojang.blaze3d.resource.RenderTargetDescriptor;
+import net.minecraft.client.renderer.LevelTargetBundle;
+import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
+import com.mojang.blaze3d.resource.ResourceHandle;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class LuminanceFramebufferSet implements PostEffectProcessor.FramebufferSet {
+public class LuminanceFramebufferSet implements PostChain.TargetBundle {
     // when rendering shaders with the allocator, they cant access fabulous buffers
     // this stops the shaders from rendering, which isnt ideal, and it stops them working with iris
     // by swapping out the FramebufferSet.singleton with this class, it instead just returns an empty buffer
-    private Handle<Framebuffer> mainFramebuffer;
-    private Handle<Framebuffer> defaultFramebuffer;
+    private ResourceHandle<RenderTarget> mainFramebuffer;
+    private ResourceHandle<RenderTarget> defaultFramebuffer;
 
     @Nullable
     private final Set<Identifier> useDefaultFor;
 
     public static Set<Identifier> fabulous = new HashSet<>(List.of(
-            Identifier.ofVanilla("translucent"),
-            Identifier.ofVanilla("item_entity"),
-            Identifier.ofVanilla("particles"),
-            Identifier.ofVanilla("weather"),
-            Identifier.ofVanilla("clouds")
+            Identifier.withDefaultNamespace("translucent"),
+            Identifier.withDefaultNamespace("item_entity"),
+            Identifier.withDefaultNamespace("particles"),
+            Identifier.withDefaultNamespace("weather"),
+            Identifier.withDefaultNamespace("clouds")
     ));
 
-    public LuminanceFramebufferSet(FrameGraphBuilder builder, Framebuffer mainFramebuffer, @Nullable Set<Identifier> useDefaultFor) {
-        this.mainFramebuffer = builder.createObjectNode("main", mainFramebuffer);
-        PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(new SimpleFramebufferFactory(mainFramebuffer.textureWidth, mainFramebuffer.textureHeight, mainFramebuffer.useDepthAttachment, 0), null, Identifier.of(Data.getVersion().getID(), "default"), 0);
-        this.defaultFramebuffer = builder.createResourceHandle("luminance:default", persistentFramebufferFactory);
+    public LuminanceFramebufferSet(FrameGraphBuilder builder, RenderTarget mainFramebuffer, @Nullable Set<Identifier> useDefaultFor) {
+        this.mainFramebuffer = builder.importExternal("main", mainFramebuffer);
+        PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(new RenderTargetDescriptor(mainFramebuffer.width, mainFramebuffer.height, mainFramebuffer.useDepth, 0), null, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "default"), 0);
+        this.defaultFramebuffer = builder.createInternal("luminance:default", persistentFramebufferFactory);
         this.useDefaultFor = useDefaultFor;
     }
 
-    private LuminanceFramebufferSet(Handle<Framebuffer> mainFramebuffer, Handle<Framebuffer> defaultFramebuffer, @Nullable Set<Identifier> useDefaultFor) {
+    private LuminanceFramebufferSet(ResourceHandle<RenderTarget> mainFramebuffer, ResourceHandle<RenderTarget> defaultFramebuffer, @Nullable Set<Identifier> useDefaultFor) {
         this.mainFramebuffer = mainFramebuffer;
         this.defaultFramebuffer = defaultFramebuffer;
         this.useDefaultFor = useDefaultFor;
     }
 
-    public static PostEffectProcessor.FramebufferSet addFabulousIfAbsent(DefaultFramebufferSet defaultFramebufferSet, FrameGraphBuilder frameGraphBuilder, SimpleFramebufferFactory factory) {
-        if (defaultFramebufferSet.translucentFramebuffer != null) {
+    public static PostChain.TargetBundle addFabulousIfAbsent(LevelTargetBundle defaultFramebufferSet, FrameGraphBuilder frameGraphBuilder, RenderTargetDescriptor factory) {
+        if (defaultFramebufferSet.translucent != null) {
             return defaultFramebufferSet;
         }
-        PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(factory, null, Identifier.of(Data.getVersion().getID(), "fabulous"), 0);
-        return new LuminanceFramebufferSet(defaultFramebufferSet.mainFramebuffer, frameGraphBuilder.createResourceHandle("luminance:default", persistentFramebufferFactory), fabulous);
+        PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(factory, null, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "fabulous"), 0);
+        return new LuminanceFramebufferSet(defaultFramebufferSet.main, frameGraphBuilder.createInternal("luminance:default", persistentFramebufferFactory), fabulous);
     }
 
-    public void set(Identifier id, Handle<Framebuffer> framebuffer) {
-        if (id.equals(PostEffectProcessor.MAIN)) {
+    public void replace(Identifier id, ResourceHandle<RenderTarget> framebuffer) {
+        if (id.equals(PostChain.MAIN_TARGET_ID)) {
             mainFramebuffer = framebuffer;
         } else if (useDefault(id)) {
             defaultFramebuffer = framebuffer;
@@ -71,13 +71,13 @@ public class LuminanceFramebufferSet implements PostEffectProcessor.FramebufferS
     }
 
     @Nullable
-    public Handle<Framebuffer> get(Identifier id) {
-        return id.equals(PostEffectProcessor.MAIN) ? mainFramebuffer : null;
+    public ResourceHandle<RenderTarget> get(Identifier id) {
+        return id.equals(PostChain.MAIN_TARGET_ID) ? mainFramebuffer : null;
     }
 
     @Override
-    public Handle<Framebuffer> getOrThrow(Identifier id) {
-        Handle<Framebuffer> handle = get(id);
+    public ResourceHandle<RenderTarget> getOrThrow(Identifier id) {
+        ResourceHandle<RenderTarget> handle = get(id);
         if (handle == null) {
             if (useDefault(id)) {
                 return defaultFramebuffer;

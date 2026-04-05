@@ -7,11 +7,11 @@
 
 package com.mclegoman.luminance.common.util;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public class IdentifierHelper {
 	public static Identifier identifierFromString(String identifier) {
-		return Identifier.of(identifier);
+		return Identifier.parse(identifier);
 	}
 	public static String stringFromIdentifier(Identifier identifier) {
 		return identifier.toString();

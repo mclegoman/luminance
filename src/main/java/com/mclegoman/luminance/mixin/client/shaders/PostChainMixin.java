@@ -16,10 +16,14 @@ import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface
 import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTargetInterface;
-import net.minecraft.client.gl.*;
-import net.minecraft.client.render.FrameGraphBuilder;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.resource.RenderTargetDescriptor;
+import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
+import net.minecraft.client.renderer.PostChain;
+import net.minecraft.client.renderer.PostChainConfig;
+import net.minecraft.client.renderer.PostPass;
+import net.minecraft.client.renderer.ShaderManager;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -30,35 +34,35 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.*;
 
-@Mixin(PostEffectProcessor.class)
-public abstract class PostEffectProcessorMixin implements PostEffectProcessorInterface {
-    @Shadow @Final private List<PostEffectPass> passes;
+@Mixin(PostChain.class)
+public abstract class PostChainMixin implements PostEffectProcessorInterface {
+    @Shadow @Final private List<PostPass> passes;
 
     @Shadow
-    private static PostEffectPass parsePass(TextureManager textureManager, PostEffectPipeline.Pass pass, Identifier id) throws ShaderLoader.LoadException {
+    private static PostPass createPass(TextureManager textureManager, PostChainConfig.Pass pass, Identifier id) throws ShaderManager.CompilationException {
         return null;
     }
 
-    @Shadow public abstract void render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet);
+    @Shadow public abstract void addToFrame(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle framebufferSet);
 
-    @Unique private Map<Identifier, List<PostEffectPass>> luminance$customPasses;
+    @Unique private Map<Identifier, List<PostPass>> luminance$customPasses;
     @Unique @Nullable private Identifier luminance$currentCustomPasses;
 
     @Unique private Identifier luminance$persistentBufferSource;
 
-    @ModifyExpressionValue(at = @At(value = "NEW", target = "(IIZI)Lnet/minecraft/client/gl/SimpleFramebufferFactory;"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V")
-    private SimpleFramebufferFactory replaceFramebufferFactory(SimpleFramebufferFactory original, @Local Map.Entry<Identifier, PostEffectPipeline.Targets> target) {
-        PostEffectPipeline.Targets targets = target.getValue();
+    @ModifyExpressionValue(at = @At(value = "NEW", target = "(IIZI)Lcom/mojang/blaze3d/resource/RenderTargetDescriptor;"), method = "addToFrame(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;IILnet/minecraft/client/renderer/PostChain$TargetBundle;)V")
+    private RenderTargetDescriptor replaceFramebufferFactory(RenderTargetDescriptor original, @Local Map.Entry<Identifier, PostChainConfig.InternalTarget> target) {
+        PostChainConfig.InternalTarget targets = target.getValue();
         PipelineTargetInterface.DynamicSize dynamicSize = ((PipelineTargetInterface)(Object)targets).luminance$getDynamicSize();
 
         if (dynamicSize != null) {
-            return new SimpleFramebufferFactory(dynamicSize.width().run(original.width(), original.height()), dynamicSize.height().run(original.width(), original.height()), original.useDepth(), original.clearColor());
+            return new RenderTargetDescriptor(dynamicSize.width().run(original.width(), original.height()), dynamicSize.height().run(original.width(), original.height()), original.useDepth(), original.clearColor());
         }
         return original;
     }
 
-    @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Ljava/util/Map$Entry;getKey()Ljava/lang/Object;"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V")
-    private <K> K replacePersistentSource(K original, @Local Map.Entry<Identifier, PostEffectPipeline.Targets> target) {
+    @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Ljava/util/Map$Entry;getKey()Ljava/lang/Object;"), method = "addToFrame(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;IILnet/minecraft/client/renderer/PostChain$TargetBundle;)V")
+    private <K> K replacePersistentSource(K original, @Local Map.Entry<Identifier, PostChainConfig.InternalTarget> target) {
         if (target.getValue().persistent() && luminance$persistentBufferSource != null) {
             //noinspection unchecked
             return (K) luminance$persistentBufferSource;
@@ -84,38 +88,38 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
 //        passInterface.luminance$setForceVisit(true);
 //    }
 
-    @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/PostEffectPipeline;passes()Ljava/util/List;", ordinal = 0), method = "parseEffect")
-    private static List<PostEffectPipeline.Pass> includeCustomPasses(List<PostEffectPipeline.Pass> original, PostEffectPipeline pipeline, TextureManager textureManager) {
-        Optional<Map<Identifier, List<PostEffectPipeline.Pass>>> customPasses = ((PipelineInterface)(Object)pipeline).luminance$getCustomPasses();
+    @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/PostChainConfig;passes()Ljava/util/List;", ordinal = 0), method = "load")
+    private static List<PostChainConfig.Pass> includeCustomPasses(List<PostChainConfig.Pass> original, PostChainConfig pipeline, TextureManager textureManager) {
+        Optional<Map<Identifier, List<PostChainConfig.Pass>>> customPasses = ((PipelineInterface)(Object)pipeline).luminance$getCustomPasses();
         if (customPasses.isEmpty()) {
             return original;
         }
 
-        List<PostEffectPipeline.Pass> passes = new ArrayList<>(original.size());
+        List<PostChainConfig.Pass> passes = new ArrayList<>(original.size());
         customPasses.get().forEach((identifier, list) -> passes.addAll(list));
         return passes;
     }
 
-    @ModifyReturnValue(at = @At(value = "RETURN"), method = "parseEffect")
-    private static PostEffectProcessor setCustomPassTargets(PostEffectProcessor original, PostEffectPipeline pipeline, TextureManager textureManager, Set<Identifier> availableExternalTargets, Identifier id) {
+    @ModifyReturnValue(at = @At(value = "RETURN"), method = "load")
+    private static PostChain setCustomPassTargets(PostChain original, PostChainConfig pipeline, TextureManager textureManager, Set<Identifier> availableExternalTargets, Identifier id) {
         ((PipelineInterface)(Object)pipeline).luminance$getCustomPasses().ifPresentOrElse((map) -> {
             PostEffectProcessorInterface processor = (PostEffectProcessorInterface)original;
 
-            Map<Identifier, List<PostEffectPass>> customPasses = new HashMap<>(map.size());
+            Map<Identifier, List<PostPass>> customPasses = new HashMap<>(map.size());
 
-            for (Map.Entry<Identifier, List<PostEffectPipeline.Pass>> entry : map.entrySet()) {
-                ImmutableList.Builder<PostEffectPass> builder = ImmutableList.builder();
+            for (Map.Entry<Identifier, List<PostChainConfig.Pass>> entry : map.entrySet()) {
+                ImmutableList.Builder<PostPass> builder = ImmutableList.builder();
 
-                for (PostEffectPipeline.Pass pass : entry.getValue()) {
+                for (PostChainConfig.Pass pass : entry.getValue()) {
                     try {
                         //noinspection DataFlowIssue
-                        builder.add(parsePass(textureManager, pass, id));
-                    } catch (ShaderLoader.LoadException e) {
+                        builder.add(createPass(textureManager, pass, id));
+                    } catch (ShaderManager.CompilationException e) {
                         throw new RuntimeException(e);
                     }
                 }
 
-                List<PostEffectPass> passes = builder.build();
+                List<PostPass> passes = builder.build();
 
                 // TODO: this context for force visiting is different to the force visiting for persistent targets, so it may be needed!
                 //  it will be obvious, since custom passes just wont really work if they arent visited
@@ -136,7 +140,7 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     }
 
     @Override @Nullable @Contract("null -> !null")
-    public List<PostEffectPass> luminance$getPasses(@Nullable Identifier identifier) {
+    public List<PostPass> luminance$getPasses(@Nullable Identifier identifier) {
         if (identifier == null) {
             return passes;
         }
@@ -144,21 +148,21 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     }
 
     @Override
-    public void luminance$setCustomPasses(Map<Identifier, List<PostEffectPass>> customPasses) {
+    public void luminance$setCustomPasses(Map<Identifier, List<PostPass>> customPasses) {
         luminance$customPasses = customPasses;
     }
 
     @Override
-    public void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostEffectProcessor.FramebufferSet framebufferSet, @Nullable Identifier customPasses) {
+    public void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle framebufferSet, @Nullable Identifier customPasses) {
         if (customPasses == null || luminance$customPasses.containsKey(customPasses)) {
             luminance$currentCustomPasses = customPasses;
-            render(builder, textureWidth, textureHeight, framebufferSet);
+            addToFrame(builder, textureWidth, textureHeight, framebufferSet);
             luminance$currentCustomPasses = null;
         }
     }
 
-    @ModifyReceiver(at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;"), method = "render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V")
-    private List<PostEffectPass> replacePasses(List<PostEffectPass> instance) {
+    @ModifyReceiver(at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;"), method = "addToFrame(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;IILnet/minecraft/client/renderer/PostChain$TargetBundle;)V")
+    private List<PostPass> replacePasses(List<PostPass> instance) {
         if (luminance$currentCustomPasses == null) {
             return instance;
         }
@@ -175,7 +179,7 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
         if (luminance$passListUsesDepth(passes)) {
             return true;
         }
-        for (List<PostEffectPass> customPasses : luminance$customPasses.values()) {
+        for (List<PostPass> customPasses : luminance$customPasses.values()) {
             if (luminance$passListUsesDepth(customPasses)) {
                 return true;
             }
@@ -184,8 +188,8 @@ public abstract class PostEffectProcessorMixin implements PostEffectProcessorInt
     }
 
     @Unique
-    private boolean luminance$passListUsesDepth(List<PostEffectPass> passes) {
-        for (PostEffectPass pass : passes) {
+    private boolean luminance$passListUsesDepth(List<PostPass> passes) {
+        for (PostPass pass : passes) {
             if (((PostEffectPassInterface)pass).luminance$usesDepth()) {
                 return true;
             }

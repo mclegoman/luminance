@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
 import com.mclegoman.luminance.client.shaders.uniforms.config.ConfigData;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
-import net.minecraft.client.gl.UniformValue;
+import net.minecraft.client.renderer.UniformValue;
 import org.jetbrains.annotations.NotNull;
 import org.joml.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.Unique;
 import java.util.List;
 import java.util.Optional;
 
-@Mixin({UniformValue.IntValue.class, UniformValue.FloatValue.class, UniformValue.Vec2fValue.class, UniformValue.Vec3fValue.class, UniformValue.Vec4fValue.class, UniformValue.Vec3iValue.class, UniformValue.Matrix4fValue.class})
+@Mixin({UniformValue.IntUniform.class, UniformValue.FloatUniform.class, UniformValue.Vec2Uniform.class, UniformValue.Vec3Uniform.class, UniformValue.Vec4Uniform.class, UniformValue.IVec3Uniform.class, UniformValue.Matrix4x4Uniform.class})
 public abstract class UniformValueImplMixin implements UniformValueInterface {
     @Shadow(remap = false) public abstract void addSize(Std140SizeCalculator calculator);
 
@@ -76,29 +76,29 @@ public abstract class UniformValueImplMixin implements UniformValueInterface {
     @Override
     public @NotNull ImmutableList<Number> luminance$getValue() {
         switch ((Object)this) {
-            case UniformValue.IntValue value -> {
+            case UniformValue.IntUniform value -> {
                 return ImmutableList.of(value.value());
             }
-            case UniformValue.FloatValue value -> {
+            case UniformValue.FloatUniform value -> {
                 return ImmutableList.of(value.value());
             }
-            case UniformValue.Vec2fValue value -> {
+            case UniformValue.Vec2Uniform value -> {
                 Vector2fc vec = value.value();
                 return ImmutableList.of(vec.x(), vec.y());
             }
-            case UniformValue.Vec3fValue value -> {
+            case UniformValue.Vec3Uniform value -> {
                 Vector3fc vec = value.value();
                 return ImmutableList.of(vec.x(), vec.y(), vec.z());
             }
-            case UniformValue.Vec4fValue value -> {
+            case UniformValue.Vec4Uniform value -> {
                 Vector4fc vec = value.value();
                 return ImmutableList.of(vec.x(), vec.y(), vec.z(), vec.w());
             }
-            case UniformValue.Vec3iValue value -> {
+            case UniformValue.IVec3Uniform value -> {
                 Vector3ic vec = value.value();
                 return ImmutableList.of(vec.x(), vec.y(), vec.z());
             }
-            case UniformValue.Matrix4fValue value -> {
+            case UniformValue.Matrix4x4Uniform value -> {
                 Matrix4fc mat = value.value();
                 ImmutableList.Builder<Number> builder = ImmutableList.builder();
                 for (float f : mat.get(new float[16])) {

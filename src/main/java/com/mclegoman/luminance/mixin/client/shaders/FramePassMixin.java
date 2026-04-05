@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 // private class cant be targeted directly
-@Mixin(targets = "net.minecraft.client.render.FrameGraphBuilder$FramePassImpl")
+@Mixin(targets = "com.mojang.blaze3d.framegraph.FrameGraphBuilder$Pass")
 public class FramePassMixin implements FramePassInterface {
     @Shadow @Final int id;
     @Unique private boolean luminance$forceVisit;

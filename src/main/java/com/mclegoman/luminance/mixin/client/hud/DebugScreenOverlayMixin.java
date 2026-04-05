@@ -7,18 +7,11 @@
 
 package com.mclegoman.luminance.mixin.client.hud;
 
-import com.mclegoman.luminance.client.debug.Debug;
-import com.mclegoman.luminance.common.data.Data;
-import net.minecraft.client.gui.hud.DebugHud;
+import net.minecraft.client.gui.components.DebugScreenOverlay;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-
-@Mixin(priority = 100, value = DebugHud.class)
-public abstract class DebugHudMixin {
+@Mixin(priority = 100, value = DebugScreenOverlay.class)
+public abstract class DebugScreenOverlayMixin {
 	// TODO: update
 //	@Inject(at = @At("RETURN"), method = "getLeftText", cancellable = true)
 //	private void luminance$addToDebugRight(CallbackInfoReturnable<List<String>> cir) {

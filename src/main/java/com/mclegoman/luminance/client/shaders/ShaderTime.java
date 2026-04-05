@@ -7,7 +7,7 @@
 
 package com.mclegoman.luminance.client.shaders;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 public class ShaderTime {
     private float tickProgress;
@@ -52,6 +52,6 @@ public class ShaderTime {
     }
 
     public float getModuloTime(float modulo) {
-        return MathHelper.floorMod(elapsedTime*1200, modulo);
+        return Mth.positiveModulo(elapsedTime*1200, modulo);
     }
 }
