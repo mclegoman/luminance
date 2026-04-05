@@ -83,7 +83,7 @@ public class ShaderStacks {
     private static void addDefaultStacks() {
         for (Identifier registryId : Shaders.getRegistries()) {
             for (ShaderRegistryEntry shader : Shaders.getRegistry(registryId)) {
-                addStack(shader.getID(), new Entry.Text(shader.getID(), false), List.of(new Entry.ShaderInfo(registryId, shader.getID())), shader.getCustom());
+                addStack(registryId, shader.getID(), new Entry.Text(shader.getID(), false), List.of(new Entry.ShaderInfo(registryId, shader.getID())), shader.getCustom());
             }
         }
     }
