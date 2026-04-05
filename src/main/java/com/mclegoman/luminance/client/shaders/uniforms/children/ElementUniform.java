@@ -8,7 +8,7 @@
 package com.mclegoman.luminance.client.shaders.uniforms.children;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformVector;
 import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import org.jetbrains.annotations.Nullable;
@@ -16,12 +16,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class ElementUniform extends ChildUniform {
-    protected UniformValue element;
+    protected UniformVector element;
     int index;
 
     public ElementUniform(String name, int index) {
         super(name);
-        element = new UniformValue(1);
+        element = new UniformVector(1);
         this.index = index;
     }
 
@@ -42,7 +42,7 @@ public class ElementUniform extends ChildUniform {
     }
 
     @Override
-    public UniformValue getCache(UniformConfig config, ShaderTime shaderTime) {
+    public UniformVector getCache(UniformConfig config, ShaderTime shaderTime) {
         return element;
     }
 
@@ -52,14 +52,14 @@ public class ElementUniform extends ChildUniform {
     }
 
     @Override
-    public Optional<UniformValue> getMin(@Nullable UniformConfig config,@Nullable ShaderTime shaderTime) {
+    public Optional<UniformVector> getMin(@Nullable UniformConfig config, @Nullable ShaderTime shaderTime) {
         assert parent != null;
-        return parent.getMin(config, shaderTime).map(min -> UniformValue.fromFloat(min.values.get(index), 1));
+        return parent.getMin(config, shaderTime).map(min -> UniformVector.fromFloat(min.values.get(index), 1));
     }
 
     @Override
-    public Optional<UniformValue> getMax(@Nullable UniformConfig config,@Nullable ShaderTime shaderTime) {
+    public Optional<UniformVector> getMax(@Nullable UniformConfig config, @Nullable ShaderTime shaderTime) {
         assert parent != null;
-        return parent.getMax(config, shaderTime).map(max -> UniformValue.fromFloat(max.values.get(index), 1));
+        return parent.getMax(config, shaderTime).map(max -> UniformVector.fromFloat(max.values.get(index), 1));
     }
 }

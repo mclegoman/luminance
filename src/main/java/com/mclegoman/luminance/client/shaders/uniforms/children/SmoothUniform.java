@@ -8,13 +8,13 @@
 package com.mclegoman.luminance.client.shaders.uniforms.children;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformVector;
 import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import net.minecraft.util.Identifier;
 
 public class SmoothUniform extends ChildUniform {
-    protected UniformValue smooth;
+    protected UniformVector smooth;
     protected final boolean loop;
 
     public SmoothUniform(boolean loop) {
@@ -26,7 +26,7 @@ public class SmoothUniform extends ChildUniform {
     public void onRegister(Identifier identifier) {
         super.onRegister(identifier);
         assert parent != null;
-        smooth = new UniformValue(parent.getLength());
+        smooth = new UniformVector(parent.getLength());
     }
 
     @Override
@@ -37,16 +37,16 @@ public class SmoothUniform extends ChildUniform {
     @Override
     public void calculateCache(UniformConfig config, ShaderTime shaderTime) {
         assert parent != null;
-        UniformValue uniformValue = parent.getCache(config, shaderTime);
+        UniformVector uniformVector = parent.getCache(config, shaderTime);
         if (loop) {
-            smooth.loopLerp(uniformValue, shaderTime.getExpDeltaTime(ShaderTime.defaultSpeed), getMin(config, shaderTime).orElse(null), getMax(config, shaderTime).orElse(null));
+            smooth.loopLerp(uniformVector, shaderTime.getExpDeltaTime(ShaderTime.defaultSpeed), getMin(config, shaderTime).orElse(null), getMax(config, shaderTime).orElse(null));
         } else {
-            smooth.lerp(uniformValue, shaderTime.getExpDeltaTime(ShaderTime.defaultSpeed));
+            smooth.lerp(uniformVector, shaderTime.getExpDeltaTime(ShaderTime.defaultSpeed));
         }
     }
 
     @Override
-    public UniformValue getCache(UniformConfig config, ShaderTime shaderTime) {
+    public UniformVector getCache(UniformConfig config, ShaderTime shaderTime) {
         return smooth;
     }
 

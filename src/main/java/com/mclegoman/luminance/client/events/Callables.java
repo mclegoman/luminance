@@ -8,13 +8,13 @@
 package com.mclegoman.luminance.client.events;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformVector;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 
 public class Callables {
 	@FunctionalInterface
 	public interface UniformCalculation {
-		void call(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue);
+		void call(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector);
 	}
 
 	@FunctionalInterface

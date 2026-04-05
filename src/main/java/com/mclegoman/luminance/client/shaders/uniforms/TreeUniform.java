@@ -39,7 +39,7 @@ public abstract class TreeUniform implements Uniform {
     }
 
     @Override
-    public UniformValue get(UniformConfig config, ShaderTime shaderTime) {
+    public UniformVector get(UniformConfig config, ShaderTime shaderTime) {
         if (useConfig) {
             root.updateRecursively(config, shaderTime);
         }
@@ -58,7 +58,7 @@ public abstract class TreeUniform implements Uniform {
         }
     }
 
-    public abstract UniformValue getCache(UniformConfig config, ShaderTime shaderTime);
+    public abstract UniformVector getCache(UniformConfig config, ShaderTime shaderTime);
     public abstract void beforeParentCacheUpdate(UniformConfig config, ShaderTime shaderTime);
     public abstract void calculateCache(UniformConfig config, ShaderTime shaderTime);
 

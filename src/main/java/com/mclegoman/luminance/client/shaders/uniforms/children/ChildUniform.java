@@ -9,7 +9,7 @@ package com.mclegoman.luminance.client.shaders.uniforms.children;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.TreeUniform;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformVector;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,13 +27,13 @@ public abstract class ChildUniform extends TreeUniform {
     }
 
     @Override
-    public Optional<UniformValue> getMin(@Nullable UniformConfig config,@Nullable ShaderTime shaderTime) {
+    public Optional<UniformVector> getMin(@Nullable UniformConfig config, @Nullable ShaderTime shaderTime) {
         assert parent != null;
         return parent.getMin(config, shaderTime);
     }
 
     @Override
-    public Optional<UniformValue> getMax(@Nullable UniformConfig config,@Nullable ShaderTime shaderTime) {
+    public Optional<UniformVector> getMax(@Nullable UniformConfig config, @Nullable ShaderTime shaderTime) {
         assert parent != null;
         return parent.getMax(config, shaderTime);
     }

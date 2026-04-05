@@ -8,13 +8,13 @@
 package com.mclegoman.luminance.client.shaders.uniforms.children;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformVector;
 import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import net.minecraft.util.Identifier;
 
 public class PrevUniform extends ChildUniform {
-    protected UniformValue prev;
+    protected UniformVector prev;
 
     public PrevUniform() {
         super("prev");
@@ -24,7 +24,7 @@ public class PrevUniform extends ChildUniform {
     public void onRegister(Identifier identifier) {
         super.onRegister(identifier);
         assert parent != null;
-        prev = new UniformValue(parent.getLength());
+        prev = new UniformVector(parent.getLength());
     }
 
     @Override
@@ -39,7 +39,7 @@ public class PrevUniform extends ChildUniform {
     }
 
     @Override
-    public UniformValue getCache(UniformConfig config, ShaderTime shaderTime) {
+    public UniformVector getCache(UniformConfig config, ShaderTime shaderTime) {
         return prev;
     }
 

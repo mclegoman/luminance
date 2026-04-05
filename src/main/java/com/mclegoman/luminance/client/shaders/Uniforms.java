@@ -15,7 +15,7 @@ import com.mclegoman.luminance.client.gui.screen.LuminanceTitleScreen;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.shaders.uniforms.RootUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.TreeUniform;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformVector;
 import com.mclegoman.luminance.client.shaders.uniforms.children.DeltaUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.children.ElementUniform;
 import com.mclegoman.luminance.client.shaders.uniforms.children.PrevUniform;
@@ -142,7 +142,7 @@ public class Uniforms {
 
 
 	public static void registerStandardTree(String namespace, String path, Callables.UniformCalculation callable, @Nullable Float min, @Nullable Float max, int length, @Nullable UniformConfig uniformConfig, boolean loop) {
-		RootUniform uniform = new RootUniform(path, callable, length, UniformValue.fromFloat(min, length), UniformValue.fromFloat(max, length), uniformConfig);
+		RootUniform uniform = new RootUniform(path, callable, length, UniformVector.fromFloat(min, length), UniformVector.fromFloat(max, length), uniformConfig);
 		if (!uniform.useConfig) {
 			addStandardChildren(uniform, length, loop);
 		} else {
@@ -206,7 +206,7 @@ public class Uniforms {
 	public static float getFov(ShaderTime shaderTime) {
 		return Accessors.getGameRenderer() != null ? (Accessors.getGameRenderer().invokeGetFov(ClientData.minecraft.gameRenderer.getCamera(), shaderTime.getTickProgress(), true)) : (ClientData.minecraft.options != null ? MinecraftClient.getInstance().options.getFov().getValue() : 70f);
 	}
-	public static void getGraphicsMode(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+	public static void getGraphicsMode(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		// TODO: find equivalent
 		//  it seems its been changed to getPreset, with the actual options split out?
 		//  also this should probably be using a SingleTree instead of a StandardTree?
@@ -216,91 +216,91 @@ public class Uniforms {
 	public static float getFps(ShaderTime shaderTime) {
 		return ClientData.minecraft.getCurrentFps();
 	}
-	public static void getGameTime(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+	public static void getGameTime(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		float period = config.getNumber("period", 0).orElse(1.0).floatValue();
-		uniformValue.set(0, shaderTime.getModuloTime(period)/period);
+		uniformVector.set(0, shaderTime.getModuloTime(period)/period);
 	}
-	public static void getEye(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+	public static void getEye(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(ClientData.minecraft.player.getCameraPosVec(shaderTime.getTickProgress()));
+			uniformVector.set(ClientData.minecraft.player.getCameraPosVec(shaderTime.getTickProgress()));
 		} else {
-			uniformValue.set(new Vec3d(0, 66, 0));
+			uniformVector.set(new Vec3d(0, 66, 0));
 		}
 	}
-	public static void getEyeFract(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+	public static void getEyeFract(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(fract(ClientData.minecraft.player.getCameraPosVec(shaderTime.getTickProgress())));
+			uniformVector.set(fract(ClientData.minecraft.player.getCameraPosVec(shaderTime.getTickProgress())));
 		} else {
-			uniformValue.set(new Vec3d(0, 66, 0));
+			uniformVector.set(new Vec3d(0, 66, 0));
 		}
 	}
-	public static void getPos(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+	public static void getPos(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(ClientData.minecraft.player.getEntityPos());
+			uniformVector.set(ClientData.minecraft.player.getEntityPos());
 		} else {
-			uniformValue.set(new Vec3d(0, 64, 0));
+			uniformVector.set(new Vec3d(0, 64, 0));
 		}
 	}
-	public static void getPosFract(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+	public static void getPosFract(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(fract(ClientData.minecraft.player.getEntityPos()));
+			uniformVector.set(fract(ClientData.minecraft.player.getEntityPos()));
 		} else {
-			uniformValue.set(new Vec3d(0, 0, 0));
+			uniformVector.set(new Vec3d(0, 0, 0));
 		}
 	}
-	public static void getCamera(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+	public static void getCamera(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(((GameRendererAccessor)ClientData.minecraft.gameRenderer).getCamera().getCameraPos());
+			uniformVector.set(((GameRendererAccessor)ClientData.minecraft.gameRenderer).getCamera().getCameraPos());
 		} else {
-			uniformValue.set(new Vec3d(0, 64, 0));
+			uniformVector.set(new Vec3d(0, 64, 0));
 		}
 	}
-	public static void getCameraFract(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+	public static void getCameraFract(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(fract(((GameRendererAccessor)ClientData.minecraft.gameRenderer).getCamera().getCameraPos()));
+			uniformVector.set(fract(((GameRendererAccessor)ClientData.minecraft.gameRenderer).getCamera().getCameraPos()));
 		} else {
-			uniformValue.set(new Vec3d(0, 0, 0));
+			uniformVector.set(new Vec3d(0, 0, 0));
 		}
 	}
 	private static Vec3d fract(Vec3d pos) {
 		return new Vec3d(MathHelper.fractionalPart(pos.x), MathHelper.fractionalPart(pos.y), MathHelper.fractionalPart(pos.z));
 	}
 
-	public static void getClippingPlanes(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
-		uniformValue.set(0, 0.05f);
-		uniformValue.set(1, ClientData.minecraft.gameRenderer.getFarPlaneDistance());
+	public static void getClippingPlanes(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
+		uniformVector.set(0, 0.05f);
+		uniformVector.set(1, ClientData.minecraft.gameRenderer.getFarPlaneDistance());
 	}
 
 	public static float getPitch(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getPitch(shaderTime.getTickProgress()) % 360.0F : 0.0F;
 	}
-	public static void getYaw(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+	public static void getYaw(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		if (ClientData.minecraft.player != null) {
-			uniformValue.set(0, MathHelper.floorMod(ClientData.minecraft.player.getYaw(shaderTime.getTickProgress())+180f,360.0F)-180f);
+			uniformVector.set(0, MathHelper.floorMod(ClientData.minecraft.player.getYaw(shaderTime.getTickProgress())+180f,360.0F)-180f);
 		} else {
-			uniformValue.set(0, 0);
+			uniformVector.set(0, 0);
 		}
 	}
-	public static void getCurrentHealth(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
-		uniformValue.set(0, ClientData.minecraft.player != null ? ClientData.minecraft.player.getHealth() : 20.0F);
+	public static void getCurrentHealth(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
+		uniformVector.set(0, ClientData.minecraft.player != null ? ClientData.minecraft.player.getHealth() : 20.0F);
 	}
 	public static float getMaxHealth(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getMaxHealth() : 20.0F;
 	}
-	public static void getCurrentAbsorption(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
-		uniformValue.set(0, ClientData.minecraft.player != null ? ClientData.minecraft.player.getAbsorptionAmount() : 0.0F);
+	public static void getCurrentAbsorption(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
+		uniformVector.set(0, ClientData.minecraft.player != null ? ClientData.minecraft.player.getAbsorptionAmount() : 0.0F);
 	}
 	public static float getMaxAbsorption(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getMaxAbsorption() : 0.0F;
 	}
-	public static void getCurrentHurtTime(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
-		uniformValue.set(0, ClientData.minecraft.player != null ? ClientData.minecraft.player.hurtTime : 0.0F);
+	public static void getCurrentHurtTime(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
+		uniformVector.set(0, ClientData.minecraft.player != null ? ClientData.minecraft.player.hurtTime : 0.0F);
 	}
 	public static float getMaxHurtTime(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.maxHurtTime : 10.0F;
 	}
-	public static void getCurrentAir(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
-		uniformValue.set(0, ClientData.minecraft.player != null ? ClientData.minecraft.player.getAir() : 300.0F);
+	public static void getCurrentAir(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
+		uniformVector.set(0, ClientData.minecraft.player != null ? ClientData.minecraft.player.getAir() : 300.0F);
 	}
 	public static float getMaxAir(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getMaxAir() : 300.0F;
@@ -329,21 +329,21 @@ public class Uniforms {
 	public static float getHasEffect(RegistryEntry<StatusEffect> statusEffect) {
 		return ClientData.minecraft.player != null ? (ClientData.minecraft.player.hasStatusEffect(statusEffect) ? 1.0F : 0.0F) : 0.0F;
 	}
-	public static void getIsInBiome(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
-		uniformValue.set(0, getIsInBiome(config) ? 0 : 1);
+	public static void getIsInBiome(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
+		uniformVector.set(0, getIsInBiome(config) ? 0 : 1);
 	}
 	private static boolean getIsInBiome(UniformConfig config) {
 		List<Object> objects = config.getObjects("biome");
 		if (ClientData.minecraft.world != null && ClientData.minecraft.player != null && objects != null && !objects.isEmpty() && objects.getFirst() instanceof String id) return Identifier.of(ClientData.minecraft.world.getBiome(ClientData.minecraft.player.getBlockPos()).getIdAsString()).equals(Identifier.of(id));
 		return false;
 	}
-	public static void getEffectDuration(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+	public static void getEffectDuration(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		StatusEffectInstance instance = getEffect(config);
-		uniformValue.set(0, instance == null ? 0 : instance.getDuration());
+		uniformVector.set(0, instance == null ? 0 : instance.getDuration());
 	}
-	public static void getEffectAmplifier(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
+	public static void getEffectAmplifier(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		StatusEffectInstance instance = getEffect(config);
-		uniformValue.set(0, instance == null ? 0 : instance.getAmplifier());
+		uniformVector.set(0, instance == null ? 0 : instance.getAmplifier());
 	}
 	private static @Nullable StatusEffectInstance getEffect(UniformConfig config) {
 		List<Object> objects = config.getObjects("effect");
@@ -449,8 +449,8 @@ public class Uniforms {
 		return ((WorldRendererAccessor)ClientData.minecraft.worldRenderer).getWorldRenderState().skyRenderState.starBrightness;
 	}
 
-	public static void getRandom(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
-		uniformValue.set(0, Accessors.getGameRenderer().getRandom().nextFloat());
+	public static void getRandom(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
+		uniformVector.set(0, Accessors.getGameRenderer().getRandom().nextFloat());
 	}
 
 	public static float getRenderTypeIsDepthSupported(ShaderTime shaderTime) {
@@ -465,7 +465,7 @@ public class Uniforms {
 		return ShaderTime.currentRenderType.isUnderUi() ? 1.0F : 0.0F;
 	}
 
-	public static void getZero(UniformConfig config, ShaderTime shaderTime, UniformValue uniformValue) {
-		uniformValue.set(0, 0F);
+	public static void getZero(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
+		uniformVector.set(0, 0F);
 	}
 }

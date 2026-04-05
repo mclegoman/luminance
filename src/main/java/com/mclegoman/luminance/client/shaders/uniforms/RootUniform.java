@@ -23,9 +23,9 @@ public class RootUniform extends TreeUniform {
 	private final boolean rangeCanChange;
 	private final UniformConfig defaultConfig;
 
-	protected UniformValue value;
+	protected UniformVector value;
 
-	public RootUniform(String name, Callables.UniformCalculation callable, int length, @Nullable UniformValue min, @Nullable UniformValue max, @Nullable UniformConfig defaultConfig) {
+	public RootUniform(String name, Callables.UniformCalculation callable, int length, @Nullable UniformVector min, @Nullable UniformVector max, @Nullable UniformConfig defaultConfig) {
 		super(name, defaultConfig != null);
 		this.callable = callable;
 		this.min = UniformValueSupplier.convert(min);
@@ -33,7 +33,7 @@ public class RootUniform extends TreeUniform {
 		rangeCanChange = false;
 		this.defaultConfig = defaultConfig == null ? EmptyConfig.INSTANCE : defaultConfig;
 
-		this.value = new UniformValue(length);
+		this.value = new UniformVector(length);
 	}
 
 	public RootUniform(String name, Callables.UniformCalculation callable, int length, Callables.UniformCalculation min, Callables.UniformCalculation max, @Nullable UniformConfig defaultConfig) {
@@ -44,7 +44,7 @@ public class RootUniform extends TreeUniform {
 		rangeCanChange = true;
 		this.defaultConfig = defaultConfig == null ? EmptyConfig.INSTANCE : defaultConfig;
 
-		this.value = new UniformValue(length);
+		this.value = new UniformVector(length);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class RootUniform extends TreeUniform {
 	}
 
 	@Override
-	public UniformValue getCache(UniformConfig config, ShaderTime shaderTime) {
+	public UniformVector getCache(UniformConfig config, ShaderTime shaderTime) {
 		return this.value;
 	}
 
@@ -74,7 +74,7 @@ public class RootUniform extends TreeUniform {
 	}
 
 	@Override
-	public Optional<UniformValue> getMin(@Nullable UniformConfig config,@Nullable ShaderTime shaderTime) {
+	public Optional<UniformVector> getMin(@Nullable UniformConfig config, @Nullable ShaderTime shaderTime) {
 		if (rangeCanChange && (config == null || shaderTime == null)) {
 			return Optional.empty();
 		}
@@ -82,7 +82,7 @@ public class RootUniform extends TreeUniform {
 	}
 
 	@Override
-	public Optional<UniformValue> getMax(@Nullable UniformConfig config,@Nullable ShaderTime shaderTime) {
+	public Optional<UniformVector> getMax(@Nullable UniformConfig config, @Nullable ShaderTime shaderTime) {
 		if (rangeCanChange && (config == null || shaderTime == null)) {
 			return Optional.empty();
 		}
@@ -101,17 +101,17 @@ public class RootUniform extends TreeUniform {
 
 	@FunctionalInterface
 	protected interface UniformValueSupplier {
-		Optional<UniformValue> call(UniformConfig config, ShaderTime shaderTime);
+		Optional<UniformVector> call(UniformConfig config, ShaderTime shaderTime);
 
 		static UniformValueSupplier convert(Callables.UniformCalculation calculation, int length) {
-			UniformValue uniformValue = new UniformValue(length);
+			UniformVector uniformVector = new UniformVector(length);
 			return (config, time) -> {
-				calculation.call(config, time, uniformValue);
-				return Optional.of(uniformValue);
+				calculation.call(config, time, uniformVector);
+				return Optional.of(uniformVector);
 			};
 		}
 
-		static UniformValueSupplier convert(@Nullable UniformValue value) {
+		static UniformValueSupplier convert(@Nullable UniformVector value) {
 			return (config, time) -> Optional.ofNullable(value);
 		}
 	}

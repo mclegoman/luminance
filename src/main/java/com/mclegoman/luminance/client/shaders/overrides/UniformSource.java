@@ -10,7 +10,7 @@ package com.mclegoman.luminance.client.shaders.overrides;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformVector;
 import com.mclegoman.luminance.client.shaders.uniforms.config.*;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Contract;
@@ -71,8 +71,8 @@ public class UniformSource implements OverrideSource {
 
             configTemplate = nullRange;
             if (uniform != null && !uniform.rangeCanChange()) {
-                Optional<UniformValue> min = uniform.getMin(null, null);
-                Optional<UniformValue> max = uniform.getMax(null, null);
+                Optional<UniformVector> min = uniform.getMin(null, null);
+                Optional<UniformVector> max = uniform.getMax(null, null);
                 if (min.isPresent() && max.isPresent()) {
                     ArrayList<Object> objects = new ArrayList<>(2);
                     objects.add(min.get().values.getFirst());

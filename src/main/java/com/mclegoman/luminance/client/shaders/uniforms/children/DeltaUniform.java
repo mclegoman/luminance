@@ -8,13 +8,13 @@
 package com.mclegoman.luminance.client.shaders.uniforms.children;
 
 import com.mclegoman.luminance.client.shaders.ShaderTime;
-import com.mclegoman.luminance.client.shaders.uniforms.UniformValue;
+import com.mclegoman.luminance.client.shaders.uniforms.UniformVector;
 import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import net.minecraft.util.Identifier;
 
 public class DeltaUniform extends ChildUniform {
-    protected UniformValue delta;
+    protected UniformVector delta;
     protected final boolean loop;
 
     public DeltaUniform(boolean loop) {
@@ -26,7 +26,7 @@ public class DeltaUniform extends ChildUniform {
     public void onRegister(Identifier identifier) {
         super.onRegister(identifier);
         assert parent != null;
-        delta = new UniformValue(parent.getLength());
+        delta = new UniformVector(parent.getLength());
     }
 
     @Override
@@ -38,16 +38,16 @@ public class DeltaUniform extends ChildUniform {
     @Override
     public void calculateCache(UniformConfig config, ShaderTime shaderTime) {
         assert parent != null;
-        UniformValue uniformValue = parent.getCache(config, shaderTime);
+        UniformVector uniformVector = parent.getCache(config, shaderTime);
         if (loop) {
-            delta.loopDelta(uniformValue, parent.getMin(config, shaderTime).orElse(null), parent.getMax(config, shaderTime).orElse(null));
+            delta.loopDelta(uniformVector, parent.getMin(config, shaderTime).orElse(null), parent.getMax(config, shaderTime).orElse(null));
         } else {
-            delta.delta(uniformValue);
+            delta.delta(uniformVector);
         }
     }
 
     @Override
-    public UniformValue getCache(UniformConfig config, ShaderTime shaderTime) {
+    public UniformVector getCache(UniformConfig config, ShaderTime shaderTime) {
         return delta;
     }
 

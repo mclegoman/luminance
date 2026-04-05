@@ -15,35 +15,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public class UniformValue {
+public class UniformVector {
     public List<Float> values;
 
-    public UniformValue(int length) {
+    public UniformVector(int length) {
         this(new ArrayList<>(length));
         for (int i = 0; i < length; i++) {
             values.add(0f);
         }
     }
 
-    protected UniformValue(List<Float> values) {
+    protected UniformVector(List<Float> values) {
         this.values = values;
     }
 
     @Nullable
-    public static UniformValue fromFloat(@Nullable Float f, int length) {
+    public static UniformVector fromFloat(@Nullable Float f, int length) {
         if (f == null) {
             return null;
         }
-        UniformValue uniformValue = new UniformValue(length);
+        UniformVector uniformVector = new UniformVector(length);
         for (int i = 0; i < length; i++) {
-            uniformValue.values.set(i, f);
+            uniformVector.values.set(i, f);
         }
-        return uniformValue;
+        return uniformVector;
     }
 
-    public UniformValue copyTo(@Nullable UniformValue other) {
+    public UniformVector copyTo(@Nullable UniformVector other) {
         if (other == null || other.values.size() != values.size()) {
-            return new UniformValue(new ArrayList<>(values));
+            return new UniformVector(new ArrayList<>(values));
         } else {
             other.elementwise((a,b) -> b, this);
             return other;
@@ -71,38 +71,38 @@ public class UniformValue {
         }
     }
 
-    public void min(UniformValue other) {
+    public void min(UniformVector other) {
         elementwise(Math::min, other);
     }
 
-    public void max(UniformValue other) {
+    public void max(UniformVector other) {
         elementwise(Math::max, other);
     }
 
-    public void lerp(UniformValue other, float t) {
+    public void lerp(UniformVector other, float t) {
         elementwise((a,b) -> MathHelper.lerp(t, a, b), other);
     }
 
-    public void subtract(UniformValue other) {
+    public void subtract(UniformVector other) {
         elementwise((a,b) -> a-b, other);
     }
 
-    public void delta(UniformValue other) {
+    public void delta(UniformVector other) {
         elementwise((a,b) -> b-a, other);
     }
 
-    public void elementwise(BiFunction<Float, Float, Float> function, UniformValue other) {
+    public void elementwise(BiFunction<Float, Float, Float> function, UniformVector other) {
         assert lengthEqual(other);
         for (int i = 0; i < values.size(); i++) {
             values.set(i, function.apply(values.get(i), other.values.get(i)));
         }
     }
 
-    public boolean lengthEqual(UniformValue other) {
+    public boolean lengthEqual(UniformVector other) {
         return other.values.size() == values.size();
     }
 
-    public void loopLerp(UniformValue other, float t, @Nullable UniformValue min, @Nullable UniformValue max) {
+    public void loopLerp(UniformVector other, float t, @Nullable UniformVector min, @Nullable UniformVector max) {
         if (min == null || max == null) {
             lerp(other, t);
             return;
@@ -119,7 +119,7 @@ public class UniformValue {
         }
     }
 
-    public void loopDelta(UniformValue other, @Nullable UniformValue min, @Nullable UniformValue max) {
+    public void loopDelta(UniformVector other, @Nullable UniformVector min, @Nullable UniformVector max) {
         if (min == null || max == null) {
             delta(other);
             return;
