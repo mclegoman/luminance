@@ -12,22 +12,13 @@ import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.shaders.RenderTypes;
 import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
-import com.mclegoman.luminance.client.shaders.interfaces.FramePassInterface;
 import com.mclegoman.luminance.client.util.CompatHelper;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import com.mclegoman.luminance.mixin.client.shaders.ShaderManagerAccessor;
-import com.mojang.blaze3d.ProjectionType;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.resource.RenderTargetDescriptor;
-import com.mojang.blaze3d.systems.CommandEncoder;
-import com.mojang.blaze3d.systems.RenderPass;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.textures.GpuSampler;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
@@ -36,10 +27,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.opengl.GL11;
-
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
 
 public class Execute {
 	public static void registerClientResourceReloaders(ReloadableResourceManager resourceManager) {
@@ -174,14 +161,14 @@ public class Execute {
 		}));
 	}
 
-	public static void afterFabulousRender(FrameGraphBuilder frameGraphBuilder, PostChain.TargetBundle framebufferSet) {
+	public static void afterFabulousRender(FrameGraphBuilder frameGraphBuilder, PostChain.TargetBundle targetBundle) {
 		if (Events.AfterFabulousRender.registry.isEmpty()) {
 			return;
 		}
 
 		Events.AfterFabulousRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(frameGraphBuilder, ClientData.minecraft.getMainRenderTarget().width, ClientData.minecraft.getMainRenderTarget().height, framebufferSet);
+				runnable.run(frameGraphBuilder, ClientData.minecraft.getMainRenderTarget().width, ClientData.minecraft.getMainRenderTarget().height, targetBundle);
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterFabulousRender event with id: {}: {}", id, error);
 			}
@@ -220,7 +207,7 @@ public class Execute {
 		}));
 	}
 
-	private static RenderTargetDescriptor framebufferFactory;
+	private static RenderTargetDescriptor targetDescriptor;
 	private static RenderTarget worldDepth;
 
 	private static final RenderPipeline depthPipeline = RenderPipeline.builder(RenderPipelines.POST_PROCESSING_SNIPPET)
@@ -239,8 +226,8 @@ public class Execute {
 
 		RenderTarget target = ClientData.minecraft.getMainRenderTarget();
 
-		framebufferFactory = new RenderTargetDescriptor(target.width, target.height, true, 0);
-		worldDepth = allocator.acquire(framebufferFactory);
+		targetDescriptor = new RenderTargetDescriptor(target.width, target.height, true, 0);
+		worldDepth = allocator.acquire(targetDescriptor);
 		worldDepth.copyDepthFrom(target);
 	}
 
@@ -296,7 +283,7 @@ public class Execute {
 
 	private static void cleanupDepth(GraphicsResourceAllocator allocator) {
 		if (worldDepth != null) {
-		 	allocator.release(framebufferFactory, worldDepth);
+		 	allocator.release(targetDescriptor, worldDepth);
 		 	worldDepth = null;
 		}
 	}

@@ -38,13 +38,13 @@ public class Shaders {
 		Events.BeforeGameRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "update"), Uniforms::update);
 
 		Events.AfterVanillaPostEffectRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
-				(framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.WORLD, framebuffer, objectAllocator));
+				(renderTarget, resourceAllocator) -> RenderTypes.render(RenderTypes.WORLD, renderTarget, resourceAllocator));
 		Events.AfterUiRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
-				(framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.UI, framebuffer, objectAllocator));
+				(renderTarget, resourceAllocator) -> RenderTypes.render(RenderTypes.UI, renderTarget, resourceAllocator));
 		Events.AfterUiBackgroundRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
-				(framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.UI_BACKGROUND, framebuffer, objectAllocator));
+				(renderTarget, resourceAllocator) -> RenderTypes.render(RenderTypes.UI_BACKGROUND, renderTarget, resourceAllocator));
 		Events.AfterPanoramaRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
-				(framebuffer, objectAllocator) -> RenderTypes.render(RenderTypes.PANORAMA, framebuffer, objectAllocator));
+				(renderTarget, resourceAllocator) -> RenderTypes.render(RenderTypes.PANORAMA, renderTarget, resourceAllocator));
 	}
 
 	public static Identifier getMainRegistryId() {
@@ -86,7 +86,7 @@ public class Shaders {
 		return shaders;
 	}
 
-	private static void renderUsingFramebufferSet(Identifier id, Shader.Data shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle framebufferSet) {
+	private static void renderUsingTargetBundle(Identifier id, Shader.Data shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle) {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
 				if (shader.shader().getShouldRender()) {
@@ -98,21 +98,21 @@ public class Shaders {
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
-					renderProcessorUsingFramebufferSet(shader.shader(), builder, textureWidth, textureHeight, framebufferSet, null);
+					renderProcessorUsingTargetBundle(shader.shader(), builder, textureWidth, textureHeight, targetBundle, null);
 				}
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render \"{}:{}\" using framebuffer set, shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render \"{}:{}\" using target bundle, shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
 		}
 	}
 
-	public static void renderProcessorUsingFramebufferSet(Shader shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle framebufferSet, @Nullable Identifier customPasses) {
+	public static void renderProcessorUsingTargetBundle(Shader shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier customPasses) {
 		try {
 			if (shader.getPostProcessor() != null) {
 				try {
 					// the depth masking done in renderUsingAllocator is instead done for everything already before this method is called
 					// this is because FrameGraphBuilder delays calls, so any rendersystem methods wont work with their intended timing
-					((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, framebufferSet, customPasses);
+					((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, targetBundle, customPasses);
 				} catch (Exception error) {
 					Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());
 				}
@@ -122,7 +122,7 @@ public class Shaders {
 		}
 	}
 
-	public static void renderUsingAllocator(Identifier id, Shader.Data shader, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator) {
+	public static void renderUsingAllocator(Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
 				if (shader.shader().getShouldRender()) {
@@ -134,7 +134,7 @@ public class Shaders {
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
-					renderShaderUsingAllocator(shader.shader(), framebuffer, objectAllocator, null);
+					renderShaderUsingAllocator(shader.shader(), renderTarget, resourceAllocator, null);
 				}
 			}
 		} catch (Exception error) {
@@ -282,11 +282,11 @@ public class Shaders {
 		return Optional.empty();
 	}
 
-	// This is identical to the deprecated `PostEffectProcessor.render(framebuffer, objectAllocator);` function.
-	public static void renderShaderUsingAllocator(Shader shader, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator, @Nullable Identifier customPasses) {
+	// This is identical to the deprecated `PostChain.process(renderTarget, resourceAllocator);` function.
+	public static void renderShaderUsingAllocator(Shader shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator, @Nullable Identifier customPasses) {
 		try {
 			if (shader.getPostProcessor() != null) {
-				Runnables.WorldRender.fromGameRender((builder, width, height, set) -> ((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, width, height, set, customPasses), framebuffer, objectAllocator);
+				Runnables.WorldRender.fromGameRender((builder, width, height, set) -> ((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, width, height, set, customPasses), renderTarget, resourceAllocator);
 			}
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());

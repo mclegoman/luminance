@@ -43,7 +43,7 @@ public abstract class PostChainMixin implements PostEffectProcessorInterface {
         return null;
     }
 
-    @Shadow public abstract void addToFrame(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle framebufferSet);
+    @Shadow public abstract void addToFrame(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle);
 
     @Unique private Map<Identifier, List<PostPass>> luminance$customPasses;
     @Unique @Nullable private Identifier luminance$currentCustomPasses;
@@ -51,7 +51,7 @@ public abstract class PostChainMixin implements PostEffectProcessorInterface {
     @Unique private Identifier luminance$persistentBufferSource;
 
     @ModifyExpressionValue(at = @At(value = "NEW", target = "(IIZI)Lcom/mojang/blaze3d/resource/RenderTargetDescriptor;"), method = "addToFrame(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;IILnet/minecraft/client/renderer/PostChain$TargetBundle;)V")
-    private RenderTargetDescriptor replaceFramebufferFactory(RenderTargetDescriptor original, @Local Map.Entry<Identifier, PostChainConfig.InternalTarget> target) {
+    private RenderTargetDescriptor replaceRenderTargetDescriptor(RenderTargetDescriptor original, @Local Map.Entry<Identifier, PostChainConfig.InternalTarget> target) {
         PostChainConfig.InternalTarget targets = target.getValue();
         PipelineTargetInterface.DynamicSize dynamicSize = ((PipelineTargetInterface)(Object)targets).luminance$getDynamicSize();
 
@@ -153,10 +153,10 @@ public abstract class PostChainMixin implements PostEffectProcessorInterface {
     }
 
     @Override
-    public void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle framebufferSet, @Nullable Identifier customPasses) {
+    public void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier customPasses) {
         if (customPasses == null || luminance$customPasses.containsKey(customPasses)) {
             luminance$currentCustomPasses = customPasses;
-            addToFrame(builder, textureWidth, textureHeight, framebufferSet);
+            addToFrame(builder, textureWidth, textureHeight, targetBundle);
             luminance$currentCustomPasses = null;
         }
     }

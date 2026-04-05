@@ -7,7 +7,7 @@
 
 package com.mclegoman.luminance.client.events;
 
-import com.mclegoman.luminance.client.shaders.LuminanceFramebufferSet;
+import com.mclegoman.luminance.client.shaders.LuminanceTargetBundle;
 import com.mclegoman.luminance.client.shaders.ShaderRegistryEntry;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.renderer.PostPass;
@@ -34,16 +34,16 @@ public class Runnables {
 		void run(int width, int height);
 	}
 	public interface WorldRender {
-		void run(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle framebufferSet);
+		void run(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle);
 
-		static void fromGameRender(WorldRender worldRender, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator) {
+		static void fromGameRender(WorldRender worldRender, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
 			FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
-			PostChain.TargetBundle framebufferSet = new LuminanceFramebufferSet(frameGraphBuilder, framebuffer, LuminanceFramebufferSet.fabulous);
-			worldRender.run(frameGraphBuilder, framebuffer.width, framebuffer.height, framebufferSet);
-			frameGraphBuilder.execute(objectAllocator);
+			PostChain.TargetBundle targetBundle = new LuminanceTargetBundle(frameGraphBuilder, renderTarget, LuminanceTargetBundle.fabulous);
+			worldRender.run(frameGraphBuilder, renderTarget.width, renderTarget.height, targetBundle);
+			frameGraphBuilder.execute(resourceAllocator);
 		}
 	}
 	public interface GameRender {
-		void run(RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator);
+		void run(RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator);
 	}
 }

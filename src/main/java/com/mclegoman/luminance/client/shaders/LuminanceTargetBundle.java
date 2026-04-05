@@ -21,12 +21,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class LuminanceFramebufferSet implements PostChain.TargetBundle {
+public class LuminanceTargetBundle implements PostChain.TargetBundle {
     // when rendering shaders with the allocator, they cant access fabulous buffers
     // this stops the shaders from rendering, which isnt ideal, and it stops them working with iris
-    // by swapping out the FramebufferSet.singleton with this class, it instead just returns an empty buffer
-    private ResourceHandle<RenderTarget> mainFramebuffer;
-    private ResourceHandle<RenderTarget> defaultFramebuffer;
+    // by swapping out the usual target bundle with this class, it instead just returns an empty buffer
+    private ResourceHandle<RenderTarget> mainRenderTarget;
+    private ResourceHandle<RenderTarget> defaultRenderTarget;
 
     @Nullable
     private final Set<Identifier> useDefaultFor;
@@ -39,32 +39,32 @@ public class LuminanceFramebufferSet implements PostChain.TargetBundle {
             Identifier.withDefaultNamespace("clouds")
     ));
 
-    public LuminanceFramebufferSet(FrameGraphBuilder builder, RenderTarget mainFramebuffer, @Nullable Set<Identifier> useDefaultFor) {
-        this.mainFramebuffer = builder.importExternal("main", mainFramebuffer);
-        PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(new RenderTargetDescriptor(mainFramebuffer.width, mainFramebuffer.height, mainFramebuffer.useDepth, 0), null, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "default"), 0);
-        this.defaultFramebuffer = builder.createInternal("luminance:default", persistentFramebufferFactory);
+    public LuminanceTargetBundle(FrameGraphBuilder builder, RenderTarget mainRenderTarget, @Nullable Set<Identifier> useDefaultFor) {
+        this.mainRenderTarget = builder.importExternal("main", mainRenderTarget);
+        PersistentRenderTargetDescriptor persistentRenderTargetDescriptor = new PersistentRenderTargetDescriptor(new RenderTargetDescriptor(mainRenderTarget.width, mainRenderTarget.height, mainRenderTarget.useDepth, 0), null, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "default"), 0);
+        this.defaultRenderTarget = builder.createInternal("luminance:default", persistentRenderTargetDescriptor);
         this.useDefaultFor = useDefaultFor;
     }
 
-    private LuminanceFramebufferSet(ResourceHandle<RenderTarget> mainFramebuffer, ResourceHandle<RenderTarget> defaultFramebuffer, @Nullable Set<Identifier> useDefaultFor) {
-        this.mainFramebuffer = mainFramebuffer;
-        this.defaultFramebuffer = defaultFramebuffer;
+    private LuminanceTargetBundle(ResourceHandle<RenderTarget> mainRenderTarget, ResourceHandle<RenderTarget> defaultRenderTarget, @Nullable Set<Identifier> useDefaultFor) {
+        this.mainRenderTarget = mainRenderTarget;
+        this.defaultRenderTarget = defaultRenderTarget;
         this.useDefaultFor = useDefaultFor;
     }
 
-    public static PostChain.TargetBundle addFabulousIfAbsent(LevelTargetBundle defaultFramebufferSet, FrameGraphBuilder frameGraphBuilder, RenderTargetDescriptor factory) {
-        if (defaultFramebufferSet.translucent != null) {
-            return defaultFramebufferSet;
+    public static PostChain.TargetBundle addFabulousIfAbsent(LevelTargetBundle levelTargetBundle, FrameGraphBuilder frameGraphBuilder, RenderTargetDescriptor factory) {
+        if (levelTargetBundle.translucent != null) {
+            return levelTargetBundle;
         }
-        PersistentFramebufferFactory persistentFramebufferFactory = new PersistentFramebufferFactory(factory, null, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "fabulous"), 0);
-        return new LuminanceFramebufferSet(defaultFramebufferSet.main, frameGraphBuilder.createInternal("luminance:default", persistentFramebufferFactory), fabulous);
+        PersistentRenderTargetDescriptor persistentRenderTargetDescriptor = new PersistentRenderTargetDescriptor(factory, null, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "fabulous"), 0);
+        return new LuminanceTargetBundle(levelTargetBundle.main, frameGraphBuilder.createInternal("luminance:default", persistentRenderTargetDescriptor), fabulous);
     }
 
-    public void replace(Identifier id, ResourceHandle<RenderTarget> framebuffer) {
+    public void replace(Identifier id, ResourceHandle<RenderTarget> renderTarget) {
         if (id.equals(PostChain.MAIN_TARGET_ID)) {
-            mainFramebuffer = framebuffer;
+            mainRenderTarget = renderTarget;
         } else if (useDefault(id)) {
-            defaultFramebuffer = framebuffer;
+            defaultRenderTarget = renderTarget;
         } else {
             throw new IllegalArgumentException("No target with id " + id);
         }
@@ -72,7 +72,7 @@ public class LuminanceFramebufferSet implements PostChain.TargetBundle {
 
     @Nullable
     public ResourceHandle<RenderTarget> get(Identifier id) {
-        return id.equals(PostChain.MAIN_TARGET_ID) ? mainFramebuffer : null;
+        return id.equals(PostChain.MAIN_TARGET_ID) ? mainRenderTarget : null;
     }
 
     @Override
@@ -80,7 +80,7 @@ public class LuminanceFramebufferSet implements PostChain.TargetBundle {
         ResourceHandle<RenderTarget> handle = get(id);
         if (handle == null) {
             if (useDefault(id)) {
-                return defaultFramebuffer;
+                return defaultRenderTarget;
             } else {
                 throw new IllegalArgumentException("Missing target with id " + id);
             }

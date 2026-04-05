@@ -22,7 +22,7 @@ public interface PostEffectProcessorInterface {
     @Nullable @Contract("null -> !null")
     List<PostPass> luminance$getPasses(@Nullable Identifier identifier);
 
-    void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle framebufferSet, @Nullable Identifier customPasses);
+    void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier customPasses);
 
     void luminance$setCustomPasses(Map<Identifier, List<PostPass>> customPasses);
 

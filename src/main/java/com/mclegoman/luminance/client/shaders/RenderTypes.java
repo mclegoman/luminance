@@ -21,24 +21,24 @@ public class RenderTypes {
         return WORLD;
     }
 
-    public static void render(RenderType type, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator) {
+    public static void render(RenderType type, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
         if (ClientData.minecraft.gameRenderer.isPanoramicMode()) return;
         Events.ShaderRender.registry.forEach((id, shaders) -> {
             try {
-                renderShaders(type, shaders, id, framebuffer, objectAllocator);
+                renderShaders(type, shaders, id, renderTarget, resourceAllocator);
             } catch (Exception error) {
                 Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}:{}", type.identifier(), id, error);
             }
         });
     }
 
-    public static void renderShaders(RenderType type, Events.ShaderRenderData shaderRenderData, Identifier id, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator) {
+    public static void renderShaders(RenderType type, Events.ShaderRenderData shaderRenderData, Identifier id, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
         if (ClientData.minecraft.gameRenderer.isPanoramicMode()) return;
         if (shaderRenderData != null) {
             List<Shader.Data> shaders = shaderRenderData.shaders();
             if (shaders != null) shaders.forEach(shader -> {
                 try {
-                    renderShader(type, id, shader, framebuffer, objectAllocator, shaderRenderData.disablePhotosensitive().call(shader.shader().getShaderData()));
+                    renderShader(type, id, shader, renderTarget, resourceAllocator, shaderRenderData.disablePhotosensitive().call(shader.shader().getShaderData()));
                 } catch (Exception error) {
                     Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}:{}", type.identifier(), id, error);
                 }
@@ -46,11 +46,11 @@ public class RenderTypes {
         }
     }
 
-    public static void renderShader(RenderType type, Identifier id, Shader.Data shader, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator) {
-        renderShader(type, id, shader, framebuffer, objectAllocator, false);
+    public static void renderShader(RenderType type, Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
+        renderShader(type, id, shader, renderTarget, resourceAllocator, false);
     }
 
-    public static void renderShader(RenderType type, Identifier id, Shader.Data shader, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator, boolean disablePhotosensitivity) {
+    public static void renderShader(RenderType type, Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator, boolean disablePhotosensitivity) {
         if (ClientData.minecraft.gameRenderer.isPanoramicMode()) return;
         try {
             if (shader == null) return;
@@ -82,7 +82,7 @@ public class RenderTypes {
             boolean canRender = (!shouldFallback && isCorrectType) || (shouldFallback && isFallback);
             if (!canRender) return;
 
-            type.render(id, shader, framebuffer, objectAllocator);
+            type.render(id, shader, renderTarget, resourceAllocator);
         } catch (Exception error) {
             Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}:{}", type.identifier(), id, error);
         }
@@ -95,12 +95,12 @@ public class RenderTypes {
     }
 
     public interface Renderer {
-        void render(Identifier id, Shader.Data shader, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator);
+        void render(Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator);
     }
 
     public record RenderType(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean canFallback) {
-        public void render(Identifier id, Shader.Data shader, RenderTarget framebuffer, GraphicsResourceAllocator objectAllocator) {
-            this.renderer().render(id, shader, framebuffer, objectAllocator);
+        public void render(Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
+            this.renderer().render(id, shader, renderTarget, resourceAllocator);
         }
     }
 }
