@@ -26,7 +26,7 @@ public class RenderTypes {
         if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) return;
         Events.ShaderRender.registry.forEach((id, shaders) -> {
             try {
-                renderShaders(type, shaders, id, framebuffer, objectAllocator, shaders.disablePhotosensitive().call());
+                renderShaders(type, shaders, id, framebuffer, objectAllocator);
             } catch (Exception error) {
                 Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render {} shader with id: {}:{}", type.identifier(), id, error));
             }
@@ -34,16 +34,12 @@ public class RenderTypes {
     }
 
     public static void renderShaders(RenderType type, Events.ShaderRenderData shaderRenderData, Identifier id, Framebuffer framebuffer, ObjectAllocator objectAllocator) {
-        renderShaders(type, shaderRenderData, id, framebuffer, objectAllocator, false);
-    }
-
-    public static void renderShaders(RenderType type, Events.ShaderRenderData shaderRenderData, Identifier id, Framebuffer framebuffer, ObjectAllocator objectAllocator, boolean disablePhotosensitivity) {
         if (ClientData.minecraft.gameRenderer.isRenderingPanorama()) return;
         if (shaderRenderData != null) {
             List<Shader.Data> shaders = shaderRenderData.shaders();
             if (shaders != null) shaders.forEach(shader -> {
                 try {
-                    renderShader(type, id, shader, framebuffer, objectAllocator, disablePhotosensitivity);
+                    renderShader(type, id, shader, framebuffer, objectAllocator, shaderRenderData.disablePhotosensitive().call(shader.shader().getShaderData()));
                 } catch (Exception error) {
                     Data.getVersion().sendToLog(LogType.ERROR, Translation.getString("Failed to render {} shader with id: {}:{}", type.identifier(), id, error));
                 }

@@ -18,7 +18,6 @@ import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
-import java.util.concurrent.Callable;
 
 public class Events {
 	public static class GenericRegistry<K, V> {
@@ -156,11 +155,11 @@ public class Events {
 			}
 
 			public static boolean set(Identifier registryId, Identifier shaderId, Shader shader) {
-				Callable<Boolean> disablePhotosensitive = ShaderRender.exists(registryId) ? Objects.requireNonNull(ShaderRender.get(registryId)).disablePhotosensitive() : () -> false;
+				Callables.ShaderRegistryCaller disablePhotosensitive = ShaderRender.exists(registryId) ? Objects.requireNonNull(ShaderRender.get(registryId)).disablePhotosensitive() : (shaderRegistryEntry) -> false;
 				return set(registryId, shaderId, shader, disablePhotosensitive);
 			}
 
-			public static boolean set(Identifier registryId, Identifier shaderId, Shader shader, Callable<Boolean> disablePhotosensitive) {
+			public static boolean set(Identifier registryId, Identifier shaderId, Shader shader, Callables.ShaderRegistryCaller disablePhotosensitive) {
 				try {
 					if (!ShaderRender.exists(registryId)) ShaderRender.register(registryId, new ShaderRenderData(new ArrayList<>(), disablePhotosensitive));
 					return !exists(registryId, shaderId) ? register(registryId, shaderId, shader) : modify(registryId, shaderId, shader);
@@ -209,6 +208,6 @@ public class Events {
 		}
 	}
 
-	public record ShaderRenderData(List<Shader.Data> shaders, Callable<Boolean> disablePhotosensitive) {
+	public record ShaderRenderData(List<Shader.Data> shaders, Callables.ShaderRegistryCaller disablePhotosensitive) {
 	}
 }

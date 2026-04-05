@@ -108,8 +108,12 @@ public class Debug {
 		return Identifier.of(Data.getVersion().getID() + "_debug", String.valueOf(index));
 	}
 
-	public static boolean getDisablePhotosensitive() {
+	public static boolean getRawDisablePhotosensitive() {
 		return disablePhotosensitive;
+	}
+
+	public static boolean getDisablePhotosensitive(ShaderRegistryEntry shaderRegistryEntry) {
+		return getRawDisablePhotosensitive();
 	}
 
 	public static void setDisablePhotosensitive(boolean value) {

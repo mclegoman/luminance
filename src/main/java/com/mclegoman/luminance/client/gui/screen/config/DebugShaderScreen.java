@@ -51,9 +51,9 @@ public class DebugShaderScreen extends Screen {
 
 	public void init() {
 		try {
-			this.addDrawableChild(ButtonWidget.builder(Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.getDisablePhotosensitive()), button -> {
-				Debug.setDisablePhotosensitive(!Debug.getDisablePhotosensitive());
-				button.setMessage(Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.getDisablePhotosensitive()));
+			this.addDrawableChild(ButtonWidget.builder(Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.getRawDisablePhotosensitive()), button -> {
+				Debug.setDisablePhotosensitive(!Debug.getRawDisablePhotosensitive());
+				button.setMessage(Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.getRawDisablePhotosensitive()));
 			}).width(32).tooltip(Tooltip.of(Translation.getTranslation(Data.getVersion().getID(), "debug.disable_photosensitive"))).position(2, 2).build());
 
 			this.addDrawableChild(ButtonWidget.builder(Translation.getVariableTranslation(Data.getVersion().getID(), "onff", this.reducedAlpha), button -> {

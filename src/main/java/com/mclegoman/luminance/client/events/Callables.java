@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.client.events;
 
+import com.mclegoman.luminance.client.shaders.ShaderRegistryEntry;
 import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.uniforms.UniformVector;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
@@ -32,5 +33,10 @@ public class Callables {
 		void apply(T t);
 
 		void clear();
+	}
+
+	@FunctionalInterface
+	public interface ShaderRegistryCaller {
+		boolean call(ShaderRegistryEntry shaderRenderData);
 	}
 }
