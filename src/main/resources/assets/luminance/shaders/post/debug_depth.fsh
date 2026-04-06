@@ -12,5 +12,6 @@ in vec2 texCoord;
 out vec4 fragColor;
 
 void main() {
-    fragColor = vec4(vec3(texture(InDepthSampler, texCoord).r), 1.0);
+    float depth = texture(InDepthSampler, texCoord).r;
+    fragColor = vec4(vec3(depth * depth), 1.0);
 }

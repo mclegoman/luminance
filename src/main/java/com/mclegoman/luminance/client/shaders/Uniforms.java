@@ -70,6 +70,7 @@ public class Uniforms {
 	public static void init() {
 		try {
 			String namespace = Data.getVersion().getID();
+			// TODO: crosshair target (i swear it used to exist?)
 
 			registerSingleTree(namespace, "panorama_alpha", Uniforms::getPanoramaAlpha, 0f, 1f);
 			registerSingleTree(namespace, "hud_hidden", Uniforms::getHudHidden, 0f, 1f);
