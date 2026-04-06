@@ -20,15 +20,15 @@ public class Shader {
 	private PostChain postProcessor;
 	private boolean useDepth;
 	private Identifier shaderId;
-	private Callable<Identifier> renderType;
+	private Callable<RenderTypes.RenderType> renderType;
 	private Callable<Boolean> shouldRender;
 	private ShaderRegistryEntry shaderData;
 
-	public Shader(ShaderRegistryEntry shaderData, Callable<Identifier> renderType, Callable<Boolean> shouldRender) {
+	public Shader(ShaderRegistryEntry shaderData, Callable<RenderTypes.RenderType> renderType, Callable<Boolean> shouldRender) {
 		reload(shaderData, renderType, shouldRender);
 	}
 
-	public Shader(ShaderRegistryEntry shaderData, Callable<Identifier> renderType) {
+	public Shader(ShaderRegistryEntry shaderData, Callable<RenderTypes.RenderType> renderType) {
 		this(shaderData, renderType, () -> true);
 	}
 
@@ -70,11 +70,11 @@ public class Shader {
 		this.shaderId = id;
 	}
 
-	public Callable<Identifier> getRenderType() {
+	public Callable<RenderTypes.RenderType> getRenderType() {
 		return this.renderType;
 	}
 
-	public void setRenderType(Callable<Identifier> renderType) {
+	public void setRenderType(Callable<RenderTypes.RenderType> renderType) {
 		this.renderType = renderType;
 	}
 
@@ -104,7 +104,7 @@ public class Shader {
 		reload(shaderData, renderType, shouldRender);
 	}
 
-	public void reload(ShaderRegistryEntry shaderData, Callable<Identifier> renderType, Callable<Boolean> shouldRender) {
+	public void reload(ShaderRegistryEntry shaderData, Callable<RenderTypes.RenderType> renderType, Callable<Boolean> shouldRender) {
 		closePostProcessor();
 		setRenderType(renderType);
 		setShouldRender(shouldRender);

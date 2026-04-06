@@ -52,7 +52,7 @@ public class Keybindings {
 				MessageOverlay.setOverlay(Translation.getTranslation(Data.getVersion().getID(), "debug.render", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.isDebugShaderEnabled())}));
 			}
 			if (cycle_debug_render_type != null && cycle_debug_render_type.consumeClick()) {
-				Debug.cycleDebugRenderType(ClientData.minecraft.hasShiftDown()).ifPresent(renderTypeId -> MessageOverlay.setOverlay(Translation.getTranslation(Data.getVersion().getID(), "debug.render_type", new Object[]{Component.translatableWithFallback("gui." + renderTypeId.getNamespace() + ".render_type." + renderTypeId.getPath(), renderTypeId.toString())})));
+				Debug.cycleDebugRenderType(ClientData.minecraft.hasShiftDown()).ifPresent(renderType -> MessageOverlay.setOverlay(Translation.getTranslation(Data.getVersion().getID(), "debug.render_type", new Object[]{Component.translatableWithFallback("gui." + renderType.identifier().getNamespace() + ".render_type." + renderType.identifier().getPath(), renderType.toString())})));
 			}
 		}
 	}

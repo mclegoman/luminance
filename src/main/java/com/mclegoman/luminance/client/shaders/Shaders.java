@@ -171,11 +171,11 @@ public class Shaders {
 		return null;
 	}
 
-	public static Shader get(ShaderRegistryEntry shaderData, Callable<Identifier> renderType, Callable<Boolean> shouldRender) {
+	public static Shader get(ShaderRegistryEntry shaderData, Callable<RenderTypes.RenderType> renderType, Callable<Boolean> shouldRender) {
 		return new Shader(shaderData, renderType, shouldRender);
 	}
 
-	public static Shader get(ShaderRegistryEntry shaderData, Callable<Identifier> renderType) {
+	public static Shader get(ShaderRegistryEntry shaderData, Callable<RenderTypes.RenderType> renderType) {
 		return new Shader(shaderData, renderType);
 	}
 

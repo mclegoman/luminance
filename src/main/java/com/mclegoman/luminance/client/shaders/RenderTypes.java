@@ -64,17 +64,14 @@ public class RenderTypes {
 
             if (shaderData.isPhotosensitive() && disablePhotosensitivity) return;
 
-            Callable<Identifier> callableRenderType = shaderInstance.getRenderType();
+            Callable<RenderTypes.RenderType> callableRenderType = shaderInstance.getRenderType();
             if (callableRenderType == null) return;
 
-            Identifier renderTypeId = callableRenderType.call();
-            if (renderTypeId == null) return;
-
-            boolean isCorrectType = renderTypeId.equals(type.identifier());
-            if (!isCorrectType && !isFallback) return;
-
-            RenderType renderType = Events.RenderType.get(renderTypeId);
+            RenderType renderType = callableRenderType.call();
             if (renderType == null) return;
+
+            boolean isCorrectType = renderType.equals(type);
+            if (!isCorrectType && !isFallback) return;
 
             boolean shouldFallback = (shaderInstance.getUseDepth() && !renderType.isDepthSupported()) || (shaderData.useFallbackWhenOverUi() && renderType.isOverUi()) || (shaderData.useFallbackWhenUnderUi() && renderType.isUnderUi());
             if (shouldFallback && !renderType.canFallback()) return;

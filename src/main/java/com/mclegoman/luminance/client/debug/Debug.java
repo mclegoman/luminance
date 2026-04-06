@@ -23,7 +23,7 @@ import java.util.Optional;
 public class Debug {
 	private static final Couple<Identifier, Identifier> debugShader;
 	private static boolean debugShaderEnabled;
-	public static Identifier debugRenderType;
+	public static RenderTypes.RenderType debugRenderType;
 	private static boolean disablePhotosensitive;
 
 	public static boolean isDebugShaderEnabled() {
@@ -38,19 +38,21 @@ public class Debug {
 		return debugShader;
 	}
 
-	public static Optional<Identifier> cycleDebugRenderType(boolean backwards) {
-		List<Identifier> renderTypes = new ArrayList<>(Events.RenderType.registry.keySet());
+	public static Optional<RenderTypes.RenderType> cycleDebugRenderType(boolean backwards) {
+		List<Identifier> renderTypes = new ArrayList<>(Events.RenderType.registry.keySet().stream().sorted().toList());
 		if (!renderTypes.isEmpty()) {
 			renderTypes.sort(Comparator.comparing(Identifier::toString));
-			int prevIndex = renderTypes.indexOf(debugRenderType);
+			int prevIndex = renderTypes.indexOf(debugRenderType.identifier());
 			if (prevIndex == -1) prevIndex = 0;
 			int size = renderTypes.size();
 			int index;
 			if (backwards) index = (prevIndex - 1 + size) % size;
 			else index = (prevIndex + 1 + size) % size;
-			return Optional.of(debugRenderType = renderTypes.get(index));
+			return Optional.of(debugRenderType = Events.RenderType.get(renderTypes.get(index)));
+		} else {
+			debugRenderType = RenderTypes.WORLD;
+			return Optional.empty();
 		}
-		return Optional.empty();
 	}
 
 	public static void applyDebugShader() {
@@ -105,6 +107,6 @@ public class Debug {
 
 	static {
 		debugShader = new Couple<>(ShaderStacks.getMainRegistryId(), ShaderStacks.getShaderStacks(ShaderStacks.getMainRegistryId()).getFirst());
-		debugRenderType = RenderTypes.WORLD.identifier();
+		debugRenderType = RenderTypes.WORLD;
 	}
 }
