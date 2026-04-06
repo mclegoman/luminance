@@ -1,60 +1,136 @@
 {
     "targets": {
-        "merge": {},
-        "swap": {}
+        "0": {},
+        "1": {},
+        "2": {},
+        "3": {},
+        "4": {}
     },
     "passes": [
         {
             "vertex_shader": "minecraft:core/screenquad",
-            "fragment_shader": "luminance:post/health_overlay",
+            "fragment_shader": "luminance:post/on_effect",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
                 }
             ],
-            "output": "merge",
+            "output": "0",
             "uniforms": {
-                "HealthOverlayConfig": [
+                "OnEffectConfig": [
                     {
-                        "name": "luminance_currentHealth_smooth",
+                        "name": "IsActive",
                         "type": "float",
-                        "value": 20.0
+                        "value": 0.0,
+                        "override": "luminance:is_withered_smooth"
                     },
                     {
-                        "name": "luminance_maxHealth_smooth",
+                        "name": "OverlayColor",
+                        "type": "vec3",
+                        "value": [0.24, 0.03, 0.03]
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/on_effect",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "0"
+                }
+            ],
+            "output": "1",
+            "uniforms": {
+                "OnEffectConfig": [
+                    {
+                        "name": "IsActive",
                         "type": "float",
-                        "value": 20.0
+                        "value": 0.0,
+                        "override": "luminance:is_poisoned_smooth"
                     },
                     {
-                        "name": "luminance_currentAbsorption_smooth",
+                        "name": "OverlayColor",
+                        "type": "vec3",
+                        "value": [0.46, 0.88, 0.04]
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/low_health",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "1"
+                }
+            ],
+            "output": "2",
+            "uniforms": {
+                "LowHealthConfig": [
+                    {
+                        "name": "CurrentHealth",
                         "type": "float",
-                        "value": 0.0
+                        "value": 20.0,
+                        "override": "luminance:current_health_smooth"
                     },
                     {
-                        "name": "luminance_maxAbsorption_smooth",
+                        "name": "CurrentAdditionalHealth",
                         "type": "float",
-                        "value": 0.0
+                        "value": 0.0,
+                        "override": "luminance:current_absorption_smooth"
                     },
                     {
-                        "name": "luminance_currentHurtTime_smooth",
+                        "name": "MaxHealth",
                         "type": "float",
-                        "value": 0.0
+                        "value": 20.0,
+                        "override": "luminance:max_health_smooth"
                     },
                     {
-                        "name": "luminance_maxHurtTime_smooth",
+                        "name": "MaxAdditionalHealth",
                         "type": "float",
-                        "value": 0.0
+                        "value": 0.0,
+                        "override": "luminance:max_absorption_smooth"
                     },
                     {
-                        "name": "luminance_isWithered_smooth",
+                        "name": "OverlayColor",
+                        "type": "vec3",
+                        "value": [0.88, 0.04, 0.06]
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/on_damage",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "2"
+                }
+            ],
+            "output": "3",
+            "uniforms": {
+                "OnDamageConfig": [
+                    {
+                        "name": "CurrentHurtTime",
                         "type": "float",
-                        "value": 0.0
+                        "value": 0.0,
+                        "override": "luminance:current_hurt_time"
                     },
                     {
-                        "name": "luminance_isPoisoned_smooth",
+                        "name": "MaxHurtTime",
                         "type": "float",
-                        "value": 0.0
+                        "value": 10.0,
+                        "override": "luminance:max_hurt_time"
+                    },
+                    {
+                        "name": "OverlayColor",
+                        "type": "vec3",
+                        "value": [0.88, 0.04, 0.06]
                     }
                 ]
             }
@@ -65,14 +141,14 @@
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "merge"
+                    "target": "3"
                 },
                 {
                     "sampler_name": "Merge",
                     "target": "minecraft:main"
                 }
             ],
-            "output": "swap",
+            "output": "4",
             "uniforms": {
                 "MergeConfig": [
                     {
@@ -90,7 +166,7 @@
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "swap"
+                    "target": "4"
                 }
             ],
             "output": "minecraft:main",
