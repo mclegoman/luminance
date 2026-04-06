@@ -72,6 +72,12 @@
             "uniforms": {
                 "LowHealthConfig": [
                     {
+                        "name": "IsActive",
+                        "type": "float",
+                        "value": 0.0,
+                        "override": "luminance:gamemode_has_health_smooth"
+                    },
+                    {
                         "name": "CurrentHealth",
                         "type": "float",
                         "value": 20.0,

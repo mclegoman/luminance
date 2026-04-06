@@ -48,6 +48,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Uniforms {
@@ -135,6 +136,7 @@ public class Uniforms {
 			registerStandardTree(namespace, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(Map.of("period", List.of(1.0))), false);
 			registerStandardTree(namespace, "random", Uniforms::getRandom, 0f, 1f, 1, EmptyConfig.INSTANCE, false);
 			registerStandardTree(namespace, "render_location", Uniforms::getRenderLocation, 0f, 1f, 3, EmptyConfig.INSTANCE, false);
+			registerSingleTree(namespace, "gamemode_has_health", Uniforms::getGameModeHasHealth, 0f, 1f);
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, "Failed to initialize uniforms: {}", error);
 		}
@@ -558,6 +560,13 @@ public class Uniforms {
 				ShaderTime.currentRenderLocation.isOverUi() ? 1.0F : 0.0F,
 				ShaderTime.currentRenderLocation.isUnderUi() ? 1.0F : 0.0F
 		));
+	}
+
+	public static float getGameModeHasHealth(ShaderTime shaderTime) {
+		if (ClientData.minecraft.player != null && ClientData.minecraft.player.gameMode() != null) {
+			if (Objects.requireNonNull(ClientData.minecraft.player.gameMode()).isSurvival()) return 1.0F;
+		}
+		return 0.0F;
 	}
 
 	public static void getZero(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
