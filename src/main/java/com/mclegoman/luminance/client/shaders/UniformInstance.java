@@ -76,4 +76,8 @@ public class UniformInstance {
             builder.putInt(i);
         }
     }
+
+    public int length() {
+        return defaultValue.size();
+    }
 }
