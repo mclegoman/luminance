@@ -14,7 +14,7 @@ public class Accessors {
 	private static GameRendererAccessor gameRenderer;
 	public static GameRendererAccessor getGameRenderer() {
 		if (gameRenderer == null) {
-			if (ClientData.minecraft.gameRenderer != null) gameRenderer = (GameRendererAccessor) ClientData.minecraft.gameRenderer;
+            gameRenderer = (GameRendererAccessor) ClientData.minecraft.gameRenderer;
 		}
 		return gameRenderer;
 	}

@@ -9,7 +9,6 @@ package com.mclegoman.luminance.client.update;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 

@@ -46,14 +46,12 @@ public abstract class JsonResourceReloader extends SimplePreparableReloadListene
 					JsonElement jsonElement = results.put(resourceId, GsonHelper.fromJson(gson, reader, JsonElement.class));
 					if (jsonElement != null) throw new IllegalStateException("Duplicate data file ignored with ID " + resourceId);
 				} catch (Throwable throwable) {
-					if (reader != null) {
-						try {
-							reader.close();
-						} catch (Throwable var12) {
-							throwable.addSuppressed(var12);
-						}
-					}
-					throw throwable;
+                    try {
+                        reader.close();
+                    } catch (Throwable var12) {
+                        throwable.addSuppressed(var12);
+                    }
+                    throw throwable;
 				}
 				reader.close();
 			} catch (Exception error) {

@@ -11,7 +11,6 @@ import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.shaders.Shaders;
 import com.mclegoman.luminance.client.texture.ResourcePacks;
-import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.client.util.CompatHelper;
 import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.client.util.Tick;

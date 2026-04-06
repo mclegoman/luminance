@@ -212,7 +212,7 @@ public class Uniforms {
 	}
 
 	public static float getHudHidden(ShaderTime shaderTime) {
-		return ClientData.minecraft.options != null ? (ClientData.minecraft.options.hideGui ? 1.0F : 0.0F) : 0.0F;
+		return ClientData.minecraft.options.hideGui ? 1.0F : 0.0F;
 	}
 
 	public static float getIsInGui(ShaderTime shaderTime) {
@@ -220,11 +220,11 @@ public class Uniforms {
 	}
 
 	public static float getViewDistance(ShaderTime shaderTime) {
-		return ClientData.minecraft.options != null ? ClientData.minecraft.options.renderDistance().get() : 12.0F;
+		return ClientData.minecraft.options.renderDistance().get();
 	}
 
 	public static float getFov(ShaderTime shaderTime) {
-		return Accessors.getGameRenderer() != null ? (Accessors.getGameRenderer().invokeGetFov(ClientData.minecraft.gameRenderer.getMainCamera(), shaderTime.getTickProgress(), true)) : (ClientData.minecraft.options != null ? Minecraft.getInstance().options.fov().get() : 70f);
+		return Accessors.getGameRenderer() != null ? Accessors.getGameRenderer().invokeGetFov(ClientData.minecraft.gameRenderer.getMainCamera(), shaderTime.getTickProgress(), true) : Minecraft.getInstance().options.fov().get();
 	}
 
 	public static void getGraphicsMode(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
@@ -473,12 +473,9 @@ public class Uniforms {
 	}
 
 	public static float getPerspective(ShaderTime shaderTime) {
-		if (ClientData.minecraft.options != null) {
-			CameraType perspective = ClientData.minecraft.options.getCameraType();
-			return perspective.equals(CameraType.THIRD_PERSON_FRONT) ? 3.0F : (perspective.equals(CameraType.THIRD_PERSON_BACK) ? 2.0F : (perspective.equals(CameraType.FIRST_PERSON) ? 1.0F : 0.0F));
-		}
-		return 0.0F;
-	}
+        CameraType perspective = ClientData.minecraft.options.getCameraType();
+        return perspective.equals(CameraType.THIRD_PERSON_FRONT) ? 3.0F : (perspective.equals(CameraType.THIRD_PERSON_BACK) ? 2.0F : (perspective.equals(CameraType.FIRST_PERSON) ? 1.0F : 0.0F));
+    }
 
 	public static float getSelectedSlot(ShaderTime shaderTime) {
 		return ClientData.minecraft.player != null ? ClientData.minecraft.player.getInventory().getSelectedSlot() : 0.0F;
