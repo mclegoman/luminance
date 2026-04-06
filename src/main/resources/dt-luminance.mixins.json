@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.mclegoman.luminance.mixin.MixinPlugin",
   "client": [
-    "client.gui.DebugScreenOverlayMixin",
+    "client.gui.DebugScreenEntriesMixin",
     "client.gui.GuiMixin",
     "client.gui.ScreenAccessor",
     "client.gui.StringSplitterAccessor",

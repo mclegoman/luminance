@@ -9,7 +9,9 @@ package com.mclegoman.luminance.client.shaders;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mclegoman.luminance.client.debug.DebugEntryDebugShader;
 import com.mclegoman.luminance.client.events.Events;
+import com.mclegoman.luminance.client.events.ProfiledDebugEntries;
 import com.mclegoman.luminance.client.events.Runnables;
 import com.mclegoman.luminance.client.shaders.interfaces.PostChainInterface;
 import com.mclegoman.luminance.client.translation.Translation;
@@ -23,6 +25,8 @@ import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.api.metadata.version.VersionPredicate;
+import net.minecraft.client.gui.components.debug.DebugScreenEntryStatus;
+import net.minecraft.client.gui.components.debug.DebugScreenProfile;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
@@ -51,6 +55,8 @@ public class Shaders {
 				(renderTarget, resourceAllocator) -> RenderLocations.render(RenderLocations.UI_BACKGROUND, renderTarget, resourceAllocator));
 		Events.AfterPanoramaRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
 				(renderTarget, resourceAllocator) -> RenderLocations.render(RenderLocations.PANORAMA, renderTarget, resourceAllocator));
+
+		ProfiledDebugEntries.register(Data.idOf("debug_shader"), new DebugEntryDebugShader(), DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.IN_OVERLAY);
 	}
 
 	public static Identifier getMainRegistryId() {

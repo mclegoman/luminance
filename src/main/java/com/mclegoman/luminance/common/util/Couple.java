@@ -27,4 +27,9 @@ public class Couple<a, b> {
 	public void setSecond(b value) {
 		second = value;
 	}
+
+	@Override
+	public String toString() {
+		return this.getFirst() + "::" + this.getSecond();
+	}
 }
