@@ -9,5 +9,9 @@
       "groups": [ "depth" ]
     }
   },
+  "dependencies": {
+    "depends": {},
+    "breaks": {}
+  },
   "registries": [ "luminance:debug" ]
 }

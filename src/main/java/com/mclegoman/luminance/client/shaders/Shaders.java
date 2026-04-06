@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.client.shaders;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.events.Runnables;
@@ -17,6 +18,11 @@ import com.mclegoman.luminance.common.util.LogType;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.Version;
+import net.fabricmc.loader.api.VersionParsingException;
+import net.fabricmc.loader.api.metadata.version.VersionPredicate;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
@@ -307,5 +313,50 @@ public class Shaders {
 
 	public static boolean isValidIndex(Identifier registry, int index) {
 		return index <= getShaderAmount(registry) && index >= 0;
+	}
+
+	public static boolean preventRegister(JsonObject reader, Identifier id, String type) throws VersionParsingException {
+		if (reader.has("dependencies")) {
+			JsonObject dependencies = reader.get("dependencies").getAsJsonObject();
+			if (dependencies.has("depends")) {
+				for (Map.Entry<String, JsonElement> dependency : dependencies.get("depends").getAsJsonObject().entrySet()) {
+					Optional<ModContainer> dependencyMod = FabricLoader.getInstance().getModContainer(dependency.getKey());
+					if (dependencyMod.isEmpty()) {
+						Data.getVersion().sendToLog(LogType.WARN, "'{}' is required for {} '{}', but mod couldn't be found!", dependency.getKey(), type, id);
+						return true;
+					}
+
+					List<String> matcherStringList = new ArrayList<>();
+					if (dependency.getValue().isJsonPrimitive()) matcherStringList.add(dependency.getValue().getAsString());
+					else for (JsonElement version : dependency.getValue().getAsJsonArray()) matcherStringList.add(version.getAsString());
+
+					if (!versionMatches(dependencyMod.get().getMetadata().getVersion(), VersionPredicate.parse(matcherStringList))) {
+						Data.getVersion().sendToLog(LogType.WARN, "'{}' with version '{}' is required for {} '{}', but a compatible version couldn't be found!", dependency.getKey(), matcherStringList.toString(), type, id);
+						return true;
+					}
+				}
+			}
+			if (dependencies.has("breaks")) {
+				for (Map.Entry<String, JsonElement> dependency : dependencies.get("breaks").getAsJsonObject().entrySet()) {
+					Optional<ModContainer> dependencyMod = FabricLoader.getInstance().getModContainer(dependency.getKey());
+					if (dependencyMod.isPresent()) {
+						List<String> matcherStringList = new ArrayList<>();
+						if (dependency.getValue().isJsonPrimitive()) matcherStringList.add(dependency.getValue().getAsString());
+						else for (JsonElement version : dependency.getValue().getAsJsonArray()) matcherStringList.add(version.getAsString());
+
+						if (versionMatches(dependencyMod.get().getMetadata().getVersion(), VersionPredicate.parse(matcherStringList))) {
+							Data.getVersion().sendToLog(LogType.WARN, "'{}' with version '{}' breaks {} '{}'!", dependency.getKey(), matcherStringList.toString(), type, id);
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean versionMatches(Version version, Collection<VersionPredicate> ranges) {
+		for (VersionPredicate predicate : ranges) if (predicate.test(version)) return true;
+		return false;
 	}
 }

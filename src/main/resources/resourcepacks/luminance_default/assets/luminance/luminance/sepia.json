@@ -8,5 +8,9 @@
     "souper_secret_settings": {
       "groups": [ "edible", "filter", "retro" ]
     }
+  },
+  "dependencies": {
+    "depends": {},
+    "breaks": {}
   }
 }

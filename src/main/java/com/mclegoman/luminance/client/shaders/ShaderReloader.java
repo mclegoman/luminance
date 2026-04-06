@@ -87,6 +87,9 @@ public class ShaderReloader extends JsonResourceReloader {
 			prepared.forEach((identifier, jsonElement) -> {
 				try {
 					JsonObject reader = jsonElement.getAsJsonObject();
+
+					if (Shaders.preventRegister(reader, identifier, "shader")) return;
+
 					Identifier post_effect = IdentifierHelper.identifierFromString(GsonHelper.getAsString(reader, "post_effect", identifier.getNamespace() + ":" + identifier.getPath()));
 					boolean enabled = GsonHelper.getAsBoolean(reader, "enabled", true);
 					boolean fallbackWhenOverUi = GsonHelper.getAsBoolean(reader, "fallback_when_over_ui", false);

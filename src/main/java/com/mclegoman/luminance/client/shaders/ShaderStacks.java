@@ -134,6 +134,8 @@ public class ShaderStacks {
                 try (InputStream stream = resource.open()) {
                     JsonObject reader = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
 
+                    if (Shaders.preventRegister(reader, identifier.withPath(stackId), "shader stack")) return;
+
                     JsonArray defaultRegistryIds = new JsonArray();
                     defaultRegistryIds.add(getMainRegistryId().toString());
 

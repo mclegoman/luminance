@@ -8,5 +8,9 @@
     "souper_secret_settings": {
       "groups": [ "animated" ]
     }
+  },
+  "dependencies": {
+    "depends": {},
+    "breaks": {}
   }
 }
