@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public interface PostEffectProcessorInterface {
+public interface PostChainInterface {
     @Nullable @Contract("null -> !null")
     List<PostPass> luminance$getPasses(@Nullable Identifier identifier);
 

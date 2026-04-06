@@ -12,9 +12,9 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
-import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
-import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.PostPassInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.PostChainInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PostChainConfigInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTargetInterface;
 import com.mojang.blaze3d.resource.RenderTargetDescriptor;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
@@ -35,7 +35,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import java.util.*;
 
 @Mixin(PostChain.class)
-public abstract class PostChainMixin implements PostEffectProcessorInterface {
+public abstract class PostChainMixin implements PostChainInterface {
     @Shadow @Final private List<PostPass> passes;
 
     @Shadow
@@ -90,7 +90,7 @@ public abstract class PostChainMixin implements PostEffectProcessorInterface {
 
     @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/PostChainConfig;passes()Ljava/util/List;", ordinal = 0), method = "load")
     private static List<PostChainConfig.Pass> includeCustomPasses(List<PostChainConfig.Pass> original, PostChainConfig pipeline, TextureManager textureManager) {
-        Optional<Map<Identifier, List<PostChainConfig.Pass>>> customPasses = ((PipelineInterface)(Object)pipeline).luminance$getCustomPasses();
+        Optional<Map<Identifier, List<PostChainConfig.Pass>>> customPasses = ((PostChainConfigInterface)(Object)pipeline).luminance$getCustomPasses();
         if (customPasses.isEmpty()) {
             return original;
         }
@@ -102,8 +102,8 @@ public abstract class PostChainMixin implements PostEffectProcessorInterface {
 
     @ModifyReturnValue(at = @At(value = "RETURN"), method = "load")
     private static PostChain setCustomPassTargets(PostChain original, PostChainConfig pipeline, TextureManager textureManager, Set<Identifier> availableExternalTargets, Identifier id) {
-        ((PipelineInterface)(Object)pipeline).luminance$getCustomPasses().ifPresentOrElse((map) -> {
-            PostEffectProcessorInterface processor = (PostEffectProcessorInterface)original;
+        ((PostChainConfigInterface)(Object)pipeline).luminance$getCustomPasses().ifPresentOrElse((map) -> {
+            PostChainInterface processor = (PostChainInterface)original;
 
             Map<Identifier, List<PostPass>> customPasses = new HashMap<>(map.size());
 
@@ -135,7 +135,7 @@ public abstract class PostChainMixin implements PostEffectProcessorInterface {
             }
 
             processor.luminance$setCustomPasses(customPasses);
-        }, () -> ((PostEffectProcessorInterface)original).luminance$setCustomPasses(Map.of()));
+        }, () -> ((PostChainInterface)original).luminance$setCustomPasses(Map.of()));
         return original;
     }
 
@@ -190,7 +190,7 @@ public abstract class PostChainMixin implements PostEffectProcessorInterface {
     @Unique
     private boolean luminance$passListUsesDepth(List<PostPass> passes) {
         for (PostPass pass : passes) {
-            if (((PostEffectPassInterface)pass).luminance$usesDepth()) {
+            if (((PostPassInterface)pass).luminance$usesDepth()) {
                 return true;
             }
         }

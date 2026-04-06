@@ -11,11 +11,14 @@ import com.mclegoman.luminance.client.shaders.UniformBlock;
 import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
+import java.util.Set;
 
-public interface PostEffectPassInterface {
+public interface PostPassInterface {
     String luminance$getID();
 
-    UniformBlock luminance$getUniformInstances(String block);
+    Set<String> luminance$getUniformBlockNames();
+
+    UniformBlock luminance$getUniformBlock(String block);
 
     Identifier luminance$getOutputTarget();
 

@@ -11,7 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.events.Runnables;
-import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.PostChainInterface;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
@@ -118,7 +118,7 @@ public class Shaders {
 				try {
 					// the depth masking done in renderUsingAllocator is instead done for everything already before this method is called
 					// this is because FrameGraphBuilder delays calls, so any rendersystem methods wont work with their intended timing
-					((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, targetBundle, customPasses);
+					((PostChainInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, targetBundle, customPasses);
 				} catch (Exception error) {
 					Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());
 				}
@@ -292,7 +292,7 @@ public class Shaders {
 	public static void renderShaderUsingAllocator(Shader shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator, @Nullable Identifier customPasses) {
 		try {
 			if (shader.getPostProcessor() != null) {
-				Runnables.WorldRender.fromGameRender((builder, width, height, set) -> ((PostEffectProcessorInterface)shader.getPostProcessor()).luminance$render(builder, width, height, set, customPasses), renderTarget, resourceAllocator);
+				Runnables.WorldRender.fromGameRender((builder, width, height, set) -> ((PostChainInterface)shader.getPostProcessor()).luminance$render(builder, width, height, set, customPasses), renderTarget, resourceAllocator);
 			}
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());

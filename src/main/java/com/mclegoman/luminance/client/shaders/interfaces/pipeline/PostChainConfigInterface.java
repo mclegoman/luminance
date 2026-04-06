@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public interface PipelineInterface {
+public interface PostChainConfigInterface {
     Optional<Map<Identifier, List<PostChainConfig.Pass>>> luminance$getCustomPasses();
     void luminance$setCustomPasses(Map<Identifier, List<PostChainConfig.Pass>> passes);
 }

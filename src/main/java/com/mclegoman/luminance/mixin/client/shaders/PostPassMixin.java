@@ -12,7 +12,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mclegoman.luminance.client.events.Execute;
 import com.mclegoman.luminance.client.shaders.UniformBlock;
 import com.mclegoman.luminance.client.shaders.interfaces.CustomPassData;
-import com.mclegoman.luminance.client.shaders.interfaces.PostEffectPassInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.PostPassInterface;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.*;
 
 @Mixin(priority = 100, value = PostPass.class)
-public abstract class PostPassMixin implements PostEffectPassInterface {
+public abstract class PostPassMixin implements PostPassInterface {
 	@Shadow @Final private String name;
 
 	@Shadow @Final private Identifier outputTargetId;
@@ -91,7 +91,12 @@ public abstract class PostPassMixin implements PostEffectPassInterface {
 	}
 
 	@Override
-	public UniformBlock luminance$getUniformInstances(String block) {
+	public Set<String> luminance$getUniformBlockNames() {
+		return luminance$overrides.keySet();
+	}
+
+	@Override
+	public UniformBlock luminance$getUniformBlock(String block) {
 		return luminance$overrides.get(block);
 	}
 

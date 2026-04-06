@@ -8,7 +8,7 @@
 package com.mclegoman.luminance.client.shaders;
 
 import com.mclegoman.luminance.client.data.ClientData;
-import com.mclegoman.luminance.client.shaders.interfaces.PostEffectProcessorInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.PostChainInterface;
 import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.client.renderer.LevelTargetBundle;
@@ -39,7 +39,7 @@ public class Shader {
 	public void setPostProcessor() {
 		try {
 			this.postProcessor = ClientData.minecraft.getShaderManager().getPostChain(this.shaderId, LevelTargetBundle.SORTING_TARGETS);
-			if (postProcessor != null && ((PostEffectProcessorInterface)this.postProcessor).luminance$usesDepth()) {
+			if (postProcessor != null && ((PostChainInterface)this.postProcessor).luminance$usesDepth()) {
 				setUseDepth(true);
 			}
 		} catch (Exception error) {
