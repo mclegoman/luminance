@@ -9,7 +9,7 @@ package com.mclegoman.luminance.client.events;
 
 import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.data.ClientData;
-import com.mclegoman.luminance.client.shaders.RenderTypes;
+import com.mclegoman.luminance.client.shaders.RenderLocations;
 import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.client.util.CompatHelper;
@@ -56,7 +56,7 @@ public class Execute {
 	}
 
 	public static void beforeInGameHudRender(GuiGraphics context, DeltaTracker renderTickCounter) {
-		ShaderTime.currentRenderType = RenderTypes.UI;
+		ShaderTime.currentRenderLocation = RenderLocations.UI;
 		Events.BeforeInGameHudRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(context, renderTickCounter);
@@ -77,7 +77,7 @@ public class Execute {
 	}
 
 	public static void beforeGameRender() {
-		ShaderTime.currentRenderType = RenderTypes.WORLD;
+		ShaderTime.currentRenderLocation = RenderLocations.WORLD;
 		Events.BeforeGameRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run();
@@ -120,8 +120,8 @@ public class Execute {
 	}
 
 	public static void afterUiBackgroundRender(GraphicsResourceAllocator allocator) {
-		RenderTypes.RenderType previous = ShaderTime.currentRenderType;
-		ShaderTime.currentRenderType = RenderTypes.UI_BACKGROUND;
+		RenderLocations.RenderLocation previous = ShaderTime.currentRenderLocation;
+		ShaderTime.currentRenderLocation = RenderLocations.UI_BACKGROUND;
 		Events.AfterUiBackgroundRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
@@ -129,13 +129,13 @@ public class Execute {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterUiBackgroundRender event with id: {}: {}", id, error);
 			}
 		}));
-		// this and afterPanoramaRender are a special case, so resetting the RenderType it makes sense
-		ShaderTime.currentRenderType = previous;
+		// this and afterPanoramaRender are a special case, so resetting the RenderLocation it makes sense
+		ShaderTime.currentRenderLocation = previous;
 	}
 
 	public static void afterPanoramaRender(GraphicsResourceAllocator allocator) {
-		RenderTypes.RenderType previous = ShaderTime.currentRenderType;
-		ShaderTime.currentRenderType = RenderTypes.PANORAMA;
+		RenderLocations.RenderLocation previous = ShaderTime.currentRenderLocation;
+		ShaderTime.currentRenderLocation = RenderLocations.PANORAMA;
 		Events.AfterPanoramaRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
@@ -143,7 +143,7 @@ public class Execute {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterPanoramaRender event with id: {}: {}", id, error);
 			}
 		}));
-		ShaderTime.currentRenderType = previous;
+		ShaderTime.currentRenderLocation = previous;
 	}
 
 	public static void resize(int width, int height) {
@@ -151,7 +151,7 @@ public class Execute {
 	}
 
 	public static void beforeWorldRender() {
-		ShaderTime.currentRenderType = RenderTypes.WORLD;
+		ShaderTime.currentRenderLocation = RenderLocations.WORLD;
 		Events.BeforeWorldRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run();

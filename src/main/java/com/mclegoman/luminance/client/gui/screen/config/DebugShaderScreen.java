@@ -69,9 +69,9 @@ public class DebugShaderScreen extends Screen {
 				Debug.setDebugShaderEnabled(!Debug.isDebugShaderEnabled());
 				button.setMessage(Translation.getTranslation(Data.getVersion().getID(), "debug.render", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.isDebugShaderEnabled())}));
 			}).width(140).build());
-			gridAdder.addChild(Button.builder(Translation.getTranslation(Data.getVersion().getID(), "debug.render_type", new Object[]{Translation.getRenderTypeTranslation(Debug.debugRenderType)}), button -> {
-				Debug.cycleDebugRenderType(ClientData.minecraft.hasShiftDown());
-				button.setMessage(Translation.getTranslation(Data.getVersion().getID(), "debug.render_type", new Object[]{Translation.getRenderTypeTranslation(Debug.debugRenderType)}));
+			gridAdder.addChild(Button.builder(Translation.getTranslation(Data.getVersion().getID(), "debug.render_location", new Object[]{Translation.getRenderLocationTranslation(Debug.debugRenderLocation)}), button -> {
+				Debug.cycleDebugRenderLocation(ClientData.minecraft.hasShiftDown());
+				button.setMessage(Translation.getTranslation(Data.getVersion().getID(), "debug.render_location", new Object[]{Translation.getRenderLocationTranslation(Debug.debugRenderLocation)}));
 			}).width(140).build());
 
 			this.registryList = new IdentifierListWidget(150, 200, 20, 20, 20, ShaderStacks.getRegistries(), this.selectedRegistry, (id, widget) -> {});

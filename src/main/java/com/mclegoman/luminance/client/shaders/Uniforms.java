@@ -134,7 +134,7 @@ public class Uniforms {
 			registerSingleTree(namespace, "is_day", Uniforms::getIsDay, 0f, 1f);
 			registerStandardTree(namespace, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(Map.of("period", List.of(1.0))), false);
 			registerStandardTree(namespace, "random", Uniforms::getRandom, 0f, 1f, 1, EmptyConfig.INSTANCE, false);
-			registerStandardTree(namespace, "render_type", Uniforms::getRenderType, 0f, 1f, 3, EmptyConfig.INSTANCE, false);
+			registerStandardTree(namespace, "render_location", Uniforms::getRenderLocation, 0f, 1f, 3, EmptyConfig.INSTANCE, false);
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, "Failed to initialize uniforms: {}", error);
 		}
@@ -552,11 +552,11 @@ public class Uniforms {
 		uniformVector.set(0, Accessors.getGameRenderer().getRandom().nextFloat());
 	}
 
-	public static void getRenderType(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
+	public static void getRenderLocation(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		uniformVector.set(new Vec3(
-				ShaderTime.currentRenderType.isDepthSupported() ? 1.0F : 0.0F,
-				ShaderTime.currentRenderType.isOverUi() ? 1.0F : 0.0F,
-				ShaderTime.currentRenderType.isUnderUi() ? 1.0F : 0.0F
+				ShaderTime.currentRenderLocation.isDepthSupported() ? 1.0F : 0.0F,
+				ShaderTime.currentRenderLocation.isOverUi() ? 1.0F : 0.0F,
+				ShaderTime.currentRenderLocation.isUnderUi() ? 1.0F : 0.0F
 		));
 	}
 

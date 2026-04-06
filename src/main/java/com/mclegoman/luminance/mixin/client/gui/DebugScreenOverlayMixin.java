@@ -17,7 +17,7 @@ public abstract class DebugScreenOverlayMixin {
 //	private void luminance$addToDebugRight(CallbackInfoReturnable<List<String>> cir) {
 //		List<String> texts = cir.getReturnValue();
 //		if (Debug.debugShaderEnabled) {
-//			texts.add("[" + Data.getVersion().getName() + "] Debug: Render Type: " + Debug.debugRenderType.toString() + ", Registry: " + Debug.debugShader.getFirst().toString() + ", Shader: " + Debug.debugShader.getSecond().toString());
+//			texts.add("[" + Data.getVersion().getName() + "] Debug: Render Location: " + Debug.debugRenderLocation.toString() + ", Registry: " + Debug.debugShader.getFirst().toString() + ", Shader: " + Debug.debugShader.getSecond().toString());
 //		}
 //		cir.setReturnValue(texts);
 //	}

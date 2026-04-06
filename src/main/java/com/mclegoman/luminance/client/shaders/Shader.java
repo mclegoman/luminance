@@ -20,16 +20,16 @@ public class Shader {
 	private PostChain postProcessor;
 	private boolean useDepth;
 	private Identifier shaderId;
-	private Callable<RenderTypes.RenderType> renderType;
+	private Callable<RenderLocations.RenderLocation> RenderLocation;
 	private Callable<Boolean> shouldRender;
 	private ShaderRegistryEntry shaderData;
 
-	public Shader(ShaderRegistryEntry shaderData, Callable<RenderTypes.RenderType> renderType, Callable<Boolean> shouldRender) {
-		reload(shaderData, renderType, shouldRender);
+	public Shader(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation> RenderLocation, Callable<Boolean> shouldRender) {
+		reload(shaderData, RenderLocation, shouldRender);
 	}
 
-	public Shader(ShaderRegistryEntry shaderData, Callable<RenderTypes.RenderType> renderType) {
-		this(shaderData, renderType, () -> true);
+	public Shader(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation> RenderLocation) {
+		this(shaderData, RenderLocation, () -> true);
 	}
 
 	public PostChain getPostProcessor() {
@@ -70,12 +70,12 @@ public class Shader {
 		this.shaderId = id;
 	}
 
-	public Callable<RenderTypes.RenderType> getRenderType() {
-		return this.renderType;
+	public Callable<RenderLocations.RenderLocation> getRenderLocation() {
+		return this.RenderLocation;
 	}
 
-	public void setRenderType(Callable<RenderTypes.RenderType> renderType) {
-		this.renderType = renderType;
+	public void setRenderLocation(Callable<RenderLocations.RenderLocation> RenderLocation) {
+		this.RenderLocation = RenderLocation;
 	}
 
 	public Boolean getShouldRender() {
@@ -101,12 +101,12 @@ public class Shader {
 	}
 
 	public void reload() {
-		reload(shaderData, renderType, shouldRender);
+		reload(shaderData, RenderLocation, shouldRender);
 	}
 
-	public void reload(ShaderRegistryEntry shaderData, Callable<RenderTypes.RenderType> renderType, Callable<Boolean> shouldRender) {
+	public void reload(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation> renderLocation, Callable<Boolean> shouldRender) {
 		closePostProcessor();
-		setRenderType(renderType);
+		setRenderLocation(renderLocation);
 		setShouldRender(shouldRender);
 		setShaderData(shaderData);
 	}

@@ -16,7 +16,7 @@
 	"gui.luminance.keybindings.keybinding.adjust_alpha": "Adjust Alpha",
 	"gui.luminance.keybindings.keybinding.open_config": "Open Config",
 	"gui.luminance.keybindings.keybinding.toggle_debug_shader": "[DEBUG] Toggle Shader",
-	"gui.luminance.keybindings.keybinding.cycle_debug_render_type": "[DEBUG] Cycle Render Type",
+	"gui.luminance.keybindings.keybinding.cycle_debug_render_location": "[DEBUG] Cycle Render Location",
 
 	"gui.luminance.alpha_level": "Shader Strength: %s",
 
@@ -27,11 +27,11 @@
 	"gui.luminance.resource_pack.luminance_default.description": "The default look of Luminance",
 
 	"gui.luminance.debug.render": "Debug Shader: %s",
-	"gui.luminance.debug.render_type": "Render Type: %s",
-	"gui.luminance.render_type.world": "World",
-	"gui.luminance.render_type.ui": "UI",
-	"gui.luminance.render_type.ui_background": "UI Background",
-	"gui.luminance.render_type.panorama": "Panorama",
+	"gui.luminance.debug.render_location": "Render Location: %s",
+	"gui.luminance.render_location.world": "World",
+	"gui.luminance.render_location.ui": "UI",
+	"gui.luminance.render_location.ui_background": "UI Background",
+	"gui.luminance.render_location.panorama": "Panorama",
 
 	"gui.luminance.debug.disable_photosensitive": "Disable Photosensitive Shaders",
 	"gui.luminance.debug.reduced_alpha": "Reduced Debug Screen Alpha",

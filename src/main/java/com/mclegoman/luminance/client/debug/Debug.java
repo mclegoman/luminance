@@ -23,7 +23,7 @@ import java.util.Optional;
 public class Debug {
 	private static final Couple<Identifier, Identifier> debugShader;
 	private static boolean debugShaderEnabled;
-	public static RenderTypes.RenderType debugRenderType;
+	public static RenderLocations.RenderLocation debugRenderLocation;
 	private static boolean disablePhotosensitive;
 
 	public static boolean isDebugShaderEnabled() {
@@ -38,19 +38,19 @@ public class Debug {
 		return debugShader;
 	}
 
-	public static Optional<RenderTypes.RenderType> cycleDebugRenderType(boolean backwards) {
-		List<Identifier> renderTypes = new ArrayList<>(Events.RenderType.registry.keySet().stream().sorted().toList());
-		if (!renderTypes.isEmpty()) {
-			renderTypes.sort(Comparator.comparing(Identifier::toString));
-			int prevIndex = renderTypes.indexOf(debugRenderType.identifier());
+	public static Optional<RenderLocations.RenderLocation> cycleDebugRenderLocation(boolean backwards) {
+		List<Identifier> renderLocations = new ArrayList<>(Events.RenderLocation.registry.keySet().stream().sorted().toList());
+		if (!renderLocations.isEmpty()) {
+			renderLocations.sort(Comparator.comparing(Identifier::toString));
+			int prevIndex = renderLocations.indexOf(debugRenderLocation.identifier());
 			if (prevIndex == -1) prevIndex = 0;
-			int size = renderTypes.size();
+			int size = renderLocations.size();
 			int index;
 			if (backwards) index = (prevIndex - 1 + size) % size;
 			else index = (prevIndex + 1 + size) % size;
-			return Optional.of(debugRenderType = Events.RenderType.get(renderTypes.get(index)));
+			return Optional.of(debugRenderLocation = Events.RenderLocation.get(renderLocations.get(index)));
 		} else {
-			debugRenderType = RenderTypes.WORLD;
+			debugRenderLocation = RenderLocations.WORLD;
 			return Optional.empty();
 		}
 	}
@@ -63,7 +63,7 @@ public class Debug {
 	}
 
 	public static void modifyDebugShader(ShaderStacks.Entry stack) {
-		Events.ShaderRender.modify(getDebugId(), ShaderStacks.getShaders(getDebugId(0), stack, () -> Debug.debugRenderType, Debug::isDebugShaderEnabled, Debug::getDisablePhotosensitive));
+		Events.ShaderRender.modify(getDebugId(), ShaderStacks.getShaders(getDebugId(0), stack, () -> Debug.debugRenderLocation, Debug::isDebugShaderEnabled, Debug::getDisablePhotosensitive));
 	}
 
 	public static void setDebugShader(Identifier registry, Identifier shader) {
@@ -107,6 +107,6 @@ public class Debug {
 
 	static {
 		debugShader = new Couple<>(ShaderStacks.getMainRegistryId(), ShaderStacks.getShaderStacks(ShaderStacks.getMainRegistryId()).getFirst());
-		debugRenderType = RenderTypes.WORLD;
+		debugRenderLocation = RenderLocations.WORLD;
 	}
 }

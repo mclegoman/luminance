@@ -110,13 +110,13 @@ public class ShaderStacks {
         return renderId.withPath(renderId.getPath() + "_" + string);
     }
 
-    public static Events.ShaderRenderData getShaders(Identifier renderId, Entry stack, Callable<RenderTypes.RenderType> renderType, Callable<Boolean> enabled, Callables.ShaderRegistryCaller disablePhotosensitive) {
+    public static Events.ShaderRenderData getShaders(Identifier renderId, Entry stack, Callable<RenderLocations.RenderLocation> renderLocation, Callable<Boolean> enabled, Callables.ShaderRegistryCaller disablePhotosensitive) {
         List<Shader.Data> shaders = new ArrayList<>();
         if (stack != null) {
             int index = 0;
             for (Entry.ShaderInfo shaderInfo : stack.shaders()) {
                 try {
-                    shaders.add(new Shader.Data(getShadersId(renderId, String.valueOf(index)), new Shader(Shaders.get(shaderInfo.shaderRegistryId(), shaderInfo.shaderId()), renderType, enabled)));
+                    shaders.add(new Shader.Data(getShadersId(renderId, String.valueOf(index)), new Shader(Shaders.get(shaderInfo.shaderRegistryId(), shaderInfo.shaderId()), renderLocation, enabled)));
                     index++;
                 } catch (Exception error) {
                     Data.getVersion().sendToLog(LogType.WARN, "Failed to add '{}::{}' shader to shader stack!", shaderInfo.shaderRegistryId(), shaderInfo.shaderId());

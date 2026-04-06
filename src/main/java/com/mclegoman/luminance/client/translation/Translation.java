@@ -7,7 +7,7 @@
 
 package com.mclegoman.luminance.client.translation;
 
-import com.mclegoman.luminance.client.shaders.RenderTypes;
+import com.mclegoman.luminance.client.shaders.RenderLocations;
 import com.mclegoman.luminance.mixin.client.gui.StringSplitterAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -98,12 +98,12 @@ public class Translation {
 		return getTranslation(namespace, "config." + name);
 	}
 
-	public static MutableComponent getRenderTypeTranslation(Identifier renderTypeId) {
-		return Component.translatableWithFallback("gui." + renderTypeId.getNamespace() + ".render_type." + renderTypeId.getPath(), renderTypeId.toString());
+	public static MutableComponent getRenderLocationTranslation(Identifier renderLocationId) {
+		return Component.translatableWithFallback("gui." + renderLocationId.getNamespace() + ".render_location." + renderLocationId.getPath(), renderLocationId.toString());
 	}
 
-	public static MutableComponent getRenderTypeTranslation(RenderTypes.RenderType renderType) {
-		return getRenderTypeTranslation(renderType.identifier());
+	public static MutableComponent getRenderLocationTranslation(RenderLocations.RenderLocation renderLocation) {
+		return getRenderLocationTranslation(renderLocation.identifier());
 	}
 
 	public static MutableComponent getTranslation(String namespace, String key, Object[] variables, ChatFormatting[] formattings) {

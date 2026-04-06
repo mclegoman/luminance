@@ -11,17 +11,17 @@ import net.minecraft.resources.Identifier;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class RenderTypes {
-    public static RenderType WORLD = register(Data.idOf("world"), Shaders::renderUsingAllocator, true, false, false, false);
-    public static RenderType UI = register(Data.idOf("ui"), Shaders::renderUsingAllocator, false, true, false, true);
-    public static RenderType UI_BACKGROUND = register(Data.idOf("ui_background"), Shaders::renderUsingAllocator, false, false, true, true);
-    public static RenderType PANORAMA = register(Data.idOf("panorama"), Shaders::renderUsingAllocator, false, false, true, false);
+public class RenderLocations {
+    public static RenderLocation WORLD = register(Data.idOf("world"), Shaders::renderUsingAllocator, true, false, false, false);
+    public static RenderLocation UI = register(Data.idOf("ui"), Shaders::renderUsingAllocator, false, true, false, true);
+    public static RenderLocation UI_BACKGROUND = register(Data.idOf("ui_background"), Shaders::renderUsingAllocator, false, false, true, true);
+    public static RenderLocation PANORAMA = register(Data.idOf("panorama"), Shaders::renderUsingAllocator, false, false, true, false);
 
-    public static RenderType getFallback() {
+    public static RenderLocation getFallback() {
         return WORLD;
     }
 
-    public static void render(RenderType type, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
+    public static void render(RenderLocation type, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
         if (ClientData.minecraft.gameRenderer.isPanoramicMode()) return;
         Events.ShaderRender.registry.forEach((id, shaders) -> {
             try {
@@ -32,7 +32,7 @@ public class RenderTypes {
         });
     }
 
-    public static void renderShaders(RenderType type, Events.ShaderRenderData shaderRenderData, Identifier id, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
+    public static void renderShaders(RenderLocation type, Events.ShaderRenderData shaderRenderData, Identifier id, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
         if (ClientData.minecraft.gameRenderer.isPanoramicMode()) return;
         if (shaderRenderData != null) {
             List<Shader.Data> shaders = shaderRenderData.shaders();
@@ -46,11 +46,11 @@ public class RenderTypes {
         }
     }
 
-    public static void renderShader(RenderType type, Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
+    public static void renderShader(RenderLocation type, Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
         renderShader(type, id, shader, renderTarget, resourceAllocator, false);
     }
 
-    public static void renderShader(RenderType type, Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator, boolean disablePhotosensitivity) {
+    public static void renderShader(RenderLocation type, Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator, boolean disablePhotosensitivity) {
         if (ClientData.minecraft.gameRenderer.isPanoramicMode()) return;
         try {
             if (shader == null) return;
@@ -64,17 +64,17 @@ public class RenderTypes {
 
             if (shaderData.isPhotosensitive() && disablePhotosensitivity) return;
 
-            Callable<RenderTypes.RenderType> callableRenderType = shaderInstance.getRenderType();
-            if (callableRenderType == null) return;
+            Callable<RenderLocation> callableRenderLocation = shaderInstance.getRenderLocation();
+            if (callableRenderLocation == null) return;
 
-            RenderType renderType = callableRenderType.call();
-            if (renderType == null) return;
+            RenderLocation renderLocation = callableRenderLocation.call();
+            if (renderLocation == null) return;
 
-            boolean isCorrectType = renderType.equals(type);
+            boolean isCorrectType = renderLocation.equals(type);
             if (!isCorrectType && !isFallback) return;
 
-            boolean shouldFallback = (shaderInstance.getUseDepth() && !renderType.isDepthSupported()) || (shaderData.useFallbackWhenOverUi() && renderType.isOverUi()) || (shaderData.useFallbackWhenUnderUi() && renderType.isUnderUi());
-            if (shouldFallback && !renderType.canFallback()) return;
+            boolean shouldFallback = (shaderInstance.getUseDepth() && !renderLocation.isDepthSupported()) || (shaderData.useFallbackWhenOverUi() && renderLocation.isOverUi()) || (shaderData.useFallbackWhenUnderUi() && renderLocation.isUnderUi());
+            if (shouldFallback && !renderLocation.canFallback()) return;
 
             boolean canRender = (!shouldFallback && isCorrectType) || (shouldFallback && isFallback);
             if (!canRender) return;
@@ -85,17 +85,17 @@ public class RenderTypes {
         }
     }
 
-    public static RenderType register(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean canFallback) {
-        RenderType renderType = new RenderType(identifier, renderer, isDepthSupported, isOverUi, isUnderUi, canFallback);
-        Events.RenderType.register(identifier, renderType);
-        return renderType;
+    public static RenderLocation register(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean canFallback) {
+        RenderLocation renderLocation = new RenderLocation(identifier, renderer, isDepthSupported, isOverUi, isUnderUi, canFallback);
+        Events.RenderLocation.register(identifier, renderLocation);
+        return renderLocation;
     }
 
     public interface Renderer {
         void render(Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator);
     }
 
-    public record RenderType(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean canFallback) {
+    public record RenderLocation(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean canFallback) {
         public void render(Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
             this.renderer().render(id, shader, renderTarget, resourceAllocator);
         }

@@ -44,13 +44,13 @@ public class Shaders {
 		Events.BeforeGameRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "update"), Uniforms::update);
 
 		Events.AfterVanillaPostEffectRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
-				(renderTarget, resourceAllocator) -> RenderTypes.render(RenderTypes.WORLD, renderTarget, resourceAllocator));
+				(renderTarget, resourceAllocator) -> RenderLocations.render(RenderLocations.WORLD, renderTarget, resourceAllocator));
 		Events.AfterUiRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
-				(renderTarget, resourceAllocator) -> RenderTypes.render(RenderTypes.UI, renderTarget, resourceAllocator));
+				(renderTarget, resourceAllocator) -> RenderLocations.render(RenderLocations.UI, renderTarget, resourceAllocator));
 		Events.AfterUiBackgroundRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
-				(renderTarget, resourceAllocator) -> RenderTypes.render(RenderTypes.UI_BACKGROUND, renderTarget, resourceAllocator));
+				(renderTarget, resourceAllocator) -> RenderLocations.render(RenderLocations.UI_BACKGROUND, renderTarget, resourceAllocator));
 		Events.AfterPanoramaRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
-				(renderTarget, resourceAllocator) -> RenderTypes.render(RenderTypes.PANORAMA, renderTarget, resourceAllocator));
+				(renderTarget, resourceAllocator) -> RenderLocations.render(RenderLocations.PANORAMA, renderTarget, resourceAllocator));
 	}
 
 	public static Identifier getMainRegistryId() {
@@ -171,12 +171,12 @@ public class Shaders {
 		return null;
 	}
 
-	public static Shader get(ShaderRegistryEntry shaderData, Callable<RenderTypes.RenderType> renderType, Callable<Boolean> shouldRender) {
-		return new Shader(shaderData, renderType, shouldRender);
+	public static Shader get(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation> renderLocation, Callable<Boolean> shouldRender) {
+		return new Shader(shaderData, renderLocation, shouldRender);
 	}
 
-	public static Shader get(ShaderRegistryEntry shaderData, Callable<RenderTypes.RenderType> renderType) {
-		return new Shader(shaderData, renderType);
+	public static Shader get(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation> renderLocation) {
+		return new Shader(shaderData, renderLocation);
 	}
 
 	public static Identifier getPostShader(Identifier post_effect, boolean full) {
