@@ -54,6 +54,6 @@ void main() {
     if (r3.a < lowestVariance.a) lowestVariance = r3;
     if (r4.a < lowestVariance.a) lowestVariance = r4;
 
-    vec4 colour = texture(InSampler, texCoord);
-    fragColor = vec4(mix(colour.rgb, lowestVariance.rgb, Intensity), colour.a);
+    vec4 color = texture(InSampler, texCoord);
+    fragColor = vec4(mix(color.rgb, lowestVariance.rgb, Intensity), color.a);
 }
