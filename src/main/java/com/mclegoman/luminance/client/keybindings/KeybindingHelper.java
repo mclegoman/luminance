@@ -30,9 +30,14 @@ public class KeybindingHelper {
 		}
 		return false;
 	}
+
 	private static final HashMap<Identifier, KeyMapping.Category> createdCategories = new HashMap<>();
+
 	public static KeyMapping getKeybinding(String namespace, String category, String key, int keyCode) {
-		// TODO: this creates the category with a default "key.category.namespace.path" - im not sure if this is avoidable. if so it should be "gui.namespace.keybindings.category.path"
+		// This creates a category with the label "key.category.namespace.path".
+		// KeyMapping.Category is a record, so we can't extend it to modify the label().
+		// If we could, we could easily register a custom category using an accessor to get the sort order.
+		// Ideally we'd like to change the label to "gui.namespace.keybindings.category.path"
 		return KeyBindingHelper.registerKeyBinding(new KeyMapping(Translation.getKeybindingTranslation(namespace, key), InputConstants.Type.KEYSYM, keyCode, createdCategories.computeIfAbsent(Identifier.fromNamespaceAndPath(namespace, category), KeyMapping.Category::register)));
 	}
 }
