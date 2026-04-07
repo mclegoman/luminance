@@ -11,6 +11,7 @@ import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.events.Events;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +19,12 @@ import java.util.List;
 public interface SpectatorHandler extends Callables.PriorityHandler<@NotNull Entity> {
     List<SpectatorHandler> activeHandlers = new ArrayList<>();
 
-    static void onSpectate(@NotNull Entity entity, Mode mode) {
+    static void onSpectate(@Nullable Entity entity, Mode mode) {
         clearActive();
+
+        if (entity == null) {
+            return;
+        }
 
         int highest = -1;
         for (SpectatorHandler handler : Events.SpectatorHandlers.registry.values()) {
