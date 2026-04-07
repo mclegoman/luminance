@@ -16,10 +16,13 @@ import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
+import com.mclegoman.luminance.common.util.Couple;
+import com.mclegoman.luminance.common.util.DateHelper;
 import com.mclegoman.luminance.common.util.LogType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -126,6 +129,37 @@ public class ShaderStacks {
         return new Events.ShaderRenderData(shaders, disablePhotosensitive);
     }
 
+    public static Optional<Identifier> guessStackId(@NotNull String id) {
+        return guessStackId(getMainRegistryId(), id);
+    }
+
+    public static Optional<Identifier> guessStackId(@NotNull Identifier registry, @NotNull String id) {
+        // If the stack registry contains at least one stack with the name, the first detected instance will be used.
+        id = id.toLowerCase(Locale.ROOT);
+
+        if (id.contains(":")) {
+            Identifier identifier = Identifier.tryParse(id);
+            if (identifier == null) {
+                return Optional.empty();
+            }
+
+            Entry entry = getStack(registry, identifier);
+            if (entry != null) {
+                return Optional.of(identifier);
+            }
+
+            id = identifier.getPath();
+        }
+
+        for (Identifier shaderId : getRegistry(registry).keySet()) {
+            if (shaderId.getPath().equals(id)) {
+                return Optional.of(shaderId);
+            }
+        }
+
+        return Optional.empty();
+    }
+
     private static void reload() {
         try {
             resetRegistries();
@@ -223,5 +257,15 @@ public class ShaderStacks {
         public record ShaderInfo(Identifier shaderRegistryId, Identifier shaderId) {
             // TODO: Add uniform modifiers.
         }
+    }
+
+    public static Couple<Identifier, Entry> getRandom(Identifier registryId) {
+        List<Identifier> identifiers = new ArrayList<>(getRegistry(registryId).keySet());
+        Identifier identifier = identifiers.get(randomIndex(identifiers.size()));
+        return new Couple<>(identifier, getRegistry(registryId).get(identifier));
+    }
+
+    public static int randomIndex(int size) {
+        return Math.floorMod(DateHelper.getDate().getDayOfYear() + DateHelper.getDate().getYear(), size - 1);
     }
 }
