@@ -15,11 +15,13 @@ import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.RandomSource;
 
 import java.util.Optional;
 
 public class ClientData {
 	public static final Minecraft minecraft = Minecraft.getInstance();
+	public static final RandomSource random = RandomSource.create();
 
 	public static boolean isDevelopment() {
 		return FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment() || LuminanceConfig.config.debug.value();

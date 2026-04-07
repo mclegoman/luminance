@@ -129,6 +129,12 @@ public class ShaderStacks {
         return new Events.ShaderRenderData(shaders, disablePhotosensitive);
     }
 
+    public static Identifier randomize(Identifier current) {
+        Identifier shaderId = current;
+        while (shaderId == current) shaderId = ShaderStacks.getShaderStacks().get(ClientData.random.nextInt(ShaderStacks.getShaderStacks().size()));
+        return shaderId;
+    }
+
     public static Optional<Identifier> guessStackId(@NotNull String id) {
         return guessStackId(getMainRegistryId(), id);
     }
