@@ -22,7 +22,7 @@ public interface PostPassInterface {
 
     Identifier luminance$getOutputTarget();
 
-    void luminance$setForceVisit(boolean to);
+    //void luminance$setForceVisit(boolean to);
 
     CustomPassData luminance$putCustomData(Identifier identifier, CustomPassData data);
 
