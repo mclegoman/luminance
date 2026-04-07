@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.mixin.client.shaders;
 
+import com.google.common.collect.ImmutableMap;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mclegoman.luminance.client.events.Execute;
@@ -40,9 +41,10 @@ public abstract class PostPassMixin implements PostPassInterface {
 	@Shadow @Final private List<PostPass.Input> inputs;
 
 	@Shadow @Final private Map<String, GpuBuffer> customUniforms;
+	@Shadow @Final private RenderPipeline pipeline;
 	@Unique private final Map<Identifier, CustomPassData> luminance$customData = new HashMap<>();
 
-	@Unique private final Map<String, UniformBlock> luminance$overrides = new HashMap<>();
+	@Unique private ImmutableMap<String, UniformBlock> luminance$overrides;
 
 	@Inject(method = "method_67884", at = @At("HEAD"))
 	private void luminance$beforeRender(ResourceHandle<RenderTarget> handle, GpuBufferSlice gpuBufferSlice, Map<Identifier, ResourceHandle<RenderTarget>> map, CallbackInfo ci) {
@@ -77,22 +79,26 @@ public abstract class PostPassMixin implements PostPassInterface {
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void initialiseUniformData(RenderPipeline pipeline, Identifier outputTargetId, Map<String, List<UniformValue>> uniforms, List<PostPass.Input> samplers, CallbackInfo ci) {
+		ImmutableMap.Builder<String, UniformBlock> builder = new ImmutableMap.Builder<>();
+
 		uniforms.forEach((block, list) -> {
 			GpuBuffer buffer = customUniforms.get(block);
 			if (buffer != null) {
-				luminance$overrides.put(block, new UniformBlock(list, (int) buffer.size()));
+				builder.put(block, new UniformBlock(list, (int) buffer.size()));
 			}
 		});
+
+		luminance$overrides = builder.build();
 	}
 
 	@Override
-	public String luminance$getID() {
-		return name;
+	public RenderPipeline luminance$getPipeline() {
+		return pipeline;
 	}
 
 	@Override
-	public Set<String> luminance$getUniformBlockNames() {
-		return luminance$overrides.keySet();
+	public ImmutableMap<String, UniformBlock> luminance$getUniformBlocks() {
+		return luminance$overrides;
 	}
 
 	@Override

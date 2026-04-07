@@ -7,16 +7,17 @@
 
 package com.mclegoman.luminance.client.shaders.interfaces;
 
+import com.google.common.collect.ImmutableMap;
 import com.mclegoman.luminance.client.shaders.UniformBlock;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
-import java.util.Set;
 
 public interface PostPassInterface {
-    String luminance$getID();
+    RenderPipeline luminance$getPipeline();
 
-    Set<String> luminance$getUniformBlockNames();
+    ImmutableMap<String, UniformBlock> luminance$getUniformBlocks();
 
     UniformBlock luminance$getUniformBlock(String block);
 
