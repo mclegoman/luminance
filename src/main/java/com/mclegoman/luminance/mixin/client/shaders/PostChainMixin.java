@@ -78,9 +78,9 @@ public abstract class PostChainMixin implements PostChainInterface {
 //        luminance$persistentBufferSource = this.toString();
 //    }
 
-//    @Unique private static void luminance$trySetForceVisit(PostEffectPass postEffectPass, Map<Identifier, PostEffectPipeline.Targets> internalTargets) {
-//        PostEffectPassInterface passInterface = (PostEffectPassInterface)postEffectPass;
-//        PostEffectPipeline.Targets targets = internalTargets.get(passInterface.luminance$getOutputTarget());
+//    @Unique private static void luminance$trySetForceVisit(PostPass postEffectPass, Map<Identifier, PostChainConfig.InternalTarget> internalTargets) {
+//        PostPassInterface passInterface = (PostPassInterface)postEffectPass;
+//        PostChainConfig.InternalTarget targets = internalTargets.get(passInterface.luminance$getOutputTarget());
 //
 //        if (targets == null) return;
 //        if (!targets.persistent()) return;
@@ -128,7 +128,7 @@ public abstract class PostChainMixin implements PostChainInterface {
                 // so instead of only force-visiting the persistent ones, we force visit all of them
                 // this would only cause a performance penalty if there are excessive passes in a custom pass that *should* be unvisited
                 // but if someone's using a custom pass, i (Nettakrim) think they probably know what they're doing
-                //passes.forEach((pass) -> ((PostEffectPassInterface)pass).luminance$setForceVisit(true));
+                //passes.forEach((pass) -> ((PostPassInterface)pass).luminance$setForceVisit(true));
                 //passes.forEach((pass) -> luminance$trySetForceVisit(pass, pipeline.internalTargets()));
 
                 customPasses.put(entry.getKey(), passes);
