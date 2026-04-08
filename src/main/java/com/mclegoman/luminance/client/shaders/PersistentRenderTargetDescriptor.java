@@ -7,14 +7,13 @@
 
 package com.mclegoman.luminance.client.shaders;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.resource.RenderTargetDescriptor;
 import com.mojang.blaze3d.resource.ResourceDescriptor;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public record PersistentRenderTargetDescriptor(RenderTargetDescriptor renderTargetDescriptor, Object source, Identifier target, int clearColor) implements ResourceDescriptor<RenderTarget> {
+public record PersistentRenderTargetDescriptor(RenderTargetDescriptor renderTargetDescriptor, Object source, Identifier target) implements ResourceDescriptor<RenderTarget> {
     // TODO: 1.21.5 implemented persistence in vanilla
     //  it does this by tracking a String name
     //  this is a little less flexible than my Object method
@@ -30,11 +29,11 @@ public record PersistentRenderTargetDescriptor(RenderTargetDescriptor renderTarg
     }
 
     @Override
-    public void prepare(RenderTarget renderTarget) {
-        RenderSystem.getDevice().createCommandEncoder().clearColorTexture(renderTarget.getColorTexture(), this.clearColor);
+    public void prepare(@NotNull RenderTarget renderTarget) {
+        renderTargetDescriptor.prepare(renderTarget);
     }
 
-    public void free(RenderTarget renderTarget) {
-        renderTarget.destroyBuffers();
+    public void free(@NotNull RenderTarget renderTarget) {
+        renderTargetDescriptor.free(renderTarget);
     }
 }

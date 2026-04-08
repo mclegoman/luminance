@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.LevelTargetBundle;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.resource.ResourceHandle;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
@@ -41,7 +42,7 @@ public class LuminanceTargetBundle implements PostChain.TargetBundle {
 
     public LuminanceTargetBundle(FrameGraphBuilder builder, RenderTarget mainRenderTarget, @Nullable Set<Identifier> useDefaultFor) {
         this.mainRenderTarget = builder.importExternal("main", mainRenderTarget);
-        PersistentRenderTargetDescriptor persistentRenderTargetDescriptor = new PersistentRenderTargetDescriptor(new RenderTargetDescriptor(mainRenderTarget.width, mainRenderTarget.height, mainRenderTarget.useDepth, 0), null, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "default"), 0);
+        PersistentRenderTargetDescriptor persistentRenderTargetDescriptor = new PersistentRenderTargetDescriptor(new RenderTargetDescriptor(mainRenderTarget.width, mainRenderTarget.height, mainRenderTarget.useDepth, 0), null, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "default"));
         this.defaultRenderTarget = builder.createInternal("luminance:default", persistentRenderTargetDescriptor);
         this.useDefaultFor = useDefaultFor;
     }
@@ -56,11 +57,11 @@ public class LuminanceTargetBundle implements PostChain.TargetBundle {
         if (levelTargetBundle.translucent != null) {
             return levelTargetBundle;
         }
-        PersistentRenderTargetDescriptor persistentRenderTargetDescriptor = new PersistentRenderTargetDescriptor(factory, null, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "fabulous"), 0);
+        PersistentRenderTargetDescriptor persistentRenderTargetDescriptor = new PersistentRenderTargetDescriptor(factory, null, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "fabulous"));
         return new LuminanceTargetBundle(levelTargetBundle.main, frameGraphBuilder.createInternal("luminance:default", persistentRenderTargetDescriptor), fabulous);
     }
 
-    public void replace(Identifier id, ResourceHandle<RenderTarget> renderTarget) {
+    public void replace(Identifier id, @NotNull ResourceHandle<RenderTarget> renderTarget) {
         if (id.equals(PostChain.MAIN_TARGET_ID)) {
             mainRenderTarget = renderTarget;
         } else if (useDefault(id)) {
@@ -76,7 +77,7 @@ public class LuminanceTargetBundle implements PostChain.TargetBundle {
     }
 
     @Override
-    public ResourceHandle<RenderTarget> getOrThrow(Identifier id) {
+    public @NotNull ResourceHandle<RenderTarget> getOrThrow(@NotNull Identifier id) {
         ResourceHandle<RenderTarget> handle = get(id);
         if (handle == null) {
             if (useDefault(id)) {
