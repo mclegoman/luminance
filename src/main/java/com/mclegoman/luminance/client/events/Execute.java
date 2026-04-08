@@ -290,7 +290,7 @@ public class Execute {
 		}
 	}
 
-	public static boolean OnMouseScroll(long windowHandle, double horizontal, double vertical, ScrollWheelHandler scrollWheelHandler) {
+	public static boolean onMouseScroll(long windowHandle, double horizontal, double vertical, ScrollWheelHandler scrollWheelHandler) {
 		boolean shouldCancel = false;
 		for (Identifier registry : Events.OnMouseScroll.registry.keySet()) {
 			if (Events.OnMouseScroll.get(registry).call(windowHandle, horizontal, vertical, scrollWheelHandler)) shouldCancel = true;
@@ -298,7 +298,7 @@ public class Execute {
 		return shouldCancel;
 	}
 
-	public static boolean OnMouseButton(long windowHandle, MouseButtonInfo mouseButtonInfo, @MouseButtonInfo.Action int action) {
+	public static boolean onMouseButton(long windowHandle, MouseButtonInfo mouseButtonInfo, @MouseButtonInfo.Action int action) {
 		boolean shouldCancel = false;
 		for (Identifier registry : Events.OnMouseButton.registry.keySet()) {
 			if (Events.OnMouseButton.get(registry).call(windowHandle, mouseButtonInfo, action)) shouldCancel = true;

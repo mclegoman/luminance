@@ -24,11 +24,11 @@ public abstract class MouseHandlerMixin {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isSpectator()Z"), method = "onScroll", cancellable = true)
 	private void perspective$onScroll(long windowHandle, double horizontal, double vertical, CallbackInfo ci) {
-		if (Execute.OnMouseScroll(windowHandle, horizontal, vertical, this.scrollWheelHandler)) ci.cancel();
+		if (Execute.onMouseScroll(windowHandle, horizontal, vertical, this.scrollWheelHandler)) ci.cancel();
 	}
 
 	@Inject(at = @At("HEAD"), method = "onButton", cancellable = true)
 	private void perspective$onButton(long windowHandle, MouseButtonInfo mouseButtonInfo, int i, CallbackInfo ci) {
-		if (Execute.OnMouseButton(windowHandle, mouseButtonInfo, i)) ci.cancel();
+		if (Execute.onMouseButton(windowHandle, mouseButtonInfo, i)) ci.cancel();
 	}
 }
