@@ -1,7 +1,4 @@
 {
-	"gui.luminance.name": "Luminance",
-	"gui.luminance.description": "A library mod that helps other mods with shaders.",
-
 	"gui.luminance.developers": "Developers",
 
 	"gui.luminance.attributions": "Attributions",

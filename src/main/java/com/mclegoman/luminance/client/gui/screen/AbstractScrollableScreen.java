@@ -83,7 +83,7 @@ public abstract class AbstractScrollableScreen extends Screen {
 	}
 
 	public static Component getName(String id) {
-		return Translation.getTranslation(Data.getVersion().getID(), "name");
+		return Translation.getText(Data.getVersion().getName(), false);
 	}
 	
 	public static Component getTitle(Component title) {
