@@ -11,11 +11,14 @@ import com.google.common.collect.ImmutableList;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mclegoman.luminance.client.shaders.interfaces.PostPassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.PostChainInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PostChainConfigInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTargetInterface;
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.resource.RenderTargetDescriptor;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import net.minecraft.client.renderer.PostChain;
@@ -61,13 +64,9 @@ public abstract class PostChainMixin implements PostChainInterface {
         return original;
     }
 
-    @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Ljava/util/Map$Entry;getKey()Ljava/lang/Object;"), method = "addToFrame(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;IILnet/minecraft/client/renderer/PostChain$TargetBundle;)V")
-    private <K> K replacePersistentSource(K original, @Local Map.Entry<Identifier, PostChainConfig.InternalTarget> target) {
-        if (target.getValue().persistent() && luminance$persistentBufferSource != null) {
-            //noinspection unchecked
-            return (K) luminance$persistentBufferSource;
-        }
-        return original;
+    @WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/PostChain;getOrCreatePersistentTarget(Lnet/minecraft/resources/Identifier;Lcom/mojang/blaze3d/resource/RenderTargetDescriptor;)Lcom/mojang/blaze3d/pipeline/RenderTarget;"), method = "addToFrame(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;IILnet/minecraft/client/renderer/PostChain$TargetBundle;)V")
+    private RenderTarget replacePersistentSource(PostChain instance, Identifier identifier, RenderTargetDescriptor renderTargetDescriptor, Operation<RenderTarget> original) {
+        return original.call(instance, luminance$persistentBufferSource != null ? luminance$persistentBufferSource : identifier, renderTargetDescriptor);
     }
 
     // TODO: setting force visit for persistent buffers probably isnt needed anymore
