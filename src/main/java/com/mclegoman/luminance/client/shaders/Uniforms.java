@@ -200,7 +200,7 @@ public class Uniforms {
 		if (path == null) {
 			path = treeUniform.name;
 		} else {
-			path = path+"_"+treeUniform.name;
+			path = path+"/"+treeUniform.name;
 		}
 
 		Identifier identifier = Identifier.fromNamespaceAndPath(namespace, path);

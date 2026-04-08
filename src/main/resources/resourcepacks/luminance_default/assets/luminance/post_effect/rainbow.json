@@ -89,7 +89,7 @@
                         "name": "Alpha",
                         "type": "float",
                         "value": 1.0,
-                        "override": "luminance:alpha_smooth"
+                        "override": "luminance:alpha/smooth"
                     }
                 ]
             }

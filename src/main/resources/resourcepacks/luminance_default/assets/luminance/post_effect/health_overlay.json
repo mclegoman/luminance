@@ -23,7 +23,7 @@
                         "name": "IsActive",
                         "type": "float",
                         "value": 0.0,
-                        "override": "luminance:is_withered_smooth"
+                        "override": "luminance:is_withered/smooth"
                     },
                     {
                         "name": "OverlayColor",
@@ -49,7 +49,7 @@
                         "name": "IsActive",
                         "type": "float",
                         "value": 0.0,
-                        "override": "luminance:is_poisoned_smooth"
+                        "override": "luminance:is_poisoned/smooth"
                     },
                     {
                         "name": "OverlayColor",
@@ -75,31 +75,31 @@
                         "name": "IsActive",
                         "type": "float",
                         "value": 0.0,
-                        "override": "luminance:gamemode_has_health_smooth"
+                        "override": "luminance:gamemode_has_health/smooth"
                     },
                     {
                         "name": "CurrentHealth",
                         "type": "float",
                         "value": 20.0,
-                        "override": "luminance:current_health_smooth"
+                        "override": "luminance:current_health/smooth"
                     },
                     {
                         "name": "CurrentAdditionalHealth",
                         "type": "float",
                         "value": 0.0,
-                        "override": "luminance:current_absorption_smooth"
+                        "override": "luminance:current_absorption/smooth"
                     },
                     {
                         "name": "MaxHealth",
                         "type": "float",
                         "value": 20.0,
-                        "override": "luminance:max_health_smooth"
+                        "override": "luminance:max_health/smooth"
                     },
                     {
                         "name": "MaxAdditionalHealth",
                         "type": "float",
                         "value": 0.0,
-                        "override": "luminance:max_absorption_smooth"
+                        "override": "luminance:max_absorption/smooth"
                     },
                     {
                         "name": "OverlayColor",
@@ -161,7 +161,7 @@
                         "name": "Alpha",
                         "type": "float",
                         "value": 1.0,
-                        "override": "luminance:alpha_smooth"
+                        "override": "luminance:alpha/smooth"
                     }
                 ]
             }
