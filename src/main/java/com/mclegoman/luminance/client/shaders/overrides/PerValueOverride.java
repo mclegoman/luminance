@@ -14,12 +14,12 @@ import net.minecraft.resources.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PerValueUniformOverride implements UniformOverride {
+public class PerValueOverride implements UniformOverride {
     public final List<OverrideSource> overrideSources;
 
     protected final List<Float> values;
 
-    public PerValueUniformOverride(List<String> overrideStrings) {
+    public PerValueOverride(List<String> overrideStrings) {
         values = new ArrayList<>(overrideStrings.size());
         overrideSources = new ArrayList<>(overrideStrings.size());
 
@@ -37,7 +37,7 @@ public class PerValueUniformOverride implements UniformOverride {
 
     @Override
     public UniformOverride copy() {
-        return new PerValueUniformOverride(getStrings());
+        return new PerValueOverride(getStrings());
     }
 
     protected void updateValues(UniformConfig config, ShaderTime shaderTime) {
