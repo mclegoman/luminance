@@ -42,25 +42,25 @@ public class Shaders {
 	protected static final Map<Identifier, List<ShaderRegistryEntry>> registries = new HashMap<>();
 
 	public static void init() {
-		Events.ClientResourceReloaders.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "shaders"), new ShaderReloader());
+		Events.ClientResourceReloaders.register(Data.idOf("shaders"), new ShaderReloader());
 		ShaderStacks.init();
 		Uniforms.init();
-		Events.BeforeGameRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "update"), Uniforms::update);
+		Events.BeforeGameRender.register(Data.idOf("update"), Uniforms::update);
 
-		Events.AfterVanillaPostEffectRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
+		Events.AfterVanillaPostEffectRender.register(Data.idOf("main"),
 				(renderTarget, resourceAllocator) -> RenderLocations.render(RenderLocations.WORLD, renderTarget, resourceAllocator));
-		Events.AfterUiRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
+		Events.AfterUiRender.register(Data.idOf("main"),
 				(renderTarget, resourceAllocator) -> RenderLocations.render(RenderLocations.UI, renderTarget, resourceAllocator));
-		Events.AfterUiBackgroundRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
+		Events.AfterUiBackgroundRender.register(Data.idOf("main"),
 				(renderTarget, resourceAllocator) -> RenderLocations.render(RenderLocations.UI_BACKGROUND, renderTarget, resourceAllocator));
-		Events.AfterPanoramaRender.register(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"),
+		Events.AfterPanoramaRender.register(Data.idOf("main"),
 				(renderTarget, resourceAllocator) -> RenderLocations.render(RenderLocations.PANORAMA, renderTarget, resourceAllocator));
 
 		ProfiledDebugEntries.register(Data.idOf("debug_shader"), new DebugEntryDebugShader(), DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.IN_OVERLAY);
 	}
 
 	public static Identifier getMainRegistryId() {
-		return Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main");
+		return Data.idOf("main");
 	}
 
 	public static List<Identifier> getRegistries() {

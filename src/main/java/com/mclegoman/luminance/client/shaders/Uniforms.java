@@ -32,6 +32,7 @@ import com.mclegoman.luminance.mixin.client.shaders.DynamicRenderTickCounterAcce
 import com.mclegoman.luminance.mixin.client.shaders.GameRendererAccessor;
 import com.mclegoman.luminance.mixin.client.shaders.LevelRendererAccessor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.ScrollWheelHandler;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.CameraType;
 import net.minecraft.world.effect.MobEffect;
@@ -45,6 +46,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.MoonPhase;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
 
 import java.util.List;
 import java.util.Map;
@@ -140,6 +142,34 @@ public class Uniforms {
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, "Failed to initialize uniforms: {}", error);
 		}
+
+		Events.OnMouseScroll.register(Data.idOf("update_alpha"), (long windowHandle, double horizontal, double vertical, ScrollWheelHandler scrollWheelHandler) -> {
+			if (Uniforms.updatingAlpha()) {
+				boolean discreteMouseScroll = ClientData.minecraft.options.discreteMouseScroll().get();
+				double mouseWheelSensitivity = ClientData.minecraft.options.mouseWheelSensitivity().get();
+				double h = (discreteMouseScroll ? Math.signum(horizontal) : horizontal) * mouseWheelSensitivity;
+				double v = (discreteMouseScroll ? Math.signum(vertical) : vertical) * mouseWheelSensitivity;
+				if (ClientData.minecraft.player != null) {
+					Vector2i scroll = scrollWheelHandler.onMouseScroll(h, v);
+					if (scroll.x != 0 || scroll.y != 0) {
+						int scrollAmount = scroll.y == 0 ? -scroll.x : scroll.y;
+						Uniforms.adjustAlpha(scrollAmount);
+						return true;
+					}
+				}
+			}
+			return false;
+		});
+
+		Events.OnMouseButton.register(Data.idOf("reset_alpha"), (windowHandle, mouseButtonInfo, action) -> {
+			if (Uniforms.updatingAlpha()) {
+				if (mouseButtonInfo.button() == 2) {
+					Uniforms.resetAlpha();
+					return true;
+				}
+			}
+			return false;
+		});
 	}
 
 	public static void registerSingleTree(String namespace, String path, Callables.SingleUniformCalculation callable, @Nullable Float min, @Nullable Float max) {

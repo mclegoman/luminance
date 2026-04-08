@@ -68,6 +68,9 @@ public class Events {
 	public static final Registry<Uniform> ShaderUniform = new Registry<>();
 	public static final Registry<RenderLocations.RenderLocation> RenderLocation = new Registry<>();
 
+	public static final Registry<Callables.OnMouseScroll> OnMouseScroll = new Registry<>();
+	public static final Registry<Callables.OnMouseButton> OnMouseButton = new Registry<>();
+
 	public static class ShaderRender {
 		public static final Map<Identifier, ShaderRenderData> registry = new HashMap<>();
 

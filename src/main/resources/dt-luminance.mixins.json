@@ -16,7 +16,7 @@
     "client.shaders.GameRendererMixin",
     "client.shaders.LevelRendererAccessor",
     "client.shaders.LevelRendererMixin",
-    "client.shaders.MouseHandlerMixin",
+    "client.mouse.MouseHandlerMixin",
     "client.shaders.PanoramaRendererMixin",
     "client.shaders.PostChainConfigMixin",
     "client.shaders.PostChainMixin",

@@ -20,8 +20,10 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.resource.RenderTargetDescriptor;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.ScrollWheelHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
@@ -286,5 +288,21 @@ public class Execute {
 		 	allocator.release(targetDescriptor, worldDepth);
 		 	worldDepth = null;
 		}
+	}
+
+	public static boolean OnMouseScroll(long windowHandle, double horizontal, double vertical, ScrollWheelHandler scrollWheelHandler) {
+		boolean shouldCancel = false;
+		for (Identifier registry : Events.OnMouseScroll.registry.keySet()) {
+			if (Events.OnMouseScroll.get(registry).call(windowHandle, horizontal, vertical, scrollWheelHandler)) shouldCancel = true;
+		}
+		return shouldCancel;
+	}
+
+	public static boolean OnMouseButton(long windowHandle, MouseButtonInfo mouseButtonInfo, @MouseButtonInfo.Action int action) {
+		boolean shouldCancel = false;
+		for (Identifier registry : Events.OnMouseButton.registry.keySet()) {
+			if (Events.OnMouseButton.get(registry).call(windowHandle, mouseButtonInfo, action)) shouldCancel = true;
+		}
+		return shouldCancel;
 	}
 }
