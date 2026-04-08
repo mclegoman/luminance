@@ -31,7 +31,9 @@ public class AttributionsWidget {
             getLicense(modContainer.getMetadata()).ifPresent(texts::add);
             texts.add(empty());
 
-            for (Person developer : modContainer.getMetadata().getAuthors()) developers.add(getPersonName(developer).withStyle(ChatFormatting.WHITE));
+            for (Person developer : modContainer.getMetadata().getAuthors()) {
+                developers.add(Translation.getCombinedText(getPersonName(developer).withStyle(ChatFormatting.WHITE), Component.literal(" "), getPersonDonate(developer)));
+            }
             for (Person contributor : modContainer.getMetadata().getContributors()) contributors.add(getPersonName(contributor));
         }
 
@@ -87,6 +89,11 @@ public class AttributionsWidget {
         return new ScrollableTextWidget(minecraft, width, height, y, lineHeight, getTexts(modContainer));
     }
 
+    private static MutableComponent getPersonDonate(Person person) {
+        String url = person.getContact().get("donate").orElse(null);
+        return url == null || url.isBlank() ? getLiteral("", null) : getText(Translation.getTranslation(Data.getVersion().getID(), "donate." + person.getName()), url, new ChatFormatting[]{ChatFormatting.GRAY});
+    }
+
     private static MutableComponent getPersonName(Person person) {
         return getLiteral(person.getName(), person.getContact().get("homepage").orElse(null));
     }
@@ -137,7 +144,10 @@ public class AttributionsWidget {
     }
 
     private static MutableComponent getText(String key, boolean translatable, String homepage, ChatFormatting[] chatFormattings, Object... args) {
-        MutableComponent text = translatable ? Component.translatable(key, args) : Component.literal(key);
+        return getText(translatable ? Component.translatable(key, args) : Component.literal(key), homepage, chatFormattings);
+    }
+
+    private static MutableComponent getText(MutableComponent text, String homepage, ChatFormatting[] chatFormattings) {
         if (chatFormattings != null) text.withStyle(chatFormattings);
         if (homepage != null && !homepage.isBlank()) text.setStyle(text.getStyle().withClickEvent(new ClickEvent.OpenUrl(URI.create(homepage))));
         return text;

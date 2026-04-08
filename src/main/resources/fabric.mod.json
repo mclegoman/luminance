@@ -8,13 +8,15 @@
     {
       "name": "dannytaylor",
       "contact": {
-        "homepage": "https://modrinth.com/user/dannytaylor"
+        "homepage": "https://modrinth.com/user/dannytaylor",
+        "donate": "https://ko-fi.com/legotaylor"
       }
     },
     {
       "name": "Nettakrim",
       "contact": {
-        "homepage": "https://modrinth.com/user/Nettakrim"
+        "homepage": "https://modrinth.com/user/Nettakrim",
+        "donate": ""
       }
     }
   ],
