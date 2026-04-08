@@ -2,7 +2,7 @@ package com.mclegoman.luminance.client.shaders;
 
 import com.google.common.collect.ImmutableList;
 import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
-import com.mclegoman.luminance.client.shaders.overrides.LuminanceUniformOverride;
+import com.mclegoman.luminance.client.shaders.overrides.PerValueUniformOverride;
 import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.Std140Builder;
@@ -56,7 +56,7 @@ public class UniformBlock {
                         }
                     }
                 }
-                instance.override = new LuminanceUniformOverride(override);
+                instance.override = new PerValueUniformOverride(override);
             });
 
             uniformInterface.luminance$getConfig().ifPresent((config) -> instance.config = new MapConfig(config));

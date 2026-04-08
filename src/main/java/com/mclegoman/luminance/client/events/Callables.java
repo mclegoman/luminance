@@ -21,7 +21,7 @@ public class Callables {
 	}
 
 	@FunctionalInterface
-	public interface SingleUniformCalculation {
+	public interface SingleValueUniformCalculation {
 		float call(ShaderTime shaderTime);
 
 		default UniformCalculation convert() {

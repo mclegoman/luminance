@@ -16,16 +16,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class OverrideConfig implements UniformConfig {
+public class PerValueConfig implements UniformConfig {
     protected UniformConfig uniformConfig;
 
     protected int index;
 
-    public OverrideConfig(UniformConfig uniformConfig) {
+    public PerValueConfig(UniformConfig uniformConfig) {
         this.uniformConfig = uniformConfig;
     }
 
-    public OverrideConfig(UniformConfig uniformConfig, int index) {
+    public PerValueConfig(UniformConfig uniformConfig, int index) {
         MapConfig mapConfig = new MapConfig(Map.of());
         String prefix = index+"_";
         for (String name : uniformConfig.getNames()) {
@@ -67,6 +67,6 @@ public class OverrideConfig implements UniformConfig {
 
     @Override
     public UniformConfig copy() {
-        return new OverrideConfig(uniformConfig.copy());
+        return new PerValueConfig(uniformConfig.copy());
     }
 }

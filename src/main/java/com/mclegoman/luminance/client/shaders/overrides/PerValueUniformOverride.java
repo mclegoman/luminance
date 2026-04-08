@@ -14,12 +14,12 @@ import net.minecraft.resources.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LuminanceUniformOverride implements UniformOverride {
+public class PerValueUniformOverride implements UniformOverride {
     public final List<OverrideSource> overrideSources;
 
     protected final List<Float> values;
 
-    public LuminanceUniformOverride(List<String> overrideStrings) {
+    public PerValueUniformOverride(List<String> overrideStrings) {
         values = new ArrayList<>(overrideStrings.size());
         overrideSources = new ArrayList<>(overrideStrings.size());
 
@@ -37,15 +37,15 @@ public class LuminanceUniformOverride implements UniformOverride {
 
     @Override
     public UniformOverride copy() {
-        return new LuminanceUniformOverride(getStrings());
+        return new PerValueUniformOverride(getStrings());
     }
 
     protected void updateValues(UniformConfig config, ShaderTime shaderTime) {
-        OverrideConfig overrideConfig = new OverrideConfig(config);
+        PerValueConfig perValueConfig = new PerValueConfig(config);
         for (int i = 0; i < values.size(); i++) {
             OverrideSource overrideSource = overrideSources.get(i);
-            overrideConfig.setIndex(i);
-            values.set(i, overrideSource != null ? overrideSource.get(overrideConfig, shaderTime) : null);
+            perValueConfig.setIndex(i);
+            values.set(i, overrideSource != null ? overrideSource.get(perValueConfig, shaderTime) : null);
         }
     }
 
