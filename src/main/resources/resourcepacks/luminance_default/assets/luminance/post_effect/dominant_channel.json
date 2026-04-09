@@ -17,18 +17,13 @@
                 "DominantChannelConfig": [
                     {
                         "name": "Mode",
-                        "type": "float",
+                        "type": "int",
                         "value": 0.0
                     },
                     {
                         "name": "Channels",
                         "type": "float",
                         "value": 1.0
-                    },
-                    {
-                        "name": "Mix",
-                        "type": "float",
-                        "value": 0.0
                     }
                 ]
             },
