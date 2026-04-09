@@ -8,6 +8,7 @@
 	"gui.luminance.shader.luminance.blue_blobs2" : "Blue Blobs",
 	"gui.luminance.shader.luminance.grayscale" : "Greyscale",
 	"gui.luminance.shader.luminance.mirror" : "Mirror",
+	"gui.luminance.shader.luminance.rgb332" : "3-3-2 bit RGB",
 	"gui.luminance.shader.luminance.outlined" : "Outlined",
 	"gui.luminance.shader.luminance.outlined2" : "Darkened Outline",
 	"gui.luminance.shader.luminance.painting" : "Painting",
