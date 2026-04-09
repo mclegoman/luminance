@@ -17,16 +17,18 @@ import com.mclegoman.luminance.client.util.JsonResourceReloader;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.IdentifierHelper;
 import com.mclegoman.luminance.common.util.LogType;
+import net.fabricmc.fabric.impl.resource.FabricResourceReloader;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ShaderReloader extends JsonResourceReloader {
+public class ShaderReloader extends JsonResourceReloader implements FabricResourceReloader {
 	protected static boolean isReloading;
 	public static final String resourceLocation = "luminance";
 
@@ -154,5 +156,10 @@ public class ShaderReloader extends JsonResourceReloader {
 		}
 
 		Debug.applyDebugShader();
+	}
+
+	@Override
+	public @NonNull Identifier fabric$getId() {
+		return Data.idOf(resourceLocation);
 	}
 }
