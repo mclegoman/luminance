@@ -65,11 +65,15 @@ public class PerValueOverride implements UniformOverride {
             float value = Float.parseFloat(string);
             return new FixedValueSource(value);
         } catch (Exception ignored) {
-            Identifier identifier = Identifier.tryParse(string);
-            if (identifier == null) {
-                return new NullSource(string);
+            // only accept namespaced indexes as uniforms
+            int i = string.indexOf(':');
+            if (i >= 0) {
+                Identifier identifier = Identifier.tryBuild(string.substring(0, i), string.substring(i+1));
+                if (identifier != null) {
+                    return new UniformSource(identifier);
+                }
             }
-            return new UniformSource(identifier);
+            return new NullSource(string);
         }
     }
 }
