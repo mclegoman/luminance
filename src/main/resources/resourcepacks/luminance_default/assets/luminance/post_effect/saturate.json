@@ -6,7 +6,7 @@
     "passes": [
         {
             "vertex_shader": "minecraft:core/screenquad",
-            "fragment_shader": "minecraft:post/color_convolve",
+            "fragment_shader": "luminance:post/color_matrix",
             "inputs": [
                 {
                     "sampler_name": "In",

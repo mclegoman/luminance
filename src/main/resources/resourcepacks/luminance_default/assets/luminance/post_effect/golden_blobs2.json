@@ -7,7 +7,7 @@
     "passes": [
         {
             "vertex_shader": "minecraft:core/screenquad",
-            "fragment_shader": "minecraft:post/color_convolve",
+            "fragment_shader": "luminance:post/color_matrix",
             "inputs": [
                 {
                     "sampler_name": "In",
@@ -30,7 +30,7 @@
                     {
                         "name": "BlueMatrix",
                         "type": "vec3",
-                        "value": [ 0.0, 0.0, 0.0 ]
+                        "value": [ 0.2, 0.2, 0.2 ]
                     },
                     {
                         "name": "Offset",
