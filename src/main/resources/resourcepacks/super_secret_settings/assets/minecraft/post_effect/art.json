@@ -81,11 +81,6 @@
                         "name": "Radius",
                         "type": "float",
                         "value": 20.0
-                    },
-                    {
-                        "name": "RadiusMultiplier",
-                        "type": "float",
-                        "value": 1.0
                     }
                 ]
             }
@@ -114,11 +109,6 @@
                         "name": "Radius",
                         "type": "float",
                         "value": 20.0
-                    },
-                    {
-                        "name": "RadiusMultiplier",
-                        "type": "float",
-                        "value": 1.0
                     }
                 ]
             }
