@@ -6,7 +6,7 @@
   "photosensitive": false,
   "custom": {
     "souper_secret_settings": {
-      "groups": [ "edible" ]
+      "groups": [ "edible", "blur" ]
     }
   },
   "dependencies": {
