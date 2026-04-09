@@ -2,11 +2,6 @@
 
 uniform sampler2D InSampler;
 
-layout(std140) uniform SamplerInfo {
-    vec2 OutSize;
-    vec2 InSize;
-};
-
 layout(std140) uniform PixelatedConfig {
     uniform vec2 Amount;
     uniform float AmountMultiplier;

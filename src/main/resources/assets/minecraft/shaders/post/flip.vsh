@@ -1,12 +1,12 @@
 #version 330
 
-in vec4 Position;
-
 layout(std140) uniform FlipConfig {
     vec2 X;
     vec2 Y;
     vec2 Offset;
 };
+
+in vec4 Position;
 
 out vec2 texCoord;
 

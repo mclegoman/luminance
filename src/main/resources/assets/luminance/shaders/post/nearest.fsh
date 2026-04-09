@@ -2,11 +2,6 @@
 
 uniform sampler2D InSampler;
 
-layout(std140) uniform SamplerInfo {
-    vec2 OutSize;
-    vec2 InSize;
-};
-
 layout(std140) uniform NearestConfig {
     // this is inputted as 4 seperate vec3s, but the bytes can be directly interpretted as an array!
     uniform vec3[4] Palette;

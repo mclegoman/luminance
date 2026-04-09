@@ -19,10 +19,9 @@ in vec2 texCoord;
 out vec4 fragColor;
 
 void main() {
-    vec2 oneTexel = 1.0 / InSize;
     vec2 coord = texCoord - vec2(0.5);
 
-    float ratio = (AspectRatio.x/AspectRatio.y)/(oneTexel.y/oneTexel.x);
+    float ratio = (AspectRatio.x/AspectRatio.y)/(InSize.x/InSize.y);
     if (ratio > 1.0) {
         coord.y *= ratio;
     } else {

@@ -4,11 +4,6 @@ uniform sampler2D InSampler;
 uniform sampler2D BloomSampler;
 uniform sampler2D HighlightsSampler;
 
-layout(std140) uniform SamplerInfo {
-    vec2 OutSize;
-    vec2 InSize;
-};
-
 layout(std140) uniform MergeBloomConfig {
     float BloomFactor;
     float HighlightsFactor;

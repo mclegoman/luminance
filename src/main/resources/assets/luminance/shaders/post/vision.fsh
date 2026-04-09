@@ -6,8 +6,6 @@
 uniform sampler2D InSampler;
 uniform sampler2D InDepthSampler;
 
-in vec2 texCoord;
-
 layout(std140) uniform SamplerInfo {
     vec2 OutSize;
     vec2 InSize;
@@ -50,6 +48,8 @@ layout(std140) uniform VisionConfig {
     vec3 CameraPosition;
     float FOV;
 };
+
+in vec2 texCoord;
 
 out vec4 fragColor;
 

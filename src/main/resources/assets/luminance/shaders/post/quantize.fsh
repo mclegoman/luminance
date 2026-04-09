@@ -2,13 +2,13 @@
 
 uniform sampler2D InSampler;
 
-in vec2 texCoord;
-
 layout(std140) uniform QuantizeConfig {
     vec3 Levels;
     vec3 RoundAt;
     vec4 ColorModulate;
 };
+
+in vec2 texCoord;
 
 out vec4 fragColor;
 

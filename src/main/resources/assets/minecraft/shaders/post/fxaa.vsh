@@ -1,7 +1,5 @@
 #version 330
 
-in vec4 Position;
-
 layout(std140) uniform SamplerInfo {
     vec2 OutSize;
     vec2 InSize;
@@ -12,6 +10,8 @@ layout(std140) uniform FxaaConfig {
     float SpanMax;
     float ReduceMul;
 };
+
+in vec4 Position;
 
 out vec2 texCoord;
 out vec4 posPos;

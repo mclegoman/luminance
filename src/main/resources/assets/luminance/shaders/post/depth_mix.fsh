@@ -4,13 +4,6 @@ uniform sampler2D InSampler;
 uniform sampler2D InDepthSampler;
 uniform sampler2D MixSampler;
 
-layout(std140) uniform SamplerInfo {
-    vec2 OutSize;
-    vec2 InSize;
-    vec2 InDepthSize;
-    vec2 MixSize;
-};
-
 layout(std140) uniform DepthMixConfig {
     vec2 Amount;
     float ViewDistance;
@@ -21,7 +14,6 @@ in vec2 texCoord;
 out vec4 fragColor;
 
 void main() {
-    vec2 oneTexel = 1.0 / InSize;
     vec4 inputColor = texture(InSampler, texCoord);
     vec3 mixColor = texture(MixSampler, texCoord).rgb;
 

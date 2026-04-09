@@ -2,12 +2,12 @@
 
 uniform sampler2D InSampler;
 
-in vec2 texCoord;
-
 layout(std140) uniform DominantChannelConfig {
     int Mode;
     float Channels;
 };
+
+in vec2 texCoord;
 
 out vec4 fragColor;
 
