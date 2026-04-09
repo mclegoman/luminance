@@ -1,0 +1,78 @@
+{
+    "targets": {
+        "merge": {},
+        "swap": {}
+    },
+    "passes": [
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/quantize",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                }
+            ],
+            "output": "merge",
+            "uniforms": {
+                "QuantizeConfig": [
+                    {
+                        "name": "Levels",
+                        "type": "vec3",
+                        "value": [ 7.0, 7.0, 3.0 ]
+                    },
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/merge",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "merge"
+                },
+                {
+                    "sampler_name": "Merge",
+                    "target": "minecraft:main"
+                }
+            ],
+            "output": "swap",
+            "uniforms": {
+                "MergeConfig": [
+                    {
+                        "name": "Alpha",
+                        "type": "float",
+                        "value": 1.0,
+                        "override": "luminance:alpha/smooth"
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "swap"
+                }
+            ],
+            "output": "minecraft:main",
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
+                    }
+                ]
+            }
+        }
+    ]
+}
