@@ -4,6 +4,7 @@
 	"gui.luminance.shader.luminance.crt" : "⟘ᴚƆ",
 
 	"gui.luminance.shader.luminance.dominant_channel" : "lǝuuɐɥƆ ʇuɐuᴉɯoᗡ",
+	"gui.luminance.shader.luminance.dominant_channel.description" : "˙lǝuuɐɥɔ qפɹ ʇsǝʇɥƃᴉɹq ǝɥʇ sʇndʇno ʎluO",
 
 	"gui.luminance.shader.luminance.vision2": "uoᴉsᴉΛ ǝlqnoᗡ",
 
@@ -16,6 +17,7 @@
 	"gui.luminance.shader.luminance.grayscale" : "ǝlɐɔsʎɐɹ⅁",
 
 	"gui.luminance.shader.luminance.mirror" : "ɹoɹɹᴉW",
+	"gui.luminance.shader.luminance.mirror.description" : "˙ɥʇdǝp ƃuᴉsn ǝɔuɐʇsᴉp ǝɥʇ uᴉ ʎllɐʇuozᴉɹoɥ sdᴉlℲ",
 
 	"gui.luminance.shader.luminance.outlined" : "pǝuᴉlʇnO",
 
@@ -28,6 +30,7 @@
 	"gui.luminance.shader.luminance.tiltshift" : "ʇɟᴉɥs-ʇlᴉ⟘",
 
 	"gui.luminance.shader.luminance.rainbow" : "ʍoquᴉɐᴚ",
+	"gui.luminance.shader.luminance.rainbow.description" : "˙ʇɔǝɟɟǝ ʍoquᴉɐɹ pǝdᴉɹʇs ɐ ƃuᴉʇɐǝɹɔ 'spuɐq lɐʇuozᴉɹoɥ ʇɥƃᴉǝ ssoɹɔɐ sɹoloɔ sǝᴉldᴉʇlnW",
 
 	"gui.luminance.shader.luminance.silhouette" : "ǝʇʇǝnoɥlᴉS",
 
