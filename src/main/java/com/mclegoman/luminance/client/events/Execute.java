@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): dannytaylor
+    Contributor(s): dannytaylor, Nettakrim
     Github: https://github.com/mclegoman/Luminance
     Licence: GNU LGPLv3
 */
@@ -12,13 +12,9 @@ import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.shaders.RenderLocations;
 import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
-import com.mclegoman.luminance.client.util.CompatHelper;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.resource.RenderTargetDescriptor;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.ScrollWheelHandler;
 import net.minecraft.client.gui.GuiGraphics;
@@ -90,7 +86,7 @@ public class Execute {
 	}
 
 	public static void afterVanillaPostEffectRender(GraphicsResourceAllocator allocator) {
-		mergeDepth(allocator);
+		DepthFix.mergeDepth(allocator);
 
 		Events.AfterVanillaPostEffectRender.registry.forEach(((id, runnable) -> {
 			try {
@@ -186,7 +182,7 @@ public class Execute {
 			}
 		}));
 
-		copyDepth(allocator);
+		DepthFix.copyDepth(allocator);
 	}
 
 	public static void beforeShaderRender(PostPass postEffectPass) {
@@ -207,87 +203,6 @@ public class Execute {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterShaderRender event with id: {}: {}", id, error);
 			}
 		}));
-	}
-
-	private static RenderTargetDescriptor targetDescriptor;
-	private static RenderTarget worldDepth;
-
-	private static final RenderPipeline depthPipeline = RenderPipeline.builder(RenderPipelines.POST_PROCESSING_SNIPPET)
-			.withDepthWrite(true) // post-processing snippet has depth write off
-			.withFragmentShader(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "depth_fix"))
-			.withVertexShader(Identifier.withDefaultNamespace("core/screenquad"))
-			.withLocation(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "depth_fix"))
-			.build();
-
-	private static void copyDepth(GraphicsResourceAllocator allocator) {
-		cleanupDepth(allocator);
-
-		if (CompatHelper.isIrisShadersEnabled()) {
-			return;
-        }
-
-		RenderTarget target = ClientData.minecraft.getMainRenderTarget();
-
-		targetDescriptor = new RenderTargetDescriptor(target.width, target.height, true, 0);
-		worldDepth = allocator.acquire(targetDescriptor);
-		worldDepth.copyDepthFrom(target);
-	}
-
-	private static void mergeDepth(GraphicsResourceAllocator allocator) {
-		if (CompatHelper.isIrisShadersEnabled() || worldDepth == null) {
-			return;
-		}
-
-
-
-		try {
-			RenderTarget target = ClientData.minecraft.getMainRenderTarget();
-
-			// temporary fix for depth, just ignoring hand
-			target.copyDepthFrom(worldDepth);
-
-			// attempt at a proper fix - it correctly renders the shader
-			// but the texture bind doesnt seem to be doing anything
-			// and it also cant write to the depth buffer
-			// TODO: merge the hand depth nicely
-
-			/*
-			CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
-			RenderSystem.backupProjectionMatrix();
-
-			CachedOrthoProjectionMatrixBuffer matrixCache = ((ShaderManagerAccessor)ClientData.minecraft.getShaderManager()).getPostChainProjectionMatrixBuffer();
-			RenderSystem.setProjectionMatrix(matrixCache.getBuffer(target.width, target.height), ProjectionType.ORTHOGRAPHIC);
-
-			try (RenderPass renderPass = commandEncoder.createRenderPass(() -> "Depth Merge", target.getColorTextureView(), OptionalInt.empty(), target.getDepthTextureView(), OptionalDouble.empty())) {
-				renderPass.setPipeline(depthPipeline);
-
-				GpuSampler sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST);
-				renderPass.bindTexture("InSampler", worldDepth.getDepthTextureView(), sampler);
-				renderPass.bindTexture("HandSampler", target.getDepthTextureView(), sampler);
-
-				//GL11.glDepthFunc(GL11.GL_ALWAYS);
-				//GL11.glEnable(GL11.GL_DEPTH_TEST);
-
-				renderPass.draw(0, 3);
-
-				//GL11.glDisable(GL11.GL_DEPTH_TEST);
-				//GL11.glDepthFunc(GL11.GL_LESS);
-            }
-
-			RenderSystem.restoreProjectionMatrix();
-			*/
-		} catch (Exception e) {
-			Data.getVersion().sendToLog(LogType.INFO, "Error Fixing Depth: "+e.getMessage());
-		}
-
-		cleanupDepth(allocator);
-	}
-
-	private static void cleanupDepth(GraphicsResourceAllocator allocator) {
-		if (worldDepth != null) {
-		 	allocator.release(targetDescriptor, worldDepth);
-		 	worldDepth = null;
-		}
 	}
 
 	public static boolean onMouseScroll(long windowHandle, double horizontal, double vertical, ScrollWheelHandler scrollWheelHandler) {
