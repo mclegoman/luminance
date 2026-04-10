@@ -1,5 +1,5 @@
 {
-  "post_effect": "luminance:rgb332",
+  "post_effect": "luminance:ps1",
   "enabled": true,
   "fallback_when_over_ui": false,
   "fallback_when_under_ui": false,

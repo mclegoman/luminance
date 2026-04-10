@@ -1,16 +1,49 @@
 {
     "targets": {
+        "quantize": {},
         "merge": {},
         "swap": {}
     },
     "passes": [
         {
             "vertex_shader": "minecraft:core/screenquad",
-            "fragment_shader": "luminance:post/quantize",
+            "fragment_shader": "minecraft:post/notch",
             "inputs": [
                 {
                     "sampler_name": "In",
                     "target": "minecraft:main"
+                },
+                {
+                    "sampler_name": "Dither",
+                    "location": "dither",
+                    "width": 4,
+                    "height": 4,
+                    "bilinear": false
+                }
+            ],
+            "output": "quantize",
+            "uniforms": {
+                "NotchConfig": [
+                    {
+                        "name": "Mix",
+                        "type": "vec3",
+                        "value": [ 0.0, 0.0, 0.0 ]
+                    },
+                    {
+                        "name": "Scale",
+                        "type": "float",
+                        "value": 2.0
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "luminance:post/quantize",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "quantize"
                 }
             ],
             "output": "merge",
@@ -19,7 +52,7 @@
                     {
                         "name": "Levels",
                         "type": "vec3",
-                        "value": [ 7.0, 7.0, 3.0 ]
+                        "value": [ 4.0, 4.0, 4.0 ]
                     },
                     {
                         "name": "RoundAt",

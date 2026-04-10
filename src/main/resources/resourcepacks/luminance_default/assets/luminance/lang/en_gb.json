@@ -1,31 +1,61 @@
 {
 	"gui.luminance.shader.luminance.aa" : "Anti-aliasing",
+
 	"gui.luminance.shader.luminance.crt" : "CRT",
+
 	"gui.luminance.shader.luminance.dominant_channel" : "Dominant Channel",
+
 	"gui.luminance.shader.luminance.vision2": "Double Vision",
+
 	"gui.luminance.shader.luminance.gentoo" : "Gentoo",
+
 	"gui.luminance.shader.luminance.golden_blobs2" : "Golden Blobs",
+
 	"gui.luminance.shader.luminance.blue_blobs2" : "Blue Blobs",
+
 	"gui.luminance.shader.luminance.grayscale" : "Greyscale",
+
 	"gui.luminance.shader.luminance.mirror" : "Mirror",
-	"gui.luminance.shader.luminance.rgb332" : "3-3-2 bit RGB",
+
 	"gui.luminance.shader.luminance.outlined" : "Outlined",
+
 	"gui.luminance.shader.luminance.outlined2" : "Darkened Outline",
+
 	"gui.luminance.shader.luminance.painting" : "Painting",
+
 	"gui.luminance.shader.luminance.pixelated" : "Pixelated",
+
 	"gui.luminance.shader.luminance.tiltshift" : "Tilt-shift",
+
 	"gui.luminance.shader.luminance.rainbow" : "Rainbow",
+
 	"gui.luminance.shader.luminance.silhouette" : "Silhouette",
+
 	"gui.luminance.shader.luminance.silhouette2" : "Inverted Silhouette",
+
 	"gui.luminance.shader.luminance.sixteen_colors": "16 Colours",
+
 	"gui.luminance.shader.luminance.bloom_dither": "Light-Based Dither",
+
 	"gui.luminance.shader.luminance.depth_dither": "Depth-Based Dither",
+
 	"gui.luminance.shader.luminance.eightbit": "8-Bit",
+
 	"gui.luminance.shader.luminance.health_overlay": "Health Overlay",
+
 	"gui.luminance.shader.luminance.dos": "DOS",
+	"gui.luminance.shader.luminance.dos.description": "Quantizes RGB channels to a 3-3-2 bit palette, approximating the look of early 1990's 256-color graphics.",
+
+	"gui.luminance.shader.luminance.ps1": "PS1",
+	"gui.luminance.shader.luminance.ps1.description": "Applies dithering and then quantizes RGB channels to a 15 bit palette, simulating the visual output of early gaming consoles.",
+
 	"gui.luminance.shader.luminance.saturate": "Saturated",
+
 	"gui.luminance.shader.luminance.sepia": "Sepia",
+
 	"gui.luminance.shader.luminance.inverted_colors": "Inverted Colours",
+
 	"gui.luminance.shader.luminance.inverted_brightness": "Inverted Brightness",
+
 	"gui.luminance.shader.luminance.vision": "Vision"
 }

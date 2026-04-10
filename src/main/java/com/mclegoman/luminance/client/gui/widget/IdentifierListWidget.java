@@ -59,7 +59,7 @@ public class IdentifierListWidget extends ObjectSelectionList<IdentifierListWidg
     protected void renderItem(GuiGraphics context, int mouseX, int mouseY, float delta, Entry entry) {
         if (this.getHovered() != null && this.getHovered().equals(entry)) {
             this.renderSelection(context, entry, -8355712);
-            if (entry.hoverText != null && !entry.hoverText.getString().isBlank()) context.setTooltipForNextFrame(entry.hoverText, mouseX, mouseY);
+            if (entry.hoverText != null && !entry.hoverText.getString().isBlank()) context.setTooltipForNextFrame(this.minecraft.font.split(entry.hoverText, this.width), mouseX, mouseY);
         }
         if (entry.equals(getSelected())) this.renderSelection(context, entry, -1);
         entry.renderContent(context, mouseX, mouseY, this.isHovered, delta);

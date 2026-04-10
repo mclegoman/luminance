@@ -19,7 +19,7 @@
                     {
                         "name": "Levels",
                         "type": "vec3",
-                        "value": [ 8.0, 8.0, 8.0 ]
+                        "value": [ 7.0, 7.0, 3.0 ]
                     },
                     {
                         "name": "RoundAt",
