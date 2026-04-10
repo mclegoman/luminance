@@ -3,10 +3,10 @@
 	"gui.luminance.shader.minecraft.box_blur.description": "Renders a simple and efficient blur.",
 
 	"gui.luminance.shader.minecraft.creeper": "Creeper",
-	"gui.luminance.shader.minecraft.creeper.description": "Adds a green tint, reduces resolution, and limits colors to an 8-bit palette.",
+	"gui.luminance.shader.minecraft.creeper.description": "Adds a green tint, reduces resolution, and limits colours to an 8-bit palette.",
 
 	"gui.luminance.shader.minecraft.invert": "Invert",
-	"gui.luminance.shader.minecraft.invert.description": "Inverts and slightly desaturates colors.",
+	"gui.luminance.shader.minecraft.invert.description": "Inverts and slightly desaturates colours.",
 
 	"gui.luminance.shader.minecraft.spider": "Spider",
 	"gui.luminance.shader.minecraft.spider.description": "Renders eight times in a similar shape to a spider's eyes, blurring in between."

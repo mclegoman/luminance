@@ -53,6 +53,7 @@
 	"gui.luminance.shader.luminance.ps1.description": "Applies dithering and then quantizes RGB channels to a 15 bit palette, simulating the visual output of early gaming consoles.",
 
 	"gui.luminance.shader.luminance.saturate": "Saturated",
+	"gui.luminance.shader.luminance.saturate.description": "Intensifies/adds more colors, adding vibrancy.",
 
 	"gui.luminance.shader.luminance.sepia": "Sepia",
 

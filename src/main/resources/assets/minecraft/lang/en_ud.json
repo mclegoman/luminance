@@ -1,6 +1,13 @@
 {
-	"shader.minecraft.box_blur": "ɹnlq",
-	"shader.minecraft.creeper": "ɹǝdǝǝɹƆ",
-	"shader.minecraft.invert": "ʇɹǝʌuI",
-	"shader.minecraft.spider": "ɹǝpᴉdS"
+	"gui.luminance.shader.minecraft.box_blur": "ɹnlᗺ xoᗺ",
+	"gui.luminance.shader.minecraft.box_blur.description": "˙ɹnlq ʇuǝᴉɔᴉɟɟǝ puɐ ǝldɯᴉs ɐ sɹǝpuǝᴚ",
+
+	"gui.luminance.shader.minecraft.creeper": "ɹǝdǝǝɹƆ",
+	"gui.luminance.shader.minecraft.creeper.description": "˙ǝʇʇǝlɐd ʇᴉq-8 uɐ oʇ sɹoloɔ sʇᴉɯᴉl puɐ ˋuoᴉʇnlosǝɹ sǝɔnpǝɹ ˋʇuᴉʇ uǝǝɹɓ ɐ sppⱯ",
+
+	"gui.luminance.shader.minecraft.invert": "ʇɹǝʌuI",
+	"gui.luminance.shader.minecraft.invert.description": "˙sɹoloɔ sǝʇɐɹnʇɐsǝp ʎlʇɥɓᴉls puɐ sʇɹǝʌuI",
+
+	"gui.luminance.shader.minecraft.spider": "ɹǝpᴉdS",
+	"gui.luminance.shader.minecraft.spider.description": "˙uǝǝʍʇǝq uᴉ ɓuᴉɹɹnlq ˋsǝʎǝ s,ɹǝpᴉds ɐ oʇ ǝdɐɥs ɹɐlᴉɯᴉs ɐ uᴉ sǝɯᴉʇ ʇɥɓᴉǝ sɹǝpuǝᴚ"
 }

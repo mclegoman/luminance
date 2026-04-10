@@ -1,25 +1,65 @@
 {
-	"shader.minecraft.antialias": "sɐᴉlɐ-ᴉʇu∀",
-	"shader.minecraft.art": "ʇɹ∀",
-	"shader.minecraft.bits": "sʇᴉq",
-	"shader.minecraft.blobs": "sqolq",
-	"shader.minecraft.blobs2": "II sqolq",
-	"shader.minecraft.bloom": "ɯoolq",
-	"shader.minecraft.bumpy": "ʎdɯnq",
-	"shader.minecraft.color_convolve": "ǝʌloʌuoƆ ɹoloƆ",
-	"shader.minecraft.deconverge": "ǝƃɹǝʌuoɔǝp",
-	"shader.minecraft.desaturate": "ǝʇɐɹnʇɐsǝp",
-	"shader.minecraft.flip": "dᴉlℲ",
-	"shader.minecraft.fxaa": "∀∀XℲ",
-	"shader.minecraft.green": "uǝǝɹפ",
-	"shader.minecraft.notch": "ɥɔʇoN",
-	"shader.minecraft.ntsc": "ƆS┴N",
-	"shader.minecraft.outline": "ǝuᴉlʇnO",
-	"shader.minecraft.pencil": "lᴉɔuǝԀ",
-	"shader.minecraft.phosphor": "ɹoɥdsoɥԀ",
-	"shader.minecraft.scan_pincushion": "uoᴉɥsnɔuᴉԀ uɐɔS",
-	"shader.minecraft.shareware": "ㄣƐ˙Ɩʌ ǝɹɐʍǝɹɐɥS pƐ",
-	"shader.minecraft.sobel": "lǝqoS",
-	"shader.minecraft.wobble": "ǝlqqoM",
-	"shader.minecraft.love": "ǝʌo˥"
+	"gui.luminance.shader.minecraft.antialias": "sɐᴉlɐ-ᴉʇuⱯ",
+	"gui.luminance.shader.minecraft.antialias.description": "˙slǝxᴉd ʎqɹɐǝu ɓuᴉpuǝlq ʎq sǝɓpǝ pǝɓɓɐſ sɥʇooɯS",
+
+	"gui.luminance.shader.minecraft.art": "ʇɹⱯ",
+	"gui.luminance.shader.minecraft.art.description": "˙ʎlʇɥɓᴉls ɹǝɯɯᴉɥs sʇɔǝſqo ɓuᴉʌoɯ ˋpɹɐʍʇno slǝxᴉd suǝʇɟoS",
+
+	"gui.luminance.shader.minecraft.bits": "sʇᴉᗺ",
+	"gui.luminance.shader.minecraft.bits.description": "˙ǝʇʇǝlɐd ʇᴉq-8 uɐ oʇ sɹoloɔ sʇᴉɯᴉl puɐ ˋuoᴉʇnlosǝɹ sǝɔnpǝᴚ",
+
+	"gui.luminance.shader.minecraft.blobs": "sqolᗺ",
+
+	"gui.luminance.shader.minecraft.blobs2": "II sqolᗺ",
+
+	"gui.luminance.shader.minecraft.bloom": "ɯoolᗺ",
+	"gui.luminance.shader.minecraft.bloom.description": "˙ǝʇɐpd∩ ǝʇoΛ ǝɥ⟘ ;q_ɹo_ɐԐ⇂ʍԐᘕ uᴉ uǝǝs sɐ ˋɯoolq pǝsɐq-ssǝuʇɥɓᴉɹq ɔᴉʇɐɯǝuᴉɔ ɐ sppⱯ",
+
+	"gui.luminance.shader.minecraft.bumpy": "ʎdɯnᗺ",
+	"gui.luminance.shader.minecraft.bumpy.description": "˙ǝɔuɐɹɐǝddɐ ᗡԐ ɐ sǝɹnʇxǝʇ ɓuᴉʌᴉɓ puɐ ˋsǝɔuǝɹǝɟɟᴉp ɹoloɔ sǝuᴉlʇnO",
+
+	"gui.luminance.shader.minecraft.deconverge": "ǝɓɹǝʌuoɔǝᗡ",
+	"gui.luminance.shader.minecraft.deconverge.description": "˙slǝuuɐɥɔ ɹoloɔ ǝnlq puɐ ˋuǝǝɹɓ ˋpǝɹ ǝɥʇ sʇǝsɟɟO",
+
+	"gui.luminance.shader.minecraft.desaturate": "ǝʇɐɹnʇɐsǝᗡ",
+	"gui.luminance.shader.minecraft.desaturate.description": "˙sɹoloɔ ɟo ʎʇᴉsuǝʇuᴉ ǝɥʇ sǝɔnpǝɹ ʎllɐɔᴉʇsɐɹᗡ",
+
+	"gui.luminance.shader.minecraft.flip": "dᴉlℲ",
+	"gui.luminance.shader.minecraft.flip.description": "˙ʎllɐɔᴉʇɹǝʌ ɐɹǝɯɐɔ ǝɥʇ sʇɹǝʌuI",
+
+	"gui.luminance.shader.minecraft.fxaa": "ⱯⱯXℲ",
+	"gui.luminance.shader.minecraft.fxaa.description": "˙sǝɓpǝ pǝɓɓɐſ ɓuᴉɥʇooɯs ˋɓuᴉsɐᴉlɐ-ᴉʇuɐ ɟo ʇunoɯɐ llɐɯs ɐ sppⱯ",
+
+	"gui.luminance.shader.minecraft.green": "uǝǝɹ⅁",
+	"gui.luminance.shader.minecraft.green.description": "˙ʇuᴉʇ uǝǝɹɓ ɐ sppɐ puɐ ˋǝʇʇǝlɐd ʇᴉq-8 uɐ oʇ sɹoloɔ sʇᴉɯᴉl ˋuoᴉʇnlosǝɹ sǝɔnpǝɹ ˋɓuᴉɹɹnlq ʇnoɥʇᴉʍ ˋʎɐldsᴉp ⟘ᴚƆ ɐ ɟo ʞool ǝɥʇ sǝʇɐlnɯᴉS",
+
+	"gui.luminance.shader.minecraft.notch": "ɥɔʇoN",
+	"gui.luminance.shader.minecraft.notch.description": "˙ʇɔǝɟɟǝ ɓuᴉɹǝɥʇᴉp ɐ sɹǝpuǝɹ puɐ ˋǝʇʇǝlɐd ɹoloɔ ʇᴉq-8 ɐ sǝsn ˋuoᴉʇnlosǝɹ ǝɥʇ sǝʌlɐH",
+
+	"gui.luminance.shader.minecraft.ntsc": "ƆS⟘N",
+	"gui.luminance.shader.minecraft.ntsc.description": "˙ʎɐldsᴉp ⟘ᴚƆ ɐ ɟo ʞool ǝɥʇ sǝʇɐlnɯᴉS",
+
+	"gui.luminance.shader.minecraft.outline": "ǝuᴉlʇnO",
+	"gui.luminance.shader.minecraft.outline.description": "˙xǝldɯoɔ ssǝl ʇnq ˋʎdɯnᗺ oʇ ʎlɹɐlᴉɯᴉs sǝɔuǝɹǝɟɟᴉp ɹoloɔ sǝuᴉlʇnO",
+
+	"gui.luminance.shader.minecraft.pencil": "lᴉɔuǝԀ",
+	"gui.luminance.shader.minecraft.pencil.description": "˙ɔᴉʇǝɥʇsǝɐ ǝʞᴉl-ɥɔʇǝʞs ɐ uᴉ ɓuᴉʇlnsǝɹ ˋsǝuᴉlʇno lɐuoᴉsɐɔɔo ɥʇᴉʍ ɔᴉʇɐɯoɹɥɔouoW",
+
+	"gui.luminance.shader.minecraft.phosphor": "ɹoɥdsoɥԀ",
+	"gui.luminance.shader.minecraft.phosphor.description": "˙sʇɔǝſqo ɓuᴉʌoɯ puᴉɥǝq slᴉɐɹʇ uoᴉʇoɯ sǝʌɐǝꞀ",
+
+	"gui.luminance.shader.minecraft.scan_pincushion": "uoᴉɥsnɔuᴉԀ uɐɔS",
+	"gui.luminance.shader.minecraft.scan_pincushion.description": "˙ɓuᴉɹɹnlq ʇnoɥʇᴉʍ ˋʎɐldsᴉp ⟘ᴚƆ ɐ ɟo ʞool ǝɥʇ sǝʇɐlnɯᴉS",
+
+	"gui.luminance.shader.minecraft.shareware": "તԐ˙⇂ʌ ǝɹɐʍǝɹɐɥS ᗡԐ",
+	"gui.luminance.shader.minecraft.shareware.description": "˙તԐ˙⇂ʌ ǝɹɐʍǝɹɐɥS ᗡԐ uᴉ uǝǝs sɐ ˋǝʇʇǝlɐd ɹoloɔ pǝzᴉɹǝʇsod ɐ sǝᴉlddɐ puɐ ˋuoᴉʇnlosǝɹ sǝɔnpǝɹ ˋuoᴉʇɐɹnʇɐs sʇsooᗺ",
+
+	"gui.luminance.shader.minecraft.sobel": "lǝqoS",
+	"gui.luminance.shader.minecraft.sobel.description": "˙ʞɔɐlq ǝslǝ ɓuᴉɥʇʎɹǝʌǝ ɓuᴉɹǝpuǝɹ ˋsǝɓpǝ uo ɹoloɔ sɹǝpuǝɹ ʎluO",
+
+	"gui.luminance.shader.minecraft.wobble": "ǝlqqoM",
+	"gui.luminance.shader.minecraft.wobble.description": "˙ǝʌɐʍ ǝuᴉs ɐ uᴉ slǝxᴉd ɓuᴉʇɐllᴉɔso ʇslᴉɥʍ ˋǝɓuɐɹ ǝnɥ ǝɥʇ ɥɓnoɹɥʇ sɹoloɔ sǝlɔʎɔ ʎlsnonuᴉʇuoƆ",
+
+	"gui.luminance.shader.minecraft.love": "sɓnH puɐ ǝʌoꞀ",
+	"gui.luminance.shader.minecraft.love.description": "˙ǝʇɐpd∩ sɓnH puɐ ǝʌoꞀ ǝɥ⟘ ;ɐત⇂ʍ૨⇂ uᴉ uǝǝs sɐ ˋʇuᴉʇ pǝɹ ɐ sppⱯ"
 }
