@@ -25,7 +25,7 @@ layout(std140) uniform VisionConfig {
     float AddInterR;
     float ShiftR;
     float FoveaAngle;
-    float Mode;
+    int Mode;
     float InvertEyeCorrection;
     float PI;
     float ToRadianDenominator;
@@ -44,8 +44,8 @@ layout(std140) uniform VisionConfig {
     float CylBias;
     float CylScale;
     float ZPlane;
-    vec3 TargetPosition;
-    vec3 CameraPosition;
+    float Pitch;
+    float Yaw;
     float FOV;
 };
 
@@ -61,16 +61,37 @@ float getRadius(float value, float weight) {
     return clamp(abs(value) * (1.0 - weight) * RadiusScale + 0.5, MinRadius, MaxRadius);
 }
 
+vec3 getGazeDir(float pitch, float yaw) {
+    float cosPitch = cos(pitch);
+    float sinPitch = sin(pitch);
+    float cosYaw = cos(yaw);
+    float sinYaw = sin(yaw);
+    return normalize(vec3(cosPitch * sinYaw, sinPitch, cosPitch * cosYaw));
+}
+
 vec4 blur(vec2 uv, float sph, float cyl, float axis, float nearAdd, float interAdd, vec2 oneTexel) {
     vec2 pos = uv * 2.0 - 1.0;
     pos.x *= oneTexel.y / oneTexel.x;
     pos.y *= -1.0;
-    float angle = acos(clamp(dot(normalize(vec3(pos, ZPlane)), normalize(TargetPosition - CameraPosition)), -1.0, 1.0));
+
+    vec3 viewDir = vec3(pos, ZPlane);
+    float viewLen2 = dot(viewDir, viewDir);
+    if (viewLen2 < 1e-8) viewDir = vec3(0.0, 0.0, 1.0);
+    else viewDir /= sqrt(viewLen2);
+
+    vec3 gazeDir = getGazeDir(Pitch, Yaw);
+    float gazeLen2 = dot(gazeDir, gazeDir);
+    if (gazeLen2 < 1e-8) gazeDir = vec3(0.0, 0.0, 1.0);
+    else gazeDir /= sqrt(gazeLen2);
+
+    float angle = acos(clamp(dot(viewDir, gazeDir), -1.0, 1.0));
+
     float fov = toRadians(FoveaAngle);
     float weight = mix(clamp(1.0 - texture(InDepthSampler, uv).r, 0.0, 1.0), exp(-angle * angle / (2.0 * fov * fov)), DepthFoveaMix);
     float sphRadius = getRadius(mix(-sph, sph, InvertEyeCorrection) + mix(interAdd * InvertEyeCorrection, nearAdd * InvertEyeCorrection, weight), weight);
     float cylRadius = getRadius(mix(-cyl, cyl, InvertEyeCorrection), weight);
-    int samples = max(1, int(float(int(floor(SampleRange + 0.5))) * pow(1.0 - weight, FovealFalloff)));
+    int base = int(floor(SampleRange + 0.5));
+    int samples = max(1, int(float(base) * pow(1.0 - weight, FovealFalloff)));
     vec4 sphBlur = vec4(0.0);
     float sphWeightSum = 0.0;
     for (int x = -samples; x <= samples; x++) {
@@ -98,12 +119,17 @@ void main() {
     vec2 oneTexel = 1.0 / InSize;
     vec4 colorLeft  = blur(clamp(texCoord - vec2(ShiftL * oneTexel.x * ShiftFactor, 0.0), 0.0, 1.0),  SphL, CylL, AxisL, AddNearL, AddInterL, oneTexel);
     vec4 colorRight = blur(clamp(texCoord + vec2(ShiftR * oneTexel.x * ShiftFactor, 0.0), 0.0, 1.0), SphR, CylR, AxisR, AddNearR, AddInterR, oneTexel);
-    float mode = floor(Mode + 0.5);
-    if (mode == 0.0) fragColor = colorLeft;
-    else if (mode == 1.0) fragColor = colorRight;
-    else if (mode == 2.0) {
+    // Mode
+    // 0: Left eye only
+    // 1: Right eye only
+    // 2: Smoothed vertical split
+    // 3: Hard vertical split
+    // 4: Mixed left and right
+    if (Mode == 0) fragColor = colorLeft;
+    else if (Mode == 1) fragColor = colorRight;
+    else if (Mode == 2) {
         float halfFoveaUV = FoveaAngle / FOV * 0.5;
         fragColor = mix(colorLeft, colorRight, smoothstep(FoveaCenter - halfFoveaUV, FoveaCenter + halfFoveaUV, texCoord.x));
-    } else if (mode == 3.0) fragColor = texCoord.x < InterpCutoff ? colorLeft : colorRight;
+    } else if (Mode == 3) fragColor = texCoord.x < InterpCutoff ? colorLeft : colorRight;
     else fragColor = mix(colorLeft, colorRight, Mix);
 }

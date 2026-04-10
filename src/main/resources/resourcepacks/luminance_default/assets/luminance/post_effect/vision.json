@@ -88,8 +88,8 @@
                     },
                     {
                         "name": "Mode",
-                        "type": "float",
-                        "value": 2.0
+                        "type": "int",
+                        "value": 2
                     },
                     {
                         "name": "InvertEyeCorrection",
@@ -182,16 +182,16 @@
                         "value": -1.0
                     },
                     {
-                        "name": "TargetPosition",
-                        "type": "vec3",
-                        "value": [ 0.0, 64.0, 0.0 ],
-                        "override": "luminance:crosshair_target"
+                        "name": "Pitch",
+                        "type": "float",
+                        "value": 0.0,
+                        "override": "luminance:pitch"
                     },
                     {
-                        "name": "CameraPosition",
-                        "type": "vec3",
-                        "value": [ 0.0, 64.0, 0.0 ],
-                        "override": "luminance:cam"
+                        "name": "Yaw",
+                        "type": "float",
+                        "value": 0.0,
+                        "override": "luminance:yaw"
                     },
                     {
                         "name": "FOV",
