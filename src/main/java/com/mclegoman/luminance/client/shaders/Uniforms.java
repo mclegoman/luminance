@@ -32,7 +32,6 @@ import com.mclegoman.luminance.mixin.client.shaders.DynamicRenderTickCounterAcce
 import com.mclegoman.luminance.mixin.client.shaders.GameRendererAccessor;
 import com.mclegoman.luminance.mixin.client.shaders.LevelRendererAccessor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.ScrollWheelHandler;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.CameraType;
 import net.minecraft.world.effect.MobEffect;
@@ -143,19 +142,12 @@ public class Uniforms {
 			Data.getVersion().sendToLog(LogType.ERROR, "Failed to initialize uniforms: {}", error);
 		}
 
-		Events.OnMouseScroll.register(Data.idOf("update_alpha"), (long windowHandle, double horizontal, double vertical, ScrollWheelHandler scrollWheelHandler) -> {
+		Events.OnMouseScroll.register(Data.idOf("update_alpha"), (long windowHandle, double horizontal, double vertical, Vector2i scroll) -> {
 			if (Uniforms.updatingAlpha()) {
-				boolean discreteMouseScroll = ClientData.minecraft.options.discreteMouseScroll().get();
-				double mouseWheelSensitivity = ClientData.minecraft.options.mouseWheelSensitivity().get();
-				double h = (discreteMouseScroll ? Math.signum(horizontal) : horizontal) * mouseWheelSensitivity;
-				double v = (discreteMouseScroll ? Math.signum(vertical) : vertical) * mouseWheelSensitivity;
-				if (ClientData.minecraft.player != null) {
-					Vector2i scroll = scrollWheelHandler.onMouseScroll(h, v);
-					if (scroll.x != 0 || scroll.y != 0) {
-						int scrollAmount = scroll.y == 0 ? -scroll.x : scroll.y;
-						Uniforms.adjustAlpha(scrollAmount);
-						return true;
-					}
+                if (ClientData.minecraft.player != null) {
+					int scrollAmount = scroll.y == 0 ? -scroll.x : scroll.y;
+					Uniforms.adjustAlpha(scrollAmount);
+					return true;
 				}
 			}
 			return false;

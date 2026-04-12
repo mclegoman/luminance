@@ -16,7 +16,6 @@ import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.ScrollWheelHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import net.minecraft.client.input.MouseButtonInfo;
@@ -25,6 +24,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2i;
 
 public class Execute {
 	public static void registerClientResourceReloaders(ReloadableResourceManager resourceManager) {
@@ -205,10 +205,10 @@ public class Execute {
 		}));
 	}
 
-	public static boolean onMouseScroll(long windowHandle, double horizontal, double vertical, ScrollWheelHandler scrollWheelHandler) {
+	public static boolean onMouseScroll(long windowHandle, double horizontal, double vertical, Vector2i scroll) {
 		boolean shouldCancel = false;
 		for (Identifier registry : Events.OnMouseScroll.registry.keySet()) {
-			if (Events.OnMouseScroll.get(registry).call(windowHandle, horizontal, vertical, scrollWheelHandler)) shouldCancel = true;
+			if (Events.OnMouseScroll.get(registry).call(windowHandle, horizontal, vertical, scroll)) shouldCancel = true;
 		}
 		return shouldCancel;
 	}
