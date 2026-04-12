@@ -49,7 +49,7 @@ public abstract class PostChainMixin implements PostChainInterface {
     @Shadow public abstract void addToFrame(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle);
 
     @Unique private Map<Identifier, List<PostPass>> luminance$customChains;
-    @Unique @Nullable private Identifier luminance$currentCustomChain;
+    @Unique @Nullable private Identifier luminance$currentChain;
 
     @Unique private Identifier luminance$persistentBufferSource;
 
@@ -152,20 +152,20 @@ public abstract class PostChainMixin implements PostChainInterface {
     }
 
     @Override
-    public void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier customChain) {
-        if (customChain == null || luminance$customChains.containsKey(customChain)) {
-            luminance$currentCustomChain = customChain;
+    public void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier chain) {
+        if (chain == null || luminance$customChains.containsKey(chain)) {
+            luminance$currentChain = chain;
             addToFrame(builder, textureWidth, textureHeight, targetBundle);
-            luminance$currentCustomChain = null;
+            luminance$currentChain = null;
         }
     }
 
     @ModifyReceiver(at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;"), method = "addToFrame(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;IILnet/minecraft/client/renderer/PostChain$TargetBundle;)V")
     private List<PostPass> replacePasses(List<PostPass> instance) {
-        if (luminance$currentCustomChain == null) {
+        if (luminance$currentChain == null) {
             return instance;
         }
-        return luminance$customChains.getOrDefault(luminance$currentCustomChain, instance);
+        return luminance$customChains.getOrDefault(luminance$currentChain, instance);
     }
 
     @Override

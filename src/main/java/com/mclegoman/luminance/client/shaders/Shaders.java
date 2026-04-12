@@ -118,13 +118,13 @@ public class Shaders {
 		}
 	}
 
-	public static void renderProcessorUsingTargetBundle(Shader shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier customChain) {
+	public static void renderProcessorUsingTargetBundle(Shader shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier chain) {
 		try {
 			if (shader.getPostProcessor() != null) {
 				try {
 					// the depth masking done in renderUsingAllocator is instead done for everything already before this method is called
 					// this is because FrameGraphBuilder delays calls, so any rendersystem methods wont work with their intended timing
-					((PostChainInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, targetBundle, customChain);
+					((PostChainInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, targetBundle, chain);
 				} catch (Exception error) {
 					Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());
 				}
