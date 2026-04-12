@@ -22,11 +22,11 @@ public interface PostChainInterface {
     @Nullable @Contract("null -> !null")
     List<PostPass> luminance$getPasses(@Nullable Identifier identifier);
 
-    void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier customPasses);
+    void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier customChain);
 
-    void luminance$setCustomPasses(Map<Identifier, List<PostPass>> customPasses);
+    void luminance$setCustomChains(Map<Identifier, List<PostPass>> customChains);
 
-    Set<Identifier> luminance$getCustomPassNames();
+    Set<Identifier> luminance$getCustomChainNames();
 
     boolean luminance$usesDepth();
 

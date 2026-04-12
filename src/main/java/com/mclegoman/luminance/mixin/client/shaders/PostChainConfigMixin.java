@@ -35,23 +35,23 @@ public class PostChainConfigMixin implements PostChainConfigInterface {
     private static <O> Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> luminance$codecBuilderOverride(Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> builder) {
         return instance -> instance.group(
                 RecordCodecBuilder.mapCodec(builder).forGetter(Function.identity()),
-                Codec.unboundedMap(Identifier.CODEC, PostChainConfig.Pass.CODEC.listOf()).lenientOptionalFieldOf("custom_passes").forGetter((pipeline -> ((PostChainConfigInterface)pipeline).luminance$getCustomPasses()))
+                Codec.unboundedMap(Identifier.CODEC, PostChainConfig.Pass.CODEC.listOf()).lenientOptionalFieldOf("custom_chains").forGetter((pipeline -> ((PostChainConfigInterface)pipeline).luminance$getCustomChains()))
         ).apply(instance, (pipeline, passes) -> {
-            passes.ifPresent(identifierListMap -> ((PostChainConfigInterface)pipeline).luminance$setCustomPasses(identifierListMap));
+            passes.ifPresent(identifierListMap -> ((PostChainConfigInterface)pipeline).luminance$setCustomChains(identifierListMap));
             return pipeline;
         });
     }
 
     @Unique
-    private Map<Identifier, List<PostChainConfig.Pass>> luminance$customPasses;
+    private Map<Identifier, List<PostChainConfig.Pass>> luminance$customChains;
 
     @Override
-    public Optional<Map<Identifier, List<PostChainConfig.Pass>>> luminance$getCustomPasses() {
-        return Optional.ofNullable(luminance$customPasses);
+    public Optional<Map<Identifier, List<PostChainConfig.Pass>>> luminance$getCustomChains() {
+        return Optional.ofNullable(luminance$customChains);
     }
 
     @Override
-    public void luminance$setCustomPasses(Map<Identifier, List<PostChainConfig.Pass>> passes) {
-        luminance$customPasses = passes;
+    public void luminance$setCustomChains(Map<Identifier, List<PostChainConfig.Pass>> passes) {
+        luminance$customChains = passes;
     }
 }

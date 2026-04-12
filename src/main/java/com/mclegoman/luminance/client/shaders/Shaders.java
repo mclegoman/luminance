@@ -118,13 +118,13 @@ public class Shaders {
 		}
 	}
 
-	public static void renderProcessorUsingTargetBundle(Shader shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier customPasses) {
+	public static void renderProcessorUsingTargetBundle(Shader shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier customChain) {
 		try {
 			if (shader.getPostProcessor() != null) {
 				try {
 					// the depth masking done in renderUsingAllocator is instead done for everything already before this method is called
 					// this is because FrameGraphBuilder delays calls, so any rendersystem methods wont work with their intended timing
-					((PostChainInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, targetBundle, customPasses);
+					((PostChainInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, targetBundle, customChain);
 				} catch (Exception error) {
 					Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());
 				}
@@ -295,10 +295,10 @@ public class Shaders {
 	}
 
 	// This is identical to the deprecated `PostChain.process(renderTarget, resourceAllocator);` function.
-	public static void renderShaderUsingAllocator(Shader shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator, @Nullable Identifier customPasses) {
+	public static void renderShaderUsingAllocator(Shader shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator, @Nullable Identifier customChain) {
 		try {
 			if (shader.getPostProcessor() != null) {
-				Runnables.WorldRender.fromGameRender((builder, width, height, set) -> ((PostChainInterface)shader.getPostProcessor()).luminance$render(builder, width, height, set, customPasses), renderTarget, resourceAllocator);
+				Runnables.WorldRender.fromGameRender((builder, width, height, set) -> ((PostChainInterface)shader.getPostProcessor()).luminance$render(builder, width, height, set, customChain), renderTarget, resourceAllocator);
 			}
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());

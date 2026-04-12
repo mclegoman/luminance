@@ -48,8 +48,8 @@ public abstract class PostChainMixin implements PostChainInterface {
 
     @Shadow public abstract void addToFrame(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle);
 
-    @Unique private Map<Identifier, List<PostPass>> luminance$customPasses;
-    @Unique @Nullable private Identifier luminance$currentCustomPasses;
+    @Unique private Map<Identifier, List<PostPass>> luminance$customChains;
+    @Unique @Nullable private Identifier luminance$currentCustomChain;
 
     @Unique private Identifier luminance$persistentBufferSource;
 
@@ -88,23 +88,23 @@ public abstract class PostChainMixin implements PostChainInterface {
 //    }
 
     @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/PostChainConfig;passes()Ljava/util/List;", ordinal = 0), method = "load")
-    private static List<PostChainConfig.Pass> includeCustomPasses(List<PostChainConfig.Pass> original, PostChainConfig pipeline, TextureManager textureManager) {
-        Optional<Map<Identifier, List<PostChainConfig.Pass>>> customPasses = ((PostChainConfigInterface)(Object)pipeline).luminance$getCustomPasses();
-        if (customPasses.isEmpty()) {
+    private static List<PostChainConfig.Pass> includeCustomChains(List<PostChainConfig.Pass> original, PostChainConfig pipeline, TextureManager textureManager) {
+        Optional<Map<Identifier, List<PostChainConfig.Pass>>> customChains = ((PostChainConfigInterface)(Object)pipeline).luminance$getCustomChains();
+        if (customChains.isEmpty()) {
             return original;
         }
 
         List<PostChainConfig.Pass> passes = new ArrayList<>(original.size());
-        customPasses.get().forEach((identifier, list) -> passes.addAll(list));
+        customChains.get().forEach((identifier, list) -> passes.addAll(list));
         return passes;
     }
 
     @ModifyReturnValue(at = @At(value = "RETURN"), method = "load")
     private static PostChain setCustomPassTargets(PostChain original, PostChainConfig pipeline, TextureManager textureManager, Set<Identifier> availableExternalTargets, Identifier id) {
-        ((PostChainConfigInterface)(Object)pipeline).luminance$getCustomPasses().ifPresentOrElse((map) -> {
+        ((PostChainConfigInterface)(Object)pipeline).luminance$getCustomChains().ifPresentOrElse((map) -> {
             PostChainInterface processor = (PostChainInterface)original;
 
-            Map<Identifier, List<PostPass>> customPasses = new HashMap<>(map.size());
+            Map<Identifier, List<PostPass>> customChains = new HashMap<>(map.size());
 
             for (Map.Entry<Identifier, List<PostChainConfig.Pass>> entry : map.entrySet()) {
                 ImmutableList.Builder<PostPass> builder = ImmutableList.builder();
@@ -130,11 +130,11 @@ public abstract class PostChainMixin implements PostChainInterface {
                 //passes.forEach((pass) -> ((PostPassInterface)pass).luminance$setForceVisit(true));
                 //passes.forEach((pass) -> luminance$trySetForceVisit(pass, pipeline.internalTargets()));
 
-                customPasses.put(entry.getKey(), passes);
+                customChains.put(entry.getKey(), passes);
             }
 
-            processor.luminance$setCustomPasses(customPasses);
-        }, () -> ((PostChainInterface)original).luminance$setCustomPasses(Map.of()));
+            processor.luminance$setCustomChains(customChains);
+        }, () -> ((PostChainInterface)original).luminance$setCustomChains(Map.of()));
         return original;
     }
 
@@ -143,34 +143,34 @@ public abstract class PostChainMixin implements PostChainInterface {
         if (identifier == null) {
             return passes;
         }
-        return luminance$customPasses.get(identifier);
+        return luminance$customChains.get(identifier);
     }
 
     @Override
-    public void luminance$setCustomPasses(Map<Identifier, List<PostPass>> customPasses) {
-        luminance$customPasses = customPasses;
+    public void luminance$setCustomChains(Map<Identifier, List<PostPass>> customChains) {
+        luminance$customChains = customChains;
     }
 
     @Override
-    public void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier customPasses) {
-        if (customPasses == null || luminance$customPasses.containsKey(customPasses)) {
-            luminance$currentCustomPasses = customPasses;
+    public void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier customChain) {
+        if (customChain == null || luminance$customChains.containsKey(customChain)) {
+            luminance$currentCustomChain = customChain;
             addToFrame(builder, textureWidth, textureHeight, targetBundle);
-            luminance$currentCustomPasses = null;
+            luminance$currentCustomChain = null;
         }
     }
 
     @ModifyReceiver(at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;"), method = "addToFrame(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;IILnet/minecraft/client/renderer/PostChain$TargetBundle;)V")
     private List<PostPass> replacePasses(List<PostPass> instance) {
-        if (luminance$currentCustomPasses == null) {
+        if (luminance$currentCustomChain == null) {
             return instance;
         }
-        return luminance$customPasses.getOrDefault(luminance$currentCustomPasses, instance);
+        return luminance$customChains.getOrDefault(luminance$currentCustomChain, instance);
     }
 
     @Override
-    public Set<Identifier> luminance$getCustomPassNames() {
-        return luminance$customPasses.keySet();
+    public Set<Identifier> luminance$getCustomChainNames() {
+        return luminance$customChains.keySet();
     }
 
     @Override
@@ -178,8 +178,8 @@ public abstract class PostChainMixin implements PostChainInterface {
         if (luminance$passListUsesDepth(passes)) {
             return true;
         }
-        for (List<PostPass> customPasses : luminance$customPasses.values()) {
-            if (luminance$passListUsesDepth(customPasses)) {
+        for (List<PostPass> customChain : luminance$customChains.values()) {
+            if (luminance$passListUsesDepth(customChain)) {
                 return true;
             }
         }
