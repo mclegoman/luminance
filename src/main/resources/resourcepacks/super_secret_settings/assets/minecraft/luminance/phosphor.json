@@ -1,7 +1,7 @@
 {
   "post_effect": "minecraft:phosphor",
   "enabled": true,
-  "fallback_when_over_ui": true,
+  "fallback_when_over_ui": false,
   "fallback_when_under_ui": false,
   "photosensitive": false,
   "custom": {
