@@ -7,23 +7,25 @@ layout(std140) uniform SamplerInfo {
     vec2 InSize;
 };
 
+layout(std140) uniform NtscEncodeConfig {
+    float Tau;
+    vec4 A2;
+    vec4 B;
+    float P;
+    float CCFrequency;
+    float ScanTime;
+    vec4[3] YIQTransform;
+    vec4 MinC;
+    vec4 InvCRange;
+};
+
 in vec2 texCoord;
 
 out vec4 fragColor;
 
-const float Pi2 = 6.283185307;
-
-const vec4 A2 = vec4(1.0);
-const vec4 B = vec4(0.5);
-const float P = 1.0;
-const float CCFrequency = 3.59754545;
-const float ScanTime = 52.6;
-const float Pi2ScanTime = Pi2 * ScanTime;
-const vec4 YTransform = vec4(0.299, 0.587, 0.114, 0.0);
-const vec4 ITransform = vec4(0.595716, -0.274453, -0.321263, 0.0);
-const vec4 QTransform = vec4(0.211456, -0.522591, 0.31135, 0.0);
-const vec4 MinC = vec4(-1.1183);
-const vec4 InvCRange = vec4(1.0 / 3.2366);
+float getTauScanTime() {
+    return Tau * ScanTime;
+}
 
 void main() {
     vec2 oneTexel = 1.0 / InSize;
@@ -44,11 +46,11 @@ void main() {
 
     // Calculate the expected time of the sample.
     vec4 T = A2 * Cy * vec4(InSize.y) + B + Cx;
-    vec4 W = vec4(Pi2ScanTime * CCFrequency);
+    vec4 W = vec4(getTauScanTime() * CCFrequency);
     vec4 TW = T * W;
-    vec4 Y = vec4(dot(Texel0, YTransform), dot(Texel1, YTransform), dot(Texel2, YTransform), dot(Texel3, YTransform));
-    vec4 I = vec4(dot(Texel0, ITransform), dot(Texel1, ITransform), dot(Texel2, ITransform), dot(Texel3, ITransform));
-    vec4 Q = vec4(dot(Texel0, QTransform), dot(Texel1, QTransform), dot(Texel2, QTransform), dot(Texel3, QTransform));
+    vec4 Y = vec4(dot(Texel0, YIQTransform[0]), dot(Texel1, YIQTransform[0]), dot(Texel2, YIQTransform[0]), dot(Texel3, YIQTransform[0]));
+    vec4 I = vec4(dot(Texel0, YIQTransform[1]), dot(Texel1, YIQTransform[1]), dot(Texel2, YIQTransform[1]), dot(Texel3, YIQTransform[1]));
+    vec4 Q = vec4(dot(Texel0, YIQTransform[2]), dot(Texel1, YIQTransform[2]), dot(Texel2, YIQTransform[2]), dot(Texel3, YIQTransform[2]));
     
     vec4 Encoded = Y + I * cos(TW) + Q * sin(TW);
     fragColor = (Encoded - MinC) * InvCRange;
