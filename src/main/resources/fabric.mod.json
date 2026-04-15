@@ -31,7 +31,7 @@
   "icon": "assets/${modId}/textures/icons/icon.png",
   "depends": {
     "fabric-api": ">=${fapi}",
-    "fabricloader": "*",
+    "fabricloader": ">=0.19.0",
     "minecraft": ">=${mc}"
   },
   "entrypoints": {

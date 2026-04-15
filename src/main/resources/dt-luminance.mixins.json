@@ -8,6 +8,7 @@
     "client.gui.GuiMixin",
     "client.gui.ScreenAccessor",
     "client.gui.StringSplitterAccessor",
+    "client.mouse.MouseHandlerMixin",
     "client.resources.MinecraftMixin",
     "client.shaders.DynamicRenderTickCounterAccessor",
     "client.shaders.FrameGraphBuilderMixin",
@@ -16,7 +17,6 @@
     "client.shaders.GameRendererMixin",
     "client.shaders.LevelRendererAccessor",
     "client.shaders.LevelRendererMixin",
-    "client.mouse.MouseHandlerMixin",
     "client.shaders.PanoramaRendererMixin",
     "client.shaders.PostChainConfigMixin",
     "client.shaders.PostChainMixin",
@@ -30,6 +30,7 @@
     "client.shaders.TitleScreenMixin",
     "client.shaders.UniformValueImplMixin",
     "client.shaders.UniformValueMixin",
+    "client.shaders.UniformValueTypeMixin",
     "compat.modmenu.FabricModMixin",
     "compat.modmenu.ModsScreenMixin"
   ],

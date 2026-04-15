@@ -1,9 +1,9 @@
 [versions]
-loom = "1.15.+"
+loom = "1.16.+"
 minotaur = "2.+"
 
 mc = "1.21.11"
-fl = "0.18.4"
+fl = "0.19.2"
 fapi = "0.141.3+1.21.11"
 quilt_config = "1.2.0"
 toml = "3.6.6"
