@@ -1,42 +1,46 @@
 #version 330
 
 uniform sampler2D InSampler;
-uniform sampler2D BaseSampler;
 
 layout(std140) uniform SamplerInfo {
     vec2 OutSize;
     vec2 InSize;
 };
 
+layout(std140) uniform NtscDecodeConfig {
+    vec4 Zero;
+    vec4 One;
+    float Tau;
+    vec4 A2;
+    vec4 B;
+    float CCFrequency;
+    float NotchWidth;
+    float YFrequency;
+    float IFrequency;
+    float QFrequency;
+    float ScanTime;
+    vec3[3] YIQ2;
+    vec4 MinC;
+    vec4 CRange;
+    float TauLengthDivider;
+    vec4 NotchOffset;
+};
+
 in vec2 texCoord;
 
 out vec4 fragColor;
 
-const vec4 Zero = vec4(0.0);
-const vec4 One = vec4(1.0);
+vec4 getW() {
+    return vec4(Tau * CCFrequency * ScanTime);
+}
 
-const float Pi = 3.1415926535;
-const float Pi2 = 6.283185307;
+float getNotchFrequency(bool upper) {
+    return CCFrequency + (upper ? NotchWidth : -NotchWidth);
+}
 
-const vec4 A2 = vec4(1.0);
-const vec4 B = vec4(0.5);
-const float P = 1.0;
-const float CCFrequency = 3.59754545;
-const float NotchWidth = 2.0;
-const float NotchUpperFrequency = 3.59754545 + NotchWidth;
-const float NotchLowerFrequency = 3.59754545 - NotchWidth;
-const float YFrequency = 6.0;
-const float IFrequency = 1.2;
-const float QFrequency = 0.6;
-const float ScanTime = 52.6;
-const vec3 YIQ2R = vec3(1.0, 0.956, 0.621);
-const vec3 YIQ2G = vec3(1.0, -0.272, -0.647);
-const vec3 YIQ2B = vec3(1.0, -1.106, 1.703);
-const vec4 MinC = vec4(-1.1183);
-const vec4 CRange = vec4(3.2366);
-const float Pi2Length = Pi2 / 83.0;
-const vec4 NotchOffset = vec4(0.0, 1.0, 2.0, 3.0);
-const vec4 W = vec4(Pi2 * CCFrequency * ScanTime);
+float getTauLength() {
+    return Tau / TauLengthDivider;
+}
 
 void main() {
     vec2 oneTexel = 1.0 / InSize;
@@ -51,16 +55,16 @@ void main() {
     // Y3 is the center of the frequency response of the Y filter.
     // I is the center of the frequency response of the I filter.
     // Q is the center of the frequency response of the Q filter.
-    float Fc_y1 = NotchLowerFrequency * TimePerSample;
-    float Fc_y2 = NotchUpperFrequency * TimePerSample;
+    float Fc_y1 = getNotchFrequency(false) * TimePerSample;
+    float Fc_y2 = getNotchFrequency(true) * TimePerSample;
     float Fc_y3 = YFrequency * TimePerSample;
     float Fc_i = IFrequency * TimePerSample;
     float Fc_q = QFrequency * TimePerSample;
-    float Pi2Fc_y1 = Fc_y1 * Pi2;
-    float Pi2Fc_y2 = Fc_y2 * Pi2;
-    float Pi2Fc_y3 = Fc_y3 * Pi2;
-    float Pi2Fc_i = Fc_i * Pi2;
-    float Pi2Fc_q = Fc_q * Pi2;
+    float TauFc_y1 = Fc_y1 * Tau;
+    float TauFc_y2 = Fc_y2 * Tau;
+    float TauFc_y3 = Fc_y3 * Tau;
+    float TauFc_i = Fc_i * Tau;
+    float TauFc_q = Fc_q * Tau;
     float Fc_y1_2 = Fc_y1 * 2.0;
     float Fc_y2_2 = Fc_y2 * 2.0;
     float Fc_y3_2 = Fc_y3 * 2.0;
@@ -68,7 +72,6 @@ void main() {
     float Fc_q_2 = Fc_q * 2.0;
     vec4 CoordY = vec4(texCoord.y);
 
-    vec4 BaseTexel = texture(InSampler, texCoord);
     // 83 composite samples wide, 4 composite pixels per texel
     for (float n = -41.0; n < 42.0; n += 4.0)
     {
@@ -76,12 +79,12 @@ void main() {
         vec4 CoordX = texCoord.x + oneTexel.x * n4 * 0.25;
         vec2 TexCoord = vec2(CoordX.x, CoordY.y);
         vec4 C = texture(InSampler, TexCoord) * CRange + MinC;
-        vec4 WT = W * (CoordX + A2 * CoordY * InSize.y + B);
-        vec4 Cosine = 0.54 + 0.46 * cos(Pi2Length * n4);
+        vec4 WT = getW() * (CoordX + A2 * CoordY * InSize.y + B);
+        vec4 Cosine = 0.54 + 0.46 * cos(getTauLength() * n4);
 
-        vec4 SincYIn1 = Pi2Fc_y1 * n4;
-        vec4 SincYIn2 = Pi2Fc_y2 * n4;
-        vec4 SincYIn3 = Pi2Fc_y3 * n4;
+        vec4 SincYIn1 = TauFc_y1 * n4;
+        vec4 SincYIn2 = TauFc_y2 * n4;
+        vec4 SincYIn3 = TauFc_y3 * n4;
         vec4 SincY1 = sin(SincYIn1) / SincYIn1;
         vec4 SincY2 = sin(SincYIn2) / SincYIn2;
         vec4 SincY3 = sin(SincYIn3) / SincYIn3;
@@ -103,7 +106,7 @@ void main() {
         vec4 IdealY = (Fc_y1_2 * SincY1 - Fc_y2_2 * SincY2) + Fc_y3_2 * SincY3;
         vec4 FilterY = Cosine * IdealY;
 
-        vec4 SincIIn = Pi2Fc_i * n4;
+        vec4 SincIIn = TauFc_i * n4;
         vec4 SincI = sin(SincIIn) / SincIIn;
         if(SincIIn.x == 0.0) SincI.x = 1.0;
         if(SincIIn.y == 0.0) SincI.y = 1.0;
@@ -112,7 +115,7 @@ void main() {
         vec4 IdealI = Fc_i_2 * SincI;
         vec4 FilterI = Cosine * IdealI;
 
-        vec4 SincQIn = Pi2Fc_q * n4;
+        vec4 SincQIn = TauFc_q * n4;
         vec4 SincQ = sin(SincQIn) / SincQIn;
         if(SincQIn.x == 0.0) SincQ.x = 1.0;
         if(SincQIn.y == 0.0) SincQ.y = 1.0;
@@ -131,7 +134,7 @@ void main() {
     float Q = dot(QAccum, One) * 2.0;
 
     vec3 YIQ = vec3(Y, I, Q);
-    vec3 OutRGB = vec3(dot(YIQ, YIQ2R), dot(YIQ, YIQ2G), dot(YIQ, YIQ2B));
+    vec3 OutRGB = vec3(dot(YIQ, YIQ2[0]), dot(YIQ, YIQ2[1]), dot(YIQ, YIQ2[2]));
 
     fragColor = vec4(OutRGB, 1.0);
 }

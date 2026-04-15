@@ -2,7 +2,7 @@
   "post_effect": "luminance:debug_depth",
   "enabled": true,
   "fallback_when_over_ui": true,
-  "fallback_when_under_ui": true,
+  "fallback_when_under_ui": false,
   "photosensitive": false,
   "custom": {
     "souper_secret_settings": {
