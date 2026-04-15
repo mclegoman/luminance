@@ -122,9 +122,9 @@ public class Uniforms {
 			registerSingleValueTree(namespace, "selected_slot", Uniforms::getSelectedSlot, 0f, 8f);
 			registerSingleValueTree(namespace, "score", Uniforms::getScore, 0f, null);
 			registerSingleValueTree(namespace, "is_sky_dark", Uniforms::getSkyDark, 0f, 1f);
-			registerSingleValueTree(namespace, "sun_angle", Uniforms::getSunAngle, 0f ,1f);
-			registerSingleValueTree(namespace, "moon_angle", Uniforms::getMoonAngle, 0f ,1f);
-			registerSingleValueTree(namespace, "star_angle", Uniforms::getStarAngle, 0f ,1f);
+			registerSingleValueTree(namespace, "sun_angle", Uniforms::getSunAngle, 0f, Mth.TWO_PI);
+			registerSingleValueTree(namespace, "moon_angle", Uniforms::getMoonAngle, 0f, Mth.TWO_PI);
+			registerSingleValueTree(namespace, "star_angle", Uniforms::getStarAngle, 0f, Mth.TWO_PI);
 			registerSingleValueTree(namespace, "rain_gradient", Uniforms::getRainGradient, 0f, 1f);
 			registerSingleValueTree(namespace, "star_brightness", Uniforms::getStarBrightness, 0f, 1f);
 			registerSingleValueTree(namespace, "sunrise_and_sunset_color", Uniforms::getSunriseAndSunsetColor, null, null);
