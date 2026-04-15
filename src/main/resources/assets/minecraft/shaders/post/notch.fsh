@@ -26,7 +26,7 @@ void main() {
     steppedCoord.y = float(int(steppedCoord.y*halfSize.y)) / halfSize.y;
 
     vec4 noise = texture(DitherSampler, fract(steppedCoord * halfSize / DitherSize));
-    vec4 col = texture(InSampler, mix(texCoord, steppedCoord, Mix.g)) + (noise * vec4(1.0/12.0, 1.0/12.0, 1.0/6.0, 1.0) * Mix.b);
+    vec4 col = texture(InSampler, mix(texCoord, steppedCoord + 0.5/halfSize, Mix.g)) + (noise * vec4(1.0/12.0, 1.0/12.0, 1.0/6.0, 1.0) * Mix.b);
     float r = float(int(col.r*8.0))/8.0;
     float g = float(int(col.g*8.0))/8.0;
     float b = float(int(col.b*4.0))/4.0;
