@@ -22,9 +22,7 @@ public interface PostPassInterface {
     UniformBlock luminance$getUniformBlock(String block);
 
     Identifier luminance$getOutputTarget();
-
-    //void luminance$setForceVisit(boolean to);
-
+    
     CustomPassData luminance$putCustomData(Identifier identifier, CustomPassData data);
 
     Optional<CustomPassData> luminance$getCustomData(Identifier identifier);

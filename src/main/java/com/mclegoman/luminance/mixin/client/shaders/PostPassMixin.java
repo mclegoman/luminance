@@ -111,21 +111,6 @@ public abstract class PostPassMixin implements PostPassInterface {
 		return outputTargetId;
 	}
 
-//	@Unique
-//	private boolean luminance$forceVisit;
-//
-//	@Override
-//	public void luminance$setForceVisit(boolean to) {
-//		luminance$forceVisit = to;
-//	}
-//
-//	@Inject(at = @At(value = "TAIL"), method = "render")
-//	private void forceVisit(FrameGraphBuilder builder, Map<Identifier, Handle<Framebuffer>> handles, Matrix4f projectionMatrix, CallbackInfo ci, @Local RenderPass renderPass) {
-//		if (luminance$forceVisit) {
-//			((FramePassInterface)renderPass).luminance$setForceVisit(true);
-//		}
-//	}
-
 	@Override
 	public CustomPassData luminance$putCustomData(Identifier identifier, CustomPassData data) {
 		return luminance$customData.put(identifier, data);

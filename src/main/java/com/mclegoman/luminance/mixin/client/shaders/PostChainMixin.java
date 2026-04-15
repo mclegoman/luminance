@@ -69,24 +69,6 @@ public abstract class PostChainMixin implements PostChainInterface {
         return original.call(instance, luminance$persistentBufferSource != null ? luminance$persistentBufferSource : identifier, renderTargetDescriptor);
     }
 
-    // TODO: setting force visit for persistent buffers probably isnt needed anymore
-
-//    @Inject(at = @At("RETURN"), method = "<init>")
-//    private void setForceVisit(List<PostEffectPass> passes, Map<Identifier, PostEffectPipeline.Targets> internalTargets, Set<Identifier> externalTargets, ProjectionMatrix2 matrix, CallbackInfo ci) {
-//        passes.forEach((pass) -> luminance$trySetForceVisit(pass, internalTargets));
-//        luminance$persistentBufferSource = this.toString();
-//    }
-
-//    @Unique private static void luminance$trySetForceVisit(PostPass postEffectPass, Map<Identifier, PostChainConfig.InternalTarget> internalTargets) {
-//        PostPassInterface passInterface = (PostPassInterface)postEffectPass;
-//        PostChainConfig.InternalTarget targets = internalTargets.get(passInterface.luminance$getOutputTarget());
-//
-//        if (targets == null) return;
-//        if (!targets.persistent()) return;
-//
-//        passInterface.luminance$setForceVisit(true);
-//    }
-
     @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/PostChainConfig;passes()Ljava/util/List;", ordinal = 0), method = "load")
     private static List<PostChainConfig.Pass> includeCustomChains(List<PostChainConfig.Pass> original, PostChainConfig pipeline, TextureManager textureManager) {
         Optional<Map<Identifier, List<PostChainConfig.Pass>>> customChains = ((PostChainConfigInterface)(Object)pipeline).luminance$getCustomChains();
@@ -119,16 +101,6 @@ public abstract class PostChainMixin implements PostChainInterface {
                 }
 
                 List<PostPass> passes = builder.build();
-
-                // TODO: this context for force visiting is different to the force visiting for persistent targets, so it may be needed!
-                //  it will be obvious, since custom passes just wont really work if they arent visited
-
-                // for some reason custom passes aren't visited properly if we just let them into the frameGraphBuilder normally
-                // so instead of only force-visiting the persistent ones, we force visit all of them
-                // this would only cause a performance penalty if there are excessive passes in a custom pass that *should* be unvisited
-                // but if someone's using a custom pass, i (Nettakrim) think they probably know what they're doing
-                //passes.forEach((pass) -> ((PostPassInterface)pass).luminance$setForceVisit(true));
-                //passes.forEach((pass) -> luminance$trySetForceVisit(pass, pipeline.internalTargets()));
 
                 customChains.put(entry.getKey(), passes);
             }
