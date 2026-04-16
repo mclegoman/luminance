@@ -44,6 +44,8 @@ public class Shaders {
 		Events.BeforeGameRender.register(Data.idOf("update"), Uniforms::update);
 
 		Events.AfterFabulousRender.register(Data.idOf("main"),
+				(data) -> RenderLocations.render(RenderLocations.LEVEL, data));
+		Events.AfterVanillaPostEffectRender.register(Data.idOf("main"),
 				(data) -> RenderLocations.render(RenderLocations.WORLD, data));
 		Events.AfterUiRender.register(Data.idOf("main"),
 				(data) -> RenderLocations.render(RenderLocations.UI, data));

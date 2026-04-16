@@ -42,7 +42,7 @@ public abstract class LevelRendererMixin {
 
 	@Inject(method = "renderLevel", at = @At("HEAD"))
 	private void luminance$beforeRender(GraphicsResourceAllocator allocator, DeltaTracker tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f positionMatrix, Matrix4f basicProjectionMatrix, Matrix4f projectionMatrix, GpuBufferSlice fogBuffer, Vector4f fogColor, boolean renderSky, CallbackInfo ci) {
-		Execute.beforeWorldRender();
+		Execute.beforeLevelRender();
 	}
 
 	@Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;addPass(Ljava/lang/String;)Lcom/mojang/blaze3d/framegraph/FramePass;"))
@@ -50,6 +50,7 @@ public abstract class LevelRendererMixin {
 		factory.set(renderTargetDescriptor);
 	}
 
+	// TODO: this probably isnt needed anymore
 	@Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/PostChain;addToFrame(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;IILnet/minecraft/client/renderer/PostChain$TargetBundle;)V", ordinal = 1))
 	private void luminance$copyDepth(GraphicsResourceAllocator allocator, DeltaTracker tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f positionMatrix, Matrix4f basicProjectionMatrix, Matrix4f projectionMatrix, GpuBufferSlice fogBuffer, Vector4f fogColor, boolean renderSky, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("depthBackup") LocalRef<RenderTarget> depthBackup, @Share("factory") LocalRef<RenderTargetDescriptor> factory) {
 		FramePassInterface.createForcedPass(frameGraphBuilder, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "copy_depth"), () -> {
@@ -75,6 +76,6 @@ public abstract class LevelRendererMixin {
 
 	@Inject(method = "renderLevel", at = @At("TAIL"))
 	private void luminance$afterRender(GraphicsResourceAllocator allocator, DeltaTracker tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f positionMatrix, Matrix4f basicProjectionMatrix, Matrix4f projectionMatrix, GpuBufferSlice fogBuffer, Vector4f fogColor, boolean renderSky, CallbackInfo ci) {
-		Execute.afterWorldRender(allocator);
+		Execute.afterLevelRender(allocator);
 	}
 }

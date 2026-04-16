@@ -148,9 +148,9 @@ public class Execute {
 		Events.OnResized.registry.forEach((id, runnable) -> runnable.run(width, height));
 	}
 
-	public static void beforeWorldRender() {
-		ShaderTime.currentRenderLocation = RenderLocations.WORLD;
-		Events.BeforeWorldRender.registry.forEach(((id, runnable) -> {
+	public static void beforeLevelRender() {
+		ShaderTime.currentRenderLocation = RenderLocations.LEVEL;
+		Events.BeforeLevelRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run();
 			} catch (Exception error) {
@@ -173,8 +173,8 @@ public class Execute {
 		}));
 	}
 
-	public static void afterWorldRender(GraphicsResourceAllocator allocator) {
-		Events.AfterWorldRender.registry.forEach(((id, runnable) -> {
+	public static void afterLevelRender(GraphicsResourceAllocator allocator) {
+		Events.AfterLevelRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(new Runnables.GameRender.Data(ClientData.minecraft.getMainRenderTarget(), allocator));
 			} catch (Exception error) {

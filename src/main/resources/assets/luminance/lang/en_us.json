@@ -25,6 +25,7 @@
 
 	"gui.luminance.debug.render": "Debug Shader: %s",
 	"gui.luminance.debug.render_location": "Render Location: %s",
+	"gui.luminance.render_location.level": "Level",
 	"gui.luminance.render_location.world": "World",
 	"gui.luminance.render_location.ui": "UI",
 	"gui.luminance.render_location.ui_background": "UI Background",
