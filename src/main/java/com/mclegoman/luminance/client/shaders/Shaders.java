@@ -96,7 +96,7 @@ public class Shaders {
 		return shaders;
 	}
 
-	public static void renderUsingTargetBundle(Identifier id, Shader.Data shader, Runnables.WorldRender.Data data) {
+	public static void renderFromLevelData(Identifier id, Shader.Data shader, Runnables.LevelRender.Data data) {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
 				if (shader.shader().getShouldRender()) {
@@ -108,7 +108,7 @@ public class Shaders {
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
-					renderProcessorUsingTargetBundle(shader.shader(), data, null);
+					renderShaderFromLevelData(shader.shader(), data, null);
 				}
 			}
 		} catch (Exception error) {
@@ -116,7 +116,7 @@ public class Shaders {
 		}
 	}
 
-	public static void renderProcessorUsingTargetBundle(Shader shader, Runnables.WorldRender.Data data, @Nullable Identifier chain) {
+	public static void renderShaderFromLevelData(Shader shader, Runnables.LevelRender.Data data, @Nullable Identifier chain) {
 		try {
 			if (shader.getPostProcessor() != null) {
 				try {
@@ -132,7 +132,7 @@ public class Shaders {
 		}
 	}
 
-	public static void renderUsingAllocator(Identifier id, Shader.Data shader, Runnables.GameRender.Data data) {
+	public static void renderFromGameData(Identifier id, Shader.Data shader, Runnables.GameRender.Data data) {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
 				if (shader.shader().getShouldRender()) {
@@ -144,11 +144,22 @@ public class Shaders {
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
-					renderShaderUsingAllocator(shader.shader(), data, null);
+					renderShaderFromGameData(shader.shader(), data, null);
 				}
 			}
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render \"{}:{}\" using allocator, shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
+		}
+	}
+
+	// This is identical to the deprecated `PostChain.process(renderTarget, resourceAllocator);` function.
+	public static void renderShaderFromGameData(Shader shader, Runnables.GameRender.Data data, @Nullable Identifier chain) {
+		try {
+			if (shader.getPostProcessor() != null) {
+				Runnables.LevelRender.fromGameData((worldData) -> ((PostChainInterface)shader.getPostProcessor()).luminance$render(worldData.builder(), worldData.textureWidth(), worldData.textureHeight(), worldData.targetBundle(), chain), data);
+			}
+		} catch (Exception error) {
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());
 		}
 	}
 
@@ -290,17 +301,6 @@ public class Shaders {
 		}
 
 		return Optional.empty();
-	}
-
-	// This is identical to the deprecated `PostChain.process(renderTarget, resourceAllocator);` function.
-	public static void renderShaderUsingAllocator(Shader shader, Runnables.GameRender.Data data, @Nullable Identifier customChain) {
-		try {
-			if (shader.getPostProcessor() != null) {
-				Runnables.WorldRender.fromGameRender((worldData) -> ((PostChainInterface)shader.getPostProcessor()).luminance$render(worldData.builder(), worldData.textureWidth(), worldData.textureHeight(), worldData.targetBundle(), customChain), data);
-			}
-		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());
-		}
 	}
 
 	public static int getShaderAmount() {

@@ -166,7 +166,7 @@ public class Execute {
 
 		Events.AfterFabulousRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(new Runnables.WorldRender.Data(frameGraphBuilder, ClientData.minecraft.getMainRenderTarget().width, ClientData.minecraft.getMainRenderTarget().height, targetBundle));
+				runnable.run(new Runnables.LevelRender.Data(frameGraphBuilder, ClientData.minecraft.getMainRenderTarget().width, ClientData.minecraft.getMainRenderTarget().height, targetBundle));
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterFabulousRender event with id: {}: {}", id, error);
 			}

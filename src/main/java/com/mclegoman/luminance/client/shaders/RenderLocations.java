@@ -14,11 +14,11 @@ public class RenderLocations {
     // TODO:
     //  render location should probably have another boolean for if fabulous targets are able to be provided, so a shader can require them
 
-    public static RenderLocation<Runnables.WorldRender.Data> LEVEL = register(Data.idOf("level"), Shaders::renderUsingTargetBundle, true, false, false, false);
-    public static RenderLocation<Runnables.GameRender.Data> WORLD = register(Data.idOf("world"), Shaders::renderUsingAllocator, true, false, false, false);
-    public static RenderLocation<Runnables.GameRender.Data> UI = register(Data.idOf("ui"), Shaders::renderUsingAllocator, false, true, false, true);
-    public static RenderLocation<Runnables.GameRender.Data> UI_BACKGROUND = register(Data.idOf("ui_background"), Shaders::renderUsingAllocator, false, false, true, true);
-    public static RenderLocation<Runnables.GameRender.Data> PANORAMA = register(Data.idOf("panorama"), Shaders::renderUsingAllocator, false, false, true, false);
+    public static RenderLocation<Runnables.LevelRender.Data> LEVEL = register(Data.idOf("level"), Shaders::renderFromLevelData, true, false, false, false);
+    public static RenderLocation<Runnables.GameRender.Data> WORLD = register(Data.idOf("world"), Shaders::renderFromGameData, true, false, false, false);
+    public static RenderLocation<Runnables.GameRender.Data> UI = register(Data.idOf("ui"), Shaders::renderFromGameData, false, true, false, true);
+    public static RenderLocation<Runnables.GameRender.Data> UI_BACKGROUND = register(Data.idOf("ui_background"), Shaders::renderFromGameData, false, false, true, true);
+    public static RenderLocation<Runnables.GameRender.Data> PANORAMA = register(Data.idOf("panorama"), Shaders::renderFromGameData, false, false, true, false);
 
     public static RenderLocation<?> getFallback() {
         return WORLD;

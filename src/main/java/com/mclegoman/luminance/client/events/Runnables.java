@@ -33,25 +33,21 @@ public class Runnables {
 	public interface OnResized {
 		void run(int width, int height);
 	}
-	public interface WorldRender {
+	public interface LevelRender {
 		void run(Data data);
 
-		static void fromGameRender(WorldRender worldRender, GameRender.Data data) {
+		static void fromGameData(LevelRender levelRender, GameRender.Data data) {
 			FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
 			PostChain.TargetBundle targetBundle = new LuminanceTargetBundle(frameGraphBuilder, data.renderTarget, LuminanceTargetBundle.fabulous);
-			worldRender.run(new Data(frameGraphBuilder, data.renderTarget.width, data.renderTarget.height, targetBundle));
+			levelRender.run(new Data(frameGraphBuilder, data.renderTarget.width, data.renderTarget.height, targetBundle));
 			frameGraphBuilder.execute(data.resourceAllocator);
 		}
 
-		record Data(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle) {
-
-		}
+		record Data(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle) { }
 	}
 	public interface GameRender {
 		void run(Data data);
 
-		record Data(RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
-
-		}
+		record Data(RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) { }
 	}
 }

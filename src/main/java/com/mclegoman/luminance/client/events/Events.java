@@ -49,7 +49,7 @@ public class Events {
 	public static final Registry<Runnables.InGameHudRender> BeforeInGameHudRender = new Registry<>();
 	public static final Registry<Runnables.InGameHudRender> AfterInGameHudRender = new Registry<>();
 	public static final Registry<Runnable> BeforeLevelRender = new Registry<>();
-	public static final Registry<Runnables.WorldRender> AfterFabulousRender = new Registry<>();
+	public static final Registry<Runnables.LevelRender> AfterFabulousRender = new Registry<>();
 	public static final Registry<Runnables.GameRender> AfterLevelRender = new Registry<>();
 	public static final Registry<Runnables.GameRender> AfterVanillaPostEffectRender = new Registry<>();
 	public static final Registry<Runnable> BeforeGameRender = new Registry<>();
