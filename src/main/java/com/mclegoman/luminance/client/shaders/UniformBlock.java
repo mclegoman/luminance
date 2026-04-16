@@ -34,14 +34,14 @@ public class UniformBlock {
                 int overrideValues = override.size();
 
                 if (overrideValues == 1 && override.getFirst().startsWith("auto#")) {
-                    // automatically populate override with _x etc if needed
+                    // automatically populate override with /x etc if needed
                     String name = override.getFirst().substring(5);
                     override = new ArrayList<>(length);
                     if (length == 1) {
                         override.add(name);
                     } else {
                         for (int i = 0; i < length; i++) {
-                            override.add(name + "_" + ("xyzw".charAt(i)));
+                            override.add(name + "/" + ("xyzw".charAt(i)));
                         }
                     }
                 } else {
