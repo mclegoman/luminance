@@ -19,6 +19,7 @@ import java.util.concurrent.Callable;
 public class Shader {
 	private PostChain postProcessor;
 	private boolean useDepth;
+	private boolean useFabulous;
 	private Identifier shaderId;
 	private Callable<RenderLocations.RenderLocation<?>> RenderLocation;
 	private Callable<Boolean> shouldRender;
@@ -39,8 +40,13 @@ public class Shader {
 	public void setPostProcessor() {
 		try {
 			this.postProcessor = ClientData.minecraft.getShaderManager().getPostChain(this.shaderId, LevelTargetBundle.SORTING_TARGETS);
-			if (postProcessor != null && ((PostChainInterface)this.postProcessor).luminance$usesDepth()) {
-				setUseDepth(true);
+			if (postProcessor != null) {
+				if (((PostChainInterface)this.postProcessor).luminance$usesDepth()) {
+					setUseDepth(true);
+				}
+				if (((PostChainInterface)this.postProcessor).luminance$usesFabulous()) {
+					setUseFabulous(true);
+				}
 			}
 		} catch (Exception error) {
 			com.mclegoman.luminance.common.data.Data.getVersion().sendToLog(LogType.ERROR, "Failed to set post processor: {}", error);
@@ -60,12 +66,21 @@ public class Shader {
 		this.useDepth = useDepth;
 	}
 
+	public boolean getUseFabulous() {
+		return this.useFabulous;
+	}
+
+	public void setUseFabulous(boolean useFabulous) {
+		this.useFabulous = useFabulous;
+	}
+
 	public Identifier getShaderId() {
 		return this.shaderId;
 	}
 
 	private void setShaderId(Identifier id) {
 		setUseDepth(false);
+		setUseFabulous(false);
 		closePostProcessor();
 		this.shaderId = id;
 	}
@@ -96,6 +111,7 @@ public class Shader {
 
 	public void setShaderData(ShaderRegistryEntry shaderData) {
 		setUseDepth(false);
+		setUseFabulous(false);
 		this.shaderData = shaderData;
 		if (getShaderData() != null) setShaderId(getShaderData().getPostEffect(false));
 	}

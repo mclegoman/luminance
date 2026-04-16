@@ -1,3 +1,10 @@
+/*
+    Luminance
+    Contributor(s): dannytaylor, Nettakrim
+    Github: https://github.com/mclegoman/Luminance
+    Licence: GNU LGPLv3
+*/
+
 package com.mclegoman.luminance.client.shaders;
 
 import com.mclegoman.luminance.client.data.ClientData;
@@ -11,17 +18,18 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 public class RenderLocations {
-    // TODO:
-    //  render location should probably have another boolean for if fabulous targets are able to be provided, so a shader can require them
-
-    public static RenderLocation<Runnables.LevelRender.Data> LEVEL = register(Data.idOf("level"), Shaders::renderFromLevelData, true, false, false, false);
-    public static RenderLocation<Runnables.GameRender.Data> WORLD = register(Data.idOf("world"), Shaders::renderFromGameData, true, false, false, false);
+    public static RenderLocation<Runnables.LevelRender.Data> LEVEL = register(Data.idOf("level"), Shaders::renderFromLevelData, true, false, false, true, false);
+    public static RenderLocation<Runnables.GameRender.Data> GAME = register(Data.idOf("game"), Shaders::renderFromGameData, true, false, false, true);
     public static RenderLocation<Runnables.GameRender.Data> UI = register(Data.idOf("ui"), Shaders::renderFromGameData, false, true, false, true);
     public static RenderLocation<Runnables.GameRender.Data> UI_BACKGROUND = register(Data.idOf("ui_background"), Shaders::renderFromGameData, false, false, true, true);
     public static RenderLocation<Runnables.GameRender.Data> PANORAMA = register(Data.idOf("panorama"), Shaders::renderFromGameData, false, false, true, false);
 
     public static RenderLocation<?> getFallback() {
-        return WORLD;
+        return getFallback(false);
+    }
+
+    public static RenderLocation<?> getFallback(boolean isFabulous) {
+        return isFabulous ? LEVEL : GAME;
     }
 
     public static <T> void render(RenderLocation<T> type, T data) {
@@ -57,7 +65,6 @@ public class RenderLocations {
         if (ClientData.minecraft.gameRenderer.isPanoramicMode()) return;
         try {
             if (shader == null) return;
-            boolean isFallback = type.equals(getFallback());
 
             Shader shaderInstance = shader.shader();
             if (shaderInstance == null) return;
@@ -73,10 +80,12 @@ public class RenderLocations {
             RenderLocation<?> renderLocation = callableRenderLocation.call();
             if (renderLocation == null) return;
 
+            boolean isFallback = type.equals(getFallback(shaderInstance.getUseFabulous()));
+
             boolean isCorrectType = renderLocation.equals(type);
             if (!isCorrectType && !isFallback) return;
 
-            boolean shouldFallback = (shaderInstance.getUseDepth() && !renderLocation.isDepthSupported()) || (shaderData.useFallbackWhenOverUi() && renderLocation.isOverUi()) || (shaderData.useFallbackWhenUnderUi() && renderLocation.isUnderUi());
+            boolean shouldFallback = (shaderInstance.getUseFabulous() && !renderLocation.isFabulousSupported()) || (shaderInstance.getUseDepth() && !renderLocation.isDepthSupported()) || (shaderData.useFallbackWhenOverUi() && renderLocation.isOverUi()) || (shaderData.useFallbackWhenUnderUi() && renderLocation.isUnderUi());
             if (shouldFallback && !renderLocation.canFallback()) return;
 
             boolean canRender = (!shouldFallback && isCorrectType) || (shouldFallback && isFallback);
@@ -89,7 +98,11 @@ public class RenderLocations {
     }
 
     public static <T> RenderLocation<T> register(Identifier identifier, Renderer<T> renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean canFallback) {
-        RenderLocation<T> renderLocation = new RenderLocation<>(identifier, renderer, isDepthSupported, isOverUi, isUnderUi, canFallback);
+        return register(identifier, renderer, isDepthSupported, isOverUi, isUnderUi, false, canFallback);
+    }
+
+    public static <T> RenderLocation<T> register(Identifier identifier, Renderer<T> renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean canUseFabulous, boolean canFallback) {
+        RenderLocation<T> renderLocation = new RenderLocation<>(identifier, renderer, isDepthSupported, isOverUi, isUnderUi, canUseFabulous, canFallback);
         Events.RenderLocation.register(identifier, renderLocation);
         return renderLocation;
     }
@@ -98,7 +111,7 @@ public class RenderLocations {
         void render(Identifier id, Shader.Data shader, T Data);
     }
 
-    public record RenderLocation<T>(Identifier identifier, Renderer<T> renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean canFallback) {
+    public record RenderLocation<T>(Identifier identifier, Renderer<T> renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean isFabulousSupported, boolean canFallback) {
         public void render(Identifier id, Shader.Data shader, T data) {
             this.renderer().render(id, shader, data);
         }

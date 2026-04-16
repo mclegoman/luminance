@@ -77,7 +77,7 @@ public class Execute {
 	}
 
 	public static void beforeGameRender() {
-		ShaderTime.currentRenderLocation = RenderLocations.WORLD;
+		ShaderTime.currentRenderLocation = RenderLocations.GAME;
 		Events.BeforeGameRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run();

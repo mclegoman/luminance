@@ -46,7 +46,7 @@ public class Shaders {
 		Events.AfterFabulousRender.register(Data.idOf("main"),
 				(data) -> RenderLocations.render(RenderLocations.LEVEL, data));
 		Events.AfterVanillaPostEffectRender.register(Data.idOf("main"),
-				(data) -> RenderLocations.render(RenderLocations.WORLD, data));
+				(data) -> RenderLocations.render(RenderLocations.GAME, data));
 		Events.AfterUiRender.register(Data.idOf("main"),
 				(data) -> RenderLocations.render(RenderLocations.UI, data));
 		Events.AfterUiBackgroundRender.register(Data.idOf("main"),

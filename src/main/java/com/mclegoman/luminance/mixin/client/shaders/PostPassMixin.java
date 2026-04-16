@@ -130,4 +130,14 @@ public abstract class PostPassMixin implements PostPassInterface {
 		}
 		return false;
 	}
+
+	@Override
+	public boolean luminance$usesFabulous() {
+		for (PostPass.Input sampler : inputs) {
+			if (sampler instanceof PostPass.TargetInput targetSampler && !targetSampler.targetId().equals(Identifier.withDefaultNamespace("main")) && targetSampler.depthBuffer()) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

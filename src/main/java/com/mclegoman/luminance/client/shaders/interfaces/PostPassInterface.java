@@ -28,4 +28,6 @@ public interface PostPassInterface {
     Optional<CustomPassData> luminance$getCustomData(Identifier identifier);
 
     boolean luminance$usesDepth();
+
+    boolean luminance$usesFabulous();
 }

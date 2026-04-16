@@ -50,7 +50,7 @@ public class Debug {
 			else index = (prevIndex + 1 + size) % size;
 			return Optional.of(debugRenderLocation = Events.RenderLocation.get(renderLocations.get(index)));
 		} else {
-			debugRenderLocation = RenderLocations.WORLD;
+			debugRenderLocation = RenderLocations.GAME;
 			return Optional.empty();
 		}
 	}
@@ -107,6 +107,6 @@ public class Debug {
 
 	static {
 		debugShader = new Couple<>(ShaderStacks.getMainRegistryId(), ShaderStacks.getShaderStacks(ShaderStacks.getMainRegistryId()).getFirst());
-		debugRenderLocation = RenderLocations.WORLD;
+		debugRenderLocation = RenderLocations.GAME;
 	}
 }

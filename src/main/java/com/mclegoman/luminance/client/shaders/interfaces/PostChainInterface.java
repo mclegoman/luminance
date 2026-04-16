@@ -30,6 +30,8 @@ public interface PostChainInterface {
 
     boolean luminance$usesDepth();
 
+    boolean luminance$usesFabulous();
+
     boolean luminance$usesPersistentBuffers();
 
     void luminance$setPersistentBufferSource(@Nullable Identifier source);

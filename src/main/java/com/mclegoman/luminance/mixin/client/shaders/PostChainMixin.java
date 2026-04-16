@@ -147,11 +147,21 @@ public abstract class PostChainMixin implements PostChainInterface {
 
     @Override
     public boolean luminance$usesDepth() {
-        if (luminance$passListUsesDepth(passes)) {
+        return this.luminance$usesDepth(false);
+    }
+
+    @Override
+    public boolean luminance$usesFabulous() {
+        return this.luminance$usesDepth(true);
+    }
+
+    @Unique
+    private boolean luminance$usesDepth(boolean checkFabulous) {
+        if (luminance$passListUsesDepth(passes, checkFabulous)) {
             return true;
         }
         for (List<PostPass> customChain : luminance$customChains.values()) {
-            if (luminance$passListUsesDepth(customChain)) {
+            if (luminance$passListUsesDepth(customChain, checkFabulous)) {
                 return true;
             }
         }
@@ -159,10 +169,10 @@ public abstract class PostChainMixin implements PostChainInterface {
     }
 
     @Unique
-    private boolean luminance$passListUsesDepth(List<PostPass> passes) {
+    private boolean luminance$passListUsesDepth(List<PostPass> passes, boolean checkFabulous) {
         for (PostPass pass : passes) {
             if (((PostPassInterface)pass).luminance$usesDepth()) {
-                return true;
+                return !checkFabulous || ((PostPassInterface) pass).luminance$usesFabulous();
             }
         }
         return false;
