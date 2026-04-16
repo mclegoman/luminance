@@ -19,7 +19,7 @@ import java.util.concurrent.Callable;
 public class Shader {
 	private PostChain postProcessor;
 	private boolean useDepth;
-	private boolean useFabulous;
+	private boolean useImprovedTransparency;
 	private Identifier shaderId;
 	private Callable<RenderLocations.RenderLocation<?>> RenderLocation;
 	private Callable<Boolean> shouldRender;
@@ -41,12 +41,8 @@ public class Shader {
 		try {
 			this.postProcessor = ClientData.minecraft.getShaderManager().getPostChain(this.shaderId, LevelTargetBundle.SORTING_TARGETS);
 			if (postProcessor != null) {
-				if (((PostChainInterface)this.postProcessor).luminance$usesDepth()) {
-					setUseDepth(true);
-				}
-				if (((PostChainInterface)this.postProcessor).luminance$usesFabulous()) {
-					setUseFabulous(true);
-				}
+				if (((PostChainInterface)this.postProcessor).luminance$usesDepth()) setUseDepth(true);
+				if (((PostChainInterface)this.postProcessor).luminance$usesImprovedTransparency()) setUseImprovedTransparency(true);
 			}
 		} catch (Exception error) {
 			com.mclegoman.luminance.common.data.Data.getVersion().sendToLog(LogType.ERROR, "Failed to set post processor: {}", error);
@@ -66,12 +62,12 @@ public class Shader {
 		this.useDepth = useDepth;
 	}
 
-	public boolean getUseFabulous() {
-		return this.useFabulous;
+	public boolean getUseImprovedTransparency() {
+		return this.useImprovedTransparency;
 	}
 
-	public void setUseFabulous(boolean useFabulous) {
-		this.useFabulous = useFabulous;
+	public void setUseImprovedTransparency(boolean useImprovedTransparency) {
+		this.useImprovedTransparency = useImprovedTransparency;
 	}
 
 	public Identifier getShaderId() {
@@ -80,7 +76,7 @@ public class Shader {
 
 	private void setShaderId(Identifier id) {
 		setUseDepth(false);
-		setUseFabulous(false);
+		setUseImprovedTransparency(false);
 		closePostProcessor();
 		this.shaderId = id;
 	}
@@ -111,7 +107,7 @@ public class Shader {
 
 	public void setShaderData(ShaderRegistryEntry shaderData) {
 		setUseDepth(false);
-		setUseFabulous(false);
+		setUseImprovedTransparency(false);
 		this.shaderData = shaderData;
 		if (getShaderData() != null) setShaderId(getShaderData().getPostEffect(false));
 	}

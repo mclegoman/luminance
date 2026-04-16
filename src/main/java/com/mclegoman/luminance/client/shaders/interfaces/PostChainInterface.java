@@ -30,7 +30,7 @@ public interface PostChainInterface {
 
     boolean luminance$usesDepth();
 
-    boolean luminance$usesFabulous();
+    boolean luminance$usesImprovedTransparency();
 
     boolean luminance$usesPersistentBuffers();
 

@@ -21,7 +21,7 @@ public class ShaderTime {
     private float expDelta;
 
     // current position in the rendering pipeline
-    public static RenderLocations.RenderLocation currentRenderLocation;
+    public static RenderLocations.RenderLocation<?> currentRenderLocation;
 
     public void update(float tickProgress) {
         this.tickProgress = tickProgress;

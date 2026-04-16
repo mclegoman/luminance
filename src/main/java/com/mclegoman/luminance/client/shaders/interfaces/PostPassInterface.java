@@ -29,5 +29,5 @@ public interface PostPassInterface {
 
     boolean luminance$usesDepth();
 
-    boolean luminance$usesFabulous();
+    boolean luminance$usesImprovedTransparency();
 }

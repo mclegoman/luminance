@@ -8,6 +8,7 @@
 package com.mclegoman.luminance.client.shaders.uniforms;
 
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,6 +55,13 @@ public class UniformVector {
     public void set(int index, float value) {
         if (index >= 0 && index < values.size()) {
             values.set(index, value);
+        }
+    }
+
+    public void set(Vec2 vec2d) {
+        if (values.size() == 2) {
+            values.set(0, vec2d.x);
+            values.set(1, vec2d.y);
         }
     }
 

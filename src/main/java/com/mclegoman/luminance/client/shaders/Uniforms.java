@@ -42,6 +42,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.MoonPhase;
 import org.jetbrains.annotations.Nullable;
@@ -577,10 +578,9 @@ public class Uniforms {
 	}
 
 	public static void getRenderLocation(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
-		uniformVector.set(new Vec3(
-				ShaderTime.currentRenderLocation.isDepthSupported() ? 1.0F : 0.0F,
-				ShaderTime.currentRenderLocation.uiType().equals(RenderLocations.UIType.OVER) ? 1.0F : 0.0F,
-				ShaderTime.currentRenderLocation.uiType().equals(RenderLocations.UIType.UNDER) ? 1.0F : 0.0F
+		uniformVector.set(new Vec2(
+				ShaderTime.currentRenderLocation.depthType().ordinal(),
+				ShaderTime.currentRenderLocation.uiType().ordinal()
 		));
 	}
 

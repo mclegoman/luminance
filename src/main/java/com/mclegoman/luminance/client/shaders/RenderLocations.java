@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 public class RenderLocations {
-    public static RenderLocation<Runnables.LevelRender.Data> LEVEL = register(Data.idOf("level"), Shaders::renderFromLevelData, true, UIType.NONE, true, false);
-    public static RenderLocation<Runnables.GameRender.Data> GAME = register(Data.idOf("game"), Shaders::renderFromGameData, true, UIType.NONE, true);
-    public static RenderLocation<Runnables.GameRender.Data> UI = register(Data.idOf("ui"), Shaders::renderFromGameData, false, UIType.OVER, true);
-    public static RenderLocation<Runnables.GameRender.Data> UI_BACKGROUND = register(Data.idOf("ui_background"), Shaders::renderFromGameData, false, UIType.UNDER, true);
-    public static RenderLocation<Runnables.GameRender.Data> PANORAMA = register(Data.idOf("panorama"), Shaders::renderFromGameData, false, UIType.UNDER, false);
+    public static RenderLocation<Runnables.LevelRender.Data> LEVEL = register(Data.idOf("level"), Shaders::renderFromLevelData, DepthType.IMPROVED_TRANSPARENCY, UIType.NONE, false);
+    public static RenderLocation<Runnables.GameRender.Data> GAME = register(Data.idOf("game"), Shaders::renderFromGameData, DepthType.MAIN, UIType.NONE, true);
+    public static RenderLocation<Runnables.GameRender.Data> UI = register(Data.idOf("ui"), Shaders::renderFromGameData, DepthType.NONE, UIType.OVER, true);
+    public static RenderLocation<Runnables.GameRender.Data> UI_BACKGROUND = register(Data.idOf("ui_background"), Shaders::renderFromGameData, DepthType.NONE, UIType.UNDER, true);
+    public static RenderLocation<Runnables.GameRender.Data> PANORAMA = register(Data.idOf("panorama"), Shaders::renderFromGameData, DepthType.NONE, UIType.UNDER, false);
 
     public static RenderLocation<?> getFallback() {
         return getFallback(false);
@@ -80,12 +80,12 @@ public class RenderLocations {
             RenderLocation<?> renderLocation = callableRenderLocation.call();
             if (renderLocation == null) return;
 
-            boolean isFallback = type.equals(getFallback(shaderInstance.getUseFabulous()));
+            boolean isFallback = type.equals(getFallback(shaderInstance.getUseImprovedTransparency()));
 
             boolean isCorrectType = renderLocation.equals(type);
             if (!isCorrectType && !isFallback) return;
 
-            boolean shouldFallback = (shaderInstance.getUseFabulous() && !renderLocation.isFabulousSupported()) || (shaderInstance.getUseDepth() && !renderLocation.isDepthSupported()) || (shaderData.useFallbackWhenOverUi() && renderLocation.uiType().equals(UIType.OVER)) || (shaderData.useFallbackWhenUnderUi() && renderLocation.uiType().equals(UIType.UNDER));
+            boolean shouldFallback = (shaderInstance.getUseImprovedTransparency() && !renderLocation.depthType().equals(DepthType.IMPROVED_TRANSPARENCY)) || (shaderInstance.getUseDepth() && !renderLocation.depthType().equals(DepthType.MAIN)) || (shaderData.useFallbackWhenOverUi() && renderLocation.uiType().equals(UIType.OVER)) || (shaderData.useFallbackWhenUnderUi() && renderLocation.uiType().equals(UIType.UNDER));
             if (shouldFallback && !renderLocation.canFallback()) return;
 
             boolean canRender = (!shouldFallback && isCorrectType) || (shouldFallback && isFallback);
@@ -97,12 +97,8 @@ public class RenderLocations {
         }
     }
 
-    public static <T> RenderLocation<T> register(Identifier identifier, Renderer<T> renderer, boolean isDepthSupported, UIType uiType, boolean canFallback) {
-        return register(identifier, renderer, isDepthSupported, uiType, false, canFallback);
-    }
-
-    public static <T> RenderLocation<T> register(Identifier identifier, Renderer<T> renderer, boolean isDepthSupported, UIType uiType, boolean canUseFabulous, boolean canFallback) {
-        RenderLocation<T> renderLocation = new RenderLocation<>(identifier, renderer, isDepthSupported, uiType, canUseFabulous, canFallback);
+    public static <T> RenderLocation<T> register(Identifier identifier, Renderer<T> renderer, DepthType depthType, UIType uiType, boolean canFallback) {
+        RenderLocation<T> renderLocation = new RenderLocation<>(identifier, renderer, depthType, uiType, canFallback);
         Events.RenderLocation.register(identifier, renderLocation);
         return renderLocation;
     }
@@ -111,10 +107,16 @@ public class RenderLocations {
         void render(Identifier id, Shader.Data shader, T Data);
     }
 
-    public record RenderLocation<T>(Identifier identifier, Renderer<T> renderer, boolean isDepthSupported, UIType uiType, boolean isFabulousSupported, boolean canFallback) {
+    public record RenderLocation<T>(Identifier identifier, Renderer<T> renderer, DepthType depthType, UIType uiType, boolean canFallback) {
         public void render(Identifier id, Shader.Data shader, T data) {
             this.renderer().render(id, shader, data);
         }
+    }
+
+    public enum DepthType {
+        NONE,
+        MAIN,
+        IMPROVED_TRANSPARENCY
     }
 
     public enum UIType {

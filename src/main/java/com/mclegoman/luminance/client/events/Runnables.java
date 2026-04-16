@@ -1,6 +1,6 @@
 /*
     Luminance
-    Contributor(s): dannytaylor
+    Contributor(s): dannytaylor, Nettakrim
     Github: https://github.com/mclegoman/Luminance
     Licence: GNU LGPLv3
 */
@@ -24,15 +24,19 @@ public class Runnables {
 	public interface InGameHudRender {
 		void run(GuiGraphics context, DeltaTracker renderTickCounter);
 	}
+
 	public interface Shader {
 		void run(PostPass postEffectPass);
 	}
+
 	public interface ShaderData {
 		void run(ShaderRegistryEntry shaderData, List<Identifier> registries);
 	}
+
 	public interface OnResized {
 		void run(int width, int height);
 	}
+
 	public interface LevelRender {
 		void run(Data data);
 
@@ -45,6 +49,7 @@ public class Runnables {
 
 		record Data(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle) { }
 	}
+
 	public interface GameRender {
 		void run(Data data);
 
