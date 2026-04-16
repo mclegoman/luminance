@@ -1,5 +1,8 @@
 # Resourcepack Guide
 
+> There has been quite a few changes recently, some parts of this guide will be out of date for the current version.  
+> Feel free to look at our shaders (located in `/src/resources/`) to see what's changed, whilst we work on updating this guide.  
+
 This guide is split into 3 parts, each part assumes knowledge from the previous section
 
 1. [Setting up a Resourcepack](PackSetup.md)

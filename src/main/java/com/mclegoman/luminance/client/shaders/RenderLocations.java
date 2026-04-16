@@ -28,8 +28,8 @@ public class RenderLocations {
         return getFallback(false);
     }
 
-    public static RenderLocation<?> getFallback(boolean isFabulous) {
-        return isFabulous ? LEVEL : GAME;
+    public static RenderLocation<?> getFallback(boolean isImprovedTransparency) {
+        return isImprovedTransparency ? LEVEL : GAME;
     }
 
     public static <T> void render(RenderLocation<T> type, T data) {
@@ -114,9 +114,9 @@ public class RenderLocations {
     }
 
     public enum DepthType {
-        NONE,
-        MAIN,
-        IMPROVED_TRANSPARENCY
+        NONE, // Cannot use depth, most locations will fall back to either GAME or LEVEL depending on depth type requirements.
+        MAIN, // Can use minecraft:main target depth buffer.
+        IMPROVED_TRANSPARENCY // Can use any targets depth buffer, primarily used for Improved Transparency targets.
     }
 
     public enum UIType {
