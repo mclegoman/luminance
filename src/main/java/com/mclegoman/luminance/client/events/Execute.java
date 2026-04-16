@@ -9,12 +9,14 @@ package com.mclegoman.luminance.client.events;
 
 import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.data.ClientData;
+import com.mclegoman.luminance.client.shaders.LuminanceTargetBundle;
 import com.mclegoman.luminance.client.shaders.RenderLocations;
 import com.mclegoman.luminance.client.shaders.ShaderTime;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
+import com.mojang.blaze3d.resource.RenderTargetDescriptor;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
@@ -159,11 +161,12 @@ public class Execute {
 		}));
 	}
 
-	public static void afterFabulousRender(FrameGraphBuilder frameGraphBuilder, PostChain.TargetBundle targetBundle) {
+	public static void afterFabulousRender(FrameGraphBuilder frameGraphBuilder, LevelTargetBundle levelTargetBundle, RenderTargetDescriptor renderTargetDescriptor) {
 		if (Events.AfterFabulousRender.registry.isEmpty()) {
 			return;
 		}
 
+		PostChain.TargetBundle targetBundle = LuminanceTargetBundle.addFabulousIfAbsent(levelTargetBundle, frameGraphBuilder, renderTargetDescriptor);
 		Events.AfterFabulousRender.registry.forEach(((id, runnable) -> {
 			try {
 				runnable.run(new Runnables.LevelRender.Data(frameGraphBuilder, ClientData.minecraft.getMainRenderTarget().width, ClientData.minecraft.getMainRenderTarget().height, targetBundle));

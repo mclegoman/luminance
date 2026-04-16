@@ -11,7 +11,6 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mclegoman.luminance.client.events.Execute;
-import com.mclegoman.luminance.client.shaders.LuminanceTargetBundle;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import net.minecraft.client.Camera;
@@ -40,7 +39,7 @@ public abstract class LevelRendererMixin {
 
 	@Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;addLateDebugPass(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;Lnet/minecraft/client/renderer/state/CameraRenderState;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lorg/joml/Matrix4f;)V", shift = At.Shift.AFTER))
 	private void luminance$afterRenderFabulous(GraphicsResourceAllocator allocator, DeltaTracker tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f positionMatrix, Matrix4f basicProjectionMatrix, Matrix4f projectionMatrix, GpuBufferSlice fogBuffer, Vector4f fogColor, boolean renderSky, CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder, @Share("factory") LocalRef<RenderTargetDescriptor> factory) {
-		Execute.afterFabulousRender(frameGraphBuilder, LuminanceTargetBundle.addFabulousIfAbsent(targets, frameGraphBuilder, factory.get()));
+		Execute.afterFabulousRender(frameGraphBuilder, targets, factory.get());
 	}
 
 	@Inject(method = "renderLevel", at = @At("TAIL"))
