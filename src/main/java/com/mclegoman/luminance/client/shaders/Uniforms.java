@@ -579,8 +579,8 @@ public class Uniforms {
 	public static void getRenderLocation(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		uniformVector.set(new Vec3(
 				ShaderTime.currentRenderLocation.isDepthSupported() ? 1.0F : 0.0F,
-				ShaderTime.currentRenderLocation.isOverUi() ? 1.0F : 0.0F,
-				ShaderTime.currentRenderLocation.isUnderUi() ? 1.0F : 0.0F
+				ShaderTime.currentRenderLocation.uiType().equals(RenderLocations.UIType.OVER) ? 1.0F : 0.0F,
+				ShaderTime.currentRenderLocation.uiType().equals(RenderLocations.UIType.UNDER) ? 1.0F : 0.0F
 		));
 	}
 
