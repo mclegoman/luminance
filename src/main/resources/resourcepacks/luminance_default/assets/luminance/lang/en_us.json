@@ -50,7 +50,7 @@
 	"gui.luminance.shader.luminance.dos.description": "Quantizes RGB channels to a 3-3-2 bit palette, approximating the look of early 1990's 256-color graphics.",
 
 	"gui.luminance.shader.luminance.ps1": "PS1",
-	"gui.luminance.shader.luminance.ps1.description": "Applies dithering and then quantizes RGB channels to a 15 bit palette, simulating the visual output of early gaming consoles.",
+	"gui.luminance.shader.luminance.ps1.description": "Quantizes RGB channels to a 15 bit palette, simulating the visual output of early gaming consoles.",
 
 	"gui.luminance.shader.luminance.saturate": "Saturated",
 	"gui.luminance.shader.luminance.saturate.description": "Intensifies/adds more colors, adding vibrancy.",
