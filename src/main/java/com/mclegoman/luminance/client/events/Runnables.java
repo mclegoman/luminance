@@ -38,7 +38,7 @@ public class Runnables {
 
 		static void fromGameData(LevelRender levelRender, GameRender.Data data) {
 			FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
-			PostChain.TargetBundle targetBundle = new LuminanceTargetBundle(frameGraphBuilder, data.renderTarget, LuminanceTargetBundle.fabulous);
+			PostChain.TargetBundle targetBundle = LuminanceTargetBundle.create(frameGraphBuilder, data.renderTarget);
 			levelRender.run(new Data(frameGraphBuilder, data.renderTarget.width, data.renderTarget.height, targetBundle));
 			frameGraphBuilder.execute(data.resourceAllocator);
 		}

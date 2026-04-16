@@ -7,7 +7,6 @@
 
 package com.mclegoman.luminance.client.shaders;
 
-import com.mclegoman.luminance.common.data.Data;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.renderer.PostChain;
 import com.mojang.blaze3d.resource.RenderTargetDescriptor;
@@ -25,7 +24,12 @@ import java.util.Set;
 public class LuminanceTargetBundle implements PostChain.TargetBundle {
     // when rendering shaders with the allocator, they cant access fabulous buffers
     // this stops the shaders from rendering, which isnt ideal, and it stops them working with iris
-    // by swapping out the usual target bundle with this class, it instead just returns an empty buffer
+    // by swapping out the usual target bundle with this class, it instead just returns an empty buffer when requesting a fabulous buffer
+
+    // this buffer will always be empty when used because it is prepare()d when it is acquire()d by the CrossFrameResourcePool
+    // this could also be done by using importExternal instead of createInternal and then clearing it manually
+    // but then the target would need to be managed more closely
+
     private ResourceHandle<RenderTarget> mainRenderTarget;
     private ResourceHandle<RenderTarget> defaultRenderTarget;
 
@@ -40,25 +44,23 @@ public class LuminanceTargetBundle implements PostChain.TargetBundle {
             Identifier.withDefaultNamespace("clouds")
     ));
 
-    public LuminanceTargetBundle(FrameGraphBuilder builder, RenderTarget mainRenderTarget, @Nullable Set<Identifier> useDefaultFor) {
-        this.mainRenderTarget = builder.importExternal("main", mainRenderTarget);
-        PersistentRenderTargetDescriptor persistentRenderTargetDescriptor = new PersistentRenderTargetDescriptor(new RenderTargetDescriptor(mainRenderTarget.width, mainRenderTarget.height, mainRenderTarget.useDepth, 0), null, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "default"));
-        this.defaultRenderTarget = builder.createInternal("luminance:default", persistentRenderTargetDescriptor);
-        this.useDefaultFor = useDefaultFor;
-    }
-
     private LuminanceTargetBundle(ResourceHandle<RenderTarget> mainRenderTarget, ResourceHandle<RenderTarget> defaultRenderTarget, @Nullable Set<Identifier> useDefaultFor) {
         this.mainRenderTarget = mainRenderTarget;
         this.defaultRenderTarget = defaultRenderTarget;
         this.useDefaultFor = useDefaultFor;
     }
 
-    public static PostChain.TargetBundle addFabulousIfAbsent(LevelTargetBundle levelTargetBundle, FrameGraphBuilder frameGraphBuilder, RenderTargetDescriptor factory) {
+    public static PostChain.TargetBundle create(FrameGraphBuilder builder, RenderTarget mainRenderTarget) {
+        RenderTargetDescriptor renderTargetDescriptor = new RenderTargetDescriptor(mainRenderTarget.width, mainRenderTarget.height, mainRenderTarget.useDepth, 0);
+        return new LuminanceTargetBundle(builder.importExternal("main", mainRenderTarget), builder.createInternal("luminance:default", renderTargetDescriptor), fabulous);
+    }
+
+    public static PostChain.TargetBundle createIfAbsent(FrameGraphBuilder frameGraphBuilder, LevelTargetBundle levelTargetBundle, RenderTargetDescriptor renderTargetDescriptor) {
         if (levelTargetBundle.translucent != null) {
             return levelTargetBundle;
         }
-        PersistentRenderTargetDescriptor persistentRenderTargetDescriptor = new PersistentRenderTargetDescriptor(factory, null, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "fabulous"));
-        return new LuminanceTargetBundle(levelTargetBundle.main, frameGraphBuilder.createInternal("luminance:default", persistentRenderTargetDescriptor), fabulous);
+
+        return new LuminanceTargetBundle(levelTargetBundle.main, frameGraphBuilder.createInternal("luminance:default", renderTargetDescriptor), fabulous);
     }
 
     public void replace(Identifier id, @NotNull ResourceHandle<RenderTarget> renderTarget) {
