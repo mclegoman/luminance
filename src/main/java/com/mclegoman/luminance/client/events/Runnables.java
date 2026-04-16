@@ -34,16 +34,24 @@ public class Runnables {
 		void run(int width, int height);
 	}
 	public interface WorldRender {
-		void run(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle);
+		void run(Data data);
 
-		static void fromGameRender(WorldRender worldRender, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
+		static void fromGameRender(WorldRender worldRender, GameRender.Data data) {
 			FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
-			PostChain.TargetBundle targetBundle = new LuminanceTargetBundle(frameGraphBuilder, renderTarget, LuminanceTargetBundle.fabulous);
-			worldRender.run(frameGraphBuilder, renderTarget.width, renderTarget.height, targetBundle);
-			frameGraphBuilder.execute(resourceAllocator);
+			PostChain.TargetBundle targetBundle = new LuminanceTargetBundle(frameGraphBuilder, data.renderTarget, LuminanceTargetBundle.fabulous);
+			worldRender.run(new Data(frameGraphBuilder, data.renderTarget.width, data.renderTarget.height, targetBundle));
+			frameGraphBuilder.execute(data.resourceAllocator);
+		}
+
+		record Data(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle) {
+
 		}
 	}
 	public interface GameRender {
-		void run(RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator);
+		void run(Data data);
+
+		record Data(RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
+
+		}
 	}
 }

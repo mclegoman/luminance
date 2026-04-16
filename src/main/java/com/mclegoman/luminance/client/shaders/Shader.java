@@ -20,15 +20,15 @@ public class Shader {
 	private PostChain postProcessor;
 	private boolean useDepth;
 	private Identifier shaderId;
-	private Callable<RenderLocations.RenderLocation> RenderLocation;
+	private Callable<RenderLocations.RenderLocation<?>> RenderLocation;
 	private Callable<Boolean> shouldRender;
 	private ShaderRegistryEntry shaderData;
 
-	public Shader(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation> RenderLocation, Callable<Boolean> shouldRender) {
+	public Shader(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation<?>> RenderLocation, Callable<Boolean> shouldRender) {
 		reload(shaderData, RenderLocation, shouldRender);
 	}
 
-	public Shader(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation> RenderLocation) {
+	public Shader(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation<?>> RenderLocation) {
 		this(shaderData, RenderLocation, () -> true);
 	}
 
@@ -70,11 +70,11 @@ public class Shader {
 		this.shaderId = id;
 	}
 
-	public Callable<RenderLocations.RenderLocation> getRenderLocation() {
+	public Callable<RenderLocations.RenderLocation<?>> getRenderLocation() {
 		return this.RenderLocation;
 	}
 
-	public void setRenderLocation(Callable<RenderLocations.RenderLocation> RenderLocation) {
+	public void setRenderLocation(Callable<RenderLocations.RenderLocation<?>> RenderLocation) {
 		this.RenderLocation = RenderLocation;
 	}
 
@@ -104,7 +104,7 @@ public class Shader {
 		reload(shaderData, RenderLocation, shouldRender);
 	}
 
-	public void reload(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation> renderLocation, Callable<Boolean> shouldRender) {
+	public void reload(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation<?>> renderLocation, Callable<Boolean> shouldRender) {
 		closePostProcessor();
 		setRenderLocation(renderLocation);
 		setShouldRender(shouldRender);

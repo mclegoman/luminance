@@ -113,7 +113,7 @@ public class ShaderStacks {
         return renderId.withPath(renderId.getPath() + "_" + string);
     }
 
-    public static Events.ShaderRenderData getShaders(Identifier renderId, Entry stack, Callable<RenderLocations.RenderLocation> renderLocation, Callable<Boolean> enabled, Callables.ShaderRegistryCaller disablePhotosensitive) {
+    public static Events.ShaderRenderData getShaders(Identifier renderId, Entry stack, Callable<RenderLocations.RenderLocation<?>> renderLocation, Callable<Boolean> enabled, Callables.ShaderRegistryCaller disablePhotosensitive) {
         List<Shader.Data> shaders = new ArrayList<>();
         if (stack != null) {
             int index = 0;

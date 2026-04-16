@@ -17,9 +17,6 @@ import com.mclegoman.luminance.client.shaders.interfaces.PostChainInterface;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
-import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.Version;
@@ -27,7 +24,6 @@ import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.api.metadata.version.VersionPredicate;
 import net.minecraft.client.gui.components.debug.DebugScreenEntryStatus;
 import net.minecraft.client.gui.components.debug.DebugScreenProfile;
-import net.minecraft.client.renderer.PostChain;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 import net.minecraft.resources.Identifier;
@@ -47,14 +43,14 @@ public class Shaders {
 		Uniforms.init();
 		Events.BeforeGameRender.register(Data.idOf("update"), Uniforms::update);
 
-		Events.AfterVanillaPostEffectRender.register(Data.idOf("main"),
-				(renderTarget, resourceAllocator) -> RenderLocations.render(RenderLocations.WORLD, renderTarget, resourceAllocator));
+		Events.AfterFabulousRender.register(Data.idOf("main"),
+				(data) -> RenderLocations.render(RenderLocations.WORLD, data));
 		Events.AfterUiRender.register(Data.idOf("main"),
-				(renderTarget, resourceAllocator) -> RenderLocations.render(RenderLocations.UI, renderTarget, resourceAllocator));
+				(data) -> RenderLocations.render(RenderLocations.UI, data));
 		Events.AfterUiBackgroundRender.register(Data.idOf("main"),
-				(renderTarget, resourceAllocator) -> RenderLocations.render(RenderLocations.UI_BACKGROUND, renderTarget, resourceAllocator));
+				(data) -> RenderLocations.render(RenderLocations.UI_BACKGROUND, data));
 		Events.AfterPanoramaRender.register(Data.idOf("main"),
-				(renderTarget, resourceAllocator) -> RenderLocations.render(RenderLocations.PANORAMA, renderTarget, resourceAllocator));
+				(data) -> RenderLocations.render(RenderLocations.PANORAMA, data));
 
 		ProfiledDebugEntries.register(Data.idOf("debug_shader"), new DebugEntryDebugShader(), DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.IN_OVERLAY);
 	}
@@ -98,7 +94,7 @@ public class Shaders {
 		return shaders;
 	}
 
-	private static void renderUsingTargetBundle(Identifier id, Shader.Data shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle) {
+	public static void renderUsingTargetBundle(Identifier id, Shader.Data shader, Runnables.WorldRender.Data data) {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
 				if (shader.shader().getShouldRender()) {
@@ -110,7 +106,7 @@ public class Shaders {
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
-					renderProcessorUsingTargetBundle(shader.shader(), builder, textureWidth, textureHeight, targetBundle, null);
+					renderProcessorUsingTargetBundle(shader.shader(), data, null);
 				}
 			}
 		} catch (Exception error) {
@@ -118,13 +114,13 @@ public class Shaders {
 		}
 	}
 
-	public static void renderProcessorUsingTargetBundle(Shader shader, FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier chain) {
+	public static void renderProcessorUsingTargetBundle(Shader shader, Runnables.WorldRender.Data data, @Nullable Identifier chain) {
 		try {
 			if (shader.getPostProcessor() != null) {
 				try {
 					// the depth masking done in renderUsingAllocator is instead done for everything already before this method is called
 					// this is because FrameGraphBuilder delays calls, so any rendersystem methods wont work with their intended timing
-					((PostChainInterface)shader.getPostProcessor()).luminance$render(builder, textureWidth, textureHeight, targetBundle, chain);
+					((PostChainInterface)shader.getPostProcessor()).luminance$render(data.builder(), data.textureWidth(), data.textureHeight(), data.targetBundle(), chain);
 				} catch (Exception error) {
 					Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());
 				}
@@ -134,7 +130,7 @@ public class Shaders {
 		}
 	}
 
-	public static void renderUsingAllocator(Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
+	public static void renderUsingAllocator(Identifier id, Shader.Data shader, Runnables.GameRender.Data data) {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
 				if (shader.shader().getShouldRender()) {
@@ -146,7 +142,7 @@ public class Shaders {
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
-					renderShaderUsingAllocator(shader.shader(), renderTarget, resourceAllocator, null);
+					renderShaderUsingAllocator(shader.shader(), data, null);
 				}
 			}
 		} catch (Exception error) {
@@ -177,11 +173,11 @@ public class Shaders {
 		return null;
 	}
 
-	public static Shader get(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation> renderLocation, Callable<Boolean> shouldRender) {
+	public static Shader get(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation<?>> renderLocation, Callable<Boolean> shouldRender) {
 		return new Shader(shaderData, renderLocation, shouldRender);
 	}
 
-	public static Shader get(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation> renderLocation) {
+	public static Shader get(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation<?>> renderLocation) {
 		return new Shader(shaderData, renderLocation);
 	}
 
@@ -295,10 +291,10 @@ public class Shaders {
 	}
 
 	// This is identical to the deprecated `PostChain.process(renderTarget, resourceAllocator);` function.
-	public static void renderShaderUsingAllocator(Shader shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator, @Nullable Identifier customChain) {
+	public static void renderShaderUsingAllocator(Shader shader, Runnables.GameRender.Data data, @Nullable Identifier customChain) {
 		try {
 			if (shader.getPostProcessor() != null) {
-				Runnables.WorldRender.fromGameRender((builder, width, height, set) -> ((PostChainInterface)shader.getPostProcessor()).luminance$render(builder, width, height, set, customChain), renderTarget, resourceAllocator);
+				Runnables.WorldRender.fromGameRender((worldData) -> ((PostChainInterface)shader.getPostProcessor()).luminance$render(worldData.builder(), worldData.textureWidth(), worldData.textureHeight(), worldData.targetBundle(), customChain), data);
 			}
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());

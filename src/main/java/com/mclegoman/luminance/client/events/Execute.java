@@ -90,7 +90,7 @@ public class Execute {
 
 		Events.AfterVanillaPostEffectRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
+				runnable.run(new Runnables.GameRender.Data(ClientData.minecraft.getMainRenderTarget(), allocator));
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute VanillaPostEffect event with id: {}: {}", id, error);
 			}
@@ -100,7 +100,7 @@ public class Execute {
 	public static void afterUiRender(GraphicsResourceAllocator allocator) {
 		Events.AfterUiRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
+				runnable.run(new Runnables.GameRender.Data(ClientData.minecraft.getMainRenderTarget(), allocator));
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterGameRender event with id: {}: {}", id, error);
 			}
@@ -110,7 +110,7 @@ public class Execute {
 	public static void beforeUiRender(GraphicsResourceAllocator allocator) {
 		Events.BeforeUiRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
+				runnable.run(new Runnables.GameRender.Data(ClientData.minecraft.getMainRenderTarget(), allocator));
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute BeforeUiRender event with id: {}: {}", id, error);
 			}
@@ -118,11 +118,11 @@ public class Execute {
 	}
 
 	public static void afterUiBackgroundRender(GraphicsResourceAllocator allocator) {
-		RenderLocations.RenderLocation previous = ShaderTime.currentRenderLocation;
+		RenderLocations.RenderLocation<?> previous = ShaderTime.currentRenderLocation;
 		ShaderTime.currentRenderLocation = RenderLocations.UI_BACKGROUND;
 		Events.AfterUiBackgroundRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
+				runnable.run(new Runnables.GameRender.Data(ClientData.minecraft.getMainRenderTarget(), allocator));
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterUiBackgroundRender event with id: {}: {}", id, error);
 			}
@@ -132,11 +132,11 @@ public class Execute {
 	}
 
 	public static void afterPanoramaRender(GraphicsResourceAllocator allocator) {
-		RenderLocations.RenderLocation previous = ShaderTime.currentRenderLocation;
+		RenderLocations.RenderLocation<?> previous = ShaderTime.currentRenderLocation;
 		ShaderTime.currentRenderLocation = RenderLocations.PANORAMA;
 		Events.AfterPanoramaRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
+				runnable.run(new Runnables.GameRender.Data(ClientData.minecraft.getMainRenderTarget(), allocator));
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterPanoramaRender event with id: {}: {}", id, error);
 			}
@@ -166,7 +166,7 @@ public class Execute {
 
 		Events.AfterFabulousRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(frameGraphBuilder, ClientData.minecraft.getMainRenderTarget().width, ClientData.minecraft.getMainRenderTarget().height, targetBundle);
+				runnable.run(new Runnables.WorldRender.Data(frameGraphBuilder, ClientData.minecraft.getMainRenderTarget().width, ClientData.minecraft.getMainRenderTarget().height, targetBundle));
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterFabulousRender event with id: {}: {}", id, error);
 			}
@@ -176,7 +176,7 @@ public class Execute {
 	public static void afterWorldRender(GraphicsResourceAllocator allocator) {
 		Events.AfterWorldRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(ClientData.minecraft.getMainRenderTarget(), allocator);
+				runnable.run(new Runnables.GameRender.Data(ClientData.minecraft.getMainRenderTarget(), allocator));
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterWorldRender event with id: {}: {}", id, error);
 			}

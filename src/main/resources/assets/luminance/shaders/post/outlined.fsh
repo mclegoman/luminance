@@ -5,21 +5,21 @@
 // For some reason, I couldn't get it to work?
 uniform sampler2D InSampler;
 uniform sampler2D InDepthSampler;
-//uniform sampler2D TranslucentDepthSampler;
-//uniform sampler2D ItemEntityDepthSampler;
-//uniform sampler2D ParticlesDepthSampler;
-//uniform sampler2D WeatherDepthSampler;
-//uniform sampler2D CloudsDepthSampler;
+uniform sampler2D TranslucentDepthSampler;
+uniform sampler2D ItemEntityDepthSampler;
+uniform sampler2D ParticlesDepthSampler;
+uniform sampler2D WeatherDepthSampler;
+uniform sampler2D CloudsDepthSampler;
 
 layout(std140) uniform SamplerInfo {
     vec2 OutSize;
     vec2 InSize;
     vec2 InDepthSize;
-//    vec2 TranslucentDepthSize;
-//    vec2 ItemEntityDepthSize;
-//    vec2 ParticlesDepthSize;
-//    vec2 WeatherDepthSize;
-//    vec2 CloudsDepthSize;
+    vec2 TranslucentDepthSize;
+    vec2 ItemEntityDepthSize;
+    vec2 ParticlesDepthSize;
+    vec2 WeatherDepthSize;
+    vec2 CloudsDepthSize;
 };
 
 layout(std140) uniform OutlinedConfig {
@@ -50,13 +50,12 @@ float getDepth(sampler2D tex, sampler2D depth, vec2 coord) {
 
 float getDepth(vec2 coord) {
     float depth0 = getDepth(InDepthSampler, InDepthSampler, coord);
-    return depth0;
-//    float depth1 = getDepth(TranslucentDepthSampler, TranslucentDepthSampler, coord);
-//    float depth2 = getDepth(ItemEntityDepthSampler, ItemEntityDepthSampler, coord);
-//    float depth3 = getDepth(ParticlesDepthSampler, ParticlesDepthSampler, coord);
-//    float depth4 = getDepth(WeatherDepthSampler, WeatherDepthSampler, coord);
-//    float depth5 = getDepth(CloudsDepthSampler, CloudsDepthSampler, coord);
-//    return min(min(min(depth0, depth1), min(depth2, depth3)), min(depth4, depth5));
+    float depth1 = getDepth(TranslucentDepthSampler, TranslucentDepthSampler, coord);
+    float depth2 = getDepth(ItemEntityDepthSampler, ItemEntityDepthSampler, coord);
+    float depth3 = getDepth(ParticlesDepthSampler, ParticlesDepthSampler, coord);
+    float depth4 = getDepth(WeatherDepthSampler, WeatherDepthSampler, coord);
+    float depth5 = getDepth(CloudsDepthSampler, CloudsDepthSampler, coord);
+    return min(min(min(depth0, depth1), min(depth2, depth3)), min(depth4, depth5));
 }
 
 vec4 outline( vec4 color, sampler2D DepthSampler ) {

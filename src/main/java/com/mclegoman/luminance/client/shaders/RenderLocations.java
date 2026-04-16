@@ -2,43 +2,45 @@ package com.mclegoman.luminance.client.shaders;
 
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Events;
+import com.mclegoman.luminance.client.events.Runnables;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 public class RenderLocations {
-    public static RenderLocation WORLD = register(Data.idOf("world"), Shaders::renderUsingAllocator, true, false, false, false);
-    public static RenderLocation UI = register(Data.idOf("ui"), Shaders::renderUsingAllocator, false, true, false, true);
-    public static RenderLocation UI_BACKGROUND = register(Data.idOf("ui_background"), Shaders::renderUsingAllocator, false, false, true, true);
-    public static RenderLocation PANORAMA = register(Data.idOf("panorama"), Shaders::renderUsingAllocator, false, false, true, false);
+    // TODO:
+    // world should be renamed to LEVEL to match mojmaps naming scheme
+    // we should then also have another location for rendering after post effects, since world now renders before hand
+    public static RenderLocation<Runnables.WorldRender.Data> WORLD = register(Data.idOf("world"), Shaders::renderUsingTargetBundle, true, false, false, false);
+    public static RenderLocation<Runnables.GameRender.Data> UI = register(Data.idOf("ui"), Shaders::renderUsingAllocator, false, true, false, true);
+    public static RenderLocation<Runnables.GameRender.Data> UI_BACKGROUND = register(Data.idOf("ui_background"), Shaders::renderUsingAllocator, false, false, true, true);
+    public static RenderLocation<Runnables.GameRender.Data> PANORAMA = register(Data.idOf("panorama"), Shaders::renderUsingAllocator, false, false, true, false);
 
-    public static RenderLocation getFallback() {
+    public static RenderLocation<?> getFallback() {
         return WORLD;
     }
 
-    public static void render(RenderLocation type, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
+    public static <T> void render(RenderLocation<T> type, T data) {
         if (ClientData.minecraft.gameRenderer.isPanoramicMode()) return;
         Events.ShaderRender.registry.forEach((id, shaders) -> {
             try {
-                renderShaders(type, shaders, id, renderTarget, resourceAllocator);
+                renderShaders(type, data, shaders, id);
             } catch (Exception error) {
                 Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}:{}", type.identifier(), id, error);
             }
         });
     }
 
-    public static void renderShaders(RenderLocation type, Events.ShaderRenderData shaderRenderData, Identifier id, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
+    public static <T> void renderShaders(RenderLocation<T> type, T data, Events.ShaderRenderData shaderRenderData, Identifier id) {
         if (ClientData.minecraft.gameRenderer.isPanoramicMode()) return;
         if (shaderRenderData != null) {
             List<Shader.Data> shaders = shaderRenderData.shaders();
             if (shaders != null) shaders.forEach(shader -> {
                 try {
-                    renderShader(type, id, shader, renderTarget, resourceAllocator, shaderRenderData.disablePhotosensitive().call(shader.shader().getShaderData()));
+                    renderShader(type, data, id, shader, shaderRenderData.disablePhotosensitive().call(shader.shader().getShaderData()));
                 } catch (Exception error) {
                     Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}:{}", type.identifier(), id, error);
                 }
@@ -46,11 +48,11 @@ public class RenderLocations {
         }
     }
 
-    public static void renderShader(RenderLocation type, Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
-        renderShader(type, id, shader, renderTarget, resourceAllocator, false);
+    public static <T> void renderShader(RenderLocation<T> type, T data, Identifier id, Shader.Data shader) {
+        renderShader(type, data, id, shader, false);
     }
 
-    public static void renderShader(RenderLocation type, Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator, boolean disablePhotosensitivity) {
+    public static <T> void renderShader(RenderLocation<T> type, T data, Identifier id, Shader.Data shader, boolean disablePhotosensitivity) {
         if (ClientData.minecraft.gameRenderer.isPanoramicMode()) return;
         try {
             if (shader == null) return;
@@ -64,10 +66,10 @@ public class RenderLocations {
 
             if (shaderData.isPhotosensitive() && disablePhotosensitivity) return;
 
-            Callable<RenderLocation> callableRenderLocation = shaderInstance.getRenderLocation();
+            Callable<RenderLocation<?>> callableRenderLocation = shaderInstance.getRenderLocation();
             if (callableRenderLocation == null) return;
 
-            RenderLocation renderLocation = callableRenderLocation.call();
+            RenderLocation<?> renderLocation = callableRenderLocation.call();
             if (renderLocation == null) return;
 
             boolean isCorrectType = renderLocation.equals(type);
@@ -79,25 +81,25 @@ public class RenderLocations {
             boolean canRender = (!shouldFallback && isCorrectType) || (shouldFallback && isFallback);
             if (!canRender) return;
 
-            type.render(id, shader, renderTarget, resourceAllocator);
+            type.render(id, shader, data);
         } catch (Exception error) {
             Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}:{}", type.identifier(), id, error);
         }
     }
 
-    public static RenderLocation register(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean canFallback) {
-        RenderLocation renderLocation = new RenderLocation(identifier, renderer, isDepthSupported, isOverUi, isUnderUi, canFallback);
+    public static <T> RenderLocation<T> register(Identifier identifier, Renderer<T> renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean canFallback) {
+        RenderLocation<T> renderLocation = new RenderLocation<>(identifier, renderer, isDepthSupported, isOverUi, isUnderUi, canFallback);
         Events.RenderLocation.register(identifier, renderLocation);
         return renderLocation;
     }
 
-    public interface Renderer {
-        void render(Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator);
+    public interface Renderer<T> {
+        void render(Identifier id, Shader.Data shader, T Data);
     }
 
-    public record RenderLocation(Identifier identifier, Renderer renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean canFallback) {
-        public void render(Identifier id, Shader.Data shader, RenderTarget renderTarget, GraphicsResourceAllocator resourceAllocator) {
-            this.renderer().render(id, shader, renderTarget, resourceAllocator);
+    public record RenderLocation<T>(Identifier identifier, Renderer<T> renderer, boolean isDepthSupported, boolean isOverUi, boolean isUnderUi, boolean canFallback) {
+        public void render(Identifier id, Shader.Data shader, T data) {
+            this.renderer().render(id, shader, data);
         }
     }
 }
