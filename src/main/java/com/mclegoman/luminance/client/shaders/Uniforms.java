@@ -137,7 +137,7 @@ public class Uniforms {
 			registerSingleValueTree(namespace, "is_day", Uniforms::getIsDay, 0f, 1f);
 			registerFullTree(namespace, "time", Uniforms::getGameTime, 0f, 1f, 1, new MapConfig(Map.of("period", List.of(1.0))), false);
 			registerFullTree(namespace, "random", Uniforms::getRandom, 0f, 1f, 1, EmptyConfig.INSTANCE, false);
-			registerFullTree(namespace, "render_location", Uniforms::getRenderLocation, 0f, 1f, 3, EmptyConfig.INSTANCE, false);
+			registerFullTree(namespace, "render_location", Uniforms::getRenderLocation, 0f, null, 2, EmptyConfig.INSTANCE, false);
 			registerSingleValueTree(namespace, "gamemode_has_health", Uniforms::getGameModeHasHealth, 0f, 1f);
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, "Failed to initialize uniforms: {}", error);
