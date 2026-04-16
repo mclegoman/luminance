@@ -1,8 +1,6 @@
-// TODO: this one
 #version 330
 
-// Improved Transparency changes depth, and I want outlines on everything (including water and glass, and through them), when that setting is on.
-// For some reason, I couldn't get it to work?
+// Improved Transparency changes depth, so this shader needs to be ran in the LEVEL RenderLocation when that is enabled
 uniform sampler2D InSampler;
 uniform sampler2D InDepthSampler;
 uniform sampler2D TranslucentDepthSampler;
