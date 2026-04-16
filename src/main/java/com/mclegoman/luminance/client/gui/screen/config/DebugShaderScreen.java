@@ -5,8 +5,6 @@
     Licence: GNU LGPLv3
 */
 
-// TODO: Update debug shader screen.
-
 package com.mclegoman.luminance.client.gui.screen.config;
 
 import com.mclegoman.luminance.client.data.ClientData;
