@@ -8,7 +8,6 @@
 package com.mclegoman.luminance.client.translation;
 
 import com.mclegoman.luminance.client.shaders.RenderLocations;
-import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.mixin.client.gui.StringSplitterAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -103,7 +102,7 @@ public class Translation {
 		return Component.translatableWithFallback("gui." + renderLocationId.getNamespace() + ".render_location." + renderLocationId.getPath(), renderLocationId.toString());
 	}
 
-	public static MutableComponent getRenderLocationTranslation(RenderLocations.RenderLocation renderLocation) {
+	public static MutableComponent getRenderLocationTranslation(RenderLocations.RenderLocation<?> renderLocation) {
 		return renderLocation != null ? getRenderLocationTranslation(renderLocation.identifier()) : Translation.getErrorTranslation(com.mclegoman.luminance.common.data.Data.getVersion().getID());
 	}
 

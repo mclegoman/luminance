@@ -23,7 +23,7 @@ import java.util.Optional;
 public class Debug {
 	private static final Couple<Identifier, Identifier> debugShader;
 	private static boolean debugShaderEnabled;
-	public static RenderLocations.RenderLocation debugRenderLocation;
+	public static RenderLocations.RenderLocation<?> debugRenderLocation;
 	private static boolean disablePhotosensitive;
 
 	public static boolean isDebugShaderEnabled() {
@@ -38,7 +38,7 @@ public class Debug {
 		return debugShader;
 	}
 
-	public static Optional<RenderLocations.RenderLocation> cycleDebugRenderLocation(boolean backwards) {
+	public static Optional<RenderLocations.RenderLocation<?>> cycleDebugRenderLocation(boolean backwards) {
 		List<Identifier> renderLocations = new ArrayList<>(Events.RenderLocation.registry.keySet().stream().sorted().toList());
 		if (!renderLocations.isEmpty()) {
 			renderLocations.sort(Comparator.comparing(Identifier::toString));
