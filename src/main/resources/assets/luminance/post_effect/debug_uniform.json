@@ -34,7 +34,7 @@
                     {
                         "name": "Thickness",
                         "type": "float",
-                        "value": 0.02
+                        "value": 0.025
                     }
                 ]
             },

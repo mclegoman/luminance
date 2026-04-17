@@ -32,7 +32,7 @@
   "depends": {
     "fabric-api": ">=${fapi}",
     "fabricloader": ">=0.19.0",
-    "minecraft": ">=${mc}"
+    "minecraft": "${mc}"
   },
   "entrypoints": {
     "client": [
