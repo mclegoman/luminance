@@ -79,6 +79,8 @@ public class Uniforms {
 			registerSingleValueTree(namespace, "hud_hidden", Uniforms::getHudHidden, 0f, 1f);
 			registerSingleValueTree(namespace, "is_in_gui", Uniforms::getIsInGui, 0f, 1f);
 			registerSingleValueTree(namespace, "view_distance", Uniforms::getViewDistance, 2f, null);
+			registerSingleValueTree(namespace, "entity_distance", Uniforms::getEntityDistance, 0f, null);
+			registerSingleValueTree(namespace, "cloud_distance", Uniforms::getCloudDistance, 2f, null);
 			registerSingleValueTree(namespace, "fov", Uniforms::getFov, 0f, 360f);
 			registerSingleValueTree(namespace, "fps", Uniforms::getFps, 0f, null);
 			registerFullTree(namespace, "graphics_mode", Uniforms::getGraphicsMode, 0f, 2f, 1, EmptyConfig.INSTANCE, false);
@@ -246,6 +248,15 @@ public class Uniforms {
 
 	public static float getViewDistance(ShaderTime shaderTime) {
 		return ClientData.minecraft.options.renderDistance().get();
+	}
+
+	public static float getEntityDistance(ShaderTime shaderTime) {
+		// 64.0 can be found in Entity.shouldRenderAtSqrDistance, and the multiplier can be found in LevelRenderer.extractVisibleEntities.
+		return (float) (64.0F * Mth.clamp(ClientData.minecraft.options.getEffectiveRenderDistance() / 8.0F, 1.0F, 2.5F) * ClientData.minecraft.options.entityDistanceScaling().get());
+	}
+
+	public static float getCloudDistance(ShaderTime shaderTime) {
+		return ClientData.minecraft.options.cloudRange().get();
 	}
 
 	public static float getFov(ShaderTime shaderTime) {
