@@ -28,6 +28,7 @@ import com.mclegoman.luminance.client.util.Accessors;
 import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
+import com.mclegoman.luminance.common.util.OperatingSystem;
 import com.mclegoman.luminance.mixin.client.shaders.DynamicRenderTickCounterAccessor;
 import com.mclegoman.luminance.mixin.client.shaders.GameRendererAccessor;
 import com.mclegoman.luminance.mixin.client.shaders.LevelRendererAccessor;
@@ -83,7 +84,10 @@ public class Uniforms {
 			registerSingleValueTree(namespace, "cloud_distance", Uniforms::getCloudDistance, 2f, null);
 			registerSingleValueTree(namespace, "fov", Uniforms::getFov, 0f, 360f);
 			registerSingleValueTree(namespace, "fps", Uniforms::getFps, 0f, null);
-			registerFullTree(namespace, "graphics_mode", Uniforms::getGraphicsMode, 0f, 2f, 1, EmptyConfig.INSTANCE, false);
+			registerSingleValueTree(namespace, "operating_system", Uniforms::getOs, 0f, (float) OperatingSystem.values().length);
+			// TODO: This was split into "presets", could be nice to be able to check single options instead of the preset.
+			// render_location can be used to check for improved transparency support, so this can wait.
+			//registerFullTree(namespace, "graphics_mode", Uniforms::getGraphicsMode, 0f, 2f, 1, EmptyConfig.INSTANCE, false);
 			registerFullTree(namespace, "eye", Uniforms::getEye, null, null, 3, null, false);
 			registerFullTree(namespace, "eye_fract", Uniforms::getEyeFract, 0f, 1f, 3, null, true);
 			registerFullTree(namespace, "pos", Uniforms::getPos, null, null, 3, null, false);
@@ -273,6 +277,10 @@ public class Uniforms {
 
 	public static float getFps(ShaderTime shaderTime) {
 		return ClientData.minecraft.getFps();
+	}
+
+	public static float getOs(ShaderTime shaderTime) {
+		return OperatingSystem.getOs().ordinal();
 	}
 
 	public static void getGameTime(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
