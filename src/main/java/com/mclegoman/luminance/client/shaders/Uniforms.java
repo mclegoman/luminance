@@ -28,6 +28,7 @@ import com.mclegoman.luminance.client.util.Accessors;
 import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
+import com.mclegoman.luminance.common.util.OperatingSystem;
 import com.mclegoman.luminance.mixin.client.shaders.DynamicRenderTickCounterAccessor;
 import com.mclegoman.luminance.mixin.client.shaders.GameRendererAccessor;
 import com.mclegoman.luminance.mixin.client.shaders.LevelRendererAccessor;
@@ -79,9 +80,14 @@ public class Uniforms {
 			registerSingleValueTree(namespace, "hud_hidden", Uniforms::getHudHidden, 0f, 1f);
 			registerSingleValueTree(namespace, "is_in_gui", Uniforms::getIsInGui, 0f, 1f);
 			registerSingleValueTree(namespace, "view_distance", Uniforms::getViewDistance, 2f, null);
+			registerSingleValueTree(namespace, "entity_distance", Uniforms::getEntityDistance, 0f, null);
+			registerSingleValueTree(namespace, "cloud_distance", Uniforms::getCloudDistance, 2f, null);
 			registerSingleValueTree(namespace, "fov", Uniforms::getFov, 0f, 360f);
 			registerSingleValueTree(namespace, "fps", Uniforms::getFps, 0f, null);
-			registerFullTree(namespace, "graphics_mode", Uniforms::getGraphicsMode, 0f, 2f, 1, EmptyConfig.INSTANCE, false);
+			registerSingleValueTree(namespace, "operating_system", Uniforms::getOs, 0f, (float) OperatingSystem.values().length);
+			// TODO: This was split into "presets", could be nice to be able to check single options instead of the preset.
+			// render_location can be used to check for improved transparency support, so this can wait.
+			//registerFullTree(namespace, "graphics_mode", Uniforms::getGraphicsMode, 0f, 2f, 1, EmptyConfig.INSTANCE, false);
 			registerFullTree(namespace, "eye", Uniforms::getEye, null, null, 3, null, false);
 			registerFullTree(namespace, "eye_fract", Uniforms::getEyeFract, 0f, 1f, 3, null, true);
 			registerFullTree(namespace, "pos", Uniforms::getPos, null, null, 3, null, false);
@@ -248,6 +254,15 @@ public class Uniforms {
 		return ClientData.minecraft.options.renderDistance().get();
 	}
 
+	public static float getEntityDistance(ShaderTime shaderTime) {
+		// 64.0 can be found in Entity.shouldRenderAtSqrDistance, and the multiplier can be found in LevelRenderer.extractVisibleEntities.
+		return (float) (64.0F * Mth.clamp(ClientData.minecraft.options.getEffectiveRenderDistance() / 8.0F, 1.0F, 2.5F) * ClientData.minecraft.options.entityDistanceScaling().get());
+	}
+
+	public static float getCloudDistance(ShaderTime shaderTime) {
+		return ClientData.minecraft.options.cloudRange().get();
+	}
+
 	public static float getFov(ShaderTime shaderTime) {
 		return Accessors.getGameRenderer() != null ? Accessors.getGameRenderer().invokeGetFov(ClientData.minecraft.gameRenderer.getMainCamera(), shaderTime.getTickProgress(), true) : Minecraft.getInstance().options.fov().get();
 	}
@@ -262,6 +277,10 @@ public class Uniforms {
 
 	public static float getFps(ShaderTime shaderTime) {
 		return ClientData.minecraft.getFps();
+	}
+
+	public static float getOs(ShaderTime shaderTime) {
+		return OperatingSystem.getOs().ordinal();
 	}
 
 	public static void getGameTime(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {

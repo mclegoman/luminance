@@ -27,7 +27,7 @@ layout(std140) uniform OutlinedConfig {
     vec3 OutlineColor;
     vec3 OutlinePow;
     float OutlineColorMultiplier;
-    float Distance;
+    float Distance; // Being able to set distance per depth buffer could be cool.
 };
 
 in vec2 texCoord;
