@@ -22,7 +22,7 @@ public abstract class TitleScreenMixin implements LuminanceTitleScreen {
 	@Unique private float luminance$backgroundAlpha;
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/TitleScreen;renderPanorama(Lnet/minecraft/client/gui/GuiGraphics;F)V"))
-	private void luminance$setBackgroundAlpha(GuiGraphics context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci, @Local(name = "g") float g) {
+	private void luminance$setBackgroundAlpha(GuiGraphics context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci, @Local(ordinal = 1) float g) {
 		this.luminance$backgroundAlpha = g;
 	}
 
