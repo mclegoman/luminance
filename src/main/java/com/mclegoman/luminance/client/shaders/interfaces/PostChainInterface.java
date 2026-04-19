@@ -15,16 +15,13 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface PostChainInterface {
     @Nullable @Contract("null -> !null")
-    List<PostPass> luminance$getPasses(@Nullable Identifier identifier);
+    List<PostPass> luminance$getPasses(@Nullable Identifier chain);
 
     void luminance$render(FrameGraphBuilder builder, int textureWidth, int textureHeight, PostChain.TargetBundle targetBundle, @Nullable Identifier chain);
-
-    void luminance$setCustomChains(Map<Identifier, List<PostPass>> customChains);
 
     Set<Identifier> luminance$getCustomChainNames();
 

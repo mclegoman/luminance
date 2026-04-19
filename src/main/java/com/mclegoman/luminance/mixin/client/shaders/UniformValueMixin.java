@@ -1,7 +1,7 @@
 package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.internal.InternalUniformValueInterface;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -26,13 +26,13 @@ public interface UniformValueMixin {
         return RecordCodecBuilder.create(instance ->
                 instance.group(
                         MapCodec.assumeMapUnsafe(original).forGetter(Function.identity()),
-                        Codec.STRING.lenientOptionalFieldOf("name").forGetter(uniform -> ((UniformValueInterface)uniform).luminance$getName()),
-                        Codec.STRING.sizeLimitedListOf(4).withAlternative(Codec.STRING.xmap(s -> List.of("auto#"+s) /* slightly janky way to communicate that it should be handled differently*/, List::getFirst)).lenientOptionalFieldOf("override").forGetter((uniform -> ((UniformValueInterface)uniform).luminance$getOverride())),
-                        Codec.unboundedMap(Codec.STRING, ExtraCodecs.JAVA.listOf()).lenientOptionalFieldOf("config").forGetter((uniform -> ((UniformValueInterface)uniform).luminance$getConfig()))
+                        Codec.STRING.lenientOptionalFieldOf("name").forGetter(uniform -> ((InternalUniformValueInterface)uniform).luminance$getName()),
+                        Codec.STRING.sizeLimitedListOf(4).withAlternative(Codec.STRING.xmap(s -> List.of("auto#"+s) /* slightly janky way to communicate that it should be handled differently*/, List::getFirst)).lenientOptionalFieldOf("override").forGetter((uniform -> ((InternalUniformValueInterface)uniform).luminance$getOverride())),
+                        Codec.unboundedMap(Codec.STRING, ExtraCodecs.JAVA.listOf()).lenientOptionalFieldOf("config").forGetter((uniform -> ((InternalUniformValueInterface)uniform).luminance$getConfig()))
                 ).apply(instance, (uniform, name, override, config) -> {
-                    name.ifPresent(string -> ((UniformValueInterface)uniform).luminance$setName(string));
-                    override.ifPresent(strings -> ((UniformValueInterface) uniform).luminance$setOverride(strings));
-                    config.ifPresent(list -> ((UniformValueInterface) uniform).luminance$setConfig(list));
+                    name.ifPresent(string -> ((InternalUniformValueInterface)uniform).luminance$setName(string));
+                    override.ifPresent(strings -> ((InternalUniformValueInterface) uniform).luminance$setOverride(strings));
+                    config.ifPresent(list -> ((InternalUniformValueInterface) uniform).luminance$setConfig(list));
                     return uniform;
                 }));
     }

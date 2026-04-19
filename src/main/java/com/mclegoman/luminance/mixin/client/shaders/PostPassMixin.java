@@ -12,7 +12,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mclegoman.luminance.client.events.Execute;
 import com.mclegoman.luminance.client.shaders.UniformBlock;
-import com.mclegoman.luminance.client.shaders.interfaces.CustomPassData;
+import com.mclegoman.luminance.client.shaders.CustomPassData;
 import com.mclegoman.luminance.client.shaders.interfaces.PostPassInterface;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
@@ -35,8 +35,6 @@ import java.util.*;
 
 @Mixin(priority = 100, value = PostPass.class)
 public abstract class PostPassMixin implements PostPassInterface {
-	@Shadow @Final private String name;
-
 	@Shadow @Final private Identifier outputTargetId;
 	@Shadow @Final private List<PostPass.Input> inputs;
 

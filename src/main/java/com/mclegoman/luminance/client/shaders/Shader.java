@@ -7,17 +7,14 @@
 
 package com.mclegoman.luminance.client.shaders;
 
-import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.shaders.interfaces.PostChainInterface;
 import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.client.renderer.PostChain;
-import net.minecraft.client.renderer.LevelTargetBundle;
 import net.minecraft.resources.Identifier;
 
 import java.util.concurrent.Callable;
 
 public class Shader {
-	private PostChain postProcessor;
+	private PostChainInterface postChain;
 	private boolean useDepth;
 	private boolean useImprovedTransparency;
 	private Identifier shaderId;
@@ -33,25 +30,25 @@ public class Shader {
 		this(shaderData, RenderLocation, () -> true);
 	}
 
-	public PostChain getPostProcessor() {
-		return this.postProcessor;
+	public PostChainInterface getPostChain() {
+		return this.postChain;
 	}
 
-	public void setPostProcessor() {
+	public void loadPostChain() {
 		try {
-			this.postProcessor = ClientData.minecraft.getShaderManager().getPostChain(this.shaderId, LevelTargetBundle.SORTING_TARGETS);
-			if (postProcessor != null) {
-				if (((PostChainInterface)this.postProcessor).luminance$usesDepth()) setUseDepth(true);
-				if (((PostChainInterface)this.postProcessor).luminance$usesImprovedTransparency()) setUseImprovedTransparency(true);
+			this.postChain = Shaders.getPostChain(shaderId);
+			if (postChain != null) {
+				if (this.postChain.luminance$usesDepth()) setUseDepth(true);
+				if (this.postChain.luminance$usesImprovedTransparency()) setUseImprovedTransparency(true);
 			}
 		} catch (Exception error) {
 			com.mclegoman.luminance.common.data.Data.getVersion().sendToLog(LogType.ERROR, "Failed to set post processor: {}", error);
-			closePostProcessor();
+			clearPostChain();
 		}
 	}
 
-	public void closePostProcessor() {
-		if (this.postProcessor != null) this.postProcessor = null;
+	public void clearPostChain() {
+		if (this.postChain != null) this.postChain = null;
 	}
 
 	public boolean getUseDepth() {
@@ -77,7 +74,7 @@ public class Shader {
 	private void setShaderId(Identifier id) {
 		setUseDepth(false);
 		setUseImprovedTransparency(false);
-		closePostProcessor();
+		clearPostChain();
 		this.shaderId = id;
 	}
 
@@ -109,7 +106,7 @@ public class Shader {
 		setUseDepth(false);
 		setUseImprovedTransparency(false);
 		this.shaderData = shaderData;
-		if (getShaderData() != null) setShaderId(getShaderData().getPostEffect(false));
+		if (getShaderData() != null) setShaderId(getShaderData().getPostEffectIdentifier(false));
 	}
 
 	public void reload() {
@@ -117,7 +114,7 @@ public class Shader {
 	}
 
 	public void reload(ShaderRegistryEntry shaderData, Callable<RenderLocations.RenderLocation<?>> renderLocation, Callable<Boolean> shouldRender) {
-		closePostProcessor();
+		clearPostChain();
 		setRenderLocation(renderLocation);
 		setShouldRender(shouldRender);
 		setShaderData(shaderData);

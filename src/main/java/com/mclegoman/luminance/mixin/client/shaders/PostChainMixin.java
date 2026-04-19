@@ -16,8 +16,9 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mclegoman.luminance.client.shaders.interfaces.PostPassInterface;
 import com.mclegoman.luminance.client.shaders.interfaces.PostChainInterface;
-import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PostChainConfigInterface;
-import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PipelineTargetInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.internal.InternalPostChainConfigInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.internal.InternalPostChainConfigTargetInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.internal.InternalPostChainInterface;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.resource.RenderTargetDescriptor;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
@@ -38,7 +39,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import java.util.*;
 
 @Mixin(PostChain.class)
-public abstract class PostChainMixin implements PostChainInterface {
+public abstract class PostChainMixin implements PostChainInterface, InternalPostChainInterface {
     @Shadow @Final private List<PostPass> passes;
 
     @Shadow
@@ -56,7 +57,7 @@ public abstract class PostChainMixin implements PostChainInterface {
     @ModifyExpressionValue(at = @At(value = "NEW", target = "(IIZI)Lcom/mojang/blaze3d/resource/RenderTargetDescriptor;"), method = "addToFrame(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;IILnet/minecraft/client/renderer/PostChain$TargetBundle;)V")
     private RenderTargetDescriptor replaceRenderTargetDescriptor(RenderTargetDescriptor original, @Local Map.Entry<Identifier, PostChainConfig.InternalTarget> target) {
         PostChainConfig.InternalTarget targets = target.getValue();
-        PipelineTargetInterface.DynamicSize dynamicSize = ((PipelineTargetInterface)(Object)targets).luminance$getDynamicSize();
+        InternalPostChainConfigTargetInterface.DynamicSize dynamicSize = ((InternalPostChainConfigTargetInterface)(Object)targets).luminance$getDynamicSize();
 
         if (dynamicSize != null) {
             return new RenderTargetDescriptor(dynamicSize.width().run(original.width(), original.height()), dynamicSize.height().run(original.width(), original.height()), original.useDepth(), original.clearColor());
@@ -71,7 +72,7 @@ public abstract class PostChainMixin implements PostChainInterface {
 
     @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/PostChainConfig;passes()Ljava/util/List;", ordinal = 0), method = "load")
     private static List<PostChainConfig.Pass> includeCustomChains(List<PostChainConfig.Pass> original, PostChainConfig pipeline, TextureManager textureManager) {
-        Optional<Map<Identifier, List<PostChainConfig.Pass>>> customChains = ((PostChainConfigInterface)(Object)pipeline).luminance$getCustomChains();
+        Optional<Map<Identifier, List<PostChainConfig.Pass>>> customChains = ((InternalPostChainConfigInterface)(Object)pipeline).luminance$getCustomChains();
         if (customChains.isEmpty()) {
             return original;
         }
@@ -83,8 +84,8 @@ public abstract class PostChainMixin implements PostChainInterface {
 
     @ModifyReturnValue(at = @At(value = "RETURN"), method = "load")
     private static PostChain setCustomPassTargets(PostChain original, PostChainConfig pipeline, TextureManager textureManager, Set<Identifier> availableExternalTargets, Identifier id) {
-        ((PostChainConfigInterface)(Object)pipeline).luminance$getCustomChains().ifPresentOrElse((map) -> {
-            PostChainInterface processor = (PostChainInterface)original;
+        ((InternalPostChainConfigInterface)(Object)pipeline).luminance$getCustomChains().ifPresentOrElse((map) -> {
+            InternalPostChainInterface processor = (InternalPostChainInterface)original;
 
             Map<Identifier, List<PostPass>> customChains = new HashMap<>(map.size());
 
@@ -106,7 +107,7 @@ public abstract class PostChainMixin implements PostChainInterface {
             }
 
             processor.luminance$setCustomChains(customChains);
-        }, () -> ((PostChainInterface)original).luminance$setCustomChains(Map.of()));
+        }, () -> ((InternalPostChainInterface)original).luminance$setCustomChains(Map.of()));
         return original;
     }
 

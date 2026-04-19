@@ -5,16 +5,16 @@
     Licence: GNU LGPLv3
 */
 
-package com.mclegoman.luminance.client.shaders.interfaces.pipeline;
+package com.mclegoman.luminance.client.shaders.interfaces.internal;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
-public interface PipelineTargetInterface {
+public interface InternalPostChainConfigTargetInterface {
     @Nullable
-    PipelineTargetInterface.DynamicSize luminance$getDynamicSize();
+    InternalPostChainConfigTargetInterface.DynamicSize luminance$getDynamicSize();
     void luminance$setDynamicSize(DynamicSize dynamicSize);
 
     record DynamicSize(Calculation width, Calculation height) {

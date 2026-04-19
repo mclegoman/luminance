@@ -1,7 +1,7 @@
 package com.mclegoman.luminance.client.shaders;
 
 import com.google.common.collect.ImmutableList;
-import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.internal.InternalUniformValueInterface;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
 import com.mojang.serialization.Codec;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class IVec2Uniform implements UniformValue, UniformValueInterface {
+public class IVec2Uniform implements UniformValue, InternalUniformValueInterface {
     public static final Codec<IVec2Uniform> CODEC = Codec.INT.listOf().comapFlatMap((listA) -> Util.fixedSize(listA, 2).map((listB) -> (Vector2ic)new Vector2i(listB.get(0), listB.get(1))), (vector2ic) -> List.of(vector2ic.x(), vector2ic.y())).xmap(IVec2Uniform::new, IVec2Uniform::value);
 
     public Vector2ic value;

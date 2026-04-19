@@ -9,7 +9,7 @@ package com.mclegoman.luminance.mixin.client.shaders;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mclegoman.luminance.client.shaders.interfaces.pipeline.PostChainConfigInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.internal.InternalPostChainConfigInterface;
 import com.mojang.datafixers.kinds.App;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Mixin(PostChainConfig.class)
-public class PostChainConfigMixin implements PostChainConfigInterface {
+public class PostChainConfigMixin implements InternalPostChainConfigInterface {
     @WrapOperation(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/RecordCodecBuilder;create(Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;"), remap = false)
     private static <O> Codec<O> wrapCreateOverride(Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> builder, Operation<Codec<O>> original) {
         return original.call(luminance$codecBuilderOverride(builder));
@@ -35,9 +35,9 @@ public class PostChainConfigMixin implements PostChainConfigInterface {
     private static <O> Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> luminance$codecBuilderOverride(Function<RecordCodecBuilder.Instance<O>, ? extends App<RecordCodecBuilder.Mu<O>, O>> builder) {
         return instance -> instance.group(
                 RecordCodecBuilder.mapCodec(builder).forGetter(Function.identity()),
-                Codec.unboundedMap(Identifier.CODEC, PostChainConfig.Pass.CODEC.listOf()).lenientOptionalFieldOf("custom_chains").forGetter((pipeline -> ((PostChainConfigInterface)pipeline).luminance$getCustomChains()))
+                Codec.unboundedMap(Identifier.CODEC, PostChainConfig.Pass.CODEC.listOf()).lenientOptionalFieldOf("custom_chains").forGetter((pipeline -> ((InternalPostChainConfigInterface)pipeline).luminance$getCustomChains()))
         ).apply(instance, (pipeline, passes) -> {
-            passes.ifPresent(identifierListMap -> ((PostChainConfigInterface)pipeline).luminance$setCustomChains(identifierListMap));
+            passes.ifPresent(identifierListMap -> ((InternalPostChainConfigInterface)pipeline).luminance$setCustomChains(identifierListMap));
             return pipeline;
         });
     }

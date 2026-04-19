@@ -5,7 +5,7 @@
     Licence: GNU LGPLv3
 */
 
-package com.mclegoman.luminance.client.shaders.interfaces.pipeline;
+package com.mclegoman.luminance.client.shaders.interfaces.internal;
 
 import com.google.common.collect.ImmutableList;
 
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public interface UniformValueInterface {
+public interface InternalUniformValueInterface {
     Optional<String> luminance$getName();
     void luminance$setName(String name);
 

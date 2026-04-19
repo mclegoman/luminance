@@ -10,6 +10,7 @@ package com.mclegoman.luminance.client.events;
 import com.mclegoman.luminance.client.shaders.RenderLocations;
 import com.mclegoman.luminance.client.shaders.Shader;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
+import com.mclegoman.luminance.client.shaders.interfaces.PostChainInterface;
 import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
@@ -67,6 +68,7 @@ public class Events {
 
 	public static final Registry<Uniform> ShaderUniform = new Registry<>();
 	public static final Registry<RenderLocations.RenderLocation<?>> RenderLocation = new Registry<>();
+	public static final Registry<PostChainInterface> CustomPostChains = new Registry<>();
 
 	public static final Registry<Callables.OnMouseScroll> OnMouseScroll = new Registry<>();
 	public static final Registry<Callables.OnMouseButton> OnMouseButton = new Registry<>();

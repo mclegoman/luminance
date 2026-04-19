@@ -1,7 +1,7 @@
 package com.mclegoman.luminance.client.shaders;
 
 import com.google.common.collect.ImmutableList;
-import com.mclegoman.luminance.client.shaders.interfaces.pipeline.UniformValueInterface;
+import com.mclegoman.luminance.client.shaders.interfaces.internal.InternalUniformValueInterface;
 import com.mclegoman.luminance.client.shaders.overrides.PerValueOverride;
 import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
 import com.mojang.blaze3d.buffers.GpuBuffer;
@@ -26,7 +26,7 @@ public class UniformBlock {
         ImmutableList.Builder<UniformInstance> builder = ImmutableList.builder();
 
         for (UniformValue uniform : uniformValues) {
-            UniformValueInterface uniformInterface = (UniformValueInterface)uniform;
+            InternalUniformValueInterface uniformInterface = (InternalUniformValueInterface)uniform;
             UniformInstance instance = new UniformInstance(uniformInterface.luminance$getName().orElse(uniform.type().getSerializedName()), uniformInterface.luminance$getValue());
 
             uniformInterface.luminance$getOverride().ifPresent((override) -> {

@@ -8,6 +8,7 @@
 package com.mclegoman.luminance.client.shaders.interfaces;
 
 import com.google.common.collect.ImmutableMap;
+import com.mclegoman.luminance.client.shaders.CustomPassData;
 import com.mclegoman.luminance.client.shaders.UniformBlock;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.resources.Identifier;

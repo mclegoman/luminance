@@ -73,8 +73,8 @@ public class ShaderRegistryEntry {
 		return this.id;
 	}
 
-	public Identifier getPostEffect(boolean full) {
-		return Shaders.getPostShader(this.id, full);
+	public Identifier getPostEffectIdentifier(boolean full) {
+		return Shaders.getPostEffectIdentifier(this.id, full);
 	}
 
 	public boolean useFallbackWhenOverUi() {

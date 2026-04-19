@@ -9,6 +9,7 @@ package com.mclegoman.luminance.client.shaders;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.debug.DebugEntryDebugShader;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.events.ProfiledDebugEntries;
@@ -24,6 +25,7 @@ import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.api.metadata.version.VersionPredicate;
 import net.minecraft.client.gui.components.debug.DebugScreenEntryStatus;
 import net.minecraft.client.gui.components.debug.DebugScreenProfile;
+import net.minecraft.client.renderer.LevelTargetBundle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 import net.minecraft.resources.Identifier;
@@ -100,9 +102,9 @@ public class Shaders {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
 				if (shader.shader().getShouldRender()) {
-					if (shader.shader().getPostProcessor() == null) {
+					if (shader.shader().getPostChain() == null) {
 						try {
-							shader.shader().setPostProcessor();
+							shader.shader().loadPostChain();
 						} catch (Exception error) {
 							Data.getVersion().sendToLog(LogType.ERROR, "Failed to set \"{}:{}:{}\" post processor: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
 							Events.ShaderRender.Shaders.remove(id, shader.id());
@@ -118,11 +120,11 @@ public class Shaders {
 
 	public static void renderShaderFromLevelData(Shader shader, Runnables.LevelRender.Data data, @Nullable Identifier chain) {
 		try {
-			if (shader.getPostProcessor() != null) {
+			if (shader.getPostChain() != null) {
 				try {
 					// the depth masking done in renderUsingAllocator is instead done for everything already before this method is called
 					// this is because FrameGraphBuilder delays calls, so any rendersystem methods wont work with their intended timing
-					((PostChainInterface)shader.getPostProcessor()).luminance$render(data.builder(), data.textureWidth(), data.textureHeight(), data.targetBundle(), chain);
+					((PostChainInterface)shader.getPostChain()).luminance$render(data.builder(), data.textureWidth(), data.textureHeight(), data.targetBundle(), chain);
 				} catch (Exception error) {
 					Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());
 				}
@@ -136,9 +138,9 @@ public class Shaders {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
 				if (shader.shader().getShouldRender()) {
-					if (shader.shader().getPostProcessor() == null) {
+					if (shader.shader().getPostChain() == null) {
 						try {
-							shader.shader().setPostProcessor();
+							shader.shader().loadPostChain();
 						} catch (Exception error) {
 							Data.getVersion().sendToLog(LogType.ERROR, "Failed to set \"{}:{}:{}\" post processor: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
 							Events.ShaderRender.Shaders.remove(id, shader.id());
@@ -155,8 +157,8 @@ public class Shaders {
 	// This is identical to the deprecated `PostChain.process(renderTarget, resourceAllocator);` function.
 	public static void renderShaderFromGameData(Shader shader, Runnables.GameRender.Data data, @Nullable Identifier chain) {
 		try {
-			if (shader.getPostProcessor() != null) {
-				Runnables.LevelRender.fromGameData((worldData) -> ((PostChainInterface)shader.getPostProcessor()).luminance$render(worldData.builder(), worldData.textureWidth(), worldData.textureHeight(), worldData.targetBundle(), chain), data);
+			if (shader.getPostChain() != null) {
+				Runnables.LevelRender.fromGameData((worldData) -> shader.getPostChain().luminance$render(worldData.builder(), worldData.textureWidth(), worldData.textureHeight(), worldData.targetBundle(), chain), data);
 			}
 		} catch (Exception error) {
 			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());
@@ -194,7 +196,7 @@ public class Shaders {
 		return new Shader(shaderData, renderLocation);
 	}
 
-	public static Identifier getPostShader(Identifier post_effect, boolean full) {
+	public static Identifier getPostEffectIdentifier(Identifier post_effect, boolean full) {
 		return Identifier.fromNamespaceAndPath(post_effect.getNamespace(), ((full ? "post_effect/" : "") + post_effect.getPath() + (full ? ".json" : "")));
 	}
 
@@ -362,5 +364,13 @@ public class Shaders {
 	public static boolean versionMatches(Version version, Collection<VersionPredicate> ranges) {
 		for (VersionPredicate predicate : ranges) if (predicate.test(version)) return true;
 		return false;
+	}
+
+	public static PostChainInterface getPostChain(Identifier identifier) {
+		PostChainInterface postChainInterface = Events.CustomPostChains.get(identifier);
+		if (postChainInterface != null) {
+			return postChainInterface;
+		}
+		return (PostChainInterface) ClientData.minecraft.getShaderManager().getPostChain(identifier, LevelTargetBundle.SORTING_TARGETS);
 	}
 }

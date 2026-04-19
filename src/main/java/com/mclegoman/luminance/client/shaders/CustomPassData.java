@@ -1,4 +1,4 @@
-package com.mclegoman.luminance.client.shaders.interfaces;
+package com.mclegoman.luminance.client.shaders;
 
 import java.util.HashMap;
 import java.util.Map;
