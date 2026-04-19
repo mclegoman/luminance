@@ -10,6 +10,7 @@ package com.mclegoman.luminance.client.config;
 import com.mclegoman.luminance.client.config.value.SpectatorPriorityModeValue;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.common.data.Data;
+import com.mclegoman.luminance.config.LuminanceConfigHelper;
 import folk.sisby.kaleido.api.ReflectiveConfig;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.IntegerRange;
@@ -43,6 +44,6 @@ public class LuminanceConfig extends ReflectiveConfig {
 	}
 
 	static {
-		config = LuminanceConfig.createToml(Paths.get("config"), Data.getVersion().getID(), "config", LuminanceConfig.class);
+		config = LuminanceConfigHelper.register(Paths.get("config"), "", Data.getVersion().getID(), LuminanceConfig.class);
 	}
 }
