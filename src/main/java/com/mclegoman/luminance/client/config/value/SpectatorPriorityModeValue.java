@@ -10,7 +10,7 @@ package com.mclegoman.luminance.client.config.value;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.LogType;
-import org.quiltmc.config.api.values.ConfigSerializableObject;
+import folk.sisby.kaleido.lib.quiltconfig.api.values.ConfigSerializableObject;
 
 @SuppressWarnings("unused")
 public record SpectatorPriorityModeValue(SpectatorHandler.Mode mode) implements ConfigSerializableObject<String> {

@@ -28,7 +28,7 @@ repositories {
 	flatDir {
 		dirs("libs")
 	}
-	maven { url = "https://maven.quiltmc.org/repository/release/" }
+	maven { url 'https://repo.sleeping.town/' }
 }
 
 dependencies {
@@ -39,16 +39,8 @@ dependencies {
 	modImplementation libs.fapi
 	modImplementation libs.modmenu
 	modCompileOnly libs.sodium
-	modImplementation libs.quiltconfig
-	modImplementation libs.quiltconfigtoml
-	modImplementation libs.quiltconfigjson
-	modImplementation libs.nightconfigtoml
-	modImplementation libs.nightconfigcore
-	include libs.quiltconfig
-	include libs.quiltconfigtoml
-	include libs.quiltconfigjson
-	include libs.nightconfigtoml
-	include libs.nightconfigcore
+	modImplementation libs.kaleidoconfig
+	include libs.kaleidoconfig
 	modCompileOnly libs.iris
 }
 
