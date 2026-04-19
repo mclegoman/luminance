@@ -20,15 +20,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(priority = 100, value = Gui.class)
 public abstract class GuiMixin {
 	@Inject(at = @At(value = "HEAD"), method = "render")
-	private void luminance$renderBefore(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+	private void luminance$renderBefore(GuiGraphics guiGraphics, DeltaTracker tickCounter, CallbackInfo ci) {
 		if (!ClientData.minecraft.gameRenderer.isPanoramicMode()) {
-			Execute.beforeInGameHudRender(context, tickCounter);
+			Execute.beforeInGameHudRender(guiGraphics, tickCounter);
 		}
 	}
 	@Inject(at = @At(value = "TAIL"), method = "render")
-	private void luminance$renderAfter(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+	private void luminance$renderAfter(GuiGraphics guiGraphics, DeltaTracker tickCounter, CallbackInfo ci) {
 		if (!ClientData.minecraft.gameRenderer.isPanoramicMode()) {
-			Execute.afterInGameHudRender(context, tickCounter);
+			Execute.afterInGameHudRender(guiGraphics, tickCounter);
 		}
 	}
 }

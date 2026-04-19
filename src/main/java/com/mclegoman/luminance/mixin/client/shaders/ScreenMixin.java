@@ -19,17 +19,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(priority = 100, value = Screen.class)
 public abstract class ScreenMixin {
 	@Inject(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderBlurredBackground(Lnet/minecraft/client/gui/GuiGraphics;)V"))
-	private void luminance$afterBackgroundRender_inWorldBeforeBlur(GuiGraphics context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+	private void luminance$afterBackgroundRender_inWorldBeforeBlur(GuiGraphics guiGraphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
 		if (ClientData.minecraft.level != null) Execute.afterUiBackgroundRender(((GameRendererAccessor) ClientData.minecraft.gameRenderer).getResourcePool());
 	}
 
 	@Inject(method = "renderTransparentBackground", at = @At("RETURN"))
-	private void luminance$afterBackgroundRender_afterInGameBackground(GuiGraphics context, CallbackInfo ci) {
+	private void luminance$afterBackgroundRender_afterInGameBackground(GuiGraphics guiGraphics, CallbackInfo ci) {
 		if (ClientData.minecraft.level != null) Execute.afterUiBackgroundRender(((GameRendererAccessor) ClientData.minecraft.gameRenderer).getResourcePool());
 	}
 
 	@Inject(method = "renderPanorama", at = @At("RETURN"))
-	private void luminance$afterBackgroundRender_notInWorld(GuiGraphics context, float deltaTicks, CallbackInfo ci) {
+	private void luminance$afterBackgroundRender_notInWorld(GuiGraphics guiGraphics, float deltaTicks, CallbackInfo ci) {
 		if (ClientData.minecraft.level == null) Execute.afterUiBackgroundRender(((GameRendererAccessor) ClientData.minecraft.gameRenderer).getResourcePool());
 	}
 }

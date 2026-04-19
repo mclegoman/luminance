@@ -16,6 +16,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -75,7 +76,7 @@ public class ListWidget extends AbstractSelectionList<ListWidget.ListEntry> {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void renderContent(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			int totalSpacing = (this.widgets.length - 1) * this.spacing;
 			int widgetWidth = (this.getWidth() - totalSpacing) / this.widgets.length;
 			int currentX = this.getX();
@@ -85,7 +86,7 @@ public class ListWidget extends AbstractSelectionList<ListWidget.ListEntry> {
 			for (AbstractWidget widget : this.widgets) {
 				widget.setSize(widgetWidth, widgetHeight);
 				widget.setPosition(currentX, yOffset);
-				widget.render(context, mouseX, mouseY, ClientData.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(true));
+				widget.render(guiGraphics, mouseX, mouseY, ClientData.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(true));
 				currentX += widgetWidth + this.spacing;
 			}
 		}

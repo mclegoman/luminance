@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(priority = 100, value = PanoramaRenderer.class)
 public class PanoramaRendererMixin {
 	@Inject(method = "render", at = @At("RETURN"))
-	private void luminance$afterPanoramaRender(GuiGraphics context, int width, int height, boolean rotate, CallbackInfo ci) {
+	private void luminance$afterPanoramaRender(GuiGraphics guiGraphics, int width, int height, boolean rotate, CallbackInfo ci) {
 		Execute.afterPanoramaRender(((GameRendererAccessor) ClientData.minecraft.gameRenderer).getResourcePool());
 	}
 }

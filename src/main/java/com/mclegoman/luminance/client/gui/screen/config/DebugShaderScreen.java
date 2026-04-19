@@ -26,6 +26,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 public class DebugShaderScreen extends Screen {
@@ -109,7 +110,7 @@ public class DebugShaderScreen extends Screen {
 		FrameLayout.centerInRectangle(grid, getRectangle());
 	}
 
-	public Component getNarrationMessage() {
+	public @NotNull Component getNarrationMessage() {
 		return CommonComponents.joinForNarration();
 	}
 
@@ -124,16 +125,16 @@ public class DebugShaderScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
 		for (GuiEventListener element : children()) {
 			if (element instanceof AbstractWidget clickableWidget) {
 				clickableWidget.setAlpha(this.reducedAlpha ? 0.24F : 1.0F);
 			}
 		}
-		super.render(context, mouseX, mouseY, delta);
+		super.render(guiGraphics, mouseX, mouseY, delta);
 	}
 	@Override
-	protected void renderBlurredBackground(GuiGraphics context) {
+	protected void renderBlurredBackground(@NotNull GuiGraphics guiGraphics) {
 		// noop
 	}
 

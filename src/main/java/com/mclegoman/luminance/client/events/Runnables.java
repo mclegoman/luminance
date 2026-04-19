@@ -22,7 +22,7 @@ import java.util.List;
 
 public class Runnables {
 	public interface InGameHudRender {
-		void run(GuiGraphics context, DeltaTracker renderTickCounter);
+		void run(GuiGraphics guiGraphics, DeltaTracker renderTickCounter);
 	}
 
 	public interface Shader {

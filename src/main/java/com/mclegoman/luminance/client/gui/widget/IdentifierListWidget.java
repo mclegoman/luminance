@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -56,13 +57,13 @@ public class IdentifierListWidget extends ObjectSelectionList<IdentifierListWidg
     }
 
     @Override
-    protected void renderItem(GuiGraphics context, int mouseX, int mouseY, float delta, Entry entry) {
+    protected void renderItem(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta, Entry entry) {
         if (this.getHovered() != null && this.getHovered().equals(entry)) {
-            this.renderSelection(context, entry, -8355712);
-            if (entry.hoverText != null && !entry.hoverText.getString().isBlank()) context.setTooltipForNextFrame(this.minecraft.font.split(entry.hoverText, this.width), mouseX, mouseY);
+            this.renderSelection(guiGraphics, entry, -8355712);
+            if (entry.hoverText != null && !entry.hoverText.getString().isBlank()) guiGraphics.setTooltipForNextFrame(this.minecraft.font.split(entry.hoverText, this.width), mouseX, mouseY);
         }
-        if (entry.equals(getSelected())) this.renderSelection(context, entry, -1);
-        entry.renderContent(context, mouseX, mouseY, this.isHovered, delta);
+        if (entry.equals(getSelected())) this.renderSelection(guiGraphics, entry, -1);
+        entry.renderContent(guiGraphics, mouseX, mouseY, this.isHovered, delta);
     }
 
     public int getRowWidth() {
@@ -88,12 +89,12 @@ public class IdentifierListWidget extends ObjectSelectionList<IdentifierListWidg
         }
 
         @Override
-        public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-            context.drawCenteredString(ClientData.minecraft.font, this.label, this.getX() + (this.getWidth() / 2), this.getY() + (this.getHeight() - ClientData.minecraft.font.lineHeight) / 2, 0xFFFFFFFF);
+        public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+            guiGraphics.drawCenteredString(ClientData.minecraft.font, this.label, this.getX() + (this.getWidth() / 2), this.getY() + (this.getHeight() - ClientData.minecraft.font.lineHeight) / 2, 0xFFFFFFFF);
         }
 
         @Override
-        public Component getNarration() {
+        public @NotNull Component getNarration() {
             return this.label;
         }
 

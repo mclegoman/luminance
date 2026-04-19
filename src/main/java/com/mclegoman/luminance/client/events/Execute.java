@@ -55,21 +55,21 @@ public class Execute {
 		SpectatorHandler.clearActive();
 	}
 
-	public static void beforeInGameHudRender(GuiGraphics context, DeltaTracker renderTickCounter) {
+	public static void beforeInGameHudRender(GuiGraphics guiGraphics, DeltaTracker renderTickCounter) {
 		ShaderTime.currentRenderLocation = RenderLocations.UI;
 		Events.BeforeInGameHudRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(context, renderTickCounter);
+				runnable.run(guiGraphics, renderTickCounter);
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterInGameHudRender event with id: {}: {}", id, error);
 			}
 		}));
 	}
 
-	public static void afterInGameHudRender(GuiGraphics context, DeltaTracker renderTickCounter) {
+	public static void afterInGameHudRender(GuiGraphics guiGraphics, DeltaTracker renderTickCounter) {
 		Events.AfterInGameHudRender.registry.forEach(((id, runnable) -> {
 			try {
-				runnable.run(context, renderTickCounter);
+				runnable.run(guiGraphics, renderTickCounter);
 			} catch (Exception error) {
 				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterInGameHudRender event with id: {}: {}", id, error);
 			}
