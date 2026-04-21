@@ -14,5 +14,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(StringSplitter.class)
 public interface StringSplitterAccessor {
     @Accessor("widthProvider")
-    StringSplitter.WidthProvider getWidthProvider();
+    StringSplitter.WidthProvider luminance$getWidthProvider();
 }

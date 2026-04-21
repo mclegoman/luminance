@@ -131,7 +131,7 @@ public class ScrollableTextWidget extends AbstractSelectionList<ScrollableTextWi
                     yield true;
                 }
                 case ClickEvent.SuggestCommand(String string) -> {
-                    if (screenAfterRun != null) ((ScreenAccessor)screenAfterRun).invokeInsertText(string, true);
+                    if (screenAfterRun != null) ((ScreenAccessor)screenAfterRun).luminance$invokeInsertText(string, true);
                     yield true;
                 }
                 case ClickEvent.CopyToClipboard(String string2) -> {

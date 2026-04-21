@@ -238,7 +238,7 @@ public class Translation {
 		}
 
 		public boolean accept(int i, Style style, int j) {
-			this.widthLeft -= ((StringSplitterAccessor)this.textHandler).getWidthProvider().getWidth(j, style);
+			this.widthLeft -= ((StringSplitterAccessor)this.textHandler).luminance$getWidthProvider().getWidth(j, style);
 			if (this.widthLeft >= 0.0F) {
 				this.length = i + Character.charCount(j);
 				return true;

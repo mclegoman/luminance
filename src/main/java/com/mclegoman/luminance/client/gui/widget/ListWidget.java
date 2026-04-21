@@ -8,6 +8,7 @@
 package com.mclegoman.luminance.client.gui.widget;
 
 import com.mclegoman.luminance.client.data.ClientData;
+import com.mclegoman.luminance.mixin.client.gui.AbstractWidgetAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.gui.GuiGraphics;
@@ -88,6 +89,8 @@ public class ListWidget extends AbstractSelectionList<ListWidget.ListEntry> {
 				widget.setPosition(currentX, yOffset);
 				widget.render(guiGraphics, mouseX, mouseY, ClientData.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(true));
 				currentX += widgetWidth + this.spacing;
+
+				((AbstractWidgetAccessor)widget).luminance$handleCursor(guiGraphics);
 			}
 		}
 

@@ -7,12 +7,13 @@
 
 package com.mclegoman.luminance.mixin.client.gui;
 
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.GuiGraphics;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin(Screen.class)
-public interface ScreenAccessor {
-    @Invoker("insertText")
-    void luminance$invokeInsertText(String string, boolean bl);
+@Mixin(AbstractWidget.class)
+public interface AbstractWidgetAccessor {
+    @Invoker("handleCursor")
+    void luminance$handleCursor(GuiGraphics guiGraphics);
 }
