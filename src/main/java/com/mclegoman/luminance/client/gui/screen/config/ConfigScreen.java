@@ -11,6 +11,7 @@ import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.config.value.SpectatorPriorityModeValue;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.gui.screen.AbstractScrollableListScreen;
+import com.mclegoman.luminance.client.gui.screen.CursorableStringWidget;
 import com.mclegoman.luminance.client.gui.widget.AlphaSliderWidget;
 import com.mclegoman.luminance.client.gui.widget.ListWidget;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
@@ -25,7 +26,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.ChatFormatting;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,7 +74,7 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 	public List<ListWidget.ListEntry> getEntries() {
 		List<ListWidget.ListEntry> widgets = new ArrayList<>();
 
-		widgets.add(new ListWidget.ListEntry(new StringWidget(Translation.getConfigTranslation(Data.getVersion().getID(), "config"), ClientData.minecraft.font)));
+		widgets.add(new ListWidget.ListEntry(new CursorableStringWidget(Translation.getConfigTranslation(Data.getVersion().getID(), "config"), ClientData.minecraft.font)));
 
 		AlphaSliderWidget alphaSliderWidget = new AlphaSliderWidget(0, 0, 150, 20, Uniforms.getRawAlpha() / 100.0F, () -> saveConfig = true);
 		alphaSliderWidget.setTooltip(Tooltip.create(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha", new Object[]{Translation.getConfigTranslation(Data.getVersion().getID(), "keybinding", new Object[]{Keybindings.adjustAlpha.getTranslatedKeyMessage()}, new ChatFormatting[]{ChatFormatting.RED, ChatFormatting.BOLD})}, true)));
@@ -111,7 +111,7 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 			this.refresh = true;
 		}).build()));
 
-		widgets.add(new ListWidget.ListEntry(new StringWidget(Translation.getConfigTranslation(Data.getVersion().getID(), "information"), ClientData.minecraft.font)));
+		widgets.add(new ListWidget.ListEntry(new CursorableStringWidget(Translation.getConfigTranslation(Data.getVersion().getID(), "information"), ClientData.minecraft.font)));
 		widgets.add(new ListWidget.ListEntry(Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information.source_code").append(getExternal()), ConfirmLinkScreen.confirmLink(this, "https://github.com/mclegoman/luminance")).width(304).build(),
 				Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information.report").append(getExternal()), ConfirmLinkScreen.confirmLink(this, "https://github.com/mclegoman/luminance/issues")).width(304).build()));
 		widgets.add(new ListWidget.ListEntry(Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "credits_attribution").append(getMore()), button -> ClientData.minecraft.setScreen(new CreditsAttributionScreen(getRefreshScreen(), 0, splashText, isPride))).width(304).build()));
