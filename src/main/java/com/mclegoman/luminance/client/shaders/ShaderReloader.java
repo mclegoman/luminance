@@ -54,7 +54,10 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 
 	private void add(List<Identifier> registries, ShaderRegistryEntry shaderData, ResourceManager manager) {
 		try {
-			manager.getResourceOrThrow(shaderData.getPostEffectIdentifier(true));
+			// allow registered post chains (this will perhaps need some more checks to make sure nothing crashes)
+			if (!Events.CustomPostChains.registry.containsKey(shaderData.getID())) {
+				manager.getResourceOrThrow(shaderData.getPostEffectIdentifier(true));
+			}
 			boolean alreadyRegistered = false;
 			for (Identifier registry : registries) {
 				for (ShaderRegistryEntry data : Shaders.getRegistry(registry)) {
