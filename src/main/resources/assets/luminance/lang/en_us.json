@@ -1,5 +1,9 @@
 {
-	"gui.luminance.developers": "Developers",
+	"gui.luminance.developers.single": "Developer",
+	"gui.luminance.developers.multiple": "Developers",
+
+	"gui.luminance.contributors.single": "Contributor",
+	"gui.luminance.contributors.multiple": "Contributors",
 
 	"gui.luminance.attributions": "Attributions",
 
