@@ -61,7 +61,7 @@ public class Execute {
 			try {
 				runnable.run(guiGraphics, renderTickCounter);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterInGameHudRender event with id: {}: {}", id, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterInGameHudRender event with id: {}", id, error);
 			}
 		}));
 	}
@@ -71,7 +71,7 @@ public class Execute {
 			try {
 				runnable.run(guiGraphics, renderTickCounter);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterInGameHudRender event with id: {}: {}", id, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterInGameHudRender event with id: {}", id, error);
 			}
 		}));
 	}
@@ -82,7 +82,7 @@ public class Execute {
 			try {
 				runnable.run();
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterGameRender event with id: {}: {}", id, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterGameRender event with id: {}", id, error);
 			}
 		}));
 	}
@@ -94,7 +94,7 @@ public class Execute {
 			try {
 				runnable.run(new Runnables.GameRender.Data(ClientData.minecraft.getMainRenderTarget(), allocator));
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute VanillaPostEffect event with id: {}: {}", id, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute VanillaPostEffect event with id: {}", id, error);
 			}
 		}));
 	}
@@ -104,7 +104,7 @@ public class Execute {
 			try {
 				runnable.run(new Runnables.GameRender.Data(ClientData.minecraft.getMainRenderTarget(), allocator));
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterGameRender event with id: {}: {}", id, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterGameRender event with id: {}", id, error);
 			}
 		}));
 	}
@@ -114,7 +114,7 @@ public class Execute {
 			try {
 				runnable.run(new Runnables.GameRender.Data(ClientData.minecraft.getMainRenderTarget(), allocator));
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute BeforeUiRender event with id: {}: {}", id, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute BeforeUiRender event with id: {}", id, error);
 			}
 		}));
 	}
@@ -126,7 +126,7 @@ public class Execute {
 			try {
 				runnable.run(new Runnables.GameRender.Data(ClientData.minecraft.getMainRenderTarget(), allocator));
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterUiBackgroundRender event with id: {}: {}", id, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterUiBackgroundRender event with id: {}", id, error);
 			}
 		}));
 		// this and afterPanoramaRender are a special case, so resetting the RenderLocation it makes sense
@@ -140,7 +140,7 @@ public class Execute {
 			try {
 				runnable.run(new Runnables.GameRender.Data(ClientData.minecraft.getMainRenderTarget(), allocator));
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterPanoramaRender event with id: {}: {}", id, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterPanoramaRender event with id: {}", id, error);
 			}
 		}));
 		ShaderTime.currentRenderLocation = previous;
@@ -156,7 +156,7 @@ public class Execute {
 			try {
 				runnable.run();
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute BeforeWorldRender event with id: {}: {}", id, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute BeforeWorldRender event with id: {}", id, error);
 			}
 		}));
 	}
@@ -171,7 +171,7 @@ public class Execute {
 			try {
 				runnable.run(new Runnables.LevelRender.Data(frameGraphBuilder, ClientData.minecraft.getMainRenderTarget().width, ClientData.minecraft.getMainRenderTarget().height, targetBundle));
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterFabulousRender event with id: {}: {}", id, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterFabulousRender event with id: {}", id, error);
 			}
 		}));
 	}
@@ -181,7 +181,7 @@ public class Execute {
 			try {
 				runnable.run(new Runnables.GameRender.Data(ClientData.minecraft.getMainRenderTarget(), allocator));
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterWorldRender event with id: {}: {}", id, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterWorldRender event with id: {}", id, error);
 			}
 		}));
 
@@ -193,7 +193,7 @@ public class Execute {
 			try {
 				runnable.run(postEffectPass);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute BeforeShaderRender event with id: {}: {}", id, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute BeforeShaderRender event with id: {}", id, error);
 			}
 		}));
 	}
@@ -203,7 +203,7 @@ public class Execute {
 			try {
 				runnable.run(postEffectPass);
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterShaderRender event with id: {}: {}", id, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterShaderRender event with id: {}", id, error);
 			}
 		}));
 	}

@@ -42,7 +42,7 @@ public class Data {
 				if (modContainer.isPresent()) return checkModVersion(modContainer.get().getMetadata().getVersion().getFriendlyString(), requiredVersion, substring);
 			}
 		} catch (Exception error) {
-			version.sendToLog(LogType.ERROR, "Failed to check mod version for " + modId + ": {}", error);
+			version.sendToLog(LogType.ERROR, "Failed to check mod version for {}", modId, error);
 		}
 		return false;
 	}
@@ -59,7 +59,7 @@ public class Data {
 		try {
 			return net.fabricmc.loader.api.Version.parse(requiredVersion).compareTo(net.fabricmc.loader.api.Version.parse(substring ? StringUtils.substringBefore(currentVersion, separator) : currentVersion)) <= 0;
 		} catch (Exception error) {
-			version.sendToLog(LogType.ERROR, "Failed to check mod version!");
+			version.sendToLog(LogType.ERROR, "Failed to check mod version!", error);
 		}
 		return false;
 	}

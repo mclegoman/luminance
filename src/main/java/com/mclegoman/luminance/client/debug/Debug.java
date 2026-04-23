@@ -73,7 +73,7 @@ public class Debug {
 				Debug.getDebugShader().setSecond(shader);
 				applyDebugShader();
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to set debug shader: {}", error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to set debug shader", error);
 				resetDebugShader();
 				applyDebugShader();
 			}

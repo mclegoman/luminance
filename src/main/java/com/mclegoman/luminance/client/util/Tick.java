@@ -25,7 +25,7 @@ public class Tick {
 				}
 			});
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to initialize tick: {}", error);
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to initialize tick", error);
 		}
 	}
 }

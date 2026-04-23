@@ -43,7 +43,7 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 			try {
 				runnable.run();
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute OnShaderDataReset event with id: {}:{}:", id, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute OnShaderDataReset event with id: {}:", id, error);
 			}
 		});
 	}
@@ -114,7 +114,7 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 							try {
 								runnable.run(shaderData, registryList);
 							} catch (Exception error) {
-								Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute OnShaderDataRegistered event with id: {}:{}:", id, error);
+								Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute OnShaderDataRegistered event with id: {}", id, error);
 							}
 						});
 					} else {
@@ -123,12 +123,12 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 							try {
 								runnable.run(shaderData, registryList);
 							} catch (Exception error) {
-								Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute OnShaderDataRemoved event with id: {}:{}:", id, error);
+								Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute OnShaderDataRemoved event with id: {}", id, error);
 							}
 						});
 					}
 				} catch (Exception error) {
-					Data.getVersion().sendToLog(LogType.ERROR, "Failed to load luminance shader: {}", error);
+					Data.getVersion().sendToLog(LogType.ERROR, "Failed to load luminance shader", error);
 				}
 			});
 
@@ -136,7 +136,7 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 				try {
 					runnable.run();
 				} catch (Exception error) {
-					Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterShaderDataRegistered event with id: {}:{}:", id, error);
+					Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterShaderDataRegistered event with id: {}", id, error);
 				}
 			});
 
@@ -147,7 +147,7 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 						try {
 							if (shader.shader() != null) shader.shader().reload();
 						} catch (Exception error) {
-							Data.getVersion().sendToLog(LogType.ERROR, "Failed to reload shader with id: {}:{}:", id, error);
+							Data.getVersion().sendToLog(LogType.ERROR, "Failed to reload shader with id: {}:", id, error);
 						}
 					});
 				}
@@ -155,7 +155,7 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 
 			isReloading = false;
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to apply shaders dataloader: {}", error);
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to apply shaders dataloader", error);
 		}
 
 		Debug.applyDebugShader();

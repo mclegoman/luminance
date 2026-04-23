@@ -106,7 +106,7 @@ public class Shaders {
 						try {
 							shader.shader().loadPostChain();
 						} catch (Exception error) {
-							Data.getVersion().sendToLog(LogType.ERROR, "Failed to set \"{}:{}:{}\" post processor: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
+							Data.getVersion().sendToLog(LogType.ERROR, "Failed to set \"{}:{}:{}\" post processor", id, shader.id(), shader.shader().getShaderData().getID(), error);
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
@@ -114,7 +114,7 @@ public class Shaders {
 				}
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render \"{}:{}\" using target bundle, shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render \"{}:{}\" using target bundle, shader: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
 		}
 	}
 
@@ -126,11 +126,11 @@ public class Shaders {
 					// this is because FrameGraphBuilder delays calls, so any rendersystem methods wont work with their intended timing
 					((PostChainInterface)shader.getPostChain()).luminance$render(data.builder(), data.textureWidth(), data.textureHeight(), data.targetBundle(), chain);
 				} catch (Exception error) {
-					Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());
+					Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor", error);
 				}
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render post effect processor: {}", error.getLocalizedMessage());
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render post effect processor", error);
 		}
 	}
 
@@ -142,7 +142,7 @@ public class Shaders {
 						try {
 							shader.shader().loadPostChain();
 						} catch (Exception error) {
-							Data.getVersion().sendToLog(LogType.ERROR, "Failed to set \"{}:{}:{}\" post processor: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
+							Data.getVersion().sendToLog(LogType.ERROR, "Failed to set \"{}:{}:{}\" post processor", id, shader.id(), shader.shader().getShaderData().getID(), error);
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
@@ -150,7 +150,7 @@ public class Shaders {
 				}
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render \"{}:{}\" using allocator, shader: {}: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render \"{}:{}\" using allocator, shader: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
 		}
 	}
 
@@ -161,7 +161,7 @@ public class Shaders {
 				Runnables.LevelRender.fromGameData((worldData) -> shader.getPostChain().luminance$render(worldData.builder(), worldData.textureWidth(), worldData.textureHeight(), worldData.targetBundle(), chain), data);
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor: {}", error.getLocalizedMessage());
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor", error);
 		}
 	}
 

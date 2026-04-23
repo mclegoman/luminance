@@ -42,7 +42,7 @@ public class Shader {
 				if (this.postChain.luminance$usesImprovedTransparency()) setUseImprovedTransparency(true);
 			}
 		} catch (Exception error) {
-			com.mclegoman.luminance.common.data.Data.getVersion().sendToLog(LogType.ERROR, "Failed to set post processor: {}", error);
+			com.mclegoman.luminance.common.data.Data.getVersion().sendToLog(LogType.ERROR, "Failed to set post processor", error);
 			clearPostChain();
 		}
 	}

@@ -55,7 +55,7 @@ public abstract class JsonResourceReloader extends SimplePreparableReloadListene
 				}
 				reader.close();
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Couldn't parse data file {} from {}: {}", resourceId, resourceEntryKey, error);
+				Data.getVersion().sendToLog(LogType.ERROR, "Couldn't parse data file {} from {}", resourceId, resourceEntryKey, error);
 			}
 		}
 

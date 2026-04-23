@@ -38,7 +38,7 @@ public class RenderLocations {
             try {
                 renderShaders(type, data, shaders, id);
             } catch (Exception error) {
-                Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}:{}", type.identifier(), id, error);
+                Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}", type.identifier(), id, error);
             }
         });
     }
@@ -51,7 +51,7 @@ public class RenderLocations {
                 try {
                     renderShader(type, data, id, shader, shaderRenderData.disablePhotosensitive().call(shader.shader().getShaderData()));
                 } catch (Exception error) {
-                    Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}:{}", type.identifier(), id, error);
+                    Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}", type.identifier(), id, error);
                 }
             });
         }
@@ -93,7 +93,7 @@ public class RenderLocations {
 
             type.render(id, shader, data);
         } catch (Exception error) {
-            Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}:{}", type.identifier(), id, error);
+            Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}", type.identifier(), id, error);
         }
     }
 

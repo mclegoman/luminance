@@ -146,7 +146,7 @@ public class Uniforms {
 			registerFullTree(namespace, "render_location", Uniforms::getRenderLocation, 0f, null, 2, EmptyConfig.INSTANCE, false);
 			registerSingleValueTree(namespace, "gamemode_has_health", Uniforms::getGameModeHasHealth, 0f, 1f);
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to initialize uniforms: {}", error);
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to initialize uniforms", error);
 		}
 
 		Events.OnMouseScroll.register(Data.idOf("update_alpha"), (long windowHandle, double horizontal, double vertical, Vector2i scroll) -> {

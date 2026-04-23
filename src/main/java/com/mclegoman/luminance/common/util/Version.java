@@ -138,7 +138,7 @@ public class Version implements Comparable<Version> {
 	public void sendToLog(LogType type, String message, Object... args) {
 		if (type.equals(LogType.INFO)) getLogger().info(Translation.getString("{} {}", getLoggerPrefix(), Translation.getString(message, args)));
 		if (type.equals(LogType.WARN)) getLogger().warn(Translation.getString("{} {}", getLoggerPrefix(), Translation.getString(message, args)));
-		if (type.equals(LogType.ERROR)) getLogger().error(Translation.getString("{} {}", getLoggerPrefix(), Translation.getString(message, args)));
+		if (type.equals(LogType.ERROR)) getLogger().error(Translation.getString("{} {}",getLoggerPrefix(), message), args); // having an exception as the last object in args will mean its stack trace is printed
 		if (type.equals(LogType.DEBUG)) getLogger().debug(Translation.getString("{} {}", getLoggerPrefix(), Translation.getString(message, args)));
 	}
 }

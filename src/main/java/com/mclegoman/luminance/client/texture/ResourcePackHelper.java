@@ -22,7 +22,7 @@ public class ResourcePackHelper {
 			Data.getVersion().sendToLog(LogType.INFO, "Registering resource pack: {}", id.getPath());
 			FabricLoader.getInstance().getModContainer(container.getMetadata().getId()).ifPresent(modContainer -> ResourceLoader.registerBuiltinPack(id, modContainer, text, packActivationType));
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to register resource pack: {}", error);
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to register resource pack", error);
 		}
 	}
 }

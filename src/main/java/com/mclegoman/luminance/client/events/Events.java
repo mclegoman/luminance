@@ -154,7 +154,7 @@ public class Events {
 						return true;
 					}
 				} catch (Exception error) {
-					Data.getVersion().sendToLog(LogType.ERROR, "Failed to set shader: {}:{}: {}", registryId, shaderId, error);
+					Data.getVersion().sendToLog(LogType.ERROR, "Failed to set shader: {}:{}", registryId, shaderId, error);
 				}
 				return false;
 			}
@@ -169,7 +169,7 @@ public class Events {
 					if (!ShaderRender.exists(registryId)) ShaderRender.register(registryId, new ShaderRenderData(new ArrayList<>(), disablePhotosensitive));
 					return !exists(registryId, shaderId) ? register(registryId, shaderId, shader) : modify(registryId, shaderId, shader);
 				} catch (Exception error) {
-					Data.getVersion().sendToLog(LogType.ERROR, "Failed to set shader: {}:{}: {}", registryId, shaderId, error);
+					Data.getVersion().sendToLog(LogType.ERROR, "Failed to set shader: {}:{}", registryId, shaderId, error);
 				}
 				return false;
 			}

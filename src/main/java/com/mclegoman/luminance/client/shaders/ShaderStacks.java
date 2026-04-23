@@ -204,18 +204,18 @@ public class ShaderStacks {
                     Identifier id = reader.has("identifier") ? Identifier.parse(reader.get("identifier").getAsString()) : identifier.withPath(stackId);
                     registryIds.forEach(registryId -> addStack(Identifier.parse(registryId.getAsString()), id, new Entry.Text(id, true), shaders, reader.has("custom") ? reader.getAsJsonObject("custom") : new JsonObject()));
                 } catch (Exception error) {
-                    Data.getVersion().sendToLog(LogType.ERROR, "Failed to load shader stack '{}': {}", identifier.withPath(stackId), error.getLocalizedMessage());
+                    Data.getVersion().sendToLog(LogType.ERROR, "Failed to load shader stack '{}'", identifier.withPath(stackId), error);
                 }
             });
         } catch (Exception error) {
-            Data.getVersion().sendToLog(LogType.ERROR, "Failed to reload shader stacks: {}", error);
+            Data.getVersion().sendToLog(LogType.ERROR, "Failed to reload shader stacks", error);
         }
         addDefaultStacks();
         Events.AfterShaderStacksRegistered.registry.forEach((id, runnable) -> {
             try {
                 runnable.run();
             } catch (Exception error) {
-                Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterShaderStacksRegistered event with id: {}:{}:", id, error);
+                Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterShaderStacksRegistered event with id: {}", id, error);
             }
         });
     }

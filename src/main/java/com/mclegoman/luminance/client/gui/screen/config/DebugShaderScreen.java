@@ -92,7 +92,7 @@ public class DebugShaderScreen extends Screen {
 			grid.visitWidgets(this::addRenderableWidget);
 			initTabNavigation();
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to initialize config screen: {}", error);
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to initialize config screen", error);
 		}
 	}
 
@@ -102,7 +102,7 @@ public class DebugShaderScreen extends Screen {
 				ClientData.minecraft.setScreen(parentScreen);
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to tick luminance$config screen: {}", error);
+			Data.getVersion().sendToLog(LogType.ERROR, "Failed to tick luminance$config screen", error);
 		}
 	}
 
