@@ -38,8 +38,8 @@ public class Shader {
 		try {
 			this.postChain = Shaders.getPostChain(shaderId);
 			if (postChain != null) {
-				if (this.postChain.luminance$usesDepth()) setUseDepth(true);
-				if (this.postChain.luminance$usesImprovedTransparency()) setUseImprovedTransparency(true);
+				if (this.postChain.luminance$usesDepth()) this.setUseDepth(true);
+				if (this.postChain.luminance$usesImprovedTransparency()) this.setUseImprovedTransparency(true);
 			}
 		} catch (Exception error) {
 			com.mclegoman.luminance.common.data.Data.getVersion().sendToLog(LogType.ERROR, "Failed to set post processor: {}", error);

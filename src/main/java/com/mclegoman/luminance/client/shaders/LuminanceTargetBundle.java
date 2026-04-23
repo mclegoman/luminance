@@ -36,7 +36,7 @@ public class LuminanceTargetBundle implements PostChain.TargetBundle {
     @Nullable
     private final Set<Identifier> useDefaultFor;
 
-    public static Set<Identifier> fabulous = new HashSet<>(List.of(
+    public static Set<Identifier> improvedTransparency = new HashSet<>(List.of(
             Identifier.withDefaultNamespace("translucent"),
             Identifier.withDefaultNamespace("item_entity"),
             Identifier.withDefaultNamespace("particles"),
@@ -52,7 +52,7 @@ public class LuminanceTargetBundle implements PostChain.TargetBundle {
 
     public static PostChain.TargetBundle create(FrameGraphBuilder builder, RenderTarget mainRenderTarget) {
         RenderTargetDescriptor renderTargetDescriptor = new RenderTargetDescriptor(mainRenderTarget.width, mainRenderTarget.height, mainRenderTarget.useDepth, 0);
-        return new LuminanceTargetBundle(builder.importExternal("main", mainRenderTarget), builder.createInternal("luminance:default", renderTargetDescriptor), fabulous);
+        return new LuminanceTargetBundle(builder.importExternal("main", mainRenderTarget), builder.createInternal("luminance:default", renderTargetDescriptor), improvedTransparency);
     }
 
     public static PostChain.TargetBundle createIfAbsent(FrameGraphBuilder frameGraphBuilder, LevelTargetBundle levelTargetBundle, RenderTargetDescriptor renderTargetDescriptor) {
@@ -60,7 +60,7 @@ public class LuminanceTargetBundle implements PostChain.TargetBundle {
             return levelTargetBundle;
         }
 
-        return new LuminanceTargetBundle(levelTargetBundle.main, frameGraphBuilder.createInternal("luminance:default", renderTargetDescriptor), fabulous);
+        return new LuminanceTargetBundle(levelTargetBundle.main, frameGraphBuilder.createInternal("luminance:default", renderTargetDescriptor), improvedTransparency);
     }
 
     public void replace(Identifier id, @NotNull ResourceHandle<RenderTarget> renderTarget) {
