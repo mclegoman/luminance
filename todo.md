@@ -1,10 +1,8 @@
 # Luminance Todo
-- Library Documentation/JavaDocs  
-- NeoForge Support (Low Priority)  
-  - Make it so we don't need Fabric API  
-    - Resource Loader (NeoForge has an implementation for this, creating our own would only be required for fabric/quilt, though with qsl not being updated this still would be nice, however a low priority)  
-    - Keybindings  
-    - Tick  
-- Update `luminance:post/outlined` shader  
-  - Each depth type having it's own Distance uniform would be nice.  
-    - For example, `In` could use `luminance_viewDistance` whilst `Clouds` could use `-1`.  
+- Update Resource Pack Guide
+- Move `com.mclegoman.luminance.*` package to `dev.dannytaylor.luminance.*`.
+  - I'd like all of my up-to-date mods to use my new package.
+    - Repository can stay here though.
+- Library Documentation and JavaDocs
+- NeoForge Support (Low Priority, will be a compatible fork instead of a all-in-one)
+  - Still being able to not require fabric api would be nice though!

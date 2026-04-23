@@ -11,8 +11,10 @@ import com.google.common.collect.ImmutableMap;
 import com.mclegoman.luminance.client.shaders.CustomPassData;
 import com.mclegoman.luminance.client.shaders.UniformBlock;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import net.minecraft.client.renderer.PostPass;
 import net.minecraft.resources.Identifier;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PostPassInterface {
@@ -31,4 +33,6 @@ public interface PostPassInterface {
     boolean luminance$usesDepth();
 
     boolean luminance$usesImprovedTransparency();
+
+    List<PostPass.Input> luminance$inputs();
 }

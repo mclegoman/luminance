@@ -31,21 +31,19 @@ public class AttributionsWidget {
             getLicense(modContainer.getMetadata()).ifPresent(texts::add);
             texts.add(empty());
 
-            for (Person developer : modContainer.getMetadata().getAuthors()) {
-                developers.add(Translation.getCombinedText(getPersonName(developer).withStyle(ChatFormatting.WHITE), Component.literal(" "), getPersonDonate(developer)));
-            }
+            for (Person developer : modContainer.getMetadata().getAuthors()) developers.add(Translation.getCombinedText(getPersonName(developer), Component.literal(" "), getPersonDonate(developer)));
             for (Person contributor : modContainer.getMetadata().getContributors()) contributors.add(getPersonName(contributor));
         }
 
         if (!developers.isEmpty()) {
-            texts.add(Translation.getTranslation(Data.getVersion().getID(), "developers", new ChatFormatting[]{ChatFormatting.GOLD, ChatFormatting.BOLD}));
+            texts.add(Translation.getTranslation(Data.getVersion().getID(), "developers" + (developers.size() > 1 ? ".single" : ".multiple"), new ChatFormatting[]{ChatFormatting.GOLD, ChatFormatting.BOLD}));
             texts.addAll(developers);
 
             texts.add(empty());
         }
 
         if (!contributors.isEmpty()) {
-            texts.add(Translation.getTranslation(Data.getVersion().getID(), "contributors", new ChatFormatting[]{ChatFormatting.GOLD, ChatFormatting.BOLD}));
+            texts.add(Translation.getTranslation(Data.getVersion().getID(), "contributors" + (developers.size() > 1 ? ".single" : ".multiple"), new ChatFormatting[]{ChatFormatting.GOLD, ChatFormatting.BOLD}));
             texts.addAll(contributors);
 
             texts.add(empty());
@@ -110,12 +108,12 @@ public class AttributionsWidget {
 
     private static Optional<FormattedText> getAuthor(ModMetadata modMetadata) {
         Collection<String> authors = authorsAsString(modMetadata.getAuthors());
-        return !authors.isEmpty() ? Optional.of(Translation.getTranslation(Data.getVersion().getID(), authors.size() > 1 ? "authors.multiple" : "authors.single", new Object[]{String.join(",", authors)}, new ChatFormatting[]{ChatFormatting.GRAY})) : Optional.empty();
+        return !authors.isEmpty() ? Optional.of(Translation.getTranslation(Data.getVersion().getID(), authors.size() > 1 ? "authors.multiple" : "authors.single", new Object[]{String.join(", ", authors)}, new ChatFormatting[]{ChatFormatting.GRAY})) : Optional.empty();
     }
 
     private static Optional<FormattedText> getLicense(ModMetadata modMetadata) {
         Collection<String> license = modMetadata.getLicense();
-        return !license.isEmpty() ? Optional.of(Translation.getTranslation(Data.getVersion().getID(), license.size() > 1 ? "license.multiple" : "license.single", new Object[]{String.join(",", license)}, new ChatFormatting[]{ChatFormatting.GRAY})) : Optional.empty();
+        return !license.isEmpty() ? Optional.of(Translation.getTranslation(Data.getVersion().getID(), license.size() > 1 ? "license.multiple" : "license.single", new Object[]{String.join(", ", license)}, new ChatFormatting[]{ChatFormatting.GRAY})) : Optional.empty();
     }
 
     private static List<FormattedText> getAttribution(ModMetadata modMetadata) {
@@ -136,7 +134,7 @@ public class AttributionsWidget {
     }
 
     private static MutableComponent getLiteral(String key, String homepage) {
-        return getLiteral(key, homepage, ChatFormatting.GRAY);
+        return getLiteral(key, homepage, homepage != null && !homepage.isBlank() ? ChatFormatting.WHITE : ChatFormatting.GRAY);
     }
 
     private static MutableComponent getLiteral(String key, String homepage, ChatFormatting... chatFormattings) {

@@ -11,6 +11,8 @@ import com.google.common.collect.ImmutableMap;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mclegoman.luminance.client.events.Execute;
+import com.mclegoman.luminance.client.shaders.LuminanceTargetBundle;
+import com.mclegoman.luminance.client.shaders.Shaders;
 import com.mclegoman.luminance.client.shaders.UniformBlock;
 import com.mclegoman.luminance.client.shaders.CustomPassData;
 import com.mclegoman.luminance.client.shaders.interfaces.PostPassInterface;
@@ -121,21 +123,21 @@ public abstract class PostPassMixin implements PostPassInterface {
 
 	@Override
 	public boolean luminance$usesDepth() {
-		for (PostPass.Input sampler : inputs) {
-			if (sampler instanceof PostPass.TargetInput targetSampler && targetSampler.depthBuffer()) {
-				return true;
-			}
-		}
-		return false;
+		return Shaders.targetsUseDepth(this.luminance$targetInputs());
 	}
 
 	@Override
 	public boolean luminance$usesImprovedTransparency() {
-		for (PostPass.Input sampler : inputs) {
-			if (sampler instanceof PostPass.TargetInput targetSampler && !targetSampler.targetId().equals(Identifier.withDefaultNamespace("main")) && targetSampler.depthBuffer()) {
-				return true;
-			}
-		}
-		return false;
+		return Shaders.targetsUseDepth(LuminanceTargetBundle.improvedTransparency.stream().toList(), this.luminance$targetInputs());
+	}
+
+	@Unique
+	public List<PostPass.TargetInput> luminance$targetInputs() {
+		return this.luminance$inputs().stream().filter((input) -> input instanceof PostPass.TargetInput).map((input) -> (PostPass.TargetInput) input).toList();
+	}
+
+	@Override
+	public List<PostPass.Input> luminance$inputs() {
+		return this.inputs;
 	}
 }

@@ -26,6 +26,7 @@ import net.fabricmc.loader.api.metadata.version.VersionPredicate;
 import net.minecraft.client.gui.components.debug.DebugScreenEntryStatus;
 import net.minecraft.client.gui.components.debug.DebugScreenProfile;
 import net.minecraft.client.renderer.LevelTargetBundle;
+import net.minecraft.client.renderer.PostPass;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 import net.minecraft.resources.Identifier;
@@ -372,5 +373,13 @@ public class Shaders {
 			return postChainInterface;
 		}
 		return (PostChainInterface) ClientData.minecraft.getShaderManager().getPostChain(identifier, LevelTargetBundle.SORTING_TARGETS);
+	}
+
+	public static boolean targetsUseDepth(List<Identifier> targetIds, List<PostPass.TargetInput> targets) {
+		return targetsUseDepth(targets.stream().filter((target) -> targetIds.contains(target.targetId())).toList());
+	}
+
+	public static boolean targetsUseDepth(List<PostPass.TargetInput> targets) {
+		return targets.stream().anyMatch(PostPass.TargetInput::depthBuffer);
 	}
 }
