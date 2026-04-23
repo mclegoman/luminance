@@ -31,8 +31,8 @@ public class AttributionsWidget {
             getLicense(modContainer.getMetadata()).ifPresent(texts::add);
             texts.add(empty());
 
-            for (Person developer : modContainer.getMetadata().getAuthors()) developers.add(Translation.getCombinedText(getPersonName(developer).withStyle(ChatFormatting.WHITE), Component.literal(" "), getPersonDonate(developer)));
-            for (Person contributor : modContainer.getMetadata().getContributors()) contributors.add(getPersonName(contributor).withStyle(ChatFormatting.WHITE));
+            for (Person developer : modContainer.getMetadata().getAuthors()) developers.add(Translation.getCombinedText(getPersonName(developer), Component.literal(" "), getPersonDonate(developer)));
+            for (Person contributor : modContainer.getMetadata().getContributors()) contributors.add(getPersonName(contributor));
         }
 
         if (!developers.isEmpty()) {
@@ -134,7 +134,7 @@ public class AttributionsWidget {
     }
 
     private static MutableComponent getLiteral(String key, String homepage) {
-        return getLiteral(key, homepage, ChatFormatting.GRAY);
+        return getLiteral(key, homepage, homepage != null && !homepage.isBlank() ? ChatFormatting.WHITE : ChatFormatting.GRAY);
     }
 
     private static MutableComponent getLiteral(String key, String homepage, ChatFormatting... chatFormattings) {
