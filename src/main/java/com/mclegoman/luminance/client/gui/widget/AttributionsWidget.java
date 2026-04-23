@@ -31,10 +31,8 @@ public class AttributionsWidget {
             getLicense(modContainer.getMetadata()).ifPresent(texts::add);
             texts.add(empty());
 
-            for (Person developer : modContainer.getMetadata().getAuthors()) {
-                developers.add(Translation.getCombinedText(getPersonName(developer).withStyle(ChatFormatting.WHITE), Component.literal(" "), getPersonDonate(developer)));
-            }
-            for (Person contributor : modContainer.getMetadata().getContributors()) contributors.add(getPersonName(contributor));
+            for (Person developer : modContainer.getMetadata().getAuthors()) developers.add(Translation.getCombinedText(getPersonName(developer).withStyle(ChatFormatting.WHITE), Component.literal(" "), getPersonDonate(developer)));
+            for (Person contributor : modContainer.getMetadata().getContributors()) contributors.add(getPersonName(contributor).withStyle(ChatFormatting.WHITE));
         }
 
         if (!developers.isEmpty()) {
