@@ -21,10 +21,12 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.FormattedCharSink;
 import net.minecraft.util.StringDecomposer;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class Translation {
@@ -123,13 +125,28 @@ public class Translation {
 	}
 
 	public static String getFormattedString(String value, String searchString, Object[] variables) {
+		return parseCustomFormattedString(value, searchString, variables).output();
+	}
+
+	public static FormattedString parseCustomFormattedString(String value, String searchString, Object[] variables) {
 		String string = value;
-		for (Object variable : variables) string = StringUtils.replaceOnce(string, searchString, String.valueOf(variable));
-		return string;
+		List<Object> unused = new ArrayList<>();
+		for (Object variable : variables) {
+			if (string.contains(searchString)) string = Strings.CS.replaceOnce(string, searchString, String.valueOf(variable));
+			else unused.add(variable);
+		}
+		return new FormattedString(string, unused.toArray());
+	}
+
+	public static FormattedString parseFormattedString(String string, Object... variables) {
+		return parseCustomFormattedString(string, "{}", variables);
+	}
+
+	public record FormattedString(String output, Object... unused) {
 	}
 
 	public static String getString(String string, Object... variables) {
-		return getFormattedString(string, "{}", variables);
+		return parseFormattedString(string, variables).output();
 	}
 
 	public static String getKeybindingTranslation(String namespace, String key, boolean category) {

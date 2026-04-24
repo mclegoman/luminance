@@ -26,6 +26,10 @@ public class Version implements Comparable<Version> {
 	private final boolean dirty;
 	private final boolean hasModrinthId;
 	private final String modrinthId;
+	// when we move to seam, this class will probably be removed, in favour of Seam's Mod class.
+	// Seam doesn't currently handle versioning, so i'll add that in when I'm moving luminance's non-shader specific stuff over.
+	// will also likely remove modrinth update checking class as it's currently unused.
+
 	private Version(String name, String id, int major, int minor, int patch, ReleaseType type, int build, boolean dirty, boolean hasModrinthId, String modrinthId) {
 		this.name = name;
 		this.id = id;
@@ -38,22 +42,28 @@ public class Version implements Comparable<Version> {
 		this.hasModrinthId = hasModrinthId;
 		this.modrinthId = modrinthId;
 	}
+
 	// dirty should be set to false for versions released to modrinth (etc). dirty should only be set to true if you are building a version that won't get released.
 	public static Version create(String name, String id, int major, int minor, int patch, ReleaseType type, int build, boolean dirty, String modrinthId) {
 		return new Version(name, id, major, minor, patch, type, build, dirty, true, modrinthId);
 	}
+
 	public static Version create(String name, String id, int major, int minor, int patch, ReleaseType type, boolean dirty, int build) {
 		return new Version(name, id, major, minor, patch, type, build, dirty, false, "");
 	}
+
 	public static Version create(String name, String id, int major, int minor, int patch, ReleaseType type, int build, String modrinthId) {
 		return new Version(name, id, major, minor, patch, type, build, false, true, modrinthId);
 	}
+
 	public static Version create(String name, String id, int major, int minor, int patch, ReleaseType type, int build) {
 		return new Version(name, id, major, minor, patch, type, build, false, false, "");
 	}
+
 	public static Version parse(ModMetadata metadata) {
 		return parse(metadata, "");
 	}
+
 	public static Version parse(ModMetadata metadata, String modrinthId) {
 		if (metadata != null) {
 			String version = metadata.getVersion().getFriendlyString();
@@ -73,54 +83,72 @@ public class Version implements Comparable<Version> {
 		}
 		return create("UNKNOWN", "unknown", 0, 0, 0, ReleaseType.RELEASE, 0);
 	}
+
 	public String getFriendlyString(boolean full) {
 		return full ? getFriendlyString() : (getType().equals(ReleaseType.RELEASE) ? String.format("%s.%s.%s", getMajor(), getMinor(), getPatch()) : getFriendlyString());
 	}
+
 	public boolean hasModrinthID() {
 		return this.hasModrinthId;
 	}
+
 	public String getModrinthID() {
 		return this.modrinthId;
 	}
+
 	public Optional<ModContainer> getModContainer() {
 		return ModHelper.getModContainer(getID());
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public String getID() {
 		return id;
 	}
+
 	public int getMajor() {
 		return major;
 	}
+
 	public int getMinor() {
 		return minor;
 	}
+
 	public int getPatch() {
 		return patch;
 	}
+
 	public ReleaseType getType() {
 		return type;
 	}
+
 	public int getBuild() {
 		return build;
 	}
+
 	public boolean getDirty() {
 		return dirty;
 	}
+
 	public String getFriendlyString() {
 		return Translation.getString("{}.{}.{}-{}.{}{}", getMajor(), getMinor(), getPatch(), Helper.releaseTypeString(getType(), Helper.TranslationType.CODE), getBuild(), (getDirty() ? "+dirty" : ""));
 	}
+
+	// Seam doesn't use a prefix, instead just uses the logger name, which is cleaner.
 	public String getLoggerPrefix() {
 		return Translation.getString("[{} {}]", getName(), getFriendlyString());
 	}
+
 	public boolean isDevelopmentBuild() {
 		return !type.equals(ReleaseType.RELEASE);
 	}
+
 	private Logger getLogger() {
 		return LoggerFactory.getLogger(getName());
 	}
+
 	@Override
 	public int compareTo(Version other) {
 		if (major != other.major) {
@@ -135,10 +163,12 @@ public class Version implements Comparable<Version> {
 			return Integer.compare(build, other.build);
 		}
 	}
+
+	// when we move to seam, it will control the logging (of which it just passes the args straight to the logger; i didn't know the logger did that before lol)
 	public void sendToLog(LogType type, String message, Object... args) {
-		if (type.equals(LogType.INFO)) getLogger().info(Translation.getString("{} {}", getLoggerPrefix(), Translation.getString(message, args)));
-		if (type.equals(LogType.WARN)) getLogger().warn(Translation.getString("{} {}", getLoggerPrefix(), Translation.getString(message, args)));
-		if (type.equals(LogType.ERROR)) getLogger().error(Translation.getString("{} {}",getLoggerPrefix(), message), args); // having an exception as the last object in args will mean its stack trace is printed
-		if (type.equals(LogType.DEBUG)) getLogger().debug(Translation.getString("{} {}", getLoggerPrefix(), Translation.getString(message, args)));
+		if (type.equals(LogType.INFO)) getLogger().info(message, args);
+		if (type.equals(LogType.WARN)) getLogger().warn(message, args);
+		if (type.equals(LogType.ERROR)) getLogger().error(message, args);
+		if (type.equals(LogType.DEBUG)) getLogger().debug(message, args);
 	}
 }
