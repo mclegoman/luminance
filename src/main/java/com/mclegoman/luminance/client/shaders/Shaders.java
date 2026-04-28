@@ -46,8 +46,8 @@ public class Shaders {
 	public static void onInitialize(AbstractMod mod) {
 		SeamEvents.onInitialize(mod, "Shaders", () -> {
 			SeamClientEvents.ClientResourceReloaders.register(LuminanceClient.getMod().idOf("shaders"), new ShaderReloader());
-			ShaderStacks.init();
-			Uniforms.init();
+			ShaderStacks.onInitialize(mod);
+			Uniforms.onInitialize(mod);
 			SeamClientEvents.BeforeGameRender.register(LuminanceClient.getMod().idOf("update"), Uniforms::update);
 
 			Events.AfterFabulousRender.register(LuminanceClient.getMod().idOf("main"),

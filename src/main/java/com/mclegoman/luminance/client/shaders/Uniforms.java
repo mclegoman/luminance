@@ -31,7 +31,9 @@ import com.mclegoman.luminance.mixin.client.shaders.DynamicRenderTickCounterAcce
 import com.mclegoman.luminance.mixin.client.shaders.GameRendererAccessor;
 import com.mclegoman.luminance.mixin.client.shaders.LevelRendererAccessor;
 import dev.dannytaylor.perspective.seam.client.events.SeamClientEvents;
+import dev.dannytaylor.perspective.seam.common.data.AbstractMod;
 import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
+import dev.dannytaylor.perspective.seam.common.events.SeamEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.CameraType;
@@ -71,8 +73,28 @@ public class Uniforms {
 		Events.ShaderUniform.registry.forEach((id, uniform) -> uniform.update(shaderTime));
 	}
 
-	public static void init() {
-		try {
+	protected static void onInitialize(AbstractMod mod) {
+		SeamEvents.onInitialize(mod, "Dynamic Uniforms", () -> {
+			SeamClientEvents.OnMouseScroll.register(LuminanceClient.getMod().idOf("update_alpha"), (long windowHandle, double horizontal, double vertical, Vector2i scroll) -> {
+				if (Uniforms.updatingAlpha()) {
+					if (ClientData.minecraft.player != null) {
+						int scrollAmount = scroll.y == 0 ? -scroll.x : scroll.y;
+						Uniforms.adjustAlpha(scrollAmount);
+						return true;
+					}
+				}
+				return false;
+			});
+			SeamClientEvents.OnMouseButton.register(LuminanceClient.getMod().idOf("reset_alpha"), (windowHandle, mouseButtonInfo, action) -> {
+				if (Uniforms.updatingAlpha()) {
+					if (mouseButtonInfo.button() == 2) {
+						Uniforms.resetAlpha();
+						return true;
+					}
+				}
+				return false;
+			});
+
 			String namespace = LuminanceClient.getMod().getId();
 			// TODO: crosshair target (i swear it used to exist?)
 
@@ -145,29 +167,6 @@ public class Uniforms {
 			registerFullTree(namespace, "random", Uniforms::getRandom, 0f, 1f, 1, EmptyConfig.INSTANCE, false);
 			registerFullTree(namespace, "render_location", Uniforms::getRenderLocation, 0f, null, 2, EmptyConfig.INSTANCE, false);
 			registerSingleValueTree(namespace, "gamemode_has_health", Uniforms::getGameModeHasHealth, 0f, 1f);
-		} catch (Exception error) {
-			SeamLog.error(LuminanceClient.getMod(), "Failed to initialize uniforms", error);
-		}
-
-		SeamClientEvents.OnMouseScroll.register(LuminanceClient.getMod().idOf("update_alpha"), (long windowHandle, double horizontal, double vertical, Vector2i scroll) -> {
-			if (Uniforms.updatingAlpha()) {
-                if (ClientData.minecraft.player != null) {
-					int scrollAmount = scroll.y == 0 ? -scroll.x : scroll.y;
-					Uniforms.adjustAlpha(scrollAmount);
-					return true;
-				}
-			}
-			return false;
-		});
-
-		SeamClientEvents.OnMouseButton.register(LuminanceClient.getMod().idOf("reset_alpha"), (windowHandle, mouseButtonInfo, action) -> {
-			if (Uniforms.updatingAlpha()) {
-				if (mouseButtonInfo.button() == 2) {
-					Uniforms.resetAlpha();
-					return true;
-				}
-			}
-			return false;
 		});
 	}
 

@@ -18,7 +18,9 @@ import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.util.Couple;
 import com.mclegoman.luminance.common.util.DateHelper;
+import dev.dannytaylor.perspective.seam.common.data.AbstractMod;
 import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
+import dev.dannytaylor.perspective.seam.common.events.SeamEvents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -33,8 +35,10 @@ import java.util.concurrent.Callable;
 public class ShaderStacks {
     public static final Map<Identifier, Map<Identifier, Entry>> registries = new HashMap<>();
 
-    protected static void init() {
-        Events.AfterShaderDataRegistered.register(getMainRegistryId(), ShaderStacks::reload);
+    protected static void onInitialize(AbstractMod mod) {
+        SeamEvents.onInitialize(mod, "Shader Stacks", () -> {
+            Events.AfterShaderDataRegistered.register(getMainRegistryId(), ShaderStacks::reload);
+        });
     }
 
     public static Identifier getMainRegistryId() {

@@ -38,7 +38,7 @@ dependencies {
 	modImplementation libs.fl
 	modImplementation libs.fapi
 	modImplementation libs.modmenu
-	modImplementation libs.sodium
+	modCompileOnly libs.sodium
 	modImplementation libs.seam
 	include libs.seam
 	modImplementation libs.kaleidoconfig
