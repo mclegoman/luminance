@@ -13,7 +13,6 @@ import com.mclegoman.luminance.client.logo.LuminanceLogo;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.DateHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.Button;
@@ -103,9 +102,10 @@ public abstract class AbstractScrollableScreen extends Screen {
 		return Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "external");
 	}
 
-	public void resize(Minecraft client, int width, int height) {
+	public void resize(int width, int height) {
 		super.resize(width, height);
-		client.setScreen(getRefreshScreen());
+		Screen refreshScreen = getRefreshScreen();
+		if (refreshScreen != null) this.minecraft.setScreen(refreshScreen);
 	}
 
 	public Screen getRefreshScreen() {
@@ -118,16 +118,16 @@ public abstract class AbstractScrollableScreen extends Screen {
 		renderDevNotice(guiGraphics);
 	}
 
-	public void renderDevNotice(GuiGraphics guiGraphics) {
-		if (Data.isDevelopmentBuild()) {
-			guiGraphics.drawString(this.font, Translation.getTranslation(LuminanceClient.getMod().getId(), "dev"), 2, this.height - 11, 0xFFAAAAAA);
-			MutableComponent versionText = Translation.getTranslation(LuminanceClient.getMod().getId(), "dev.version", new Object[]{Data.getFormattedVersion()});
-			guiGraphics.drawString(this.font, versionText, this.width - 2 - this.font.width(versionText), this.height - 11, 0xFFAAAAAA);
-		}
+	public String getDevVersion() {
+		return Data.isDevelopmentBuild() ? Data.getFormattedVersion() : "";
 	}
 
-	@Override
-	public void resize(int width, int height) {
-		this.minecraft.setScreen(getRefreshScreen());
+	public void renderDevNotice(GuiGraphics guiGraphics) {
+		String version = getDevVersion();
+		if (!version.isBlank()) {
+			guiGraphics.drawString(this.font, Translation.getTranslation(LuminanceClient.getMod().getId(), "dev"), 2, this.height - 11, 0xFFAAAAAA);
+			MutableComponent versionText = Translation.getTranslation(LuminanceClient.getMod().getId(), "dev.version", new Object[]{version});
+			guiGraphics.drawString(this.font, versionText, this.width - 2 - this.font.width(versionText), this.height - 11, 0xFFAAAAAA);
+		}
 	}
 }
