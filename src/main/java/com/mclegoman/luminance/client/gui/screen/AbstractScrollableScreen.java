@@ -43,7 +43,7 @@ public abstract class AbstractScrollableScreen extends Screen {
 	}
 
 	public AbstractScrollableScreen(String id, Screen parent, double scrollY, @Nullable Translation.Data splashText, boolean isPride) {
-		super(id != null ? getTitle(getSubtitle(id)) : getName(""));
+		super(id != null ? getTitle(getSubtitle(id)) : getName(LuminanceClient.getMod().getId(), "name"));
 		this.parent = parent;
 		this.scrollY = scrollY;
 		this.splashText = splashText;
@@ -82,12 +82,12 @@ public abstract class AbstractScrollableScreen extends Screen {
 		this.layout.arrangeElements();
 	}
 
-	public static Component getName(String id) {
-		return Translation.getText(LuminanceClient.getMod().getName(), false);
+	public static Component getName(String namespace, String path) {
+		return Translation.getTranslation(namespace, path);
 	}
 	
 	public static Component getTitle(Component title) {
-		return Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "title", new Object[]{getName(""), title});
+		return Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "title", new Object[]{getName(LuminanceClient.getMod().getId(), "name"), title});
 	}
 
 	public static Component getSubtitle(String id) {

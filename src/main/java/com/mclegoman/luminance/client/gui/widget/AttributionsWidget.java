@@ -22,7 +22,18 @@ import java.net.URI;
 import java.util.*;
 
 public class AttributionsWidget {
-    private static List<FormattedText> getTexts(ModContainer modContainer) {
+    public static List<FormattedText> getTexts(ModContainer modContainer) {
+        return getTexts(List.of(
+                        getAttribution(createMetadata("Quilt Config", "A library designed to facilitate the creation and management of config files.", List.of("QuiltMC"), List.of("Apache-2.0"), "https://github.com/QuiltMC/quilt-config"))
+                ),
+                List.of(
+                        getAttribution(createMetadata("Minecraft", "The base game.", List.of("Mojang Studios"), List.of("Minecraft EULA"), "https://minecraft.net"))
+                ),
+                modContainer
+        );
+    }
+
+    public static List<FormattedText> getTexts(List<List<FormattedText>> before, List<List<FormattedText>> after, ModContainer modContainer) {
         List<FormattedText> texts = new ArrayList<>();
         List<FormattedText> developers = new ArrayList<>();
         List<FormattedText> contributors = new ArrayList<>();
@@ -51,9 +62,10 @@ public class AttributionsWidget {
 
         texts.add(Translation.getTranslation(LuminanceClient.getMod().getId(), "attributions", new ChatFormatting[]{ChatFormatting.GOLD, ChatFormatting.BOLD}));
 
-        texts.addAll(getAttribution(createMetadata("Quilt Config", "A library designed to facilitate the creation and management of config files.", List.of("QuiltMC"), List.of("Apache-2.0"), "https://github.com/QuiltMC/quilt-config")));
-
-        texts.add(empty());
+        for (List<FormattedText> text : before) {
+            texts.addAll(text);
+            texts.add(empty());
+        }
 
         if (modContainer != null) {
             for (ModDependency dependency : modContainer.getMetadata().getDependencies()) {
@@ -66,7 +78,10 @@ public class AttributionsWidget {
             }
         }
 
-        texts.addAll(getAttribution(createMetadata("Minecraft", "The base game.", List.of("Mojang Studios"), List.of("Minecraft EULA"), "https://minecraft.net")));
+        for (List<FormattedText> text : after) {
+            texts.addAll(text);
+            texts.add(empty());
+        }
 
         return texts;
     }
@@ -80,11 +95,19 @@ public class AttributionsWidget {
     }
 
     public static ScrollableTextWidget get(Minecraft minecraft, int width, int height, int y, int lineHeight, double scrollY, ModContainer modContainer) {
-        return new ScrollableTextWidget(minecraft, width, height, y, lineHeight, scrollY, getTexts(modContainer));
+        return get(minecraft, width, height, y, lineHeight, scrollY, getTexts(modContainer));
+    }
+
+    public static ScrollableTextWidget get(Minecraft minecraft, int width, int height, int y, int lineHeight, double scrollY, List<FormattedText> texts) {
+        return new ScrollableTextWidget(minecraft, width, height, y, lineHeight, scrollY, texts);
     }
 
     public static ScrollableTextWidget get(Minecraft minecraft, int width, int height, int y, int lineHeight, ModContainer modContainer) {
-        return new ScrollableTextWidget(minecraft, width, height, y, lineHeight, getTexts(modContainer));
+        return get(minecraft, width, height, y, lineHeight, getTexts(modContainer));
+    }
+
+    public static ScrollableTextWidget get(Minecraft minecraft, int width, int height, int y, int lineHeight, List<FormattedText> texts) {
+        return new ScrollableTextWidget(minecraft, width, height, y, lineHeight, texts);
     }
 
     private static MutableComponent getPersonDonate(Person person) {

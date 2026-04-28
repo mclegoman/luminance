@@ -1,4 +1,6 @@
 {
+	"gui.luminance.name": "Luminance",
+
 	"gui.luminance.developers.single": "Developer",
 	"gui.luminance.developers.multiple": "Developers",
 
