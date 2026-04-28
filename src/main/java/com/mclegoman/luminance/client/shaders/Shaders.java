@@ -45,20 +45,20 @@ public class Shaders {
 
 	public static void onInitialize(AbstractMod mod) {
 		SeamEvents.onInitialize(mod, "Shaders", () -> {
-			Events.ClientResourceReloaders.register(LuminanceClient.getMod().idOf("shaders"), new ShaderReloader());
+			SeamClientEvents.ClientResourceReloaders.register(LuminanceClient.getMod().idOf("shaders"), new ShaderReloader());
 			ShaderStacks.init();
 			Uniforms.init();
-			Events.BeforeGameRender.register(LuminanceClient.getMod().idOf("update"), Uniforms::update);
+			SeamClientEvents.BeforeGameRender.register(LuminanceClient.getMod().idOf("update"), Uniforms::update);
 
 			Events.AfterFabulousRender.register(LuminanceClient.getMod().idOf("main"),
 					(data) -> RenderLocations.render(RenderLocations.LEVEL, data));
-			Events.AfterVanillaPostEffectRender.register(LuminanceClient.getMod().idOf("main"),
+			SeamClientEvents.AfterVanillaPostEffectRender.register(LuminanceClient.getMod().idOf("main"),
 					(data) -> RenderLocations.render(RenderLocations.GAME, data));
-			Events.AfterUiRender.register(LuminanceClient.getMod().idOf("main"),
+			SeamClientEvents.AfterUiRender.register(LuminanceClient.getMod().idOf("main"),
 					(data) -> RenderLocations.render(RenderLocations.UI, data));
-			Events.AfterUiBackgroundRender.register(LuminanceClient.getMod().idOf("main"),
+			SeamClientEvents.AfterUiBackgroundRender.register(LuminanceClient.getMod().idOf("main"),
 					(data) -> RenderLocations.render(RenderLocations.UI_BACKGROUND, data));
-			Events.AfterPanoramaRender.register(LuminanceClient.getMod().idOf("main"),
+			SeamClientEvents.AfterPanoramaRender.register(LuminanceClient.getMod().idOf("main"),
 					(graphics, width, height, rotate, data) -> RenderLocations.render(RenderLocations.PANORAMA, data));
 
 			SeamClientEvents.registerProfiledDebugEntry(LuminanceClient.getMod().idOf("debug_shader"), new DebugEntryDebugShader(), DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.IN_OVERLAY);

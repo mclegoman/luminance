@@ -149,7 +149,7 @@ public class Uniforms {
 			SeamLog.error(LuminanceClient.getMod(), "Failed to initialize uniforms", error);
 		}
 
-		Events.OnMouseScroll.register(LuminanceClient.getMod().idOf("update_alpha"), (long windowHandle, double horizontal, double vertical, Vector2i scroll) -> {
+		SeamClientEvents.OnMouseScroll.register(LuminanceClient.getMod().idOf("update_alpha"), (long windowHandle, double horizontal, double vertical, Vector2i scroll) -> {
 			if (Uniforms.updatingAlpha()) {
                 if (ClientData.minecraft.player != null) {
 					int scrollAmount = scroll.y == 0 ? -scroll.x : scroll.y;
@@ -160,7 +160,7 @@ public class Uniforms {
 			return false;
 		});
 
-		Events.OnMouseButton.register(LuminanceClient.getMod().idOf("reset_alpha"), (windowHandle, mouseButtonInfo, action) -> {
+		SeamClientEvents.OnMouseButton.register(LuminanceClient.getMod().idOf("reset_alpha"), (windowHandle, mouseButtonInfo, action) -> {
 			if (Uniforms.updatingAlpha()) {
 				if (mouseButtonInfo.button() == 2) {
 					Uniforms.resetAlpha();
