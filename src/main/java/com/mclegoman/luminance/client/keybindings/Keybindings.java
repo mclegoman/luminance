@@ -46,7 +46,7 @@ public class Keybindings {
 		SeamEvents.onInitialize(mod, "Keybindings", () -> {});
 	}
 
-	public static void tick() {
+	public static void onTick() {
 		if (openConfig.consumeClick()) {
 			ClientData.minecraft.setScreen(new ConfigScreen(ClientData.minecraft.screen, 0, null, DateHelper.isPride()));
 		}

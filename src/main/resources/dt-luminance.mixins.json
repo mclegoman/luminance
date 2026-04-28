@@ -10,7 +10,6 @@
     "client.shaders.DynamicRenderTickCounterAccessor",
     "client.shaders.FrameGraphBuilderMixin",
     "client.shaders.FramePassMixin",
-    "client.shaders.GameRendererAccessor",
     "client.shaders.LevelRendererAccessor",
     "client.shaders.LevelRendererMixin",
     "client.shaders.PostChainConfigMixin",

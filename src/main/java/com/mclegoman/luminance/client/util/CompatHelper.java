@@ -9,7 +9,6 @@ package com.mclegoman.luminance.client.util;
 
 import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.common.util.DateHelper;
-import dev.dannytaylor.perspective.seam.client.events.Badges;
 import dev.dannytaylor.perspective.seam.client.events.IconOverride;
 import dev.dannytaylor.perspective.seam.client.events.SeamClientEvents;
 import dev.dannytaylor.perspective.seam.common.data.AbstractMod;

@@ -25,15 +25,13 @@ import com.mclegoman.luminance.client.shaders.uniforms.config.EmptyConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.client.util.Accessors;
 import com.mclegoman.luminance.common.util.OperatingSystem;
 import com.mclegoman.luminance.mixin.client.shaders.DynamicRenderTickCounterAccessor;
-import com.mclegoman.luminance.mixin.client.shaders.GameRendererAccessor;
 import com.mclegoman.luminance.mixin.client.shaders.LevelRendererAccessor;
 import dev.dannytaylor.perspective.seam.client.events.SeamClientEvents;
 import dev.dannytaylor.perspective.seam.common.data.AbstractMod;
 import dev.dannytaylor.perspective.seam.common.events.SeamEvents;
-import net.minecraft.client.Minecraft;
+import dev.dannytaylor.perspective.seam.mixin.client.render.GameRendererAccessor;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.CameraType;
 import net.minecraft.world.effect.MobEffect;
@@ -59,7 +57,7 @@ public class Uniforms {
 	public static ShaderTime shaderTime = new ShaderTime();
 	private static int prevAlpha = getRawAlpha();
 
-	public static void tick() {
+	public static void onTick() {
 		if (!updatingAlpha() && updatingAlpha) {
 			updatingAlpha = false;
 			if (getRawAlpha() != prevAlpha) LuminanceConfig.config.save();
@@ -262,7 +260,7 @@ public class Uniforms {
 	}
 
 	public static float getFov(ShaderTime shaderTime) {
-		return Accessors.getGameRenderer() != null ? Accessors.getGameRenderer().invokeGetFov(ClientData.minecraft.gameRenderer.getMainCamera(), shaderTime.getTickProgress(), true) : Minecraft.getInstance().options.fov().get();
+		return ((GameRendererAccessor) ClientData.minecraft.gameRenderer).seam$getFov(ClientData.minecraft.gameRenderer.getMainCamera(), shaderTime.getTickProgress(), true);
 	}
 
 	public static void getGraphicsMode(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
@@ -320,7 +318,7 @@ public class Uniforms {
 
 	public static void getCamera(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		if (ClientData.minecraft.player != null) {
-			uniformVector.set(((GameRendererAccessor)ClientData.minecraft.gameRenderer).getMainCamera().position());
+			uniformVector.set(((GameRendererAccessor)ClientData.minecraft.gameRenderer).seam$getMainCamera().position());
 		} else {
 			uniformVector.set(new Vec3(0, 64, 0));
 		}
@@ -328,7 +326,7 @@ public class Uniforms {
 
 	public static void getCameraFract(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
 		if (ClientData.minecraft.player != null) {
-			uniformVector.set(fract(((GameRendererAccessor)ClientData.minecraft.gameRenderer).getMainCamera().position()));
+			uniformVector.set(fract(((GameRendererAccessor)ClientData.minecraft.gameRenderer).seam$getMainCamera().position()));
 		} else {
 			uniformVector.set(new Vec3(0, 0, 0));
 		}
@@ -591,7 +589,7 @@ public class Uniforms {
 	}
 
 	public static void getRandom(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {
-		uniformVector.set(0, Accessors.getGameRenderer().getRandom().nextFloat());
+		uniformVector.set(0, ((GameRendererAccessor) ClientData.minecraft.gameRenderer).seam$getRandom().nextFloat());
 	}
 
 	public static void getRenderLocation(UniformConfig config, ShaderTime shaderTime, UniformVector uniformVector) {

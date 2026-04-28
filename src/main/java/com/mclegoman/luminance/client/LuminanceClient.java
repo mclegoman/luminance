@@ -12,9 +12,9 @@ import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.shaders.Shaders;
+import com.mclegoman.luminance.client.shaders.Uniforms;
 import com.mclegoman.luminance.client.texture.ResourcePacks;
 import com.mclegoman.luminance.client.util.CompatHelper;
-import com.mclegoman.luminance.client.util.Tick;
 import dev.dannytaylor.perspective.seam.common.data.FabricMod;
 import dev.dannytaylor.perspective.seam.common.events.SeamEvents;
 import net.fabricmc.api.ClientModInitializer;
@@ -43,7 +43,8 @@ public class LuminanceClient implements ClientModInitializer {
 			Shaders.onInitialize(getMod());
 			ClientTickEvents.END_CLIENT_TICK.register((client) -> {
 				if (ClientData.minecraft.isGameLoadFinished()) {
-					Tick.onTick();
+					Keybindings.onTick();
+					Uniforms.onTick();
 				}
 			});
 		}, true);
