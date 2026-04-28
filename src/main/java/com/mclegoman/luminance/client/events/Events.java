@@ -23,7 +23,7 @@ import net.minecraft.resources.Identifier;
 
 import java.util.*;
 
-public class Events extends SeamClientEvents {
+public class Events {
 	// Registry and Generic Registry have moved to Seam.
 	// dev.dannytaylor.perspective.seam.common.events.registries.GenericRegistry<K, V>
 	// dev.dannytaylor.perspective.seam.common.events.registries.Registry<Identifier, V>
