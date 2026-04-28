@@ -10,11 +10,11 @@
 
 package com.mclegoman.luminance.client.screen.config;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.gui.widget.AlphaSliderWidget;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -56,14 +56,14 @@ public class ConfigScreen extends Screen {
     }
 
     public void init() {
-        Data.getVersion().sendToLog(LogType.WARN, "You are using a deprecated class (screen/config/ConfigScreen), if you are a developer please update to use (gui/screen/config/ConfigScreen) instead.");
+        SeamLog.warn(LuminanceClient.getMod(), "You are using a deprecated class (screen/config/ConfigScreen), if you are a developer please update to use (gui/screen/config/ConfigScreen) instead.");
         ClientData.minecraft.setScreen(new com.mclegoman.luminance.client.gui.screen.config.ConfigScreen(this.parent, -1, this.splashText, this.isPride));
     }
     @Deprecated
     public static class AlphaSlider extends AlphaSliderWidget {
         public AlphaSlider(int x, int y, int width, int height, double value, Runnable onChange) {
             super(x, y, width, height, value, onChange);
-            Data.getVersion().sendToLog(LogType.WARN, "You are using a deprecated class (screen/config/ConfigScreen$AlphaSlider), if you are a developer please update to use (gui/widget/AlphaSliderWidget) instead.");
+            SeamLog.warn(LuminanceClient.getMod(), "You are using a deprecated class (screen/config/ConfigScreen$AlphaSlider), if you are a developer please update to use (gui/widget/AlphaSliderWidget) instead.");
         }
     }
 }

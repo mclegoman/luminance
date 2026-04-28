@@ -8,34 +8,44 @@
 package com.mclegoman.luminance.client;
 
 import com.mclegoman.luminance.client.config.LuminanceConfig;
+import com.mclegoman.luminance.client.data.ClientData;
+import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.shaders.Shaders;
 import com.mclegoman.luminance.client.texture.ResourcePacks;
 import com.mclegoman.luminance.client.util.CompatHelper;
-import com.mclegoman.luminance.client.util.MessageOverlay;
 import com.mclegoman.luminance.client.util.Tick;
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
+import dev.dannytaylor.perspective.seam.common.data.FabricMod;
+import dev.dannytaylor.perspective.seam.common.events.SeamEvents;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 
 public class LuminanceClient implements ClientModInitializer {
-	public void onInitializeClient() {
-		Tick.init();
-		init();
+	private static final FabricMod mod = FabricMod.fromMetadata(getModContainer().getMetadata());
+
+	public static FabricMod getMod() {
+		return mod;
 	}
 
-	public static void init() {
-		try {
-			Data.getVersion().sendToLog(LogType.INFO, "Initializing {}:client", Data.getVersion().getName());
-			LuminanceConfig.init();
-			ResourcePacks.init();
-			Keybindings.init();
-			CompatHelper.init();
-			Shaders.init();
-			MessageOverlay.init();
-			Tick.init();
-		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to run client:init", error);
-		}
+	public static ModContainer getModContainer() {
+		return FabricLoader.getInstance().getModContainer("luminance").orElseThrow();
+	}
+
+	public void onInitializeClient() {
+		SeamEvents.onInitialize(getMod(), "Client", () -> {
+			Events.onInitialize(getMod());
+			LuminanceConfig.onInitialize(getMod());
+			ResourcePacks.onInitialize(getMod());
+			Keybindings.onInitialize(getMod());
+			CompatHelper.onInitialize(getMod());
+			Shaders.onInitialize(getMod());
+			ClientTickEvents.END_CLIENT_TICK.register((client) -> {
+				if (ClientData.minecraft.isGameLoadFinished()) {
+					Tick.onTick();
+				}
+			});
+		}, true);
 	}
 }

@@ -7,12 +7,12 @@
 
 package com.mclegoman.luminance.client.debug;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.shaders.*;
-import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.Couple;
-import com.mclegoman.luminance.common.util.LogType;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
 import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class Debug {
 				Debug.getDebugShader().setSecond(shader);
 				applyDebugShader();
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to set debug shader", error);
+				SeamLog.error(LuminanceClient.getMod(), "Failed to set debug shader", error);
 				resetDebugShader();
 				applyDebugShader();
 			}
@@ -86,11 +86,11 @@ public class Debug {
 	}
 
 	public static Identifier getDebugId() {
-		return Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "debug");
+		return LuminanceClient.getMod().idOf("debug");
 	}
 
 	public static Identifier getDebugId(int index) {
-		return Identifier.fromNamespaceAndPath(Data.getVersion().getID() + "_debug", String.valueOf(index));
+		return LuminanceClient.getMod().idOf("debug_" + index);
 	}
 
 	public static boolean getRawDisablePhotosensitive() {

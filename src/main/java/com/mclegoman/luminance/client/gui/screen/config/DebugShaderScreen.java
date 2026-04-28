@@ -7,13 +7,13 @@
 
 package com.mclegoman.luminance.client.gui.screen.config;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.debug.Debug;
 import com.mclegoman.luminance.client.gui.widget.IdentifierListWidget;
 import com.mclegoman.luminance.client.shaders.ShaderStacks;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -50,27 +50,27 @@ public class DebugShaderScreen extends Screen {
 
 	public void init() {
 		try {
-			this.addRenderableWidget(Button.builder(Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.getRawDisablePhotosensitive()), button -> {
+			this.addRenderableWidget(Button.builder(Translation.getVariableTranslation(LuminanceClient.getMod().getId(), "onff", Debug.getRawDisablePhotosensitive()), button -> {
 				Debug.setDisablePhotosensitive(!Debug.getRawDisablePhotosensitive());
-				button.setMessage(Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.getRawDisablePhotosensitive()));
-			}).width(32).tooltip(Tooltip.create(Translation.getTranslation(Data.getVersion().getID(), "debug.disable_photosensitive"))).pos(2, 2).build());
+				button.setMessage(Translation.getVariableTranslation(LuminanceClient.getMod().getId(), "onff", Debug.getRawDisablePhotosensitive()));
+			}).width(32).tooltip(Tooltip.create(Translation.getTranslation(LuminanceClient.getMod().getId(), "debug.disable_photosensitive"))).pos(2, 2).build());
 
-			this.addRenderableWidget(Button.builder(Translation.getVariableTranslation(Data.getVersion().getID(), "onff", this.reducedAlpha), button -> {
+			this.addRenderableWidget(Button.builder(Translation.getVariableTranslation(LuminanceClient.getMod().getId(), "onff", this.reducedAlpha), button -> {
 				this.reducedAlpha = !this.reducedAlpha;
-				button.setMessage(Translation.getVariableTranslation(Data.getVersion().getID(), "onff", this.reducedAlpha));
-			}).width(32).tooltip(Tooltip.create(Translation.getTranslation(Data.getVersion().getID(), "debug.reduced_alpha"))).pos(2, 22).build());
+				button.setMessage(Translation.getVariableTranslation(LuminanceClient.getMod().getId(), "onff", this.reducedAlpha));
+			}).width(32).tooltip(Tooltip.create(Translation.getTranslation(LuminanceClient.getMod().getId(), "debug.reduced_alpha"))).pos(2, 22).build());
 
 			this.grid = new GridLayout();
 			this.grid.defaultCellSetting().alignHorizontallyCenter().padding(2);
 			GridLayout.RowHelper gridAdder = this.grid.createRowHelper(2);
 
-			gridAdder.addChild(Button.builder(Translation.getTranslation(Data.getVersion().getID(), "debug.render", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.isDebugShaderEnabled())}), button -> {
+			gridAdder.addChild(Button.builder(Translation.getTranslation(LuminanceClient.getMod().getId(), "debug.render", new Object[]{Translation.getVariableTranslation(LuminanceClient.getMod().getId(), "onff", Debug.isDebugShaderEnabled())}), button -> {
 				Debug.setDebugShaderEnabled(!Debug.isDebugShaderEnabled());
-				button.setMessage(Translation.getTranslation(Data.getVersion().getID(), "debug.render", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", Debug.isDebugShaderEnabled())}));
+				button.setMessage(Translation.getTranslation(LuminanceClient.getMod().getId(), "debug.render", new Object[]{Translation.getVariableTranslation(LuminanceClient.getMod().getId(), "onff", Debug.isDebugShaderEnabled())}));
 			}).width(140).build());
-			gridAdder.addChild(Button.builder(Translation.getTranslation(Data.getVersion().getID(), "debug.render_location", new Object[]{Translation.getRenderLocationTranslation(Debug.debugRenderLocation)}), button -> {
+			gridAdder.addChild(Button.builder(Translation.getTranslation(LuminanceClient.getMod().getId(), "debug.render_location", new Object[]{Translation.getRenderLocationTranslation(Debug.debugRenderLocation)}), button -> {
 				Debug.cycleDebugRenderLocation(ClientData.minecraft.hasShiftDown());
-				button.setMessage(Translation.getTranslation(Data.getVersion().getID(), "debug.render_location", new Object[]{Translation.getRenderLocationTranslation(Debug.debugRenderLocation)}));
+				button.setMessage(Translation.getTranslation(LuminanceClient.getMod().getId(), "debug.render_location", new Object[]{Translation.getRenderLocationTranslation(Debug.debugRenderLocation)}));
 			}).width(140).build());
 
 			this.registryList = new IdentifierListWidget(150, 200, 20, 20, 20, ShaderStacks.getRegistries(), this.selectedRegistry, (id, widget) -> {});
@@ -86,13 +86,13 @@ public class DebugShaderScreen extends Screen {
 				}
 			};
 
-			gridAdder.addChild(Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "back"), (button) -> this.shouldClose = true).width(304).build(), 2);
+			gridAdder.addChild(Button.builder(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "back"), (button) -> this.shouldClose = true).width(304).build(), 2);
 
 			grid.arrangeElements();
 			grid.visitWidgets(this::addRenderableWidget);
 			initTabNavigation();
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to initialize config screen", error);
+			SeamLog.error(LuminanceClient.getMod(), "Failed to initialize config screen", error);
 		}
 	}
 
@@ -102,7 +102,7 @@ public class DebugShaderScreen extends Screen {
 				ClientData.minecraft.setScreen(parentScreen);
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to tick luminance$config screen", error);
+			SeamLog.error(LuminanceClient.getMod(), "Failed to tick luminance$config screen", error);
 		}
 	}
 

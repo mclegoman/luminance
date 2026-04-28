@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.client.translation;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.shaders.RenderLocations;
 import com.mclegoman.luminance.mixin.client.gui.StringSplitterAccessor;
 import net.fabricmc.api.EnvType;
@@ -105,7 +106,7 @@ public class Translation {
 	}
 
 	public static MutableComponent getRenderLocationTranslation(RenderLocations.RenderLocation<?> renderLocation) {
-		return renderLocation != null ? getRenderLocationTranslation(renderLocation.identifier()) : Translation.getErrorTranslation(com.mclegoman.luminance.common.data.Data.getVersion().getID());
+		return renderLocation != null ? getRenderLocationTranslation(renderLocation.identifier()) : Translation.getErrorTranslation(LuminanceClient.getMod().getId());
 	}
 
 	public static MutableComponent getTranslation(String namespace, String key, Object[] variables, ChatFormatting[] formattings) {
@@ -198,7 +199,7 @@ public class Translation {
 	}
 
 	public static MutableComponent getShaderText(Identifier shaderId, boolean shouldShowNamespace, boolean description, ChatFormatting[] formattings) {
-		MutableComponent text = Component.translatableWithFallback(getString("gui.{}.shader.{}.{}{}", com.mclegoman.luminance.common.data.Data.getVersion().getID(), shaderId.getNamespace(), shaderId.getPath(), (description ? ".description" : "")), description ? "" : getString((shouldShowNamespace ? shaderId.getNamespace() : "") + shaderId.getPath()));
+		MutableComponent text = Component.translatableWithFallback(getString("gui.{}.shader.{}.{}{}", LuminanceClient.getMod().getId(), shaderId.getNamespace(), shaderId.getPath(), (description ? ".description" : "")), description ? "" : getString((shouldShowNamespace ? shaderId.getNamespace() : "") + shaderId.getPath()));
 		if (formattings != null) text.withStyle(formattings);
 		return text;
 	}

@@ -2,27 +2,21 @@
   "required": true,
   "package": "com.mclegoman.luminance.mixin",
   "compatibilityLevel": "JAVA_21",
-  "plugin": "com.mclegoman.luminance.mixin.MixinPlugin",
   "client": [
-    "client.gui.DebugScreenEntriesMixin",
-    "client.gui.GuiMixin",
+    "client.events.SeamClientExecuteMixin",
     "client.gui.ScreenAccessor",
     "client.gui.StringSplitterAccessor",
-    "client.mouse.MouseHandlerMixin",
     "client.resources.MinecraftMixin",
     "client.shaders.DynamicRenderTickCounterAccessor",
     "client.shaders.FrameGraphBuilderMixin",
     "client.shaders.FramePassMixin",
     "client.shaders.GameRendererAccessor",
-    "client.shaders.GameRendererMixin",
     "client.shaders.LevelRendererAccessor",
     "client.shaders.LevelRendererMixin",
-    "client.shaders.PanoramaRendererMixin",
     "client.shaders.PostChainConfigMixin",
     "client.shaders.PostChainConfigTargetsMixin",
     "client.shaders.PostChainMixin",
     "client.shaders.PostPassMixin",
-    "client.shaders.ScreenMixin",
     "client.shaders.ShaderManagerAccessor",
     "client.shaders.Std140BuilderMixin",
     "client.shaders.Std140SizeCalculatorMixin",
@@ -30,13 +24,9 @@
     "client.shaders.UniformValueImplMixin",
     "client.shaders.UniformValueMixin",
     "client.shaders.UniformValueTypeMixin",
-    "compat.modmenu.FabricModMixin",
-    "compat.modmenu.ModsScreenMixin"
+    "client.gui.AbstractWidgetAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "client.gui.AbstractWidgetAccessor"
-  ]
+  }
 }

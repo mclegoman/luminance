@@ -7,9 +7,12 @@
 
 package com.mclegoman.luminance.client.texture;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.common.data.Data;
+import dev.dannytaylor.perspective.seam.common.data.AbstractMod;
+import dev.dannytaylor.perspective.seam.common.events.SeamEvents;
 import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.resources.Identifier;
 
@@ -25,22 +28,24 @@ public class ResourcePacks {
 	 * - Notes: _________
 	 * You only need to include the licence in your comment if it is not GNU LGPLv3.
 	 */
-	public static void init() {
-		Optional<ModContainer> modContainer = Data.getVersion().getModContainer();
-		if (modContainer.isPresent()) {
+	public static void onInitialize(AbstractMod mod) {
+		SeamEvents.onInitialize(mod, "Resource Packs", () -> {
+			Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(LuminanceClient.getMod().getId());
+			if (modContainer.isPresent()) {
 			/*
 	            Super Secret Settings
 	            Contributor(s): Mojang Studios, Microsoft Corporation, dannytaylor, Nettakrim
 	            Licence: Minecraft EULA
 	            Notes: These shaders have been modified to work with the latest version of minecraft, and also contain new code.
             */
-			ResourcePackHelper.register(Identifier.parse("super_secret_settings"), modContainer.get(), Translation.getTranslation(Data.getVersion().getID(), "resource_pack.super_secret_settings"), PackActivationType.DEFAULT_ENABLED);
+				ResourcePackHelper.register(Identifier.parse("super_secret_settings"), modContainer.get(), Translation.getTranslation(LuminanceClient.getMod().getId(), "resource_pack.super_secret_settings"), PackActivationType.DEFAULT_ENABLED);
 			/*
 	            Luminance: Default
 	            Contributor(s): dannytaylor
 	            Licence: GNU LGPLv3
 	        */
-			ResourcePackHelper.register(Identifier.parse("luminance_default"), modContainer.get(), Translation.getTranslation(Data.getVersion().getID(), "resource_pack.luminance_default"), PackActivationType.DEFAULT_ENABLED);
-		}
+				ResourcePackHelper.register(Identifier.parse("luminance_default"), modContainer.get(), Translation.getTranslation(LuminanceClient.getMod().getId(), "resource_pack.luminance_default"), PackActivationType.DEFAULT_ENABLED);
+			}
+		});
 	}
 }

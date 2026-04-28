@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.client.shaders;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Callables;
@@ -25,13 +26,12 @@ import com.mclegoman.luminance.client.shaders.uniforms.config.MapConfig;
 import com.mclegoman.luminance.client.shaders.uniforms.config.UniformConfig;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.client.util.Accessors;
-import com.mclegoman.luminance.client.util.MessageOverlay;
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
 import com.mclegoman.luminance.common.util.OperatingSystem;
 import com.mclegoman.luminance.mixin.client.shaders.DynamicRenderTickCounterAccessor;
 import com.mclegoman.luminance.mixin.client.shaders.GameRendererAccessor;
 import com.mclegoman.luminance.mixin.client.shaders.LevelRendererAccessor;
+import dev.dannytaylor.perspective.seam.client.events.SeamClientEvents;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.CameraType;
@@ -73,7 +73,7 @@ public class Uniforms {
 
 	public static void init() {
 		try {
-			String namespace = Data.getVersion().getID();
+			String namespace = LuminanceClient.getMod().getId();
 			// TODO: crosshair target (i swear it used to exist?)
 
 			registerSingleValueTree(namespace, "panorama_alpha", Uniforms::getPanoramaAlpha, 0f, 1f);
@@ -146,10 +146,10 @@ public class Uniforms {
 			registerFullTree(namespace, "render_location", Uniforms::getRenderLocation, 0f, null, 2, EmptyConfig.INSTANCE, false);
 			registerSingleValueTree(namespace, "gamemode_has_health", Uniforms::getGameModeHasHealth, 0f, 1f);
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to initialize uniforms", error);
+			SeamLog.error(LuminanceClient.getMod(), "Failed to initialize uniforms", error);
 		}
 
-		Events.OnMouseScroll.register(Data.idOf("update_alpha"), (long windowHandle, double horizontal, double vertical, Vector2i scroll) -> {
+		Events.OnMouseScroll.register(LuminanceClient.getMod().idOf("update_alpha"), (long windowHandle, double horizontal, double vertical, Vector2i scroll) -> {
 			if (Uniforms.updatingAlpha()) {
                 if (ClientData.minecraft.player != null) {
 					int scrollAmount = scroll.y == 0 ? -scroll.x : scroll.y;
@@ -160,7 +160,7 @@ public class Uniforms {
 			return false;
 		});
 
-		Events.OnMouseButton.register(Data.idOf("reset_alpha"), (windowHandle, mouseButtonInfo, action) -> {
+		Events.OnMouseButton.register(LuminanceClient.getMod().idOf("reset_alpha"), (windowHandle, mouseButtonInfo, action) -> {
 			if (Uniforms.updatingAlpha()) {
 				if (mouseButtonInfo.button() == 2) {
 					Uniforms.resetAlpha();
@@ -498,7 +498,7 @@ public class Uniforms {
 	}
 
 	private static void alphaLevelOverlay() {
-		if (LuminanceConfig.config.showAlphaLevelOverlay.value()) MessageOverlay.setOverlay(Translation.getTranslation(Data.getVersion().getID(), "alpha_level", new Object[]{getRawAlpha() + "%"}, new ChatFormatting[]{ChatFormatting.GOLD}));
+		if (LuminanceConfig.config.showAlphaLevelOverlay.value()) SeamClientEvents.sendToMessageBar(Translation.getTranslation(LuminanceClient.getMod().getId(), "alpha_level", new Object[]{getRawAlpha() + "%"}, new ChatFormatting[]{ChatFormatting.GOLD}));
 	}
 
 	public static boolean updatingAlpha = false;

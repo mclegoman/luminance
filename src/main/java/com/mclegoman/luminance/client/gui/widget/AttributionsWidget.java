@@ -7,8 +7,8 @@
 
 package com.mclegoman.luminance.client.gui.widget;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.common.data.Data;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.*;
@@ -36,20 +36,20 @@ public class AttributionsWidget {
         }
 
         if (!developers.isEmpty()) {
-            texts.add(Translation.getTranslation(Data.getVersion().getID(), "developers" + (developers.size() > 1 ? ".single" : ".multiple"), new ChatFormatting[]{ChatFormatting.GOLD, ChatFormatting.BOLD}));
+            texts.add(Translation.getTranslation(LuminanceClient.getMod().getId(), "developers" + (developers.size() > 1 ? ".single" : ".multiple"), new ChatFormatting[]{ChatFormatting.GOLD, ChatFormatting.BOLD}));
             texts.addAll(developers);
 
             texts.add(empty());
         }
 
         if (!contributors.isEmpty()) {
-            texts.add(Translation.getTranslation(Data.getVersion().getID(), "contributors" + (developers.size() > 1 ? ".single" : ".multiple"), new ChatFormatting[]{ChatFormatting.GOLD, ChatFormatting.BOLD}));
+            texts.add(Translation.getTranslation(LuminanceClient.getMod().getId(), "contributors" + (developers.size() > 1 ? ".single" : ".multiple"), new ChatFormatting[]{ChatFormatting.GOLD, ChatFormatting.BOLD}));
             texts.addAll(contributors);
 
             texts.add(empty());
         }
 
-        texts.add(Translation.getTranslation(Data.getVersion().getID(), "attributions", new ChatFormatting[]{ChatFormatting.GOLD, ChatFormatting.BOLD}));
+        texts.add(Translation.getTranslation(LuminanceClient.getMod().getId(), "attributions", new ChatFormatting[]{ChatFormatting.GOLD, ChatFormatting.BOLD}));
 
         texts.addAll(getAttribution(createMetadata("Quilt Config", "A library designed to facilitate the creation and management of config files.", List.of("QuiltMC"), List.of("Apache-2.0"), "https://github.com/QuiltMC/quilt-config")));
 
@@ -89,7 +89,7 @@ public class AttributionsWidget {
 
     private static MutableComponent getPersonDonate(Person person) {
         String url = person.getContact().get("donate").orElse(null);
-        return url == null || url.isBlank() ? getLiteral("", null) : getText(Translation.getTranslation(Data.getVersion().getID(), "donate." + person.getName()), url, new ChatFormatting[]{ChatFormatting.GRAY});
+        return url == null || url.isBlank() ? getLiteral("", null) : getText(Translation.getTranslation(LuminanceClient.getMod().getId(), "donate." + person.getName()), url, new ChatFormatting[]{ChatFormatting.GRAY});
     }
 
     private static MutableComponent getPersonName(Person person) {
@@ -108,12 +108,12 @@ public class AttributionsWidget {
 
     private static Optional<FormattedText> getAuthor(ModMetadata modMetadata) {
         Collection<String> authors = authorsAsString(modMetadata.getAuthors());
-        return !authors.isEmpty() ? Optional.of(Translation.getTranslation(Data.getVersion().getID(), authors.size() > 1 ? "authors.multiple" : "authors.single", new Object[]{String.join(", ", authors)}, new ChatFormatting[]{ChatFormatting.GRAY})) : Optional.empty();
+        return !authors.isEmpty() ? Optional.of(Translation.getTranslation(LuminanceClient.getMod().getId(), authors.size() > 1 ? "authors.multiple" : "authors.single", new Object[]{String.join(", ", authors)}, new ChatFormatting[]{ChatFormatting.GRAY})) : Optional.empty();
     }
 
     private static Optional<FormattedText> getLicense(ModMetadata modMetadata) {
         Collection<String> license = modMetadata.getLicense();
-        return !license.isEmpty() ? Optional.of(Translation.getTranslation(Data.getVersion().getID(), license.size() > 1 ? "license.multiple" : "license.single", new Object[]{String.join(", ", license)}, new ChatFormatting[]{ChatFormatting.GRAY})) : Optional.empty();
+        return !license.isEmpty() ? Optional.of(Translation.getTranslation(LuminanceClient.getMod().getId(), license.size() > 1 ? "license.multiple" : "license.single", new Object[]{String.join(", ", license)}, new ChatFormatting[]{ChatFormatting.GRAY})) : Optional.empty();
     }
 
     private static List<FormattedText> getAttribution(ModMetadata modMetadata) {

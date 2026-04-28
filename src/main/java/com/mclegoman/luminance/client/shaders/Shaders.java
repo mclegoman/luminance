@@ -9,15 +9,18 @@ package com.mclegoman.luminance.client.shaders;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.debug.DebugEntryDebugShader;
 import com.mclegoman.luminance.client.events.Events;
-import com.mclegoman.luminance.client.events.ProfiledDebugEntries;
 import com.mclegoman.luminance.client.events.Runnables;
 import com.mclegoman.luminance.client.shaders.interfaces.PostChainInterface;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
+import dev.dannytaylor.perspective.seam.client.events.SeamClientEvents;
+import dev.dannytaylor.perspective.seam.client.events.SeamClientRunnables;
+import dev.dannytaylor.perspective.seam.common.data.AbstractMod;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
+import dev.dannytaylor.perspective.seam.common.events.SeamEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.Version;
@@ -40,28 +43,30 @@ import java.util.concurrent.Callable;
 public class Shaders {
 	protected static final Map<Identifier, List<ShaderRegistryEntry>> registries = new HashMap<>();
 
-	public static void init() {
-		Events.ClientResourceReloaders.register(Data.idOf("shaders"), new ShaderReloader());
-		ShaderStacks.init();
-		Uniforms.init();
-		Events.BeforeGameRender.register(Data.idOf("update"), Uniforms::update);
+	public static void onInitialize(AbstractMod mod) {
+		SeamEvents.onInitialize(mod, "Shaders", () -> {
+			Events.ClientResourceReloaders.register(LuminanceClient.getMod().idOf("shaders"), new ShaderReloader());
+			ShaderStacks.init();
+			Uniforms.init();
+			Events.BeforeGameRender.register(LuminanceClient.getMod().idOf("update"), Uniforms::update);
 
-		Events.AfterFabulousRender.register(Data.idOf("main"),
-				(data) -> RenderLocations.render(RenderLocations.LEVEL, data));
-		Events.AfterVanillaPostEffectRender.register(Data.idOf("main"),
-				(data) -> RenderLocations.render(RenderLocations.GAME, data));
-		Events.AfterUiRender.register(Data.idOf("main"),
-				(data) -> RenderLocations.render(RenderLocations.UI, data));
-		Events.AfterUiBackgroundRender.register(Data.idOf("main"),
-				(data) -> RenderLocations.render(RenderLocations.UI_BACKGROUND, data));
-		Events.AfterPanoramaRender.register(Data.idOf("main"),
-				(data) -> RenderLocations.render(RenderLocations.PANORAMA, data));
+			Events.AfterFabulousRender.register(LuminanceClient.getMod().idOf("main"),
+					(data) -> RenderLocations.render(RenderLocations.LEVEL, data));
+			Events.AfterVanillaPostEffectRender.register(LuminanceClient.getMod().idOf("main"),
+					(data) -> RenderLocations.render(RenderLocations.GAME, data));
+			Events.AfterUiRender.register(LuminanceClient.getMod().idOf("main"),
+					(data) -> RenderLocations.render(RenderLocations.UI, data));
+			Events.AfterUiBackgroundRender.register(LuminanceClient.getMod().idOf("main"),
+					(data) -> RenderLocations.render(RenderLocations.UI_BACKGROUND, data));
+			Events.AfterPanoramaRender.register(LuminanceClient.getMod().idOf("main"),
+					(graphics, width, height, rotate, data) -> RenderLocations.render(RenderLocations.PANORAMA, data));
 
-		ProfiledDebugEntries.register(Data.idOf("debug_shader"), new DebugEntryDebugShader(), DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.IN_OVERLAY);
+			SeamClientEvents.registerProfiledDebugEntry(LuminanceClient.getMod().idOf("debug_shader"), new DebugEntryDebugShader(), DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.IN_OVERLAY);
+		});
 	}
 
 	public static Identifier getMainRegistryId() {
-		return Data.idOf("main");
+		return LuminanceClient.getMod().idOf("main");
 	}
 
 	public static List<Identifier> getRegistries() {
@@ -107,7 +112,7 @@ public class Shaders {
 						try {
 							shader.shader().loadPostChain();
 						} catch (Exception error) {
-							Data.getVersion().sendToLog(LogType.ERROR, "Failed to set \"{}:{}:{}\" post processor", id, shader.id(), shader.shader().getShaderData().getID(), error);
+							SeamLog.error(LuminanceClient.getMod(), "Failed to set \"{}:{}:{}\" post processor", id, shader.id(), shader.shader().getShaderData().getID(), error);
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
@@ -115,7 +120,7 @@ public class Shaders {
 				}
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render \"{}:{}\" using target bundle, shader: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
+			SeamLog.error(LuminanceClient.getMod(), "Failed to render \"{}:{}\" using target bundle, shader: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
 		}
 	}
 
@@ -127,15 +132,15 @@ public class Shaders {
 					// this is because FrameGraphBuilder delays calls, so any rendersystem methods wont work with their intended timing
 					((PostChainInterface)shader.getPostChain()).luminance$render(data.builder(), data.textureWidth(), data.textureHeight(), data.targetBundle(), chain);
 				} catch (Exception error) {
-					Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor", error);
+					SeamLog.error(LuminanceClient.getMod(), "Failed to render processor", error);
 				}
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render post effect processor", error);
+			SeamLog.error(LuminanceClient.getMod(), "Failed to render post effect processor", error);
 		}
 	}
 
-	public static void renderFromGameData(Identifier id, Shader.Data shader, Runnables.GameRender.Data data) {
+	public static void renderFromGameData(Identifier id, Shader.Data shader, SeamClientRunnables.RenderData data) {
 		try {
 			if (shader != null && shader.shader() != null && shader.shader().getShaderData() != null) {
 				if (shader.shader().getShouldRender()) {
@@ -143,7 +148,7 @@ public class Shaders {
 						try {
 							shader.shader().loadPostChain();
 						} catch (Exception error) {
-							Data.getVersion().sendToLog(LogType.ERROR, "Failed to set \"{}:{}:{}\" post processor", id, shader.id(), shader.shader().getShaderData().getID(), error);
+							SeamLog.error(LuminanceClient.getMod(), "Failed to set \"{}:{}:{}\" post processor", id, shader.id(), shader.shader().getShaderData().getID(), error);
 							Events.ShaderRender.Shaders.remove(id, shader.id());
 						}
 					}
@@ -151,18 +156,18 @@ public class Shaders {
 				}
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render \"{}:{}\" using allocator, shader: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
+			SeamLog.error(LuminanceClient.getMod(), "Failed to render \"{}:{}\" using allocator, shader: {}", id, shader.id(), shader.shader().getShaderData().getID(), error);
 		}
 	}
 
 	// This is identical to the deprecated `PostChain.process(renderTarget, resourceAllocator);` function.
-	public static void renderShaderFromGameData(Shader shader, Runnables.GameRender.Data data, @Nullable Identifier chain) {
+	public static void renderShaderFromGameData(Shader shader, SeamClientRunnables.RenderData data, @Nullable Identifier chain) {
 		try {
 			if (shader.getPostChain() != null) {
 				Runnables.LevelRender.fromGameData((worldData) -> shader.getPostChain().luminance$render(worldData.builder(), worldData.textureWidth(), worldData.textureHeight(), worldData.targetBundle(), chain), data);
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to render processor", error);
+			SeamLog.error(LuminanceClient.getMod(), "Failed to render processor", error);
 		}
 	}
 
@@ -238,7 +243,7 @@ public class Shaders {
 	public static Component getShaderName(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
 		ShaderRegistryEntry shader = get(registry, shaderIndex);
 		if (shader != null) return Translation.getShaderText(shader.getID(), shouldShowNamespace);
-		return Translation.getErrorTranslation(Data.getVersion().getID());
+		return Translation.getErrorTranslation(LuminanceClient.getMod().getId());
 	}
 
 	public static Component getShaderName(int shaderIndex) {
@@ -260,7 +265,7 @@ public class Shaders {
 	public static Component getShaderDescription(Identifier registry, int shaderIndex, boolean shouldShowNamespace) {
 		ShaderRegistryEntry shader = get(registry, shaderIndex);
 		if (shader != null) return Translation.getShaderText(shader.getID(), shouldShowNamespace, true, new ChatFormatting[]{});
-		return Translation.getErrorTranslation(Data.getVersion().getID());
+		return Translation.getErrorTranslation(LuminanceClient.getMod().getId());
 	}
 
 	public static Component getShaderDescription(int shaderIndex) {
@@ -329,7 +334,7 @@ public class Shaders {
 				for (Map.Entry<String, JsonElement> dependency : dependencies.get("depends").getAsJsonObject().entrySet()) {
 					Optional<ModContainer> dependencyMod = FabricLoader.getInstance().getModContainer(dependency.getKey());
 					if (dependencyMod.isEmpty()) {
-						Data.getVersion().sendToLog(LogType.WARN, "'{}' is required for {} '{}', but mod couldn't be found!", dependency.getKey(), type, id);
+						SeamLog.warn(LuminanceClient.getMod(), "'{}' is required for {} '{}', but mod couldn't be found!", dependency.getKey(), type, id);
 						return true;
 					}
 
@@ -338,7 +343,7 @@ public class Shaders {
 					else for (JsonElement version : dependency.getValue().getAsJsonArray()) matcherStringList.add(version.getAsString());
 
 					if (!versionMatches(dependencyMod.get().getMetadata().getVersion(), VersionPredicate.parse(matcherStringList))) {
-						Data.getVersion().sendToLog(LogType.WARN, "'{}' with version '{}' is required for {} '{}', but a compatible version couldn't be found!", dependency.getKey(), matcherStringList.toString(), type, id);
+						SeamLog.warn(LuminanceClient.getMod(), "'{}' with version '{}' is required for {} '{}', but a compatible version couldn't be found!", dependency.getKey(), matcherStringList.toString(), type, id);
 						return true;
 					}
 				}
@@ -352,7 +357,7 @@ public class Shaders {
 						else for (JsonElement version : dependency.getValue().getAsJsonArray()) matcherStringList.add(version.getAsString());
 
 						if (versionMatches(dependencyMod.get().getMetadata().getVersion(), VersionPredicate.parse(matcherStringList))) {
-							Data.getVersion().sendToLog(LogType.WARN, "'{}' with version '{}' breaks {} '{}'!", dependency.getKey(), matcherStringList.toString(), type, id);
+							SeamLog.warn(LuminanceClient.getMod(), "'{}' with version '{}' breaks {} '{}'!", dependency.getKey(), matcherStringList.toString(), type, id);
 							return true;
 						}
 					}

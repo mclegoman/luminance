@@ -11,12 +11,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.debug.Debug;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.util.JsonResourceReloader;
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.IdentifierHelper;
-import com.mclegoman.luminance.common.util.LogType;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
 import net.fabricmc.fabric.impl.resource.FabricResourceReloader;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.resources.Identifier;
@@ -43,7 +42,7 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 			try {
 				runnable.run();
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute OnShaderDataReset event with id: {}:", id, error);
+				SeamLog.error(LuminanceClient.getMod(), "Failed to execute OnShaderDataReset event with id: {}:", id, error);
 			}
 		});
 	}
@@ -63,14 +62,14 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 				for (ShaderRegistryEntry data : Shaders.getRegistry(registry)) {
 					if (data.getID().equals(shaderData.getID())) {
 						alreadyRegistered = true;
-						Data.getVersion().sendToLog(LogType.WARN, "Failed to add \"{}\" shader to \"{}\" registry: This shader has already been registered!", shaderData.getID(), registry.toString());
+						SeamLog.warn(LuminanceClient.getMod(), "Failed to add \"{}\" shader to \"{}\" registry: This shader has already been registered!", shaderData.getID(), registry.toString());
 						break;
 					}
 				}
 				if (!alreadyRegistered) Shaders.getRegistry(registry).add(shaderData);
 			}
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.WARN, "Failed to add shader to registry: " + error);
+			SeamLog.warn(LuminanceClient.getMod(), "Failed to add shader to registry: " + error);
 		}
 	}
 
@@ -95,7 +94,7 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 
 					if (Shaders.preventRegister(reader, identifier, "shader")) return;
 
-					Identifier post_effect = IdentifierHelper.identifierFromString(GsonHelper.getAsString(reader, "post_effect", identifier.getNamespace() + ":" + identifier.getPath()));
+					Identifier post_effect = Identifier.parse(GsonHelper.getAsString(reader, "post_effect", identifier.getNamespace() + ":" + identifier.getPath()));
 					boolean enabled = GsonHelper.getAsBoolean(reader, "enabled", true);
 					boolean fallbackWhenOverUi = GsonHelper.getAsBoolean(reader, "fallback_when_over_ui", false);
 					boolean fallbackWhenUnderUi = GsonHelper.getAsBoolean(reader, "fallback_when_under_ui", false);
@@ -106,7 +105,7 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 
 					List<Identifier> registryList = getRegistries(registries);
 					// If the registries are empty, we add the default registry.
-					if (registries.isEmpty()) registryList.add(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "main"));
+					if (registries.isEmpty()) registryList.add(LuminanceClient.getMod().idOf("main"));
 
 					if (enabled) {
 						add(registryList, shaderData, manager);
@@ -114,7 +113,7 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 							try {
 								runnable.run(shaderData, registryList);
 							} catch (Exception error) {
-								Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute OnShaderDataRegistered event with id: {}", id, error);
+								SeamLog.error(LuminanceClient.getMod(), "Failed to execute OnShaderDataRegistered event with id: {}", id, error);
 							}
 						});
 					} else {
@@ -123,12 +122,12 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 							try {
 								runnable.run(shaderData, registryList);
 							} catch (Exception error) {
-								Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute OnShaderDataRemoved event with id: {}", id, error);
+								SeamLog.error(LuminanceClient.getMod(), "Failed to execute OnShaderDataRemoved event with id: {}", id, error);
 							}
 						});
 					}
 				} catch (Exception error) {
-					Data.getVersion().sendToLog(LogType.ERROR, "Failed to load luminance shader", error);
+					SeamLog.error(LuminanceClient.getMod(), "Failed to load luminance shader", error);
 				}
 			});
 
@@ -136,7 +135,7 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 				try {
 					runnable.run();
 				} catch (Exception error) {
-					Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterShaderDataRegistered event with id: {}", id, error);
+					SeamLog.error(LuminanceClient.getMod(), "Failed to execute AfterShaderDataRegistered event with id: {}", id, error);
 				}
 			});
 
@@ -147,7 +146,7 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 						try {
 							if (shader.shader() != null) shader.shader().reload();
 						} catch (Exception error) {
-							Data.getVersion().sendToLog(LogType.ERROR, "Failed to reload shader with id: {}:", id, error);
+							SeamLog.error(LuminanceClient.getMod(), "Failed to reload shader with id: {}:", id, error);
 						}
 					});
 				}
@@ -155,7 +154,7 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 
 			isReloading = false;
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to apply shaders dataloader", error);
+			SeamLog.error(LuminanceClient.getMod(), "Failed to apply shaders dataloader", error);
 		}
 
 		Debug.applyDebugShader();
@@ -163,6 +162,6 @@ public class ShaderReloader extends JsonResourceReloader implements FabricResour
 
 	@Override
 	public @NonNull Identifier fabric$getId() {
-		return Data.idOf(resourceLocation);
+		return LuminanceClient.getMod().idOf(resourceLocation);
 	}
 }

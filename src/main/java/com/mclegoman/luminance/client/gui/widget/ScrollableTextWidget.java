@@ -7,11 +7,11 @@
 
 package com.mclegoman.luminance.client.gui.widget;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
 import com.mclegoman.luminance.mixin.client.gui.ScreenAccessor;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -139,7 +139,7 @@ public class ScrollableTextWidget extends AbstractSelectionList<ScrollableTextWi
                     yield true;
                 }
                 default -> {
-                    Data.getVersion().sendToLog(LogType.ERROR, "Don't know how to handle {}", clickEvent);
+                    SeamLog.error(LuminanceClient.getMod(), "Don't know how to handle {}", clickEvent);
                     yield true;
                 }
             } && client.screen != screenAfterRun) client.setScreen(screenAfterRun);

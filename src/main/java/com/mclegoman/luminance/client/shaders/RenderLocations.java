@@ -7,22 +7,23 @@
 
 package com.mclegoman.luminance.client.shaders;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.events.Runnables;
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
+import dev.dannytaylor.perspective.seam.client.events.SeamClientRunnables;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
 import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 public class RenderLocations {
-    public static RenderLocation<Runnables.LevelRender.Data> LEVEL = register(Data.idOf("level"), Shaders::renderFromLevelData, DepthType.IMPROVED_TRANSPARENCY, UIType.NONE, false);
-    public static RenderLocation<Runnables.GameRender.Data> GAME = register(Data.idOf("game"), Shaders::renderFromGameData, DepthType.MAIN, UIType.NONE, true);
-    public static RenderLocation<Runnables.GameRender.Data> UI = register(Data.idOf("ui"), Shaders::renderFromGameData, DepthType.NONE, UIType.OVER, true);
-    public static RenderLocation<Runnables.GameRender.Data> UI_BACKGROUND = register(Data.idOf("ui_background"), Shaders::renderFromGameData, DepthType.NONE, UIType.UNDER, true);
-    public static RenderLocation<Runnables.GameRender.Data> PANORAMA = register(Data.idOf("panorama"), Shaders::renderFromGameData, DepthType.NONE, UIType.UNDER, false);
+    public static RenderLocation<Runnables.LevelRender.Data> LEVEL = register(LuminanceClient.getMod().idOf("level"), Shaders::renderFromLevelData, DepthType.IMPROVED_TRANSPARENCY, UIType.NONE, false);
+    public static RenderLocation<SeamClientRunnables.RenderData> GAME = register(LuminanceClient.getMod().idOf("game"), Shaders::renderFromGameData, DepthType.MAIN, UIType.NONE, true);
+    public static RenderLocation<SeamClientRunnables.RenderData> UI = register(LuminanceClient.getMod().idOf("ui"), Shaders::renderFromGameData, DepthType.NONE, UIType.OVER, true);
+    public static RenderLocation<SeamClientRunnables.RenderData> UI_BACKGROUND = register(LuminanceClient.getMod().idOf("ui_background"), Shaders::renderFromGameData, DepthType.NONE, UIType.UNDER, true);
+    public static RenderLocation<SeamClientRunnables.RenderData> PANORAMA = register(LuminanceClient.getMod().idOf("panorama"), Shaders::renderFromGameData, DepthType.NONE, UIType.UNDER, false);
 
     public static RenderLocation<?> getFallback() {
         return getFallback(false);
@@ -38,7 +39,7 @@ public class RenderLocations {
             try {
                 renderShaders(type, data, shaders, id);
             } catch (Exception error) {
-                Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}", type.identifier(), id, error);
+                SeamLog.error(LuminanceClient.getMod(), "Failed to render {} shader with id: {}", type.identifier(), id, error);
             }
         });
     }
@@ -51,7 +52,7 @@ public class RenderLocations {
                 try {
                     renderShader(type, data, id, shader, shaderRenderData.disablePhotosensitive().call(shader.shader().getShaderData()));
                 } catch (Exception error) {
-                    Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}", type.identifier(), id, error);
+                    SeamLog.error(LuminanceClient.getMod(), "Failed to render {} shader with id: {}", type.identifier(), id, error);
                 }
             });
         }
@@ -93,7 +94,7 @@ public class RenderLocations {
 
             type.render(id, shader, data);
         } catch (Exception error) {
-            Data.getVersion().sendToLog(LogType.ERROR, "Failed to render {} shader with id: {}", type.identifier(), id, error);
+            SeamLog.error(LuminanceClient.getMod(), "Failed to render {} shader with id: {}", type.identifier(), id, error);
         }
     }
 

@@ -7,8 +7,9 @@
 
 package com.mclegoman.luminance.client.shaders;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.shaders.interfaces.PostChainInterface;
-import com.mclegoman.luminance.common.util.LogType;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
 import net.minecraft.resources.Identifier;
 
 import java.util.concurrent.Callable;
@@ -42,7 +43,7 @@ public class Shader {
 				if (this.postChain.luminance$usesImprovedTransparency()) this.setUseImprovedTransparency(true);
 			}
 		} catch (Exception error) {
-			com.mclegoman.luminance.common.data.Data.getVersion().sendToLog(LogType.ERROR, "Failed to set post processor", error);
+			SeamLog.error(LuminanceClient.getMod(), "Failed to set post processor", error);
 			clearPostChain();
 		}
 	}

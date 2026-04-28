@@ -7,9 +7,9 @@
 
 package com.mclegoman.luminance.client.config.value;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.ConfigSerializableObject;
 
 @SuppressWarnings("unused")
@@ -26,7 +26,7 @@ public record SpectatorPriorityModeValue(SpectatorHandler.Mode mode) implements 
 		try {
 			modeFromRepresentation = SpectatorHandler.Mode.valueOf(representation);
 		} catch (IllegalArgumentException error) {
-			Data.getVersion().sendToLog(LogType.WARN, "'" + representation + "' was not a valid SpectatorHandler.Mode, using 'SpectatorHandler.Mode.FIRST' instead: " + error.getLocalizedMessage());
+			SeamLog.warn(LuminanceClient.getMod(), "'" + representation + "' was not a valid SpectatorHandler.Mode, using 'SpectatorHandler.Mode.FIRST' instead: " + error.getLocalizedMessage());
 		}
 		return of(modeFromRepresentation);
 	}

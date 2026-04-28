@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.client.logo;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
@@ -25,11 +26,11 @@ public class LuminanceLogo {
 		return getLogo(DateHelper.isPride());
 	}
 	public static Logo getLogo(boolean isPride) {
-		return new Logo(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), Data.getVersion().getID()), isPride ? "pride" : "normal");
+		return new Logo(LuminanceClient.getMod().idOf(LuminanceClient.getMod().getId()), isPride ? "pride" : "normal");
 	}
 	public static void renderLogo(GuiGraphics guiGraphics, int x, int y, int width, int height, boolean isPride) {
 		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getLogo(isPride).getTexture(), x, y, 0.0F, 0.0F, width, (int) (height * 0.6875), width, height);
-		LogoHelper.renderDevelopmentOverlay(guiGraphics, (int) ((x + ((float) width / 2)) - ((width * 0.75F) / 2)), (int) (y + (height - (height * 0.45F))), width, height, Data.getVersion().isDevelopmentBuild(), 0, 0);
+		LogoHelper.renderDevelopmentOverlay(guiGraphics, (int) ((x + ((float) width / 2)) - ((width * 0.75F) / 2)), (int) (y + (height - (height * 0.45F))), width, height, Data.isDevelopmentBuild(), 0, 0);
 	}
 	public static void renderLogo(GuiGraphics guiGraphics, int x, int y, int width, int height) {
 		renderLogo(guiGraphics, x, y, width, height, DateHelper.isPride());

@@ -7,19 +7,18 @@
 
 package com.mclegoman.luminance.client.logo;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.common.data.Data;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.Mth;
 
 public class LogoHelper {
 	public static void renderDevelopmentOverlay(GuiGraphics guiGraphics, int x, int y, int width, int height, boolean shouldRender, int xOffset, int yOffset) {
-		if (shouldRender) guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "textures/gui/logo/development.png"), x + xOffset, y + yOffset, 0.0F, 0.0F, (int) (width * 0.75F), height / 4, (int) (width * 0.75F), height / 4);
+		if (shouldRender) guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LuminanceClient.getMod().idOf("textures/gui/logo/development.png"), x + xOffset, y + yOffset, 0.0F, 0.0F, (int) (width * 0.75F), height / 4, (int) (width * 0.75F), height / 4);
 	}
 	public static void renderDevelopmentOverlay(GuiGraphics guiGraphics, int x, int y, int width, int height, boolean shouldRender) {
 		renderDevelopmentOverlay(guiGraphics, x, y, width, height, shouldRender, 0, 0);

@@ -11,14 +11,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.events.Callables;
 import com.mclegoman.luminance.client.events.Events;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.Couple;
 import com.mclegoman.luminance.common.util.DateHelper;
-import com.mclegoman.luminance.common.util.LogType;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -122,7 +122,7 @@ public class ShaderStacks {
                     shaders.add(new Shader.Data(getShadersId(renderId, String.valueOf(index)), new Shader(Shaders.get(shaderInfo.shaderRegistryId(), shaderInfo.shaderId()), renderLocation, enabled)));
                     index++;
                 } catch (Exception error) {
-                    Data.getVersion().sendToLog(LogType.WARN, "Failed to add '{}::{}' shader to shader stack!", shaderInfo.shaderRegistryId(), shaderInfo.shaderId());
+                    SeamLog.warn(LuminanceClient.getMod(), "Failed to add '{}::{}' shader to shader stack!", shaderInfo.shaderRegistryId(), shaderInfo.shaderId());
                 }
             }
         }
@@ -193,9 +193,9 @@ public class ShaderStacks {
                                         // TODO: Add uniform modifiers.
                                         shaders.add(new ShaderStacks.Entry.ShaderInfo(registryId, shaderId));
                                     }
-                                    else Data.getVersion().sendToLog(LogType.WARN, "Failed to add shader info to '{}' stack as we couldn't find a shader with the id '{}::{}'!", identifier.withPath(stackId), registryId, shaderId);
+                                    else SeamLog.warn(LuminanceClient.getMod(), "Failed to add shader info to '{}' stack as we couldn't find a shader with the id '{}::{}'!", identifier.withPath(stackId), registryId, shaderId);
                                 } else {
-                                    Data.getVersion().sendToLog(LogType.WARN, "Failed to add shader info to '{}' stack due to missing shader id!", identifier.withPath(stackId));
+                                    SeamLog.warn(LuminanceClient.getMod(), "Failed to add shader info to '{}' stack due to missing shader id!", identifier.withPath(stackId));
                                 }
                             }
                         }
@@ -204,18 +204,18 @@ public class ShaderStacks {
                     Identifier id = reader.has("identifier") ? Identifier.parse(reader.get("identifier").getAsString()) : identifier.withPath(stackId);
                     registryIds.forEach(registryId -> addStack(Identifier.parse(registryId.getAsString()), id, new Entry.Text(id, true), shaders, reader.has("custom") ? reader.getAsJsonObject("custom") : new JsonObject()));
                 } catch (Exception error) {
-                    Data.getVersion().sendToLog(LogType.ERROR, "Failed to load shader stack '{}'", identifier.withPath(stackId), error);
+                    SeamLog.error(LuminanceClient.getMod(), "Failed to load shader stack '{}'", identifier.withPath(stackId), error);
                 }
             });
         } catch (Exception error) {
-            Data.getVersion().sendToLog(LogType.ERROR, "Failed to reload shader stacks", error);
+            SeamLog.error(LuminanceClient.getMod(), "Failed to reload shader stacks", error);
         }
         addDefaultStacks();
         Events.AfterShaderStacksRegistered.registry.forEach((id, runnable) -> {
             try {
                 runnable.run();
             } catch (Exception error) {
-                Data.getVersion().sendToLog(LogType.ERROR, "Failed to execute AfterShaderStacksRegistered event with id: {}", id, error);
+                SeamLog.error(LuminanceClient.getMod(), "Failed to execute AfterShaderStacksRegistered event with id: {}", id, error);
             }
         });
     }
@@ -252,7 +252,7 @@ public class ShaderStacks {
         }
 
         public static String getTranslationKey(Identifier id, boolean description) {
-            return "gui." + Data.getVersion().getID() + ".shader_stack." + id.getNamespace() + "." + id.getPath() + (description ? ".description" : "");
+            return "gui." + LuminanceClient.getMod().getId() + ".shader_stack." + id.getNamespace() + "." + id.getPath() + (description ? ".description" : "");
         }
 
         public static MutableComponent getComponent(Identifier id, boolean isStack, boolean description, boolean showNamespace) {

@@ -7,39 +7,26 @@
 
 package com.mclegoman.luminance.client.events;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.shaders.RenderLocations;
 import com.mclegoman.luminance.client.shaders.Shader;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.client.shaders.interfaces.PostChainInterface;
 import com.mclegoman.luminance.client.shaders.uniforms.Uniform;
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
+import dev.dannytaylor.perspective.seam.client.events.SeamClientEvents;
+import dev.dannytaylor.perspective.seam.client.events.SeamClientRunnables;
+import dev.dannytaylor.perspective.seam.common.data.AbstractMod;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
+import dev.dannytaylor.perspective.seam.common.events.SeamEvents;
+import dev.dannytaylor.perspective.seam.common.events.registries.Registry;
 import net.minecraft.resources.Identifier;
 
 import java.util.*;
 
-public class Events {
-	public static class GenericRegistry<K, V> {
-		public final Map<K, V> registry = new HashMap<>();
-		public void register(K key, V value) {
-			if (!registry.containsKey(key)) registry.put(key, value);
-		}
-		public V get(K key) {
-			return registry.get(key);
-		}
-		public void modify(K key, V value) {
-			registry.replace(key, value);
-		}
-		public void remove(K key) {
-			registry.remove(key);
-		}
-	}
-
-	public static class Registry<T> extends GenericRegistry<Identifier, T> {}
-
-	public static final Registry<PreparableReloadListener> ClientResourceReloaders = new Registry<>();
-	public static final Registry<Runnable> AfterClientResourceReload = new Registry<>();
+public class Events extends SeamClientEvents {
+	// Registry and Generic Registry have moved to Seam.
+	// dev.dannytaylor.perspective.seam.common.events.registries.GenericRegistry<K, V>
+	// dev.dannytaylor.perspective.seam.common.events.registries.Registry<Identifier, V>
 
 	public static final Registry<Runnable> OnShaderDataReset = new Registry<>();
 	public static final Registry<Runnables.ShaderData> OnShaderDataRegistered = new Registry<>();
@@ -47,19 +34,9 @@ public class Events {
 	public static final Registry<Runnable> AfterShaderDataRegistered = new Registry<>();
 	public static final Registry<Runnable> AfterShaderStacksRegistered = new Registry<>();
 
-	public static final Registry<Runnables.InGameHudRender> BeforeInGameHudRender = new Registry<>();
-	public static final Registry<Runnables.InGameHudRender> AfterInGameHudRender = new Registry<>();
 	public static final Registry<Runnable> BeforeLevelRender = new Registry<>();
 	public static final Registry<Runnables.LevelRender> AfterFabulousRender = new Registry<>();
-	public static final Registry<Runnables.GameRender> AfterLevelRender = new Registry<>();
-	public static final Registry<Runnables.GameRender> AfterVanillaPostEffectRender = new Registry<>();
-	public static final Registry<Runnable> BeforeGameRender = new Registry<>();
-	public static final Registry<Runnables.GameRender> BeforeUiRender = new Registry<>();
-	public static final Registry<Runnables.GameRender> AfterUiRender = new Registry<>();
-	public static final Registry<Runnables.GameRender> AfterUiBackgroundRender = new Registry<>();
-	public static final Registry<Runnables.GameRender> AfterPanoramaRender = new Registry<>();
-
-	public static final Registry<Runnables.OnResized> OnResized = new Registry<>();
+	public static final Registry<SeamClientRunnables.GameRender> AfterLevelRender = new Registry<>();
 
 	public static final Registry<SpectatorHandler> SpectatorHandlers = new Registry<>();
 
@@ -70,8 +47,12 @@ public class Events {
 	public static final Registry<RenderLocations.RenderLocation<?>> RenderLocation = new Registry<>();
 	public static final Registry<PostChainInterface> CustomPostChains = new Registry<>();
 
-	public static final Registry<Callables.OnMouseScroll> OnMouseScroll = new Registry<>();
-	public static final Registry<Callables.OnMouseButton> OnMouseButton = new Registry<>();
+	public static void onInitialize(AbstractMod mod) {
+		SeamEvents.onInitialize(mod, "Events", () -> {
+			SeamClientEvents.OnJoinWorld.register(mod.idOf("spectator_handler"), Execute::onJoinWorld);
+			SeamClientEvents.OnLeaveWorld.register(mod.idOf("spectator_handler"), Execute::onDisconnect);
+		});
+	}
 
 	public static class ShaderRender {
 		public static final Map<Identifier, ShaderRenderData> registry = new HashMap<>();
@@ -154,7 +135,7 @@ public class Events {
 						return true;
 					}
 				} catch (Exception error) {
-					Data.getVersion().sendToLog(LogType.ERROR, "Failed to set shader: {}:{}", registryId, shaderId, error);
+					SeamLog.error(LuminanceClient.getMod(), "Failed to set shader: {}:{}", registryId, shaderId, error);
 				}
 				return false;
 			}
@@ -169,7 +150,7 @@ public class Events {
 					if (!ShaderRender.exists(registryId)) ShaderRender.register(registryId, new ShaderRenderData(new ArrayList<>(), disablePhotosensitive));
 					return !exists(registryId, shaderId) ? register(registryId, shaderId, shader) : modify(registryId, shaderId, shader);
 				} catch (Exception error) {
-					Data.getVersion().sendToLog(LogType.ERROR, "Failed to set shader: {}:{}", registryId, shaderId, error);
+					SeamLog.error(LuminanceClient.getMod(), "Failed to set shader: {}:{}", registryId, shaderId, error);
 				}
 				return false;
 			}

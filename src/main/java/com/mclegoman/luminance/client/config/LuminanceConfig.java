@@ -7,10 +7,12 @@
 
 package com.mclegoman.luminance.client.config;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.config.value.SpectatorPriorityModeValue;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
-import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.config.LuminanceConfigHelper;
+import dev.dannytaylor.perspective.seam.common.data.AbstractMod;
+import dev.dannytaylor.perspective.seam.common.events.SeamEvents;
 import folk.sisby.kaleido.api.ReflectiveConfig;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.IntegerRange;
@@ -40,10 +42,11 @@ public class LuminanceConfig extends ReflectiveConfig {
 	@SerializedName("debug")
 	public final TrackedValue<Boolean> debug = this.value(false);
 
-	public static void init() {
+	public static void onInitialize(AbstractMod mod) {
+		SeamEvents.onInitialize(mod, "Config", () -> {});
 	}
 
 	static {
-		config = LuminanceConfigHelper.register(Paths.get("config"), "", Data.getVersion().getID(), LuminanceConfig.class);
+		config = LuminanceConfigHelper.register(Paths.get("config"), "", LuminanceClient.getMod().getId(), LuminanceConfig.class);
 	}
 }

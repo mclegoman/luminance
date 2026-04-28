@@ -7,14 +7,14 @@
 
 package com.mclegoman.luminance.client.events;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.util.CompatHelper;
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.resource.RenderTargetDescriptor;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
@@ -24,9 +24,9 @@ public class DepthFix {
 
     private static final RenderPipeline depthPipeline = RenderPipeline.builder(RenderPipelines.POST_PROCESSING_SNIPPET)
             .withDepthWrite(true) // post-processing snippet has depth write off
-            .withFragmentShader(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "depth_fix"))
+            .withFragmentShader(LuminanceClient.getMod().idOf("depth_fix"))
             .withVertexShader(Identifier.withDefaultNamespace("core/screenquad"))
-            .withLocation(Identifier.fromNamespaceAndPath(Data.getVersion().getID(), "depth_fix"))
+            .withLocation(LuminanceClient.getMod().idOf("depth_fix"))
             .build();
 
     protected static void copyDepth(GraphicsResourceAllocator allocator) {
@@ -43,7 +43,7 @@ public class DepthFix {
         worldDepth.copyDepthFrom(target);
     }
 
-    protected static void mergeDepth(GraphicsResourceAllocator allocator) {
+    public static void mergeDepth(GraphicsResourceAllocator allocator) {
         if (CompatHelper.isIrisShadersEnabled() || worldDepth == null) {
             return;
         }
@@ -85,7 +85,7 @@ public class DepthFix {
 			RenderSystem.restoreProjectionMatrix();
 			*/
         } catch (Exception e) {
-            Data.getVersion().sendToLog(LogType.INFO, "Error Fixing Depth: "+e.getMessage());
+            SeamLog.error(LuminanceClient.getMod(), "Failed to merge depth!", e);
         }
 
         cleanupDepth(allocator);

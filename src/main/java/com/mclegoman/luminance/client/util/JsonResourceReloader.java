@@ -9,8 +9,8 @@ package com.mclegoman.luminance.client.util;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
+import com.mclegoman.luminance.client.LuminanceClient;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -55,7 +55,7 @@ public abstract class JsonResourceReloader extends SimplePreparableReloadListene
 				}
 				reader.close();
 			} catch (Exception error) {
-				Data.getVersion().sendToLog(LogType.ERROR, "Couldn't parse data file {} from {}", resourceId, resourceEntryKey, error);
+				SeamLog.error(LuminanceClient.getMod(), "Couldn't parse data file {} from {}", resourceId, resourceEntryKey, error);
 			}
 		}
 

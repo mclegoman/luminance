@@ -7,11 +7,10 @@
 
 package com.mclegoman.luminance.client.data;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.config.LuminanceConfig;
-import com.mclegoman.luminance.client.util.CompatHelper;
-import com.mclegoman.luminance.client.util.IconOverride;
-import com.mclegoman.luminance.common.data.Data;
-import net.fabricmc.loader.api.ModContainer;
+import dev.dannytaylor.perspective.seam.client.events.IconOverride;
+import dev.dannytaylor.perspective.seam.client.events.SeamClientExecute;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
@@ -28,17 +27,9 @@ public class ClientData {
 	}
 
 	public static IconOverride getOverrideIcon() {
-		IconOverride iconOverride = CompatHelper.getIconOverride(Data.getVersion().getID());
-		if (iconOverride == null) {
-			Optional<ModContainer> modContainer = Data.getVersion().getModContainer();
-			if (modContainer.isPresent()) {
-				Optional<String> path = modContainer.get().getMetadata().getIconPath(128);
-				if (path.isPresent()) {
-					iconOverride = new IconOverride(assetPathToIdentifier(path.get()), () -> false); // We set this to false as we'd rather it use the default system, however sodium settings will ignore this :)
-				}
-			}
-		}
-		return iconOverride;
+		Optional<IconOverride> iconOverride = SeamClientExecute.getIconOverride("luminance");
+        // We set this to false as we'd rather it use the default system, however sodium settings will ignore this :)
+        return iconOverride.orElseGet(() -> new IconOverride(LuminanceClient.getModContainer().getMetadata().getIconPath(128).map(ClientData::assetPathToIdentifier).orElse(null), () -> false));
 	}
 
 	public static Identifier assetPathToIdentifier(String path) { // could possibly add a /data/ check and move this to Data instead?

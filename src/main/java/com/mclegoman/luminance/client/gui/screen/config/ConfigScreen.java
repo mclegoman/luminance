@@ -7,6 +7,7 @@
 
 package com.mclegoman.luminance.client.gui.screen.config;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.config.LuminanceConfig;
 import com.mclegoman.luminance.client.config.value.SpectatorPriorityModeValue;
 import com.mclegoman.luminance.client.data.ClientData;
@@ -18,7 +19,6 @@ import com.mclegoman.luminance.client.keybindings.Keybindings;
 import com.mclegoman.luminance.client.shaders.SpectatorHandler;
 import com.mclegoman.luminance.client.shaders.Uniforms;
 import com.mclegoman.luminance.client.translation.Translation;
-import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.DateHelper;
 import com.mclegoman.luminance.config.LuminanceConfigHelper;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
@@ -74,20 +74,20 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 	public List<ListWidget.ListEntry> getEntries() {
 		List<ListWidget.ListEntry> widgets = new ArrayList<>();
 
-		widgets.add(new ListWidget.ListEntry(new CursorableStringWidget(Translation.getConfigTranslation(Data.getVersion().getID(), "config"), ClientData.minecraft.font)));
+		widgets.add(new ListWidget.ListEntry(new CursorableStringWidget(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "config"), ClientData.minecraft.font)));
 
 		AlphaSliderWidget alphaSliderWidget = new AlphaSliderWidget(0, 0, 150, 20, Uniforms.getRawAlpha() / 100.0F, () -> saveConfig = true);
-		alphaSliderWidget.setTooltip(Tooltip.create(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha", new Object[]{Translation.getConfigTranslation(Data.getVersion().getID(), "keybinding", new Object[]{Keybindings.adjustAlpha.getTranslatedKeyMessage()}, new ChatFormatting[]{ChatFormatting.RED, ChatFormatting.BOLD})}, true)));
+		alphaSliderWidget.setTooltip(Tooltip.create(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "alpha", new Object[]{Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "keybinding", new Object[]{Keybindings.adjustAlpha.getTranslatedKeyMessage()}, new ChatFormatting[]{ChatFormatting.RED, ChatFormatting.BOLD})}, true)));
 		widgets.add(new ListWidget.ListEntry(alphaSliderWidget,
-				Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", LuminanceConfig.config.showAlphaLevelOverlay.value())}), (button) -> {
+				Button.builder(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "alpha.show_overlay", new Object[]{Translation.getVariableTranslation(LuminanceClient.getMod().getId(), "onff", LuminanceConfig.config.showAlphaLevelOverlay.value())}), (button) -> {
 					LuminanceConfig.config.showAlphaLevelOverlay.setValue(!LuminanceConfig.config.showAlphaLevelOverlay.value(), true);
-					button.setMessage(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", new Object[]{Translation.getVariableTranslation(Data.getVersion().getID(), "onff", LuminanceConfig.config.showAlphaLevelOverlay.value())}));
-					button.setTooltip(Tooltip.create(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", true)));
-				}).tooltip(Tooltip.create(Translation.getConfigTranslation(Data.getVersion().getID(), "alpha.show_overlay", true))).build()));
+					button.setMessage(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "alpha.show_overlay", new Object[]{Translation.getVariableTranslation(LuminanceClient.getMod().getId(), "onff", LuminanceConfig.config.showAlphaLevelOverlay.value())}));
+					button.setTooltip(Tooltip.create(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "alpha.show_overlay", true)));
+				}).tooltip(Tooltip.create(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "alpha.show_overlay", true))).build()));
 
 		List<AbstractWidget> widgets1 = new ArrayList<>();
 
-		widgets1.add(Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode", new Object[]{LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation()}), button -> {
+		widgets1.add(Button.builder(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "spectator_priority_mode", new Object[]{LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation()}), button -> {
 			LuminanceConfig.config.spectatorPriorityMode.setValue(SpectatorPriorityModeValue.of(switch (LuminanceConfig.config.spectatorPriorityMode.value().getMode()) {
 				case FIRST -> SpectatorHandler.Mode.EQUAL;
 				case EQUAL -> SpectatorHandler.Mode.ALL;
@@ -97,24 +97,24 @@ public class ConfigScreen extends AbstractScrollableListScreen {
 			if (ClientData.minecraft.getCameraEntity() != null) SpectatorHandler.onSpectate(ClientData.minecraft.getCameraEntity(), LuminanceConfig.config.spectatorPriorityMode.value().getMode());
 			this.saveConfig = true;
 
-			button.setMessage(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode", new Object[]{LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation()}));
-			button.setTooltip(Tooltip.create(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode." + LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation().toLowerCase(), true)));
-		}).tooltip(Tooltip.create(Translation.getConfigTranslation(Data.getVersion().getID(), "spectator_priority_mode." + LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation().toLowerCase(), true))).build());
+			button.setMessage(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "spectator_priority_mode", new Object[]{LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation()}));
+			button.setTooltip(Tooltip.create(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "spectator_priority_mode." + LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation().toLowerCase(), true)));
+		}).tooltip(Tooltip.create(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "spectator_priority_mode." + LuminanceConfig.config.spectatorPriorityMode.value().getRepresentation().toLowerCase(), true))).build());
 
-		if (ClientData.isDevelopment()) widgets1.add(Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "debug").append(getMore()), (button) -> ClientData.minecraft.setScreen(new DebugShaderScreen(getRefreshScreen()))).build());
+		if (ClientData.isDevelopment()) widgets1.add(Button.builder(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "debug").append(getMore()), (button) -> ClientData.minecraft.setScreen(new DebugShaderScreen(getRefreshScreen()))).build());
 
 		widgets.add(new ListWidget.ListEntry(widgets1.toArray(new AbstractWidget[0])));
 
-		widgets.add(new ListWidget.ListEntry(Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "reset"), (button) -> {
+		widgets.add(new ListWidget.ListEntry(Button.builder(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "reset"), (button) -> {
 			LuminanceConfigHelper.reset(LuminanceConfig.config, false);
 			this.saveConfig = true;
 			this.refresh = true;
 		}).build()));
 
-		widgets.add(new ListWidget.ListEntry(new CursorableStringWidget(Translation.getConfigTranslation(Data.getVersion().getID(), "information"), ClientData.minecraft.font)));
-		widgets.add(new ListWidget.ListEntry(Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information.source_code").append(getExternal()), ConfirmLinkScreen.confirmLink(this, "https://github.com/mclegoman/luminance")).width(304).build(),
-				Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "information.report").append(getExternal()), ConfirmLinkScreen.confirmLink(this, "https://github.com/mclegoman/luminance/issues")).width(304).build()));
-		widgets.add(new ListWidget.ListEntry(Button.builder(Translation.getConfigTranslation(Data.getVersion().getID(), "credits_attribution").append(getMore()), button -> ClientData.minecraft.setScreen(new CreditsAttributionScreen(getRefreshScreen(), 0, splashText, isPride))).width(304).build()));
+		widgets.add(new ListWidget.ListEntry(new CursorableStringWidget(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "information"), ClientData.minecraft.font)));
+		widgets.add(new ListWidget.ListEntry(Button.builder(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "information.source_code").append(getExternal()), ConfirmLinkScreen.confirmLink(this, "https://github.com/mclegoman/luminance")).width(304).build(),
+				Button.builder(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "information.report").append(getExternal()), ConfirmLinkScreen.confirmLink(this, "https://github.com/mclegoman/luminance/issues")).width(304).build()));
+		widgets.add(new ListWidget.ListEntry(Button.builder(Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "credits_attribution").append(getMore()), button -> ClientData.minecraft.setScreen(new CreditsAttributionScreen(getRefreshScreen(), 0, splashText, isPride))).width(304).build()));
 		return widgets;
 	}
 

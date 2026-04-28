@@ -7,8 +7,8 @@
 
 package com.mclegoman.luminance.client.texture;
 
-import com.mclegoman.luminance.common.data.Data;
-import com.mclegoman.luminance.common.util.LogType;
+import com.mclegoman.luminance.client.LuminanceClient;
+import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -19,10 +19,10 @@ import net.minecraft.resources.Identifier;
 public class ResourcePackHelper {
 	public static void register(Identifier id, ModContainer container, Component text, PackActivationType packActivationType) {
 		try {
-			Data.getVersion().sendToLog(LogType.INFO, "Registering resource pack: {}", id.getPath());
+			SeamLog.info(LuminanceClient.getMod(), "Registering resource pack: {}", id.getPath());
 			FabricLoader.getInstance().getModContainer(container.getMetadata().getId()).ifPresent(modContainer -> ResourceLoader.registerBuiltinPack(id, modContainer, text, packActivationType));
 		} catch (Exception error) {
-			Data.getVersion().sendToLog(LogType.ERROR, "Failed to register resource pack", error);
+			SeamLog.error(LuminanceClient.getMod(), "Failed to register resource pack", error);
 		}
 	}
 }

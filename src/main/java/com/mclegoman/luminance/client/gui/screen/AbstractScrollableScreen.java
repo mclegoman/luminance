@@ -7,12 +7,12 @@
 
 package com.mclegoman.luminance.client.gui.screen;
 
+import com.mclegoman.luminance.client.LuminanceClient;
 import com.mclegoman.luminance.client.data.ClientData;
 import com.mclegoman.luminance.client.logo.LuminanceLogo;
 import com.mclegoman.luminance.client.translation.Translation;
 import com.mclegoman.luminance.common.data.Data;
 import com.mclegoman.luminance.common.util.DateHelper;
-import com.mclegoman.luminance.common.util.ReleaseType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -84,23 +84,23 @@ public abstract class AbstractScrollableScreen extends Screen {
 	}
 
 	public static Component getName(String id) {
-		return Translation.getText(Data.getVersion().getName(), false);
+		return Translation.getText(LuminanceClient.getMod().getName(), false);
 	}
 	
 	public static Component getTitle(Component title) {
-		return Translation.getConfigTranslation(Data.getVersion().getID(), "title", new Object[]{getName(""), title});
+		return Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "title", new Object[]{getName(""), title});
 	}
 
 	public static Component getSubtitle(String id) {
-		return Translation.getConfigTranslation(Data.getVersion().getID(), id);
+		return Translation.getConfigTranslation(LuminanceClient.getMod().getId(), id);
 	}
 
 	public static Component getMore() {
-		return Translation.getConfigTranslation(Data.getVersion().getID(), "more");
+		return Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "more");
 	}
 
 	public static Component getExternal() {
-		return Translation.getConfigTranslation(Data.getVersion().getID(), "external");
+		return Translation.getConfigTranslation(LuminanceClient.getMod().getId(), "external");
 	}
 
 	public void resize(Minecraft client, int width, int height) {
@@ -119,9 +119,9 @@ public abstract class AbstractScrollableScreen extends Screen {
 	}
 
 	public void renderDevNotice(GuiGraphics guiGraphics) {
-		if (!Data.getVersion().getType().equals(ReleaseType.RELEASE)) {
-			guiGraphics.drawString(this.font, Translation.getTranslation(Data.getVersion().getID(), "dev"), 2, this.height - 11, 0xFFAAAAAA);
-			MutableComponent versionText = Translation.getTranslation(Data.getVersion().getID(), "dev.version", new Object[]{Data.getVersion().getFriendlyString()});
+		if (Data.isDevelopmentBuild()) {
+			guiGraphics.drawString(this.font, Translation.getTranslation(LuminanceClient.getMod().getId(), "dev"), 2, this.height - 11, 0xFFAAAAAA);
+			MutableComponent versionText = Translation.getTranslation(LuminanceClient.getMod().getId(), "dev.version", new Object[]{Data.getFormattedVersion()});
 			guiGraphics.drawString(this.font, versionText, this.width - 2 - this.font.width(versionText), this.height - 11, 0xFFAAAAAA);
 		}
 	}
