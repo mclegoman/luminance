@@ -21,7 +21,10 @@ public class CompatHelper {
 	public static void onInitialize(AbstractMod mod) {
 		SeamEvents.onInitialize(mod, "Compatibility", () -> {
 			SeamClientEvents.registerIconOverride(mod.getId(), new IconOverride(LuminanceClient.getMod().idOf("textures/icons/pride.png"), DateHelper::isPride));
-			Badges.luminance(mod.getId());
+			// Luminance itself doesn't require the badge.
+			// Mods that use Luminance can use this in their client initializer to add the badge to their mod.
+			// This is mostly to indicate to users that luminance resource packs are compatible.
+			//Badges.luminance(mod.getId());
 		});
 	}
 

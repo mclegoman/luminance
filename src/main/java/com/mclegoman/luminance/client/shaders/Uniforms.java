@@ -32,7 +32,6 @@ import com.mclegoman.luminance.mixin.client.shaders.GameRendererAccessor;
 import com.mclegoman.luminance.mixin.client.shaders.LevelRendererAccessor;
 import dev.dannytaylor.perspective.seam.client.events.SeamClientEvents;
 import dev.dannytaylor.perspective.seam.common.data.AbstractMod;
-import dev.dannytaylor.perspective.seam.common.data.log.SeamLog;
 import dev.dannytaylor.perspective.seam.common.events.SeamEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
